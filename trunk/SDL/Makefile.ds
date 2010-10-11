@@ -1,0 +1,136 @@
+
+#LibSDL 1.3 porting and enhancements by Darren Alton (lifning)
+#LibSDL 1.2.9 DS porting by Troy Davis(GPF)
+
+ifeq ($(strip $(DEVKITPRO)),)
+$(error "Please set DEVKITPRO in your environment (available from http://www.devkitpro.org). export DEVKITPRO=<path to>devkitPro")
+endif
+ifeq ($(strip $(DEVKITARM)),)
+DEVKITARM = $(DEVKITPRO)/devkitARM
+endif
+PATH := $(PATH):$(DEVKITARM)/bin
+
+CC = arm-eabi-gcc
+AR = arm-eabi-ar
+RANLIB = arm-eabi-ranlib
+
+#ifdef GL
+#DEFS += -DSDL_VIDEO_OPENGL=1
+#TARGET = libSDL_gl.a
+#else
+TARGET = libSDL.a
+#endif
+
+#CFLAGS=$(DEFS) -Iinclude
+CFLAGS	=	-mthumb -mthumb-interwork \
+		-march=armv5te -mtune=arm946e-s \
+		-O2 -Wall -Wwrite-strings -Wpointer-arith -Wconversion \
+		-DARM9 -D__NDS__ -I$(DEVKITPRO)/libnds/include -DENABLE_NDS -DNO_SIGNAL_H -DDISABLE_THREADS -DPACKAGE=\"SDL\" -DVERSION=\"1.3\" -DHAVE_ALLOCA_H=1 -DHAVE_ALLOCA=1 \
+		-Iinclude -Isrc -Isrc/audio -Isrc/cdrom -Isrc/endian -Isrc/events -Isrc/joystick -Isrc/thread/nds -Isrc/thread -Isrc/timer -Isrc/video
+
+#src/audio/disk/SDL_diskaudio.c \
+#src/audio/dummy/SDL_dummyaudio.c \
+
+SRCS = \
+src/SDL.c \
+src/SDL_compat.c \
+src/SDL_error.c \
+src/SDL_fatal.c \
+src/SDL_assert.c \
+src/audio/nds/SDL_ndsaudio.c \
+src/audio/SDL_audio.c \
+src/audio/SDL_audiocvt.c \
+src/audio/SDL_audiodev.c \
+src/audio/SDL_audiotypecvt.c \
+src/audio/SDL_mixer.c \
+src/audio/SDL_mixer_m68k.c \
+src/audio/SDL_mixer_MMX.c \
+src/audio/SDL_mixer_MMX_VC.c \
+src/audio/SDL_wave.c \
+src/cdrom/dummy/SDL_syscdrom.c \
+src/cdrom/SDL_cdrom.c \
+src/cpuinfo/SDL_cpuinfo.c \
+src/events/SDL_events.c \
+src/events/SDL_keyboard.c \
+src/events/SDL_mouse.c \
+src/events/SDL_quit.c \
+src/events/SDL_windowevents.c \
+src/file/SDL_rwops.c \
+src/power/SDL_power.c \
+src/power/nds/SDL_syspower.c \
+src/haptic/SDL_haptic.c \
+src/haptic/nds/SDL_syshaptic.c \
+src/joystick/nds/SDL_sysjoystick.c \
+src/joystick/SDL_joystick.c \
+src/stdlib/SDL_getenv.c \
+src/stdlib/SDL_iconv.c \
+src/stdlib/SDL_malloc.c \
+src/stdlib/SDL_qsort.c \
+src/stdlib/SDL_stdlib.c \
+src/stdlib/SDL_string.c \
+src/thread/SDL_thread.c \
+src/thread/nds/SDL_syscond.c \
+src/thread/nds/SDL_sysmutex.c \
+src/thread/nds/SDL_syssem.c \
+src/thread/nds/SDL_systhread.c \
+src/timer/nds/SDL_systimer.c \
+src/timer/SDL_timer.c \
+src/video/nds/SDL_ndsevents.c \
+src/video/nds/SDL_ndsrender.c \
+src/video/nds/SDL_ndsvideo.c \
+src/video/dummy/SDL_nullevents.c \
+src/video/dummy/SDL_nullrender.c \
+src/video/dummy/SDL_nullvideo.c \
+src/video/SDL_blit_0.c \
+src/video/SDL_blit_1.c \
+src/video/SDL_blit_A.c \
+src/video/SDL_blit_auto.c \
+src/video/SDL_blit.c \
+src/video/SDL_blit_copy.c \
+src/video/SDL_blit_N.c \
+src/video/SDL_blit_slow.c \
+src/video/SDL_bmp.c \
+src/video/SDL_drawline.c \
+src/video/SDL_drawpoint.c \
+src/video/SDL_fillrect.c \
+src/video/SDL_gamma.c \
+src/video/SDL_pixels.c \
+src/video/SDL_rect.c \
+src/video/SDL_renderer_gl.c \
+src/video/SDL_renderer_sw.c \
+src/video/SDL_RLEaccel.c \
+src/video/SDL_stretch.c \
+src/video/SDL_surface.c \
+src/video/SDL_video.c \
+src/video/SDL_yuv_mmx.c \
+src/video/SDL_yuv_sw.c \
+
+OBJS = $(SRCS:.c=.o)
+
+TEST = \
+test/nds-test-progs/general/general.nds \
+test/nds-test-progs/sprite/sprite.nds \
+test/nds-test-progs/sprite2/sprite2.nds \
+
+
+all: $(TARGET)
+
+$(TARGET): copy_config \
+	$(OBJS)
+	$(AR) rc $(TARGET) $(OBJS)
+	-@ ($(RANLIB) $@ || true) >/dev/null 2>&1
+
+install: $(TARGET)
+	@cp libSDL.a $(DEVKITPRO)/libnds/lib/
+	@mkdir -p $(DEVKITPRO)/libnds/include/SDL/
+	@cp include/*.h $(DEVKITPRO)/libnds/include/SDL/
+
+nds_test:
+	$(MAKE) -C test/nds-test-progs
+
+copy_config:
+	@cp include/SDL_config.h.default include/SDL_config.h
+
+clean:
+	rm -f include/SDL_config.h $(OBJS)
+
