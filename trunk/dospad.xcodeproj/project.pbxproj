@@ -2966,112 +2966,6 @@
 			};
 			name = Release;
 		};
-		E74AE44211CB1F27008A762D /* Jailbreak */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				GCC_C_LANGUAGE_STANDARD = c99;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES;
-				GCC_WARN_UNUSED_VARIABLE = NO;
-				PREBINDING = NO;
-				SDKROOT = iphoneos2.0;
-			};
-			name = Jailbreak;
-		};
-		E74AE44311CB1F27008A762D /* Jailbreak */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
-				COPY_PHASE_STRIP = YES;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				DEPLOYMENT_LOCATION = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
-				PREBINDING = NO;
-				PRODUCT_NAME = SDLiPhoneOS;
-				SKIP_INSTALL = YES;
-				ZERO_LINK = NO;
-			};
-			name = Jailbreak;
-		};
-		E74AE44411CB1F27008A762D /* Jailbreak */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				COPY_PHASE_STRIP = YES;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
-				PRODUCT_NAME = "Generate Header Files";
-				ZERO_LINK = NO;
-			};
-			name = Jailbreak;
-		};
-		E74AE44611CB1F27008A762D /* Jailbreak */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_UNIVERSAL_IPHONE_OS)";
-				CODE_SIGN_IDENTITY = "Jailbroken Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Jailbroken Developer";
-				COPY_PHASE_STRIP = YES;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/UIKit.framework/Headers/UIKit.h";
-				INFOPLIST_FILE = "dospad-Info.plist";
-				INSTALL_PATH = "$(HOME)/Applications";
-				IPHONEOS_DEPLOYMENT_TARGET = 3.2;
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"\"$(SDKROOT)/usr/lib/gcc/arm-apple-darwin10/4.2.1\"",
-				);
-				OTHER_LDFLAGS = (
-					"-framework",
-					Foundation,
-					"-framework",
-					UIKit,
-				);
-				PREBINDING = NO;
-				PRODUCT_NAME = dospad;
-				SDKROOT = iphoneos3.2;
-				TARGETED_DEVICE_FAMILY = 2;
-				ZERO_LINK = NO;
-			};
-			name = Jailbreak;
-		};
-		E74AE44711CB1F27008A762D /* Jailbreak */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				COPY_PHASE_STRIP = YES;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
-				GCC_PREPROCESSOR_DEFINITIONS = IPHONEOS;
-				GCC_VERSION = 4.0;
-				HEADER_SEARCH_PATHS = ./include;
-				IPHONEOS_DEPLOYMENT_TARGET = 3.1.2;
-				PREBINDING = NO;
-				PRODUCT_NAME = dosbox;
-				SDKROOT = iphoneos3.2;
-				ZERO_LINK = NO;
-			};
-			name = Jailbreak;
-		};
-		E74AE44811CB1F27008A762D /* Jailbreak */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				COPY_PHASE_STRIP = YES;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
-				PREBINDING = NO;
-				PRODUCT_NAME = minizip;
-				ZERO_LINK = NO;
-			};
-			name = Jailbreak;
-		};
 		E778B2B3123918F7008AF49A /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -3100,136 +2994,6 @@
 				ZERO_LINK = NO;
 			};
 			name = Release;
-		};
-		E778B2B5123918F7008AF49A /* Jailbreak */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				PREBINDING = NO;
-				PRODUCT_NAME = SDL_net;
-				USER_HEADER_SEARCH_PATHS = "./include/**";
-			};
-			name = Jailbreak;
-		};
-		E778B2B6123918F7008AF49A /* AppStoreDistribution */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				PREBINDING = NO;
-				PRODUCT_NAME = SDL_net;
-				USER_HEADER_SEARCH_PATHS = "./include/**";
-			};
-			name = AppStoreDistribution;
-		};
-		E78E3BF211C07BD90078449A /* AppStoreDistribution */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Chaoji Li";
-				GCC_C_LANGUAGE_STANDARD = c99;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES;
-				GCC_WARN_UNUSED_VARIABLE = NO;
-				PREBINDING = NO;
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "E7403225-9892-4207-9F3D-05BE92E66314";
-				SDKROOT = iphoneos3.2;
-				TARGETED_DEVICE_FAMILY = 2;
-			};
-			name = AppStoreDistribution;
-		};
-		E78E3BF311C07BD90078449A /* AppStoreDistribution */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
-				COPY_PHASE_STRIP = YES;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				DEPLOYMENT_LOCATION = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
-				GCC_PREPROCESSOR_DEFINITIONS = IPHONEOS;
-				PREBINDING = NO;
-				PRODUCT_NAME = SDLiPhoneOS;
-				SKIP_INSTALL = YES;
-				ZERO_LINK = NO;
-			};
-			name = AppStoreDistribution;
-		};
-		E78E3BF411C07BD90078449A /* AppStoreDistribution */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				COPY_PHASE_STRIP = YES;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
-				PRODUCT_NAME = "Generate Header Files";
-				ZERO_LINK = NO;
-			};
-			name = AppStoreDistribution;
-		};
-		E78E3BF611C07BD90078449A /* AppStoreDistribution */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_UNIVERSAL_IPHONE_OS)";
-				CODE_SIGN_IDENTITY = "iPhone Distribution: Chaoji Li";
-				COPY_PHASE_STRIP = YES;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/UIKit.framework/Headers/UIKit.h";
-				GCC_PREPROCESSOR_DEFINITIONS = IPHONEOS;
-				INFOPLIST_FILE = "dospad-Info.plist";
-				INSTALL_PATH = "$(HOME)/Applications";
-				IPHONEOS_DEPLOYMENT_TARGET = 3.2;
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"\"$(SDKROOT)/usr/lib/gcc/arm-apple-darwin10/4.2.1\"",
-				);
-				OTHER_LDFLAGS = (
-					"-framework",
-					Foundation,
-					"-framework",
-					UIKit,
-				);
-				PREBINDING = NO;
-				PRODUCT_NAME = dospad;
-				PROVISIONING_PROFILE = "E7403225-9892-4207-9F3D-05BE92E66314";
-				SDKROOT = iphoneos3.2;
-				TARGETED_DEVICE_FAMILY = 2;
-				ZERO_LINK = NO;
-			};
-			name = AppStoreDistribution;
-		};
-		E78E3BF711C07BD90078449A /* AppStoreDistribution */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				COPY_PHASE_STRIP = YES;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
-				GCC_PREPROCESSOR_DEFINITIONS = IPHONEOS;
-				GCC_VERSION = 4.0;
-				HEADER_SEARCH_PATHS = ./include;
-				IPHONEOS_DEPLOYMENT_TARGET = 3.2;
-				PREBINDING = NO;
-				PRODUCT_NAME = dosbox;
-				SDKROOT = iphoneos3.2;
-				ZERO_LINK = NO;
-			};
-			name = AppStoreDistribution;
-		};
-		E78E3BF811C07BD90078449A /* AppStoreDistribution */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				COPY_PHASE_STRIP = YES;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
-				PREBINDING = NO;
-				PRODUCT_NAME = minizip;
-				ZERO_LINK = NO;
-			};
-			name = AppStoreDistribution;
 		};
 		E7D6B89911BF323200D34665 /* Debug */ = {
 			isa = XCBuildConfiguration;
@@ -3311,8 +3075,6 @@
 			buildConfigurations = (
 				00646540107E3D7500183915 /* Debug */,
 				00646541107E3D7500183915 /* Release */,
-				E74AE44411CB1F27008A762D /* Jailbreak */,
-				E78E3BF411C07BD90078449A /* AppStoreDistribution */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -3322,8 +3084,6 @@
 			buildConfigurations = (
 				C01FCF4F08A954540054247B /* Debug */,
 				C01FCF5008A954540054247B /* Release */,
-				E74AE44211CB1F27008A762D /* Jailbreak */,
-				E78E3BF211C07BD90078449A /* AppStoreDistribution */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -3333,8 +3093,6 @@
 			buildConfigurations = (
 				E71E60E311B5502800EC5A05 /* Debug */,
 				E71E60E411B5502800EC5A05 /* Release */,
-				E74AE44611CB1F27008A762D /* Jailbreak */,
-				E78E3BF611C07BD90078449A /* AppStoreDistribution */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -3344,8 +3102,6 @@
 			buildConfigurations = (
 				E71E60EC11B5506800EC5A05 /* Debug */,
 				E71E60ED11B5506800EC5A05 /* Release */,
-				E74AE44711CB1F27008A762D /* Jailbreak */,
-				E78E3BF711C07BD90078449A /* AppStoreDistribution */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -3355,8 +3111,6 @@
 			buildConfigurations = (
 				E778B2B3123918F7008AF49A /* Debug */,
 				E778B2B4123918F7008AF49A /* Release */,
-				E778B2B5123918F7008AF49A /* Jailbreak */,
-				E778B2B6123918F7008AF49A /* AppStoreDistribution */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -3366,8 +3120,6 @@
 			buildConfigurations = (
 				E7D6B89911BF323200D34665 /* Debug */,
 				E7D6B89A11BF323200D34665 /* Release */,
-				E74AE44811CB1F27008A762D /* Jailbreak */,
-				E78E3BF811C07BD90078449A /* AppStoreDistribution */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -3377,8 +3129,6 @@
 			buildConfigurations = (
 				FD6526640DE8FCCB002AD96B /* Debug */,
 				FD6526650DE8FCCB002AD96B /* Release */,
-				E74AE44311CB1F27008A762D /* Jailbreak */,
-				E78E3BF311C07BD90078449A /* AppStoreDistribution */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
