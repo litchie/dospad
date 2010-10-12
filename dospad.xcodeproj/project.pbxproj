@@ -2865,8 +2865,8 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
-				CODE_SIGN_IDENTITY = "iPhone Developer: Chaoji Li (WBU792696L)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Chaoji Li (WBU792696L)";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -2887,8 +2887,8 @@
 				);
 				PREBINDING = NO;
 				PRODUCT_NAME = dospad;
-				PROVISIONING_PROFILE = "09384993-0EEC-4134-99B3-E7D854D26C08";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "09384993-0EEC-4134-99B3-E7D854D26C08";
+				PROVISIONING_PROFILE = "";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
 				SDKROOT = iphoneos4.1;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALID_ARCHS = armv6;
@@ -2900,8 +2900,8 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
-				CODE_SIGN_IDENTITY = "iPhone Distribution: Chaoji Li";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Chaoji Li";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_ENABLE_FIX_AND_CONTINUE = NO;
@@ -2920,8 +2920,8 @@
 				);
 				PREBINDING = NO;
 				PRODUCT_NAME = dospad;
-				PROVISIONING_PROFILE = "E7403225-9892-4207-9F3D-05BE92E66314";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "E7403225-9892-4207-9F3D-05BE92E66314";
+				PROVISIONING_PROFILE = "";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
 				SDKROOT = iphoneos4.1;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				ZERO_LINK = NO;
