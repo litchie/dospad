@@ -839,7 +839,7 @@ TCPsocket SDLNet_TCP_Accept(TCPsocket server)
 #ifdef USE_GUSI_SOCKETS
 						(unsigned int *)&sock_alen);
 #else
-								&sock_alen);
+								(unsigned int*)&sock_alen); /* Fix warning on iOS */
 #endif
 	if ( sock->channel == SOCKET_ERROR ) {
 		SDLNet_SetError("accept() failed");
