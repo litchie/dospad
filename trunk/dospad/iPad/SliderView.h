@@ -28,6 +28,8 @@
 
 @property float position;
 
+- (void)setSliderImage:(UIImage *)image;
+
 - (void)setActionOnSliderChange:(SEL)selector target:(NSObject*)obj;
 
 @end

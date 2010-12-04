@@ -51,7 +51,7 @@ KeyDesc allkeys[] = {
     {"-_", SDL_SCANCODE_MINUS},
     {"=+", SDL_SCANCODE_EQUALS},
     {" BS ", SDL_SCANCODE_BACKSPACE},
-    
+    {"BACKSPACE", SDL_SCANCODE_BACKSPACE},
     {"TAB", SDL_SCANCODE_TAB},
     {"Q", SDL_SCANCODE_Q},
     {"W", SDL_SCANCODE_W},
@@ -90,19 +90,24 @@ KeyDesc allkeys[] = {
     {"N", SDL_SCANCODE_N},
     {"M", SDL_SCANCODE_M},
     {",<", SDL_SCANCODE_COMMA},
+    {"COMMA", SDL_SCANCODE_COMMA},
     {".>", SDL_SCANCODE_PERIOD},
     {"/?", SDL_SCANCODE_SLASH},
     {"SHIFT", SDL_SCANCODE_RSHIFT},
+    {"RSHIFT", SDL_SCANCODE_RSHIFT},
 
     {"CTRL", SDL_SCANCODE_LCTRL},
     {"ALT", SDL_SCANCODE_LALT},
     {"CTRL", SDL_SCANCODE_RCTRL},
+    {"RCTRL", SDL_SCANCODE_RCTRL},
     {"ALT", SDL_SCANCODE_RALT},
+    {"RALT", SDL_SCANCODE_RALT},
     {" ", SDL_SCANCODE_SPACE},
-    
+    {"SPACE", SDL_SCANCODE_SPACE},
     {"LEFT",SDL_SCANCODE_LEFT},
     {"DOWN",SDL_SCANCODE_DOWN},
     {" UP ",SDL_SCANCODE_UP},
+    {"UP",SDL_SCANCODE_UP},
     {"RIGHT",SDL_SCANCODE_RIGHT},
     {"INS",SDL_SCANCODE_INSERT},
     {"HOME",SDL_SCANCODE_HOME},
@@ -111,6 +116,25 @@ KeyDesc allkeys[] = {
     {"DEL",SDL_SCANCODE_DELETE},
     {"END",SDL_SCANCODE_END}
 };
+
+int get_scancode_for_name(char *name)
+{
+    int i;
+    for (i = 1; i < ARRAY_SIZE(allkeys); i++) 
+    {
+        if (strcmp(allkeys[i].title, name) == 0) 
+        {
+            return allkeys[i].code;
+        }
+        else if (strlen(allkeys[i].title) == 2 && 
+                 allkeys[i].title[0] == name[0]) 
+        {
+            return allkeys[i].code;
+        }
+    }
+    return 0;
+}
+
 
 const char *get_key_title(int code)
 {

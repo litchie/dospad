@@ -712,11 +712,7 @@ public:
 			if (abs(event->jaxis.value)<25000) return 0;
 			return CreateAxisBind(event->jaxis.axis,event->jaxis.value>0);
 		} else if (event->type==SDL_JOYBUTTONDOWN) {
-#ifdef IPHONEOS
-                    return 0;
-#else                    
-                    if (event->button.which!=stick) return 0;
-#endif                    
+			if (event->button.which!=stick) return 0;
 #if defined (REDUCE_JOYSTICK_POLLING)
 			return CreateButtonBind(event->jbutton.button%button_wrap);
 #else

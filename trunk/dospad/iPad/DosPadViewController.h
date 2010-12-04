@@ -19,45 +19,46 @@
 #import <UIKit/UIKit.h>
 #import "DosEmuThread.h"
 #import "KeyboardView.h"
-#import "SDL_uikitopenglview.h"
-#import "HoldIndicator.h"
 #import "KeyView.h"
 #import "FrameskipIndicator.h"
 #import "TipView.h"
 #import "CommandListView.h"
 #import "SliderView.h"
+#import "GamePadView.h"
+#import "VKView.h"
+#import "DOSPadBaseViewController.h"
+#import "FloatPanel.h"
 
-@interface DosPadViewController : UIViewController
-<SDL_uikitopenglview_delegate, MouseHoldDelegate, FloatingViewDelegate>
+@interface DosPadViewController : DOSPadBaseViewController
+<FloatingViewDelegate>
 {
-    IBOutlet FrameskipIndicator *fsIndicator;
-    DosEmuThread * emuThread;
-    BOOL fullscreen;
-    IBOutlet SDL_uikitopenglview *screenView;
-    IBOutlet KeyboardView *keyboard;
-    IBOutlet UIButton *btnOption,*btnFullscreen;
-    IBOutlet UINavigationController*navController;
-    IBOutlet KeyView* k1,*k2,*k3,*k4,*k5,*k6,*k7,*k8,*k9;
-    IBOutlet UILabel*labTitle,*labCycles;
-    HoldIndicator *hi;
-    TipView *tip;
-    UIView *modalView;
+    VKView *vk;
+    GamePadMode mode;
+    GamePadView *gamepad;
+    
+    // Portrait Mode
+    FrameskipIndicator *fsIndicator;
+    KeyboardView *keyboard;
+    UIButton *btnOption,*btnBack;
+    UILabel *labCycles;
     SliderView *sliderInput;
     UIButton *btnMouseLeft,*btnMouseRight;
-}
-@property (nonatomic,retain) TipView *tip;
-@property (nonatomic,retain) FrameskipIndicator *fsIndicator;
-@property (nonatomic,retain) UILabel*labTitle,*labCycles;
-@property (nonatomic,retain) UINavigationController*navController;
-@property (nonatomic,retain) DosEmuThread *emuThread;
-@property (nonatomic,retain) SDL_uikitopenglview *screenView;
-@property (nonatomic,retain) KeyboardView *keyboard;
-@property (nonatomic,retain) UIButton *btnOption,*btnFullscreen;
-@property (nonatomic,retain) KeyView* k1,*k2,*k3,*k4,*k5,*k6,*k7,*k8,*k9;
+    UIImageView *gamepadLight;
+    UIImageView *joystiqLight;
 
--(IBAction)start;
--(IBAction)hideOption;
--(IBAction)showOption;
--(IBAction)switchToFullscreen;
+    // Fullscreen (Landscape Mode)
+    KeyboardView *overlayKeyboard;
+    FrameskipIndicator *fsIndicator2;
+    UILabel *labCycles2;
+    FloatPanel *fullscreenPanel;
+    UIButton *btnToggleGamePad;
+    UIButton *btnToggleJoystiq;
+    UIButton *btnToggleNumpad;
+    UIButton *btnToggleKeyboard;
+    UIButton *btnToggleMouse;
+    UIButton *fsMouseLeft;
+    UIButton *fsMouseRight;
+    BOOL useOriginalScreenSize;
+}
 
 @end

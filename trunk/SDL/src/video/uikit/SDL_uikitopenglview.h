@@ -79,6 +79,7 @@
 #ifdef IPHONEOS
 @property (nonatomic, assign) id<SDL_uikitopenglview_delegate> delegate;
 - (BOOL)resize:(CGSize)sizeNew;
+- (UIImage*)capture;
 #endif
 
 @end
