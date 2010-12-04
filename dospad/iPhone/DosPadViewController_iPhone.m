@@ -680,11 +680,11 @@
     if ([self isLandscape] && ISPORTRAIT(toInterfaceOrientation))
     {
         [fullscreenPanel hideContent];
-        [self removeGamePad];
         [self removeKeyboard];
         [self removeNumpad];
         [self removeMouseButtons];
     }
+    [self removeGamePad];
     toolPanel.alpha=0;
 }
 
