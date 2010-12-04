@@ -718,7 +718,7 @@ extern int SDLNet_UDP_RecvV(UDPsocket sock, UDPpacket **packets)
 #ifdef USE_GUSI_SOCKETS
 				(unsigned int *)&sock_len);
 #else
-						&sock_len);
+						(socklen_t *)&sock_len);
 #endif
 		if ( packet->status >= 0 ) {
 			packet->len = packet->status;

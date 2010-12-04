@@ -65,42 +65,62 @@
     return YES;
 }
 
--(id)initWithCoder:(NSCoder *)aDecoder
+- (id)initCore
 {
-    if (self = [super initWithCoder:aDecoder]) {
-        int rBits = 0;
-        int gBits = 0;
-        int bBits = 0;
-        int aBits = 0;
-        BOOL retained = NO;//_this->gl_config.retained_backing
-        NSString *colorFormat=nil;
-        
-        if (rBits == 8 && gBits == 8 && bBits == 8) {
-            /* if user specifically requests rbg888 or some color format higher than 16bpp */
-            colorFormat = kEAGLColorFormatRGBA8;
-        }
-        else {
-            /* default case (faster) */
-            colorFormat = kEAGLColorFormatRGB565;
-        }
-                
-        // Get the layer
-		CAEAGLLayer *eaglLayer = (CAEAGLLayer *)self.layer;
-		
-		eaglLayer.opaque = YES;
-		eaglLayer.drawableProperties = [NSDictionary dictionaryWithObjectsAndKeys:
-										[NSNumber numberWithBool: retained], kEAGLDrawablePropertyRetainedBacking, 
-                                        kEAGLColorFormatRGB565, kEAGLDrawablePropertyColorFormat, nil];
-		
-		context = [[EAGLContext alloc] initWithAPI: kEAGLRenderingAPIOpenGLES1];
-		
-		if (!context || ![EAGLContext setCurrentContext:context]) {
-			[self release];
-			return nil;
-		}        
+    int rBits = 0;
+    int gBits = 0;
+    int bBits = 0;
+    int aBits = 0;
+    BOOL retained = NO;//_this->gl_config.retained_backing
+    NSString *colorFormat=nil;
+    
+    if (rBits == 8 && gBits == 8 && bBits == 8) 
+    {
+        /* if user specifically requests rbg888 or some color format higher than 16bpp */
+        colorFormat = kEAGLColorFormatRGBA8;
+    }
+    else 
+    {
+        /* default case (faster) */
+        colorFormat = kEAGLColorFormatRGB565;
+    }
+    
+    // Get the layer
+    CAEAGLLayer *eaglLayer = (CAEAGLLayer *)self.layer;
+    
+    eaglLayer.opaque = YES;
+    eaglLayer.drawableProperties = [NSDictionary dictionaryWithObjectsAndKeys:
+                                    [NSNumber numberWithBool: retained], kEAGLDrawablePropertyRetainedBacking, 
+                                    kEAGLColorFormatRGB565, kEAGLDrawablePropertyColorFormat, nil];
+    
+    context = [[EAGLContext alloc] initWithAPI: kEAGLRenderingAPIOpenGLES1];
+    
+    if (!context || ![EAGLContext setCurrentContext:context]) 
+    {
+        [self release];
+        return nil;
+    }           
+    return self;
+}
+
+- (id)initWithCoder:(NSCoder *)aDecoder
+{
+    if (self = [super initWithCoder:aDecoder]) 
+    {
+        self = [self initCore];
     }
     return self;
 }
+
+- (id)initWithFrame:(CGRect)frame
+{
+    if (self = [super initWithFrame:frame])
+    {
+        self = [self initCore];
+    }
+    return self;
+}
+
 #endif
 
 - (id)initWithFrame:(CGRect)frame \
@@ -195,6 +215,40 @@
 }
 
 #ifdef IPHONEOS
+
+
+-(UIImage *) drawableToCGImage {
+	CGRect myRect = self.bounds;
+	NSInteger myDataLength = myRect.size.width * myRect.size.height * 4;
+	void *buffer = (GLubyte *) malloc(myDataLength);
+    
+	glFinish();
+	glPixelStorei(GL_PACK_ALIGNMENT, 4);
+	
+	glReadPixels(myRect.origin.x, myRect.origin.y, myRect.size.width, myRect.size.height, GL_RGB, GL_UNSIGNED_BYTE, buffer);
+    
+	NSData* myImageData = [NSData dataWithBytesNoCopy:(unsigned char const **)&buffer length:myDataLength freeWhenDone:YES];
+	
+	UIImage *myImage = [UIImage imageWithData:myImageData];
+	if( myImage != nil) { NSLog(@"Save EAGLImage failed to bind data to a IUImage"); }
+	//	free(myGLData); not needed - NSData:dataWithBytesNoCopy: The returned object takes ownership of the bytes pointer and frees it on deallocation. Therefore, bytes must point to a memory block allocated with malloc.
+	
+	return myImage;
+}
+
+
+- (UIImage*)capture
+{
+    return [self drawableToCGImage];
+#if 0
+    UIGraphicsBeginImageContext(self.bounds.size);
+    [self.layer renderInContext:UIGraphicsGetCurrentContext()];
+    UIImage *viewImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return viewImage;
+#endif
+}
+
 - (void)resizeMain
 {
     if (delegate) {

@@ -26,9 +26,78 @@ extern char automount_path[];
 char dospad_error_msg[1000];
 char diskc[256];
 char diskd[256];
-
 cmd_entry *cmd_list=0;
 int cmd_count=0;
+int dospad_pause_flag = 0;
+int dospad_should_launch_game=0;
+int dospad_command_line_ready=0;
+char dospad_launch_config[256];
+char dospad_launch_section[256];
+
+void dospad_pause()
+{
+    dospad_pause_flag = 1;
+}
+
+void dospad_resume()
+{
+    dospad_pause_flag = 0;
+}
+
+void dospad_launch_done()
+{
+    if ([[[UIApplication sharedApplication] delegate] respondsToSelector:@selector(onLaunchExit)])
+    {
+        [[[UIApplication sharedApplication] delegate] performSelector:@selector(onLaunchExit)];
+    }
+}
+
+NSString *get_temporary_merged_file(NSString *f1, NSString *f2)
+{
+    NSString *f = [NSTemporaryDirectory() stringByAppendingPathComponent:@"cfgtmp"];
+    NSString *s = [NSString stringWithContentsOfFile:f1
+                                            encoding:NSUTF8StringEncoding
+                                               error:NULL];
+    s = [s stringByAppendingString:@"\n"];
+    s = [s stringByAppendingString:[NSString stringWithContentsOfFile:f2
+                                                             encoding:NSUTF8StringEncoding
+                                                                error:NULL]];
+    [s writeToFile:f
+        atomically:YES  
+          encoding:NSUTF8StringEncoding
+             error:NULL];  
+    return f;
+}
+
+
+NSString *get_default_config()
+{
+    NSString *srcpath = [[[NSBundle mainBundle] bundlePath] stringByAppendingPathComponent:@"configs"];
+    srcpath = [srcpath stringByAppendingPathComponent:@"default.cfg"];  
+    return srcpath;
+}
+
+NSString *get_dospad_config()
+{
+    FileSystemObject *fso = [[FileSystemObject alloc] autorelease];
+    NSString *filename= @"dospad.cfg";
+    NSString *cfg = [[fso documentsDirectory] stringByAppendingPathComponent:filename];
+    NSString *cfg_uc = [[fso documentsDirectory] stringByAppendingPathComponent:[filename uppercaseString]];
+    if ([fso fileExists:cfg]) {
+        return cfg;
+    } else if ([fso fileExists:cfg_uc]) {
+        return cfg_uc;
+    } else {
+        NSFileManager *fileManager = [NSFileManager defaultManager];
+        NSString *srcpath = [[[NSBundle mainBundle] bundlePath] stringByAppendingPathComponent:@"configs"];
+        srcpath = [srcpath stringByAppendingPathComponent:(ISIPAD()?@"dospad-ipad.cfg":@"dospad-iphone.cfg")];  
+        if (![fso fileExists:srcpath])
+            return nil;
+        cfg = [[fso documentsDirectory] stringByAppendingPathComponent:@"dospad.cfg"];
+        [fileManager copyItemAtPath:srcpath toPath:cfg error:NULL];
+        return cfg;
+    }
+}
 
 
 static int strcmp_case_insensitive(const char *cs, const char *ct)
@@ -120,6 +189,14 @@ void dospad_init_history()
     fclose(fp);
 }
 
+void dospad_should_pause()
+{
+    while (dospad_pause_flag)
+    {
+        [NSThread sleepForTimeInterval:0.5];
+    }
+}
+
 const char *dospad_config_dir()
 {
     return diskc;
@@ -207,7 +284,7 @@ int dospad_get(const char *url, const char *path)
     strcpy(destPath, path);
     fixsep(destPath);
     sprintf(dospad_error_msg, "Error");
-#ifndef CYDIA
+#ifdef IDOS // You can't download games in iDOS (appstore version)
     sprintf(dospad_error_msg, "No such command:-(");
     return 0;
 #endif
@@ -246,7 +323,7 @@ int main(int argc, char *argv[]) {
     FileSystemObject *fso = [[FileSystemObject alloc] autorelease];
 
     // Auto mount
-#ifdef CYDIA
+#ifndef IDOS
     strcpy(diskc, "/var/mobile/Documents");
     strcpy(diskd, [[fso documentsDirectory] UTF8String]);
 #else
@@ -277,9 +354,12 @@ int main(int argc, char *argv[]) {
         [defs setFloat:0.5 forKey:kMouseSpeed];
     }
     
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+
+
+    
     
     // Copy files to C disk (documents)
-    NSFileManager *fileManager = [NSFileManager defaultManager];
     NSString *bundlePath = [[[NSBundle mainBundle] bundlePath] stringByAppendingPathComponent:@"diskc"];
     NSArray *items = [fso contentsOfDirectory:bundlePath];
     for (int i = 0; i < [items count]; i++) {
@@ -296,32 +376,15 @@ int main(int argc, char *argv[]) {
     // Initalize command history
     dospad_init_history();
     
-    // Copy config file if not exist
-    NSString *cfg;
-    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-        cfg = @"dospad-ipad.cfg";
-    } else {
-        cfg = @"dospad-iphone.cfg";
-    }
-    
-    NSString *configPath = [cPath stringByAppendingPathComponent:@"dospad.cfg"];
-    NSString *configPath2 = [cPath stringByAppendingPathComponent:@"DOSPAD.CFG"];
-
-    if (![fileManager fileExistsAtPath:configPath] && ![fileManager fileExistsAtPath:configPath2]) {
-        NSString *bundlePath = [[NSBundle mainBundle] bundlePath];
-        NSString *p = [bundlePath stringByAppendingPathComponent:cfg];
-        if (p) {
-            [fileManager copyItemAtPath:p toPath:configPath error:NULL];
-        }
-    }
+    get_dospad_config();
      
     if ([fso ensureDirectoryExists:cPath]) {
         strcpy(automount_path, [cPath UTF8String]);
-#ifdef CYDIA
+#ifndef IDOS
         strcat(automount_path, ";");
 #endif
     }
-#ifdef CYDIA    
+#ifndef IDOS    
     if ([fso ensureDirectoryExists:dPath]) {
         strcat(automount_path, [dPath UTF8String]);
     }

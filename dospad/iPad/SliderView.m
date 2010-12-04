@@ -18,20 +18,19 @@
 
 #import "SliderView.h"
 
-
 @implementation SliderView
 @synthesize position;
 
 - (void)setPosition:(float)pos
 {
-    if (pos < 0) pos = 0;
-    else if (pos > 1) pos = 1;
-    position=pos;
+    pos = MIN(MAX(pos, 0), 1);
+    position = pos;
     float sliding_width = self.bounds.size.width-slider.frame.size.width;
     [UIView beginAnimations:@"sliding" context:nil];
-    [UIView setAnimationDuration:pos*1];
+    [UIView setAnimationBeginsFromCurrentState:YES];
+    [UIView setAnimationDuration:0.1];
     slider.center=CGPointMake(pos*sliding_width+slider.frame.size.width/2, 
-                              slider.frame.size.height/2);
+                              self.bounds.size.height/2);
     [UIView commitAnimations];
 }
 
@@ -52,31 +51,32 @@
 
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
 {
-    if (callbackObject) {
+    if (callbackObject)
+    {
         [callbackObject performSelector:callbackSelector];
     }
 }
 
-
-- (id)initWithFrame:(CGRect)frame {
+- (id)initWithFrame:(CGRect)frame
+{
     if ((self = [super initWithFrame:frame])) {
         self.backgroundColor=[UIColor clearColor];
-        slider=[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"slider.png"]];
+        slider = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"slider.png"]];
+        slider.userInteractionEnabled = YES;
         [self addSubview:slider];
         [self setPosition:0];
     }
     return self;
 }
 
-/*
-// Only override drawRect: if you perform custom drawing.
-// An empty implementation adversely affects performance during animation.
-- (void)drawRect:(CGRect)rect {
-    // Drawing code
+- (void)setSliderImage:(UIImage *)image
+{
+    slider.image = image;
+    [slider sizeToFit];
 }
-*/
 
-- (void)dealloc {
+- (void)dealloc
+{
     [slider release];
     [super dealloc];
 }

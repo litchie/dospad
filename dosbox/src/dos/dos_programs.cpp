@@ -294,7 +294,12 @@ public:
 				if( (temp_line == "c:\\") || (temp_line == "C:\\") || 
 				    (temp_line == "c:/") || (temp_line == "C:/")    )	
 					WriteOut(MSG_Get("PROGRAM_MOUNT_WARNING_WIN"));
-#else
+#elif defined IPHONEOS
+                                if (temp_line == "/") {
+                                    WriteOut("Mount root is harmful.\n");
+                                    return;
+                                }
+#else                             
 				if(temp_line == "/") WriteOut(MSG_Get("PROGRAM_MOUNT_WARNING_OTHER"));
 #endif
 				newdrive=new localDrive(temp_line.c_str(),sizes[0],bit8size,sizes[2],sizes[3],mediaid);

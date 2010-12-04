@@ -19,7 +19,13 @@
 #ifndef COMMON_H
 #define COMMON_H
 
-//#define CYDIA
+
+#ifdef DEBUG
+#define DEBUGLOG  if (1) NSLog
+#else
+#define DEBUGLOG  if (0) NSLog
+#endif
+
 #define THREADED
 
 #define DONATE_URL @"http://www.litchie.net/donate/dospad-donate.html"
@@ -35,6 +41,9 @@
 #define kForceAspect @"ForceAspect"
 #define kDisableKeySound @"DisableKeySound"
 #define kMouseSpeed @"MouseSpeed"
+#define kDisableNativeKeyboard @"DisableNativeKeyboard"
+#define kDisableGamePadSound @"DisableGamePadSound"
+#define kDPadMovable @"DPadMovable"
 
 #define kK1 @"k1"
 #define kK2 @"k2"
@@ -47,10 +56,26 @@
 #define kK9 @"k9"
 
 #define ISIPAD()  (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
-
+#define KBD_LANDSCAPE_HEIGHT  (ISIPAD()?352:162)
+#define KBD_PORTRAIT_HEIGHT   (ISIPAD()?262:216)
+#define ISLANDSCAPE(o) ((o) == UIInterfaceOrientationLandscapeLeft || \
+                         (o) == UIInterfaceOrientationLandscapeRight)
+#define ISPORTRAIT(o) ((o) == UIInterfaceOrientationPortrait || \
+                       (o) == UIInterfaceOrientationPortraitUpsideDown)
 #define DEFS_GET_INT(name)  [[NSUserDefaults standardUserDefaults] integerForKey:name]
 #define DEFS_SET_INT(name,value) [[NSUserDefaults standardUserDefaults] setInteger:value forKey:name]
 #define MAX_HISTORY_ITEMS 20
+
+NSString *get_default_config();
+NSString *get_dospad_config();
+NSString *get_temporary_merged_file(NSString *f1, NSString *f2);
+void dospad_pause();
+void dospad_resume();
+extern int SDL_SendKeyboardKey(int index, Uint8 state, SDL_scancode scancode);
+extern int dospad_should_launch_game;
+extern int dospad_command_line_ready;
+extern char dospad_launch_config[256];
+extern char dospad_launch_section[256];
 
 #endif
 

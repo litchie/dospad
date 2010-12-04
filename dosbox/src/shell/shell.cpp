@@ -285,6 +285,11 @@ void DOS_Shell::RunInternal(void)
 #ifdef IPHONEOS
 char automount_path[1000];
 extern "C" void dospad_add_history(const char*);
+extern "C" void dospad_launch_done();
+extern int dospad_should_launch_game;
+extern int dospad_command_line_ready;
+extern char dospad_launch_config[256];
+extern char dospad_launch_section[256];
 #endif
 void DOS_Shell::Run(void) {
 	char input_line[CMD_MAXLINE] = {0};
@@ -363,9 +368,43 @@ void DOS_Shell::Run(void) {
 #endif                    
 		} else {
 			if (echo) ShowPrompt();
+#ifdef IPHONEOS
+            dospad_command_line_ready=1;
+#endif
 			InputCommand(input_line);
 #ifdef IPHONEOS
             dospad_add_history(input_line);
+            dospad_command_line_ready=0;
+            if (dospad_should_launch_game)
+            {
+                // Make sure we can access the new installed files
+                Bit8u drive = DOS_GetDefaultDrive();
+                if (Drives[drive]) {
+                    Drives[drive]->EmptyCache();
+                }                
+                FILE *fp=fopen(dospad_launch_config, "r");
+                if (fp != NULL)
+                {
+                    char buf[256];
+                    int sectionLength = strlen(dospad_launch_section);
+                    while (fgets(buf, 256, fp))
+                    {
+                        if (strncmp(buf, dospad_launch_section, sectionLength) == 0)
+                        {
+                            while (fgets(buf, 256, fp))
+                            {
+                                if (buf[0] == '[') break;
+                                if (buf[0] == '#') continue;
+                                ParseLine(buf);
+                            }
+                        }
+                    }
+                    fclose(fp);
+                }
+                dospad_should_launch_game = 0;
+                sprintf(input_line,"cls");
+                dospad_launch_done();
+            }
 #endif
 			ParseLine(input_line);
 			if (echo && !bf) WriteOut_NoParsing("\n");

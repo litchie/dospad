@@ -64,12 +64,12 @@ int
 SDL_SYS_JoystickOpen(SDL_Joystick * joystick)
 {
 	if (joystick->index == 0) {
-		joystick->naxes = 3;
+		joystick->naxes = 2;
 		joystick->nhats = 0;
 		joystick->nballs = 0;
-		joystick->nbuttons = 0;
-		joystick->name  = accelerometerName;
-		[[SDLUIAccelerationDelegate sharedDelegate] startup];
+		joystick->nbuttons = 2;
+		joystick->name  = "VirtualGamePad";
+		//[[SDLUIAccelerationDelegate sharedDelegate] startup];
 		return 0;
 	}
 	else {
@@ -87,7 +87,7 @@ SDL_SYS_JoystickOpen(SDL_Joystick * joystick)
 void
 SDL_SYS_JoystickUpdate(SDL_Joystick * joystick)
 {
-	
+#ifndef IPHONEOS	
 	Sint16 orientation[3];
 	
 	if ([[SDLUIAccelerationDelegate sharedDelegate] hasNewData]) {
@@ -100,7 +100,7 @@ SDL_SYS_JoystickUpdate(SDL_Joystick * joystick)
 		SDL_PrivateJoystickAxis(joystick, 2, orientation[2]);
 
 	}
-	
+#endif	
     return;
 }
 

@@ -37,9 +37,9 @@
 {
     if ((self = [self initWithFrame:parent.bounds])) {
         // Initialization code
-        self.backgroundColor=[UIColor clearColor];
-        self.autoresizingMask=UIViewAutoresizingFlexibleWidth|
-                              UIViewAutoresizingFlexibleHeight;
+        self.backgroundColor = [UIColor clearColor];
+        self.autoresizingMask = (UIViewAutoresizingFlexibleWidth |
+                                 UIViewAutoresizingFlexibleHeight);
         self.contentMode=UIViewContentModeTop;
         self.alpha=0;
         [parent addSubview:self];
@@ -57,10 +57,10 @@
 
 - (void)animationDidStop:(NSString *)animationID finished:(NSNumber *)finished context:(void *)context
 {
-    [self removeFromSuperview];
     if (delegate) {
         [delegate didFloatingView:self];
     }
+    [self removeFromSuperview];
 }
 
 - (void)dismiss

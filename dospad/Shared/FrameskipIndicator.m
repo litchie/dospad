@@ -33,24 +33,19 @@
 - (id)initWithFrame:(CGRect)frame style:(FrameskipIndicatorStyle)_style {
     if ((self = [super initWithFrame:frame])) {
         style=_style;
+        self.backgroundColor=[UIColor clearColor];
         // Initialization code
     }
     return self;
 }
 
-
-// Only override drawRect: if you perform custom drawing.
-// An empty implementation adversely affects performance during animation.
 - (void)drawRect:(CGRect)rect 
 {
-    [[UIColor blackColor] set];
-    CGContextRef ctx=UIGraphicsGetCurrentContext();
-    CGContextFillRect(ctx, rect);
-    CGContextSetRGBFillColor(ctx, 121/255.0, 196/255.0, 5/255.0, 1);
-    
-    if ( (style==FrameskipIndicatorStyleAuto
-          && rect.size.width >= rect.size.height)
-        || style==FrameskipIndicatorStyleHorizontal)
+    CGContextRef ctx = UIGraphicsGetCurrentContext();
+    CGContextSetRGBFillColor(ctx, 121/255.0, 196/255.0, 5/255.0, 1); // Green bars
+    if ((style == FrameskipIndicatorStyleAuto
+         && rect.size.width >= rect.size.height) // wider 
+        || style == FrameskipIndicatorStyleHorizontal)
     {
         float barWidth = rect.size.width/MAX(5, count);
         for (int i = 0; i < count; i++) {
@@ -61,11 +56,12 @@
     else 
     {
         float barHeight = rect.size.height/MAX(5, count);
+        float realHeight = barHeight * 0.5;
+        float posY = rect.size.height - realHeight;
         for (int i = 0; i < count; i++) {
-            CGRect rcBar=CGRectMake(0, rect.size.height-(i+1)*barHeight+0.5*barHeight, 
-                                    rect.size.width,
-                                    barHeight*0.5);
+            CGRect rcBar = CGRectMake(0, posY, rect.size.width, realHeight);
             CGContextFillRect(ctx, rcBar);
+            posY -= barHeight;
         }
     }
 }

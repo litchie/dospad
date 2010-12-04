@@ -24,6 +24,7 @@
 #ifdef IPHONEOS
 extern "C" {
     extern void SDL_init_keyboard();
+    extern void dospad_should_pause();
 }
 #endif
 
@@ -1335,6 +1336,11 @@ void GFX_LosingFocus(void) {
 
 void GFX_Events() {
 	SDL_Event event;
+    
+#ifdef IPHONEOS
+    dospad_should_pause();
+#endif
+    
 #if defined (REDUCE_JOYSTICK_POLLING)
 	static int poll_delay=0;
 	int time=GetTicks();
