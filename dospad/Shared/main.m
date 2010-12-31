@@ -79,26 +79,33 @@ NSString *get_default_config()
 
 NSString *get_dospad_config()
 {
+    NSString *cfg;
     FileSystemObject *fso = [[FileSystemObject alloc] autorelease];
+    NSString *cfgDir = [NSString stringWithUTF8String:diskc];
     NSString *filename= @"dospad.cfg";
-    NSString *cfg = [[fso documentsDirectory] stringByAppendingPathComponent:filename];
-    NSString *cfg_uc = [[fso documentsDirectory] stringByAppendingPathComponent:[filename uppercaseString]];
-    if ([fso fileExists:cfg]) {
-        return cfg;
-    } else if ([fso fileExists:cfg_uc]) {
-        return cfg_uc;
-    } else {
+    cfg = [cfgDir stringByAppendingPathComponent:filename];
+    NSString *cfg_uc = [cfgDir stringByAppendingPathComponent:[filename uppercaseString]];
+    if ([fso fileExists:cfg]) 
+    {
+        /* This is good */
+    } 
+    else if ([fso fileExists:cfg_uc]) 
+    {
+        cfg = cfg_uc;
+    } 
+    else 
+    {
         NSFileManager *fileManager = [NSFileManager defaultManager];
         NSString *srcpath = [[[NSBundle mainBundle] bundlePath] stringByAppendingPathComponent:@"configs"];
         srcpath = [srcpath stringByAppendingPathComponent:(ISIPAD()?@"dospad-ipad.cfg":@"dospad-iphone.cfg")];  
         if (![fso fileExists:srcpath])
             return nil;
-        cfg = [[fso documentsDirectory] stringByAppendingPathComponent:@"dospad.cfg"];
+        cfg = [cfgDir stringByAppendingPathComponent:@"dospad.cfg"];
         [fileManager copyItemAtPath:srcpath toPath:cfg error:NULL];
-        return cfg;
     }
-}
 
+    return cfg;
+}
 
 static int strcmp_case_insensitive(const char *cs, const char *ct)
 {
@@ -323,7 +330,7 @@ int main(int argc, char *argv[]) {
     FileSystemObject *fso = [[FileSystemObject alloc] autorelease];
 
     // Auto mount
-#ifndef IDOS
+#ifndef IDOS // DOSPAD for CYDIA
     strcpy(diskc, "/var/mobile/Documents");
     strcpy(diskd, [[fso documentsDirectory] UTF8String]);
 #else
@@ -355,9 +362,6 @@ int main(int argc, char *argv[]) {
     }
     
     NSFileManager *fileManager = [NSFileManager defaultManager];
-
-
-    
     
     // Copy files to C disk (documents)
     NSString *bundlePath = [[[NSBundle mainBundle] bundlePath] stringByAppendingPathComponent:@"diskc"];
@@ -365,7 +369,6 @@ int main(int argc, char *argv[]) {
     for (int i = 0; i < [items count]; i++) {
         NSString *dataPath = [cPath stringByAppendingPathComponent:[items objectAtIndex:i]];
         if (![fileManager fileExistsAtPath:dataPath]) {
-            // get the path to the app bundle (with the tessdata dir)
             NSString *p = [bundlePath stringByAppendingPathComponent:[items objectAtIndex:i]];
             if (p) {
                 [fileManager copyItemAtPath:p toPath:dataPath error:NULL];
