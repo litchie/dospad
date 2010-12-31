@@ -1475,7 +1475,7 @@ static BOOL WINAPI ConsoleEventHandler(DWORD event) {
 /* static variable to show wether there is not a valid stdout.
  * Fixes some bugs when -noconsole is used in a read only directory */
 #ifdef IPHONEOS
-static bool no_stdout = true;
+static bool no_stdout = false;
 #else
 static bool no_stdout = false;
 #endif
