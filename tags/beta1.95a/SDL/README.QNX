@@ -1,0 +1,108 @@
+README.QNX by Mike Gorchak <mike@malva.ua>, <lestat@i.com.ua>
+Last changed at 10 Jun 2009.
+
+QNX Photon and GF drivers are being constructed, OpenGL ES support is
+    finished.  Still no 2D renderer support in GF and Photon drivers.
+QNX QSA (QNX Sound Architecture) driver is ready.
+QNX HID input driver is finished.
+
+----------------------
+ -- SDL QSA driver --
+----------------------
+
+   Due to QNX Sound Architecture limitations software could  not  determine
+what playback channels are designed for, so some casus can be. For example,
+output after testmultiaudio test utility execution:
+
+Using audio driver: qsa
+playing on device #0: ('Vortex 8820 @ fb000000 d0')...done.
+playing on device #1: ('Vortex 8820 @ fb000000 d1')...done.
+playing on device #2: ('i8x0 @ d800 d0')...done.
+playing on device #3: ('i8x0 @ d800 d1')...done.
+playing on all devices...
+Open device 3 failed: QSA: snd_pcm_channel_params failed: Invalid argument
+
+If  speakers  are  connected  to  both  audio  cards: Vortex 8820 and Intel
+Integrated Audio we can hear sound playback on device #0 and devices #2, #3
+only. Device #1 is an unknown PCM channel which does not produce any sound.
+
+As for error during device #3 opening, it's caused  by QSA  software  mixer
+channel, because  it can't open real hardware device #2, since it's already
+opened by SDL.
+
+After simultaneous sound playback  on  all  devices  utility testmultiaudio
+stays running waiting for  sound playback  finish  on  device #1,  which is
+locked up due to some Aureal Vortex 8820 driver limitations.
+
+---------------------
+ -- SDL GF driver --
+---------------------
+
+Here is an additional information about SDL GF driver:
+ * 0. Introduction.
+ * 1. Environment variables which SDL GF driver supports.
+ * 2. Custom video modes.
+ * 3. Limitations.
+
+0. Introduction.
+
+   SDL GF driver is a layer between  SDL  and  QNX Graphics Framework (GF).
+SDL GF driver also supports OpenGL ES  through the  QNX Graphics Framework.
+Hardware accelerated features which SDL can support depend on real hardware
+capabilities.
+
+1. Environment variables which GF driver supports.
+
+   GF  driver  supports  the  following  environment  variables for  QNX GF
+specific customization options:
+   a) SDL_VIDEO_GF_REFRESH_RATE - refresh  rate  of  video  output  in  Hz.
+      Without this environment variable declaration  SDL  controls  refresh
+      rate of your display.  If this enironment  variable is set  to 0, SDL
+      will control  refresh  rate  of  display,  otherwise  value  of  flag
+      SDL_VIDEO_GF_REFRESH_RATE  is  used  for  all  screen  resolutions as
+      refresh rate. This example will set 60Hz refresh rate as refresh rate
+      for all graphics modes:
+
+      export SDL_VIDEO_GF_REFRESH_RATE=60
+
+2. Custom video modes.
+
+   Since most QNX graphics drivers support GENERIC  video  modes, i.e.  you
+can specify any horizontal and vertical resolution and  any  refresh  rate,
+SDL GF driver uses its own fullscreen modes list, which can be  incomplete.
+You can add any custom video mode, which your QNX graphics driver  supports
+by  editing  file  ./src/video/qnxgf/SDL_qnxgf.c.   Custom   graphics  mode
+definition looks like this:
+
+   {0, 1024, 640, 60, NULL},   /* 1024x640 mode is 60Hz only             */
+
+You must specify horizontal resolution as  the  second  parameter, vertical
+resolution as the third one and  refresh  rate  as  the  fourth  parameter.
+Please leave the first and the last parameters as 0 and NULL.  Then send me
+your changes to e-mail address which is specified in  the  header  of  this
+document.
+
+3. Limitations.
+
+   There are few limitations while using SDL GF driver:
+
+   a) Since  GF   driver   supports   fullscreen  modes  only,   when  flag
+SDL_WINDOW_FULLSCREEN is not specified, SDL GF driver will try to find  the
+fullscreen graphics mode which corresponds to SDL window size. Refresh rate
+will be the  lowest  available,  if  SDL_VIDEO_GF_REFRESH_RATE  environment
+variable is not set.
+   b) As confirmed by QSSL none of existing video  drivers  has  support of
+doublescan low-resolution video modes.  So  modes  below  640x480  are  not
+supported. If your video driver supports low-resolution video modes, please
+add SDL_GF_LOWRESOLUTION flag to the gf_devicename array in the SDL_qnxgf.c
+source file.
+   c) Since  GF  framework supports hardware mouse cursor only,  you'll get
+hardware mouse cursor in case of specific graphics driver supports it.
+
+-------------------------
+ -- SDL Photon driver --
+-------------------------
+
+----------------------------
+ -- SDL HID input driver --
+----------------------------
