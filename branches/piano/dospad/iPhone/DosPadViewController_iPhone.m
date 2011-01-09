@@ -54,9 +54,12 @@
     //---------------------------------------------------
     // 1. Create View
     //---------------------------------------------------
-    self.view = [[UIView alloc] initWithFrame:CGRectMake(0,0,320,480)];
+    UIImageView *baseView = [[[UIImageView alloc] initWithFrame:CGRectMake(0,0,320,480)] autorelease];
+    baseView.contentMode = UIViewContentModeCenter;
+    self.view = baseView;
     self.view.backgroundColor = [UIColor blackColor];
-
+    self.view.userInteractionEnabled = YES;
+    
     //---------------------------------------------------
     // 2. Create the toolbar in portrait mode
     //---------------------------------------------------
@@ -425,7 +428,9 @@
     {
         gamepad = [[GamePadView alloc] initWithConfig:ui_cfg section:section];
         gamepad.mode = mode;
-        DEBUGLOG(@"mode %d", gamepad.mode);
+        DEBUGLOG(@"mode %d  rect: %f %f %f %f", gamepad.mode, 
+                 gamepad.frame.origin.x, gamepad.frame.origin.y,
+                 gamepad.frame.size.width, gamepad.frame.size.height);
         if ([self isPortrait])
         {
             [self.view insertSubview:gamepad belowSubview:toolPanel];
@@ -533,9 +538,9 @@
         interfaceOrientation==UIInterfaceOrientationPortraitUpsideDown) 
     {
         img = [UIImage imageNamed:@"iphone-portrait.jpg"];
-        self.view.backgroundColor = [UIColor colorWithPatternImage:img];
+        [(UIImageView*)self.view setImage:img];
     } else {
-        self.view.backgroundColor = [UIColor blackColor];
+        [(UIImageView*)self.view setImage:nil];
     }
 }
 

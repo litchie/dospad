@@ -41,9 +41,12 @@
     //---------------------------------------------------
     // 1. Create View
     //---------------------------------------------------
-    self.view = [[UIView alloc] initWithFrame:CGRectMake(0,0,768,1024)];
+    UIImageView *baseView = [[[UIImageView alloc] initWithFrame:CGRectMake(0,0,768,1024)] autorelease];
+    baseView.contentMode = UIViewContentModeCenter;
+    self.view = baseView;
     self.view.backgroundColor = [UIColor blackColor];
-    
+    self.view.userInteractionEnabled = YES;
+
     //---------------------------------------------------
     // 2. Create Cycles and Frameskip Indicator
     //---------------------------------------------------    
@@ -422,9 +425,9 @@
 #else
         img = [UIImage imageNamed:@"dospadportrait.jpg"];        
 #endif
-        self.view.backgroundColor = [UIColor colorWithPatternImage:img];
+        [(UIImageView*)self.view setImage:img];
     } else {
-        self.view.backgroundColor = [UIColor blackColor];
+        [(UIImageView*)self.view setImage:nil];
     }
 }
 
