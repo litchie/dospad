@@ -32,33 +32,22 @@
 @interface DosPadViewController : DOSPadBaseViewController
 <FloatingViewDelegate>
 {
-    VKView *vk;
-    GamePadMode mode;
-    GamePadView *gamepad;
-    
     // Portrait Mode
     FrameskipIndicator *fsIndicator;
     KeyboardView *keyboard;
     UIButton *btnOption,*btnBack;
+    UIButton *btnMouseLeftP, *btnMouseRightP; /* portrait mode */
     UILabel *labCycles;
     SliderView *sliderInput;
-    UIButton *btnMouseLeft,*btnMouseRight;
     UIImageView *gamepadLight;
     UIImageView *joystiqLight;
 
-    // Fullscreen (Landscape Mode)
-    KeyboardView *overlayKeyboard;
     FrameskipIndicator *fsIndicator2;
     UILabel *labCycles2;
     FloatPanel *fullscreenPanel;
-    UIButton *btnToggleGamePad;
-    UIButton *btnToggleJoystiq;
-    UIButton *btnToggleNumpad;
-    UIButton *btnToggleKeyboard;
-    UIButton *btnToggleMouse;
-    UIButton *fsMouseLeft;
-    UIButton *fsMouseRight;
     BOOL useOriginalScreenSize;
 }
 
+- (void)refreshFullscreenPanel;
+- (void)onSliderChange;
 @end

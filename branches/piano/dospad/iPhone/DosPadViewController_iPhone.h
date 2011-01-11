@@ -37,9 +37,6 @@
 @interface DosPadViewController_iPhone : DOSPadBaseViewController
 <FloatingViewDelegate>
 {
-    KeyboardView*kbd;
-    KeyboardView*numpad;
-    GamePadView *gamepad;
     GamePadMode mode;
     
     ToolPanelView  *toolPanel;
@@ -47,7 +44,6 @@
     UILabel *labCycles2;
     FrameskipIndicator *fsIndicator;
     FrameskipIndicator *fsIndicator2;
-    VKView *vk;
     UIButton *btnShowKeyboard;
     
     FloatingView *overlay;
@@ -56,14 +52,9 @@
     UILabel *banner;
     FloatPanel *fullscreenPanel;
     
-    UIButton *btnToggleGamePad;
-    UIButton *btnToggleJoystiq;
-    UIButton *btnToggleNumpad;
-    UIButton *btnToggleKeyboard;
-    UIButton *btnToggleMouse;
-    UIButton *fsMouseLeft;
-    UIButton *fsMouseRight;
     BOOL useOriginalScreenSize;
 }
+
+- (void)refreshFullscreenPanel;
 
 @end

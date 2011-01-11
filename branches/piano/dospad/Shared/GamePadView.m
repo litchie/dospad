@@ -393,6 +393,7 @@ static SystemSoundID sound_joystick_move=0;
 @synthesize buttonIndex;
 @synthesize pressed;
 @synthesize keyCode;
+@synthesize keyCode2;
 @synthesize style;
 @synthesize title;
 @synthesize images;
@@ -469,7 +470,8 @@ static SystemSoundID sound_joystick_move=0;
     self.pressed=YES;
     if (!joy)
     {
-        SDL_SendKeyboardKey( 0, SDL_PRESSED, keyCode);
+        if (keyCode > 0) SDL_SendKeyboardKey( 0, SDL_PRESSED, keyCode);
+        if (keyCode2 > 0) SDL_SendKeyboardKey( 0, SDL_PRESSED, keyCode2);
     }
     else if ([self ensureJoystick])
     {
@@ -491,7 +493,8 @@ static SystemSoundID sound_joystick_move=0;
     self.pressed=NO;
     if (!joy)
     {
-        SDL_SendKeyboardKey( 0, SDL_RELEASED, keyCode);
+        if (keyCode2 > 0) SDL_SendKeyboardKey( 0, SDL_RELEASED, keyCode2);
+        if (keyCode > 0) SDL_SendKeyboardKey( 0, SDL_RELEASED, keyCode);
     }
     else if ([self ensureJoystick])
     {
@@ -797,20 +800,38 @@ static SystemSoundID sound_joystick_move=0;
     return NO;
 }
 
-- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
+- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
 {
     if (floating && dpadMovable)
     {
         UITouch *touch = [touches anyObject];
         CGPoint pt = [touch locationInView:self];
         dpad.center = pt;
+        [dpad touchesBegan:touches withEvent:event];
     }
 }
+
+- (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event
+{
+    if (floating && dpadMovable)
+    {
+        [dpad touchesMoved:touches withEvent:event];
+    }
+}
+
+- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
+{
+    if (floating && dpadMovable)
+    {
+        [dpad touchesEnded:touches withEvent:event];
+    }
+}
+
 
 - (id)initWithConfig:(NSString*)path section:(NSString*)section
 {
     char buf[256];
-    char title[64], keyname[64];
+    char title[64], keyname[64], keyname2[64];
     int x,y,width,height,index;
     char kbind[]="[gamepad.keybinding]";
     BOOL isOverlay = FALSE;
@@ -897,17 +918,31 @@ static SystemSoundID sound_joystick_move=0;
     {
         while (fgets(buf, 256, fp))
         {
-            char *p;
+            char *p, *endp;
             if (buf[0] == '[') 
                 break;
             if (buf[0] == '#')
                 continue;
             p = buf;
-            while (isblank(*p))
+            while (isspace(*p))
                 p++;
             if (*p == '\0')
                 continue;
-            if (sscanf(p, "button%d=%[^,],%s", &index, title, keyname)==3)
+            endp = p;
+            while (*endp != '\0') endp++;
+            while (isspace(*(endp-1))) endp--;
+            *endp = 0;
+            
+            if (sscanf(p, "button%d=%[^,],%[^,],%s", &index, title, keyname, keyname2)==4)
+            {
+                if (index < MAX_GAMEPAD_BUTTON)
+                {
+                    btn[index].keyCode = get_scancode_for_name(keyname);
+                    btn[index].keyCode2 = get_scancode_for_name(keyname2);
+                    btn[index].title = [NSString stringWithUTF8String:title];
+                }
+            }
+            else if (sscanf(p, "button%d=%[^,],%s", &index, title, keyname)==3)
             {
                 if (index < MAX_GAMEPAD_BUTTON)
                 {

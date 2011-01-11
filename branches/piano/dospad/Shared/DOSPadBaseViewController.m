@@ -23,6 +23,8 @@
 #import "DosPadViewController_iPhone.h"
 #import "AppDelegate.h"
 
+#define NOT_IMPLEMENTED(func) func { NSLog(@"Error: `%s' is not implemented!", #func); }
+
 extern int SDL_SendKeyboardKey(int index, Uint8 state, SDL_scancode scancode);
 
 @implementation DOSPadBaseViewController
@@ -113,6 +115,10 @@ extern int SDL_SendKeyboardKey(int index, Uint8 state, SDL_scancode scancode);
             SDL_SendKeyboardKey(0, SDL_RELEASED, SDL_SCANCODE_RETURN);
         }
     }
+    
+    vk = [[VKView alloc] initWithFrame:CGRectMake(0,0,1,1)];
+    vk.alpha = 0;
+    [self.view addSubview:vk];
 }
 
 
@@ -142,6 +148,8 @@ extern int SDL_SendKeyboardKey(int index, Uint8 state, SDL_scancode scancode);
     [screenView release];
     [configPath release];
     [holdIndicator release];
+    [self removeAllInputSources];
+    [vk release];
     [super dealloc];
 }
 
@@ -256,6 +264,213 @@ extern int SDL_SendKeyboardKey(int index, Uint8 state, SDL_scancode scancode);
 {
     return (self.interfaceOrientation == UIInterfaceOrientationLandscapeLeft ||
             self.interfaceOrientation == UIInterfaceOrientationLandscapeRight);
+}
+
+- (BOOL)isInputSourceActive:(InputSourceType)type
+{
+    switch (type) 
+    {
+        case InputSource_NumPad:
+        {
+            return numpad != nil;
+            break;
+        }
+        case InputSource_PCKeyboard:
+        {
+            return kbd != nil;
+            break;
+        }
+        case InputSource_GamePad:
+        {
+            return gamepad != nil;
+            break;
+        }
+        case InputSource_Joystick:
+        {
+            return joystick != nil;
+            break;
+        }
+        case InputSource_PianoKeyboard:
+        {
+            return piano != nil;
+            break;
+        }
+        case InputSource_MouseButtons:
+        {
+            return btnMouseLeft != nil && btnMouseRight != nil;
+            break;
+        }            
+    }    
+    return NO;
+}
+
+- (void)removeiOSKeyboard
+{
+    if (vk.useNativeKeyboard != YES)
+        return;
+    // Hide the virtual native keyboard
+    // However, we are still listening to external keyboard input
+    vk.active = NO;
+    vk.useNativeKeyboard=NO;
+    vk.active = YES;        
+}
+
+- (void)createiOSKeyboard
+{
+    if (vk.active)
+        vk.active = NO;
+    vk.useNativeKeyboard = YES;
+    vk.active = YES;
+}
+
+- (void)NOT_IMPLEMENTED(createPCKeyboard);
+- (void)NOT_IMPLEMENTED(createNumpad);
+- (void)NOT_IMPLEMENTED(createGamepad);
+- (void)NOT_IMPLEMENTED(createJoystick);
+- (void)NOT_IMPLEMENTED(createMouseButtons);
+
+- (void)createPianoKeyboard
+{
+    NSString *ui_cfg = get_temporary_merged_file(configPath, get_default_config());
+    
+    if (ui_cfg != nil)
+    {
+        piano = [[PianoKeyboard alloc] initWithConfig:ui_cfg section:@"[piano.keybinding]"];
+        if (piano)
+        {
+            [self.view addSubview:piano];
+        }
+    }
+}
+
+- (void)addInputSource:(InputSourceType)type
+{
+    [self removeInputSource:type];
+    switch (type) 
+    {
+        case InputSource_NumPad:
+        {
+            [self createNumpad];
+            break;
+        }
+        case InputSource_PCKeyboard:
+        {
+            [self createPCKeyboard];
+            break;
+        }
+        case InputSource_GamePad:
+        {
+            [self createGamepad];
+            break;
+        }
+        case InputSource_Joystick:
+        {
+            [self createJoystick];
+            break;
+        }
+        case InputSource_PianoKeyboard:
+        {
+            [self createPianoKeyboard];
+            break;
+        }
+        case InputSource_MouseButtons:
+        {
+            [self createMouseButtons];
+            break;
+        }            
+    }    
+}
+
+- (void)addInputSourceExclusively:(InputSourceType)type
+{
+    [self removeAllInputSources];
+    [self addInputSource:type];
+}
+
+- (void)removeAllInputSources
+{
+    for (int i = 0; i < InputSource_TotalCount; i++) 
+    {
+        [self removeInputSource:i];
+    } 
+}
+
+- (void)removeInputSource:(InputSourceType)type
+{
+    switch (type) 
+    {
+        case InputSource_NumPad:
+        {
+            if (numpad) 
+            {
+                [numpad removeFromSuperview];
+                [numpad release];
+                numpad = nil;
+            }
+            break;
+        }
+        case InputSource_PCKeyboard:
+        {
+            if (kbd) 
+            {
+                [kbd removeFromSuperview];
+                [kbd release];
+                kbd = nil;
+            }
+            break;
+        }
+        case InputSource_iOSKeyboard:
+        {
+            [self removeiOSKeyboard];
+            break;
+        }
+        case InputSource_GamePad:
+        {
+            if (gamepad) 
+            {
+                [gamepad removeFromSuperview];
+                [gamepad release];
+                gamepad = nil;
+            }
+            break;
+        }
+        case InputSource_Joystick:
+        {
+            if (joystick) 
+            {
+                [joystick removeFromSuperview];
+                [joystick release];
+                joystick = nil;
+            }
+            break;
+        }
+        case InputSource_PianoKeyboard:
+        {
+            if (piano)
+            {
+                [piano removeFromSuperview];
+                [piano release];
+                piano = nil;
+            }
+            break;
+        }
+        case InputSource_MouseButtons:
+        {
+            if (btnMouseLeft) 
+            {
+                [btnMouseLeft removeFromSuperview];
+                [btnMouseLeft release];
+                btnMouseLeft = nil;
+            }
+            if (btnMouseRight) 
+            {
+                [btnMouseRight removeFromSuperview];
+                [btnMouseRight release];
+                btnMouseRight = nil;
+            }
+            break;
+        }            
+    }
 }
 
 @end
