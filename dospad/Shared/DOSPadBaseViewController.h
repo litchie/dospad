@@ -22,6 +22,10 @@
 #import "FileSystemObject.h"
 #import "HoldIndicator.h"
 #import "SDL_uikitopenglview.h"
+#import "KeyboardView.h"
+#import "GamePadView.h"
+#import "VKView.h"
+#import "PianoKeyboard.h"
 
 @interface DOSPadBaseViewController : UIViewController
 <SDL_uikitopenglview_delegate,MouseHoldDelegate>
@@ -30,6 +34,16 @@
     BOOL autoExit;
     SDL_uikitopenglview *screenView;
     HoldIndicator *holdIndicator;
+    
+    // Input Devices
+    VKView *vk; // Background, conflicts with iOS keyboard
+    GamePadView *gamepad;
+    GamePadView *joystick;
+    KeyboardView *kbd;
+    KeyboardView *numpad;
+    UIButton *btnMouseLeft;
+    UIButton *btnMouseRight;
+    PianoKeyboard *piano;
 }
 
 @property (nonatomic, retain) NSString *configPath;
@@ -49,4 +63,18 @@
 - (int)currentFrameskip;
 - (BOOL)isPortrait;
 - (BOOL)isLandscape;
+
+- (BOOL)isInputSourceActive:(InputSourceType)type;
+- (void)addInputSource:(InputSourceType)type;
+- (void)addInputSourceExclusively:(InputSourceType)type;
+- (void)removeInputSource:(InputSourceType)type;
+- (void)removeAllInputSources;
+- (void)removeiOSKeyboard;
+- (void)createiOSKeyboard;
+- (void)createPCKeyboard;
+- (void)createNumpad;
+- (void)createGamepad;
+- (void)createJoystick;
+- (void)createMouseButtons;
+- (void)createPianoKeyboard;
 @end
