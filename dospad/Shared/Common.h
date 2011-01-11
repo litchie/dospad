@@ -19,7 +19,7 @@
 #ifndef COMMON_H
 #define COMMON_H
 
-//#define NS_BLOCK_ASSERTIONS
+#define NS_BLOCK_ASSERTIONS
 
 #ifdef DEBUG
 #define DEBUGLOG  if (1) NSLog
