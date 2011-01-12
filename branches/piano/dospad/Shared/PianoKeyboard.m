@@ -136,7 +136,17 @@ extern int SDL_SendKeyboardKey(int index, Uint8 state, SDL_scancode scancode);
     }
     else if (pressed)
     {
-        UIColor *color = [textColor colorWithAlphaComponent:0.5];
+        
+        UIColor *color;
+        if (index < 15)
+        {
+            color = [textColor colorWithAlphaComponent:0.5];
+        }
+        else
+        {
+            color = [[UIColor whiteColor] colorWithAlphaComponent:0.5];
+        }
+
         CGRect indicator;
         indicator.size = CGSizeMake(8, 8);
         indicator.origin.x = (rect.size.width - indicator.size.width)/2;
