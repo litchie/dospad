@@ -6,10 +6,6 @@
 	<string>English</string>
 	<key>UIStatusBarHidden</key>
 	<true/>
-	<key>UIRequiredDeviceCapabilities</key>
-	<array>
-		<string>armv7</string>
-	</array>
 	<key>CFBundleDisplayName</key>
 	<string>iDOS</string>
 	<key>CFBundleExecutable</key>
@@ -33,15 +29,13 @@
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>2.0</string>
+	<string>2.0.1</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSMainNibFile~ipad</key>
 	<string>MainWindow</string>
 	<key>NSMainNibFile</key>
 	<string>MainWindow</string>
-	<key>UIFileSharingEnabled</key>
-	<true/>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
