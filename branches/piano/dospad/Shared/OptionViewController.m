@@ -32,15 +32,21 @@
 #define SECTION_OF(id)      ((section)>>5)
 
 //--------------------------------------------------------------
-#define OPT_GROUP_DONATE           0
-#define OPT_GROUP_GENERAL          1
-#define OPT_GROUP_LANDSCAPE_INPUTS 2
-#define OPT_GROUP_SUPPORT          3
-#define OPT_GROUP_COUNT            4
+enum {
+    #ifndef IDOS
+    OPT_GROUP_DONATE,
+    #endif
+    OPT_GROUP_GENERAL,
+    OPT_GROUP_LANDSCAPE_INPUTS,
+    OPT_GROUP_SUPPORT,
+    OPT_GROUP_COUNT
+};
 
 //--------------------------------------------------------------
+#ifndef IDOS
 #define OPT_DONATE                   OPT_ID(OPT_GROUP_DONATE,0)
 #define OPT_GROUP_DONATE_COUNT 1
+#endif
 
 #define OPT_GAME_CONTROL             OPT_ID(OPT_GROUP_GENERAL,0)
 #define OPT_OVERLAY_TRANSPARENCY     OPT_ID(OPT_GROUP_GENERAL,1)
@@ -52,12 +58,20 @@
 #define OPT_GROUP_GENERAL_COUNT 7
 
 #define OPT_INPUT_NUMPAD             OPT_ID(OPT_GROUP_LANDSCAPE_INPUTS, 0)
-#define OPT_INPUT_PIANO              OPT_ID(OPT_GROUP_LANDSCAPE_INPUTS, 1)
-#define OPT_INPUT_JOYSTICK           OPT_ID(OPT_GROUP_LANDSCAPE_INPUTS, 2)
+#define OPT_INPUT_JOYSTICK           OPT_ID(OPT_GROUP_LANDSCAPE_INPUTS, 1)
+#ifndef IDOS
+#define OPT_INPUT_PIANO              OPT_ID(OPT_GROUP_LANDSCAPE_INPUTS, 2)
 #define OPT_GROUP_LANDSCAPE_INPUTS_COUNT 3
+#else
+#define OPT_GROUP_LANDSCAPE_INPUTS_COUNT 2
+#endif
 
 #define OPT_CREDITS                  OPT_ID(OPT_GROUP_SUPPORT,0)
+#ifndef IDOS
 #define OPT_HOMEPAGE                 OPT_ID(OPT_GROUP_SUPPORT,1)
+#else
+#define OPT_FEEDBACK                 OPT_ID(OPT_GROUP_SUPPORT,1)
+#endif
 #define OPT_FORUM                    OPT_ID(OPT_GROUP_SUPPORT,2)
 #define OPT_GROUP_SUPPORT_COUNT 3
 
@@ -100,9 +114,11 @@
         case OPT_KEY_SOUND:
             DEFS_SET_INT(kDisableKeySound, sw.on);
             break;
+#ifndef IDOS
         case OPT_INPUT_PIANO:
             DEFS_SET_INT(InputSource_KeyName(InputSource_PianoKeyboard), sw.on);
             break;
+#endif            
         case OPT_INPUT_NUMPAD:
             DEFS_SET_INT(InputSource_KeyName(InputSource_NumPad), sw.on);
             break;
@@ -166,9 +182,12 @@
 {
     MFMailComposeViewController *controller = [[MFMailComposeViewController alloc] init];
     controller.mailComposeDelegate = self;
-    
+    #ifndef IDOS
     [controller setSubject:@"Feedback on DOSPad"];
-    NSArray *recip = [NSArray arrayWithObject:@"lichaoji@gmail.com"];
+    #else
+    [controller setSubject:@"Feedback on iDOS"];
+    #endif
+    NSArray *recip = [NSArray arrayWithObject:@"support@fast-intelligence.com"];
     [controller setToRecipients:recip];
     [self presentModalViewController:controller animated:YES];
     [controller release];
@@ -187,8 +206,10 @@
 {
     switch (section)
     {
+#ifndef IDOS
         case OPT_GROUP_DONATE:
             return OPT_GROUP_DONATE_COUNT;
+#endif            
         case OPT_GROUP_GENERAL:
             return OPT_GROUP_GENERAL_COUNT;
         case OPT_GROUP_LANDSCAPE_INPUTS:
@@ -204,8 +225,10 @@
 {
     switch (section)
     {
+#ifndef IDOS
         case OPT_GROUP_DONATE:
             return @"";
+#endif
         case OPT_GROUP_GENERAL:
             return @"General";
         case OPT_GROUP_LANDSCAPE_INPUTS:
@@ -291,7 +314,7 @@
                                              tag:OPT_GAMEPAD_SOUND];
             return [cell autorelease];
         }
-            
+#ifndef IDOS            
         case OPT_INPUT_PIANO:
         {
             cell = [self createBooleanOptionCell:@"Piano Keyboard"
@@ -299,6 +322,7 @@
                                              tag:OPT_INPUT_PIANO];
             return [cell autorelease];
         }
+#endif        
         case OPT_INPUT_NUMPAD:
         {
             cell = [self createBooleanOptionCell:@"Number Pad"
@@ -313,7 +337,7 @@
                                              tag:OPT_INPUT_JOYSTICK];
             return [cell autorelease];
         }
-            
+#ifndef IDOS           
         case OPT_DONATE:
         {
             cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:nil];
@@ -321,7 +345,7 @@
             cell.detailTextLabel.text = @"Keep updates coming";
             return [cell autorelease];            
         }
-            
+#endif            
         case OPT_CREDITS:
         {
             cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:nil];
@@ -333,11 +357,15 @@
         case OPT_FORUM:
         {
             cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:nil];
+#ifndef IDOS
             cell.textLabel.text=@"DOSPad Forum";
+#else
+            cell.textLabel.text=@"iDOS Forum";            
+#endif
             cell.detailTextLabel.text=@"Ask for help in our community";
             return [cell autorelease];
         }
-            
+#ifndef IDOS            
         case OPT_HOMEPAGE:
         {
             cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:nil];
@@ -345,13 +373,14 @@
             cell.detailTextLabel.text=@"Getting Started";
             return [cell autorelease];            
         }
-            
-//        case OPT_FEEDBACK:
-//        {
-//            cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:nil];
-//            cell.textLabel.text=@"Send Feedback/Bug Report";
-//            return [cell autorelease];            
-//        }
+#else            
+        case OPT_FEEDBACK:
+        {
+            cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:nil];
+            cell.textLabel.text=@"Send Feedback/Bug Report";
+            return [cell autorelease];            
+        }
+#endif        
     }
     return cell;
 }
@@ -438,26 +467,36 @@ heightForRowAtIndexPath:(NSIndexPath*)indexPath
             [self.navigationController pushViewController:webctrl animated:YES];
             break;
         }
-//        case OPT_FEEDBACK:
-//        {
-//            [self sendFeedback];
-//            break;
-//        }
         case OPT_FORUM:
         {
+#ifndef IDOS            
             [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://www.dospad.com/forum"]];
+#else
+            [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://www.litchie.net/idos/forum"]];
+#endif            
             break;
         }
+#ifndef IDOS        
         case OPT_HOMEPAGE:
         {
-            [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://www.litchie.net/blog/dospad"]];
+            [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://www.litchie.net/dospad"]];
             break;
         }
+#else        
+       case OPT_FEEDBACK:
+       {
+           [self sendFeedback];
+           break;
+       }
+#endif
+       
+#ifndef IDOS
         case OPT_DONATE:
         {
-            NSString *url = @"http://www.litchie.net/donate/dospad-donate.html";
+            NSString *url = @"http://www.litchie.net/dospad/donate";
             [[UIApplication sharedApplication] openURL:[NSURL URLWithString:url]];
         }
+#endif        
     }
 }
 
