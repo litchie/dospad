@@ -65,6 +65,7 @@ typedef enum
 @interface GamePadButton : UIView
 {
     int keyCode;
+    int keyCode2;
     int buttonIndex;
     BOOL pressed;
     NSString *title;
@@ -83,6 +84,7 @@ typedef enum
 @property (nonatomic, retain) NSString *title;
 @property (nonatomic, assign) BOOL pressed;
 @property (nonatomic, assign) int keyCode;
+@property (nonatomic, assign) int keyCode2;
 @property (nonatomic, assign) GamePadButtonStyle style;
 @property (nonatomic, assign) BOOL joy;
 @property (nonatomic, assign) BOOL quiet;

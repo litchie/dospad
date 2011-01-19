@@ -126,8 +126,11 @@ int get_scancode_for_name(char *name)
         {
             return allkeys[i].code;
         }
-        else if (strlen(allkeys[i].title) == 2 && 
-                 allkeys[i].title[0] == name[0]) 
+    }
+    for (i = 1; i < ARRAY_SIZE(allkeys); i++) 
+    {
+        if (strlen(allkeys[i].title) == 2 && 
+            allkeys[i].title[0] == name[0]) 
         {
             return allkeys[i].code;
         }

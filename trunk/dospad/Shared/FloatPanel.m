@@ -119,6 +119,14 @@
  
     float w = (contentView.frame.size.width-marginx*2) / ([itemArray count]);
     float h = contentView.frame.size.height - marginy_bot;
+ 
+    if (items != nil)
+    {
+        for (UIView *v in items) 
+            [v removeFromSuperview];
+        [items release];
+    }
+    items = [itemArray retain];
     
     for (int i = 0; i < [itemArray count]; i++)
     {
@@ -194,6 +202,7 @@
 */
 
 - (void)dealloc {
+    [items release];
     [contentView release];
     [btnAutoHide release];
     [super dealloc];
