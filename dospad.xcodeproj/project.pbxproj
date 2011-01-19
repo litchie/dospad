@@ -538,6 +538,15 @@
 		E793704012A1EE87008A2012 /* landkey~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = E793703E12A1EE87008A2012 /* landkey~ipad.png */; };
 		E793705312A1F3CA008A2012 /* idos-splash.gif in Resources */ = {isa = PBXBuildFile; fileRef = E793705212A1F3CA008A2012 /* idos-splash.gif */; };
 		E793720512A243C6008A2012 /* SplashViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E793720412A243C6008A2012 /* SplashViewController.m */; };
+		E794F3DD12DB4B6D00427836 /* modepianopressed.png in Resources */ = {isa = PBXBuildFile; fileRef = E794F3DA12DB4B6D00427836 /* modepianopressed.png */; };
+		E794F3DE12DB4B6D00427836 /* modepianopressed@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E794F3DB12DB4B6D00427836 /* modepianopressed@2x.png */; };
+		E794F3DF12DB4B6D00427836 /* modepianopressed~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = E794F3DC12DB4B6D00427836 /* modepianopressed~ipad.png */; };
+		E794F3E312DB4C1B00427836 /* modepiano.png in Resources */ = {isa = PBXBuildFile; fileRef = E794F3E012DB4C1B00427836 /* modepiano.png */; };
+		E794F3E412DB4C1B00427836 /* modepiano@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E794F3E112DB4C1B00427836 /* modepiano@2x.png */; };
+		E794F3E512DB4C1B00427836 /* modepiano~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = E794F3E212DB4C1B00427836 /* modepiano~ipad.png */; };
+		E794F3FB12DB4EDC00427836 /* 25-Keys-with-6x4-grid.png in Resources */ = {isa = PBXBuildFile; fileRef = E794F3F912DB4EDC00427836 /* 25-Keys-with-6x4-grid.png */; };
+		E794F3FC12DB4EDC00427836 /* 25-keys.png in Resources */ = {isa = PBXBuildFile; fileRef = E794F3FA12DB4EDC00427836 /* 25-keys.png */; };
+		E794F3FF12DB4F0E00427836 /* PianoKeyboard.m in Sources */ = {isa = PBXBuildFile; fileRef = E794F3FE12DB4F0E00427836 /* PianoKeyboard.m */; };
 		E7996FAD1241C0A800502015 /* TipView.m in Sources */ = {isa = PBXBuildFile; fileRef = E7996FAC1241C0A800502015 /* TipView.m */; };
 		E7996FB71241DA8800502015 /* dpicon.png in Resources */ = {isa = PBXBuildFile; fileRef = E7996FB41241DA8800502015 /* dpicon.png */; };
 		E7996FB81241DA8800502015 /* dpicon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E7996FB51241DA8800502015 /* dpicon@2x.png */; };
@@ -1286,6 +1295,16 @@
 		E793705212A1F3CA008A2012 /* idos-splash.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; name = "idos-splash.gif"; path = "dospad/misc-res/idos-splash.gif"; sourceTree = "<group>"; };
 		E793720312A243C6008A2012 /* SplashViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SplashViewController.h; sourceTree = "<group>"; };
 		E793720412A243C6008A2012 /* SplashViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SplashViewController.m; sourceTree = "<group>"; };
+		E794F3DA12DB4B6D00427836 /* modepianopressed.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = modepianopressed.png; sourceTree = "<group>"; };
+		E794F3DB12DB4B6D00427836 /* modepianopressed@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "modepianopressed@2x.png"; sourceTree = "<group>"; };
+		E794F3DC12DB4B6D00427836 /* modepianopressed~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "modepianopressed~ipad.png"; sourceTree = "<group>"; };
+		E794F3E012DB4C1B00427836 /* modepiano.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = modepiano.png; sourceTree = "<group>"; };
+		E794F3E112DB4C1B00427836 /* modepiano@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "modepiano@2x.png"; sourceTree = "<group>"; };
+		E794F3E212DB4C1B00427836 /* modepiano~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "modepiano~ipad.png"; sourceTree = "<group>"; };
+		E794F3F912DB4EDC00427836 /* 25-Keys-with-6x4-grid.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "25-Keys-with-6x4-grid.png"; path = "dospad/misc-res/25-Keys-with-6x4-grid.png"; sourceTree = "<group>"; };
+		E794F3FA12DB4EDC00427836 /* 25-keys.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "25-keys.png"; path = "dospad/misc-res/25-keys.png"; sourceTree = "<group>"; };
+		E794F3FD12DB4F0E00427836 /* PianoKeyboard.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PianoKeyboard.h; sourceTree = "<group>"; };
+		E794F3FE12DB4F0E00427836 /* PianoKeyboard.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PianoKeyboard.m; sourceTree = "<group>"; };
 		E7996FAB1241C0A800502015 /* TipView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TipView.h; sourceTree = "<group>"; };
 		E7996FAC1241C0A800502015 /* TipView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TipView.m; sourceTree = "<group>"; };
 		E7996FB41241DA8800502015 /* dpicon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = dpicon.png; path = dospad/dpicon.png; sourceTree = "<group>"; };
@@ -1664,6 +1683,12 @@
 		E7107146129A8E5A00B21291 /* floatpanel-res */ = {
 			isa = PBXGroup;
 			children = (
+				E794F3E012DB4C1B00427836 /* modepiano.png */,
+				E794F3E112DB4C1B00427836 /* modepiano@2x.png */,
+				E794F3E212DB4C1B00427836 /* modepiano~ipad.png */,
+				E794F3DA12DB4B6D00427836 /* modepianopressed.png */,
+				E794F3DB12DB4B6D00427836 /* modepianopressed@2x.png */,
+				E794F3DC12DB4B6D00427836 /* modepianopressed~ipad.png */,
 				E75276E112A0A77E00278BA1 /* modekeyoff.png */,
 				E75276E212A0A77E00278BA1 /* modekeyoff@2x.png */,
 				E75276E312A0A77E00278BA1 /* modekeyoff~ipad.png */,
@@ -2118,6 +2143,8 @@
 		E72BE6F412911DD1009DC46A /* misc-res */ = {
 			isa = PBXGroup;
 			children = (
+				E794F3F912DB4EDC00427836 /* 25-Keys-with-6x4-grid.png */,
+				E794F3FA12DB4EDC00427836 /* 25-keys.png */,
 				E793705212A1F3CA008A2012 /* idos-splash.gif */,
 				E793703E12A1EE87008A2012 /* landkey~ipad.png */,
 				E752775A12A0C48700278BA1 /* landkey.png */,
@@ -2303,6 +2330,8 @@
 				E7D78AE4129E9E420020D4A7 /* GIFAnimation.m */,
 				E793720312A243C6008A2012 /* SplashViewController.h */,
 				E793720412A243C6008A2012 /* SplashViewController.m */,
+				E794F3FD12DB4F0E00427836 /* PianoKeyboard.h */,
+				E794F3FE12DB4F0E00427836 /* PianoKeyboard.m */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
@@ -3198,6 +3227,14 @@
 				E793704012A1EE87008A2012 /* landkey~ipad.png in Resources */,
 				E70C045512A4B4D700AC178F /* start-up.mp3 in Resources */,
 				E7EB354912A7C4320091D718 /* exitfull@2x.png in Resources */,
+				E794F3DD12DB4B6D00427836 /* modepianopressed.png in Resources */,
+				E794F3DE12DB4B6D00427836 /* modepianopressed@2x.png in Resources */,
+				E794F3DF12DB4B6D00427836 /* modepianopressed~ipad.png in Resources */,
+				E794F3E312DB4C1B00427836 /* modepiano.png in Resources */,
+				E794F3E412DB4C1B00427836 /* modepiano@2x.png in Resources */,
+				E794F3E512DB4C1B00427836 /* modepiano~ipad.png in Resources */,
+				E794F3FB12DB4EDC00427836 /* 25-Keys-with-6x4-grid.png in Resources */,
+				E794F3FC12DB4EDC00427836 /* 25-keys.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3405,6 +3442,7 @@
 				E715B35C1293B7750098D437 /* DOSPadBaseViewController.m in Sources */,
 				E76C49391299490300901B69 /* FloatPanel.m in Sources */,
 				E7D78AE6129E9E420020D4A7 /* GIFAnimation.m in Sources */,
+				E794F3FF12DB4F0E00427836 /* PianoKeyboard.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -22,6 +22,21 @@
 #import "Common.h"
 #import "AppDelegate.h"
 
+
+static struct {
+    InputSourceType type;
+    const char *onImageName;
+    const char *offImageName;
+} toggleButtonInfo [] = {
+    {InputSource_PCKeyboard, "modekeyon.png", "modekeyoff.png"},
+    {InputSource_MouseButtons, "mouseon.png", "mouseoff.png"},
+    {InputSource_GamePad, "modegamepadpressed.png", "modegamepad.png"},
+    {InputSource_Joystick, "modejoypressed.png", "modejoy.png"},
+    {InputSource_NumPad, "modenumpadpressed.png", "modenumpad.png"},
+    {InputSource_PianoKeyboard, "modepianopressed.png", "modepiano.png"},
+};
+#define NUM_BUTTON_INFO (sizeof(toggleButtonInfo)/sizeof(toggleButtonInfo[0]))
+
 // TODO color with pattern image doesn't work well with transparency
 // so we need to invent a new View subclass.
 // Do we really need to do this?
@@ -54,9 +69,12 @@
     //---------------------------------------------------
     // 1. Create View
     //---------------------------------------------------
-    self.view = [[UIView alloc] initWithFrame:CGRectMake(0,0,320,480)];
+    UIImageView *baseView = [[[UIImageView alloc] initWithFrame:CGRectMake(0,0,320,480)] autorelease];
+    baseView.contentMode = UIViewContentModeCenter;
+    self.view = baseView;
     self.view.backgroundColor = [UIColor blackColor];
-
+    self.view.userInteractionEnabled = YES;
+    
     //---------------------------------------------------
     // 2. Create the toolbar in portrait mode
     //---------------------------------------------------
@@ -115,17 +133,10 @@
     //---------------------------------------------------    
     
     //---------------------------------------------------
-    // 5. Virtual Keyboard
-    //---------------------------------------------------        
-    vk = [[VKView alloc] initWithFrame:CGRectMake(0,0,1,1)];
-    vk.alpha=0;
-    [self.view addSubview:vk];
-    
-    //---------------------------------------------------
     // 6. Keyboard Show Button
     //---------------------------------------------------        
     btnShowKeyboard = [[UIButton alloc] initWithFrame:CGRectMake(184,440,100,38)];
-    [btnShowKeyboard addTarget:self action:@selector(showNativeKeyboard) forControlEvents:UIControlEventTouchUpInside];
+    [btnShowKeyboard addTarget:self action:@selector(createiOSKeyboard) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:btnShowKeyboard];
 
     //---------------------------------------------------
@@ -153,73 +164,77 @@
         [self.view addSubview:btnTop];
     }
 #endif
+    
     //---------------------------------------------------
     // 9. Fullscreen Panel
     //---------------------------------------------------     
     fullscreenPanel = [[FloatPanel alloc] initWithFrame:CGRectMake(0,0,480,32)];
-    btnToggleGamePad = [[UIButton alloc] initWithFrame:CGRectMake(278,0,48,24)];
-    btnToggleJoystiq = [[UIButton alloc] initWithFrame:CGRectMake(250,0,48,24)];
-    btnToggleNumpad = [[UIButton alloc] initWithFrame:CGRectMake(250,0,48,24)];
-    btnToggleKeyboard =  [[UIButton alloc] initWithFrame:CGRectMake(150,0,48,24)];
-    btnToggleMouse =  [[UIButton alloc] initWithFrame:CGRectMake(150,0,48,24)];
-    
-    [btnToggleGamePad setImage:[UIImage imageNamed:@"modegamepad.png"] forState:UIControlStateNormal];
-    [btnToggleGamePad setImage:[UIImage imageNamed:@"modegamepadpressed.png"] forState:UIControlStateHighlighted];
-    [btnToggleJoystiq setImage:[UIImage imageNamed:@"modejoy.png"] forState:UIControlStateNormal];
-    [btnToggleJoystiq setImage:[UIImage imageNamed:@"modejoypressed.png"] forState:UIControlStateHighlighted];
-    [btnToggleNumpad setImage:[UIImage imageNamed:@"modenumpad.png"] forState:UIControlStateNormal];
-    [btnToggleNumpad setImage:[UIImage imageNamed:@"modenumpadpressed.png"] forState:UIControlStateHighlighted];
-    [btnToggleKeyboard setImage:[UIImage imageNamed:@"modekeyoff.png"] forState:UIControlStateNormal];
-    [btnToggleKeyboard setImage:[UIImage imageNamed:@"modekeyon.png"] forState:UIControlStateHighlighted];
-    [btnToggleMouse setImage:[UIImage imageNamed:@"mouseoff.png"] forState:UIControlStateNormal];
-    [btnToggleMouse setImage:[UIImage imageNamed:@"mouseon.png"] forState:UIControlStateHighlighted];
-    
-    [btnToggleGamePad addTarget:self action:@selector(toggleGamePad) forControlEvents:UIControlEventTouchUpInside];
-    [btnToggleJoystiq addTarget:self action:@selector(toggleJoystick) forControlEvents:UIControlEventTouchUpInside];
-    [btnToggleKeyboard addTarget:self action:@selector(toggleKeyboard) forControlEvents:UIControlEventTouchUpInside];
-    [btnToggleNumpad addTarget:self action:@selector(toggleNumpad) forControlEvents:UIControlEventTouchUpInside];
-    [btnToggleMouse addTarget:self action:@selector(toggleMouse) forControlEvents:UIControlEventTouchUpInside];
-    
-    UIImageView *cpuWindow = [[UIImageView alloc] initWithFrame:CGRectMake(72,4,48,24)];
-    cpuWindow.image = [UIImage imageNamed:@"cpuwindow.png"];
-    
-    labCycles2 = [[UILabel alloc] initWithFrame:CGRectMake(1,8,43,12)];
-    labCycles2.backgroundColor = [UIColor clearColor];
-    labCycles2.textColor=[UIColor colorWithRed:74/255.0 green:1 blue:55/255.0 alpha:1];
-    labCycles2.font=[UIFont fontWithName:@"DBLCDTempBlack" size:12];
-    labCycles2.text=[self currentCycles];
-    labCycles2.textAlignment=UITextAlignmentCenter;
-    labCycles2.baselineAdjustment=UIBaselineAdjustmentAlignCenters;
-    fsIndicator2 = [FrameskipIndicator alloc];
-    fsIndicator2 = [fsIndicator2 initWithFrame:CGRectMake(labCycles2.frame.size.width-8,2,4,labCycles2.frame.size.height-4)
-                                       style:FrameskipIndicatorStyleVertical];
-    fsIndicator2.count = [self currentFrameskip];
-    [labCycles2 addSubview:fsIndicator2];
-    [cpuWindow addSubview:labCycles2];
-    
-    btnOption = [[[UIButton alloc] initWithFrame:CGRectMake(380,0,48,24)] autorelease];
-    [btnOption setImage:[UIImage imageNamed:@"options.png"] forState:UIControlStateNormal];
-    [btnOption addTarget:self action:@selector(showOption) forControlEvents:UIControlEventTouchUpInside];
-    
-    [fullscreenPanel setItems:[NSArray arrayWithObjects:
-                               cpuWindow,
-                               btnToggleKeyboard, 
-                               btnToggleMouse,
-                               btnToggleGamePad,
-                               btnToggleJoystiq,
-                               btnToggleNumpad,
-                               btnOption,
-                               nil]];
-
     UIButton *btnExitFS = [[UIButton alloc] initWithFrame:CGRectMake(0,0,48,24)];
     btnExitFS.center=CGPointMake(44, 13);
     [btnExitFS setImage:[UIImage imageNamed:@"exitfull.png"] forState:UIControlStateNormal];
     [btnExitFS addTarget:self action:@selector(toggleScreenSize) forControlEvents:UIControlEventTouchUpInside];
     [fullscreenPanel.contentView addSubview:btnExitFS];
-
     [btnExitFS release];
+}
+
+- (void)toggleInputSource:(id)sender
+{
+    UIButton *btn = (UIButton*)sender;
+    InputSourceType type = [btn tag];
+    if ([self isInputSourceActive:type]) {
+        [self removeInputSource:type];
+    } else {
+        [self addInputSourceExclusively:type];
+    }
+    [self refreshFullscreenPanel];
+}
+
+- (void)refreshFullscreenPanel
+{
+    NSMutableArray *items = [NSMutableArray arrayWithCapacity:16];
     
-    [cpuWindow release];
+    UIImageView *cpuWindow = [[[UIImageView alloc] initWithFrame:CGRectMake(0,0,48,24)] autorelease];
+    cpuWindow.image = [UIImage imageNamed:@"cpuwindow.png"];
+    
+    if (labCycles2 == nil)
+    {
+        labCycles2 = [[UILabel alloc] initWithFrame:CGRectMake(1,8,43,12)];
+        labCycles2.backgroundColor = [UIColor clearColor];
+        labCycles2.textColor=[UIColor colorWithRed:74/255.0 green:1 blue:55/255.0 alpha:1];
+        labCycles2.font=[UIFont fontWithName:@"DBLCDTempBlack" size:12];
+        labCycles2.text=[self currentCycles];
+        labCycles2.textAlignment=UITextAlignmentCenter;
+        labCycles2.baselineAdjustment=UIBaselineAdjustmentAlignCenters;
+        fsIndicator2 = [FrameskipIndicator alloc];
+        fsIndicator2 = [fsIndicator2 initWithFrame:CGRectMake(labCycles2.frame.size.width-8,2,4,labCycles2.frame.size.height-4)
+                                             style:FrameskipIndicatorStyleVertical];
+        fsIndicator2.count = [self currentFrameskip];
+        [labCycles2 addSubview:fsIndicator2];
+    }
+    [cpuWindow addSubview:labCycles2];
+    [items addObject:cpuWindow];
+
+    for (int i = 0; i < NUM_BUTTON_INFO; i++) {
+        if (DEFS_GET_INT(InputSource_KeyName(toggleButtonInfo[i].type)))
+        {
+            UIButton *btn = [[[UIButton alloc] initWithFrame:CGRectMake(0,0,48,24)] autorelease];
+            NSString *on = [NSString stringWithUTF8String:toggleButtonInfo[i].onImageName];
+            NSString *off = [NSString stringWithUTF8String:toggleButtonInfo[i].offImageName];
+            BOOL active = [self isInputSourceActive:toggleButtonInfo[i].type];
+            [btn setImage:[UIImage imageNamed:active?on:off] forState:UIControlStateNormal];
+            [btn setImage:[UIImage imageNamed:on] forState:UIControlStateHighlighted];
+            [btn setTag:toggleButtonInfo[i].type];
+            [btn addTarget:self action:@selector(toggleInputSource:) forControlEvents:UIControlEventTouchUpInside];
+            [items addObject:btn];
+        }
+    }
+        
+    UIButton *btnOption = [[[UIButton alloc] initWithFrame:CGRectMake(380,0,48,24)] autorelease];
+    [btnOption setImage:[UIImage imageNamed:@"options.png"] forState:UIControlStateNormal];
+    [btnOption addTarget:self action:@selector(showOption) forControlEvents:UIControlEventTouchUpInside];
+    [items addObject:btnOption];
+    
+    [fullscreenPanel setItems:items];
 }
 
 - (void)hideNavigationBar
@@ -273,94 +288,48 @@
         gamepad.dpadMovable = DEFS_GET_INT(kDPadMovable);
     }
     numpad.alpha=a;
-    fsMouseLeft.alpha=a;
-    fsMouseRight.alpha=a;
-}
-
-- (void)removeNativeKeyboard
-{
-    // Hide the virtual native keyboard
-    // However, we are still listening to external keyboard input
-    vk.active = NO;
-    vk.useNativeKeyboard=NO;
-    vk.active = YES;    
-}
-
-- (void)showNativeKeyboard
-{
-    if (vk.active)
-        vk.active=NO;
-    vk.useNativeKeyboard = YES;
-    vk.active = YES;
-}
-
-- (void)removeMouseButtons
-{
-    if (fsMouseLeft || fsMouseRight)
-    {
-        [fsMouseLeft removeFromSuperview];
-        [fsMouseRight removeFromSuperview];
-        [fsMouseLeft release];
-        [fsMouseRight release];
-        fsMouseLeft=nil;
-        fsMouseRight=nil;
-        [btnToggleMouse setImage:[UIImage imageNamed:@"mouseoff~ipad.png"] forState:UIControlStateNormal];
-    }
+    btnMouseLeft.alpha=a;
+    btnMouseRight.alpha=a;
 }
 
 - (void)createMouseButtons
-{
-    [self removeMouseButtons];
-    
+{    
     // Left Mouse Button
-    fsMouseLeft = [[UIButton alloc] initWithFrame:CGRectMake(440,160,48,80)];
-    [fsMouseLeft setTitle:@"L" forState:UIControlStateNormal];
-    [fsMouseLeft setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];
-    [fsMouseLeft setBackgroundImage:[UIImage imageNamed:@"longbutton.png"] 
+    btnMouseLeft = [[UIButton alloc] initWithFrame:CGRectMake(440,160,48,80)];
+    [btnMouseLeft setTitle:@"L" forState:UIControlStateNormal];
+    [btnMouseLeft setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];
+    [btnMouseLeft setBackgroundImage:[UIImage imageNamed:@"longbutton.png"] 
                            forState:UIControlStateNormal];
-    [fsMouseLeft addTarget:self
+    [btnMouseLeft addTarget:self
                     action:@selector(onMouseLeftDown)
           forControlEvents:UIControlEventTouchDown];
-    [fsMouseLeft addTarget:self
+    [btnMouseLeft addTarget:self
                     action:@selector(onMouseLeftUp)
           forControlEvents:UIControlEventTouchUpInside];
-    [self.view addSubview:fsMouseLeft];
+    [self.view addSubview:btnMouseLeft];
     
     // Right Mouse Button
-    fsMouseRight = [[UIButton alloc] initWithFrame:CGRectMake(440,80,48,80)];
-    [fsMouseRight setTitle:@"R" forState:UIControlStateNormal];
-    [fsMouseRight setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];
-    [fsMouseRight setBackgroundImage:[UIImage imageNamed:@"longbutton.png"] 
+    btnMouseRight = [[UIButton alloc] initWithFrame:CGRectMake(440,80,48,80)];
+    [btnMouseRight setTitle:@"R" forState:UIControlStateNormal];
+    [btnMouseRight setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];
+    [btnMouseRight setBackgroundImage:[UIImage imageNamed:@"longbutton.png"] 
                             forState:UIControlStateNormal];
-    [fsMouseRight addTarget:self
+    [btnMouseRight addTarget:self
                      action:@selector(onMouseRightDown)
            forControlEvents:UIControlEventTouchDown];
-    [fsMouseRight addTarget:self
+    [btnMouseRight addTarget:self
                     action:@selector(onMouseRightUp)
           forControlEvents:UIControlEventTouchUpInside];
-    [self.view addSubview:fsMouseRight];
+    [self.view addSubview:btnMouseRight];
     
     // Transparency
-    fsMouseLeft.alpha=[self floatAlpha];
-    fsMouseRight.alpha=[self floatAlpha];   
-    [btnToggleMouse setImage:[UIImage imageNamed:@"mouseon.png"] forState:UIControlStateNormal];
+    btnMouseLeft.alpha=[self floatAlpha];
+    btnMouseRight.alpha=[self floatAlpha];   
 }
 
-
-- (void)removeNumpad
-{
-    if (numpad)
-    {
-        [numpad removeFromSuperview];
-        [numpad release];
-        numpad = nil;
-        [btnToggleNumpad setImage:[UIImage imageNamed:@"modenumpad.png"] forState:UIControlStateNormal];
-    }
-}
 
 - (void)createNumpad
 {
-    [self removeNumpad];
     numpad = [[KeyboardView alloc] initWithType:KeyboardTypeNumPad frame:CGRectMake(320,120,160,200)];
     numpad.alpha = [self floatAlpha];
     [self.view addSubview:numpad];
@@ -370,24 +339,14 @@
     [UIView beginAnimations:nil context:NULL];
     numpad.center = ptOld;
     [UIView commitAnimations];
-    [btnToggleNumpad setImage:[UIImage imageNamed:@"modenumpadpressed.png"] forState:UIControlStateNormal];
 }
 
-- (void)removeKeyboard
+- (void)createPCKeyboard
 {
-    if (kbd)
+    if (kbd != nil)
     {
-        [kbd removeFromSuperview];
-        [kbd release];
-        kbd = nil;
-        [btnToggleKeyboard setImage:[UIImage imageNamed:@"modekeyoff.png"] forState:UIControlStateNormal];
-    }    
-}
-
-- (void)createKeyboard
-{
-    [self removeKeyboard];
-
+        DEBUGLOG(@"Error: keyboard should not exists");
+    }
     kbd = [[KeyboardView alloc] initWithType:KeyboardTypeLandscape 
                                        frame:CGRectMake(0, 120, 480, 200)];
     kbd.alpha = [self floatAlpha];    
@@ -398,132 +357,45 @@
     [UIView beginAnimations:nil context:NULL];
     kbd.center = ptOld;
     [UIView commitAnimations];
-    [btnToggleKeyboard setImage:[UIImage imageNamed:@"modekeyon.png"] forState:UIControlStateNormal];
 }
 
-- (void)removeGamePad
+- (GamePadView*)createGamepadHelper:(GamePadMode)mod
 {
-    if (gamepad) 
-    {
-        [gamepad removeFromSuperview];
-        [gamepad release];
-        gamepad = nil;
-        [btnToggleGamePad setImage:[UIImage imageNamed:@"modegamepad.png"] forState:UIControlStateNormal];
-        [btnToggleJoystiq setImage:[UIImage imageNamed:@"modejoy.png"] forState:UIControlStateNormal];
-    }
-}
-
-- (void)createGamePad
-{
-    [self removeGamePad];
-    if (configPath == nil) return ;
+    GamePadView * gpad = nil;
+    
+    if (configPath == nil) return nil;
     NSString *section = ([self isPortrait] ?
                          @"[gamepad.iphone.portrait]" : 
                          @"[gamepad.iphone.landscape]");
     NSString *ui_cfg = get_temporary_merged_file(configPath, get_default_config());
     if (ui_cfg != nil)
     {
-        gamepad = [[GamePadView alloc] initWithConfig:ui_cfg section:section];
-        gamepad.mode = mode;
-        DEBUGLOG(@"mode %d", gamepad.mode);
+        gpad = [[GamePadView alloc] initWithConfig:ui_cfg section:section];
+        gpad.mode = mod;
+        DEBUGLOG(@"mode %d  rect: %f %f %f %f", gpad.mode, 
+                 gpad.frame.origin.x, gpad.frame.origin.y,
+                 gpad.frame.size.width, gpad.frame.size.height);
         if ([self isPortrait])
         {
-            [self.view insertSubview:gamepad belowSubview:toolPanel];
+            [self.view insertSubview:gpad belowSubview:toolPanel];
         }
         else
         {
-            gamepad.dpadMovable = DEFS_GET_INT(kDPadMovable);
-            [self.view insertSubview:gamepad belowSubview:fullscreenPanel];
+            gpad.dpadMovable = DEFS_GET_INT(kDPadMovable);
+            [self.view insertSubview:gpad belowSubview:fullscreenPanel];
         }
     }
-
-    if (mode == GamePadDefault)
-    {
-        [btnToggleGamePad setImage:[UIImage imageNamed:@"modegamepadpressed.png"] 
-                          forState:UIControlStateNormal];
-    }
-    else
-    {
-        [btnToggleJoystiq setImage:[UIImage imageNamed:@"modejoypressed.png"] 
-                          forState:UIControlStateNormal];
-    }
+    return gpad;
 }
 
-- (void)toggleNumpad
+- (void)createJoystick
 {
-    if (numpad)
-    {
-        [self removeNumpad];
-    }
-    else
-    {
-        [self removeMouseButtons];
-        [self removeGamePad];
-        [self removeKeyboard];
-        [self createNumpad];
-    }    
+    joystick = [self createGamepadHelper:GamePadJoystick];
 }
 
-- (void)toggleKeyboard
+- (void)createGamepad
 {
-    if (kbd)
-    {
-        [self removeKeyboard];
-    }
-    else
-    {
-        [self removeMouseButtons];
-        [self removeGamePad];
-        [self removeNumpad];
-        [self createKeyboard];
-    }
-}
-
-- (void)toggleGamePad
-{
-    if (gamepad == nil || mode != GamePadDefault)
-    {
-        [self removeMouseButtons];
-        [self removeNumpad];
-        [self removeKeyboard];
-        mode = GamePadDefault;
-        [self createGamePad];
-    }
-    else
-    {
-        [self removeGamePad];
-    }
-}
-
-- (void)toggleJoystick
-{
-    if (gamepad == nil || mode != GamePadJoystick)
-    {
-        [self removeMouseButtons];
-        [self removeNumpad];
-        [self removeKeyboard];
-        mode = GamePadJoystick;
-        [self createGamePad];
-    }
-    else
-    {
-        [self removeGamePad];
-    }    
-}
-
-- (void)toggleMouse
-{
-    if (fsMouseLeft == nil || fsMouseRight == nil)
-    {
-        [self removeNumpad];
-        [self removeKeyboard];
-        [self removeGamePad];
-        [self createMouseButtons];
-    }
-    else
-    {
-        [self removeMouseButtons];
-    }
+    gamepad = [self createGamepadHelper:GamePadDefault];
 }
 
 - (void)updateBackground:(UIInterfaceOrientation)interfaceOrientation
@@ -533,9 +405,9 @@
         interfaceOrientation==UIInterfaceOrientationPortraitUpsideDown) 
     {
         img = [UIImage imageNamed:@"iphone-portrait.jpg"];
-        self.view.backgroundColor = [UIColor colorWithPatternImage:img];
+        [(UIImageView*)self.view setImage:img];
     } else {
-        self.view.backgroundColor = [UIColor blackColor];
+        [(UIImageView*)self.view setImage:nil];
     }
 }
 
@@ -551,19 +423,20 @@
     if ([self isPortrait])
     {
         toolPanel.alpha=1;
-        [self removeKeyboard];
-        [self createGamePad];
+        [self removeInputSource:InputSource_PCKeyboard];
+        [self createGamepad];
         [fullscreenPanel removeFromSuperview];
     }
     else
     {
-        [self removeNativeKeyboard];
+        [self removeiOSKeyboard];
         if (self.view != fullscreenPanel.superview)
         {
             [self.view addSubview:fullscreenPanel];
             [fullscreenPanel showContent];
         }
         toolPanel.alpha=0;
+        [self refreshFullscreenPanel];
     }
     [self onResize:screenView.bounds.size];
     [self updateBackground];        
@@ -599,12 +472,12 @@
 {
     [super viewDidLoad];
     mode = GamePadDefault;
-    [self removeNativeKeyboard];
+    [self removeiOSKeyboard];
 }
 
 -(void)didFloatingView:(FloatingView*)fltView
 {
-    [self removeNativeKeyboard];
+    [self removeiOSKeyboard];
     [overlay release];
     overlay = nil;
 }
@@ -680,11 +553,13 @@
     if ([self isLandscape] && ISPORTRAIT(toInterfaceOrientation))
     {
         [fullscreenPanel hideContent];
-        [self removeKeyboard];
-        [self removeNumpad];
-        [self removeMouseButtons];
+        [self removeInputSource:InputSource_PCKeyboard];
+        [self removeInputSource:InputSource_NumPad];
+        [self removeInputSource:InputSource_MouseButtons];
+        [self removeInputSource:InputSource_PianoKeyboard];
     }
-    [self removeGamePad];
+    [self removeInputSource:InputSource_GamePad];
+    [self removeInputSource:InputSource_Joystick];
     toolPanel.alpha=0;
 }
 
@@ -713,25 +588,13 @@
 }
 
 - (void)dealloc {
-    [btnToggleGamePad release];
-    [btnToggleJoystiq release];
-    [btnToggleNumpad release];
-    [btnToggleKeyboard release];
-    [btnToggleMouse release];
-    [fsMouseLeft release];
-    [fsMouseRight release];
-    [gamepad release];
-    [numpad release];
-    [kbd release];
     [overlay release];
     [banner release];
-    
     [labCycles release];
     [labCycles2 release];
     [fsIndicator release];
     [fsIndicator2 release];
     [toolPanel release];
-    [vk release];
     [btnShowKeyboard release];
     [slider release];
     [fullscreenPanel release];

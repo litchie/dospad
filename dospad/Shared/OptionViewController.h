@@ -17,8 +17,10 @@
  */
 
 #import <UIKit/UIKit.h>
+#import <MessageUI/MessageUI.h>
+#import <MessageUI/MFMailComposeViewController.h>
 
-@interface OptionViewController : UITableViewController {
+@interface OptionViewController : UITableViewController<MFMailComposeViewControllerDelegate> {
     IBOutlet UITableViewCell*cellTrans;
     IBOutlet UISlider *slider;
     IBOutlet UITableViewCell *cellMouseSpeed;

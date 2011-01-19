@@ -25,6 +25,7 @@
     BOOL autoHide;
     BOOL isContentShowing;
     float autoHideInterval;
+    NSArray *items;
 }
 
 @property (nonatomic, readonly) UIView *contentView;

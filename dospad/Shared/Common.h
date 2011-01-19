@@ -19,11 +19,12 @@
 #ifndef COMMON_H
 #define COMMON_H
 
+#define NS_BLOCK_ASSERTIONS
 
 #ifdef DEBUG
 #define DEBUGLOG  if (1) NSLog
 #else
-#define DEBUGLOG  if (0) NSLog
+#define DEBUGLOG  if (1) NSLog
 #endif
 
 #define THREADED
@@ -45,15 +46,19 @@
 #define kDisableGamePadSound @"DisableGamePadSound"
 #define kDPadMovable @"DPadMovable"
 
-#define kK1 @"k1"
-#define kK2 @"k2"
-#define kK3 @"k3"
-#define kK4 @"k4"
-#define kK5 @"k5"
-#define kK6 @"k6"
-#define kK7 @"k7"
-#define kK8 @"k8"
-#define kK9 @"k9"
+typedef enum {
+    InputSource_PCKeyboard = 0,
+    InputSource_MouseButtons,
+    InputSource_iOSKeyboard,
+    InputSource_NumPad,
+    InputSource_GamePad,
+    InputSource_Joystick,
+    InputSource_PianoKeyboard,
+    InputSource_TotalCount
+} InputSourceType;
+
+#define kInputSource @"InputSource"
+#define InputSource_KeyName(type) [NSString stringWithFormat:@"%@%d", kInputSource, type]
 
 #define ISIPAD()  (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
 #define KBD_LANDSCAPE_HEIGHT  (ISIPAD()?352:162)

@@ -327,6 +327,29 @@ int dospad_get(const char *url, const char *path)
 
 int main(int argc, char *argv[]) {
     NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
+    
+    // Initialize Options
+    NSUserDefaults *defs=[NSUserDefaults standardUserDefaults];
+    int firstRun = [defs integerForKey:kFirstRun];
+    if (firstRun==0) {
+        [defs setFloat:kTransparencyDefault forKey:kTransparency];
+        [defs setInteger:1 forKey:kFirstRun];
+    }
+    
+    if ([defs floatForKey:kMouseSpeed]==0) {
+        [defs setFloat:0.5 forKey:kMouseSpeed];
+    }
+    
+    if (DEFS_GET_INT(kInputSource) < 1) {
+        DEFS_SET_INT(kInputSource, 1);
+        DEFS_SET_INT(InputSource_KeyName(InputSource_PCKeyboard), 1);
+        DEFS_SET_INT(InputSource_KeyName(InputSource_MouseButtons), 1);
+        DEFS_SET_INT(InputSource_KeyName(InputSource_NumPad), 1);
+        DEFS_SET_INT(InputSource_KeyName(InputSource_GamePad), 1);
+        DEFS_SET_INT(InputSource_KeyName(InputSource_Joystick), 1);
+        DEFS_SET_INT(InputSource_KeyName(InputSource_PianoKeyboard), 0);
+    }
+
     FileSystemObject *fso = [[FileSystemObject alloc] autorelease];
 
     // Auto mount
@@ -340,26 +363,6 @@ int main(int argc, char *argv[]) {
     
     NSString *cPath=[NSString stringWithUTF8String:diskc];
     NSString *dPath=[NSString stringWithUTF8String:diskd];
-    
-    NSUserDefaults *defs=[NSUserDefaults standardUserDefaults];
-    int firstRun = [defs integerForKey:kFirstRun];
-    if (firstRun==0) {
-        [defs setFloat:kTransparencyDefault forKey:kTransparency];
-        [defs setInteger:1 forKey:kFirstRun];
-        [defs setInteger:SDL_SCANCODE_LEFT   forKey:kK1];
-        [defs setInteger:SDL_SCANCODE_UP     forKey:kK2];
-        [defs setInteger:SDL_SCANCODE_RIGHT  forKey:kK3];
-        [defs setInteger:SDL_SCANCODE_DOWN   forKey:kK4];
-        [defs setInteger:SDL_SCANCODE_RETURN forKey:kK5];
-        [defs setInteger:SDL_SCANCODE_ESCAPE forKey:kK6];
-        [defs setInteger:SDL_SCANCODE_LCTRL  forKey:kK7];
-        [defs setInteger:SDL_SCANCODE_LALT   forKey:kK8];
-        [defs setInteger:SDL_SCANCODE_SPACE  forKey:kK9];
-    }
-    
-    if ([defs floatForKey:kMouseSpeed]==0) {
-        [defs setFloat:0.5 forKey:kMouseSpeed];
-    }
     
     NSFileManager *fileManager = [NSFileManager defaultManager];
     
