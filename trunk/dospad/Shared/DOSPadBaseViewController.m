@@ -116,9 +116,11 @@ extern int SDL_SendKeyboardKey(int index, Uint8 state, SDL_scancode scancode);
         }
     }
     
+    /* TODO: LITCHIE commented out by TVD
     vk = [[VKView alloc] initWithFrame:CGRectMake(0,0,1,1)];
     vk.alpha = 0;
     [self.view addSubview:vk];
+     */
 }
 
 
@@ -149,7 +151,9 @@ extern int SDL_SendKeyboardKey(int index, Uint8 state, SDL_scancode scancode);
     [configPath release];
     [holdIndicator release];
     [self removeAllInputSources];
-    [vk release];
+    
+    //TODO LITCHIE commented out by TVD
+    //[vk release];
     [super dealloc];
 }
 
@@ -306,21 +310,26 @@ extern int SDL_SendKeyboardKey(int index, Uint8 state, SDL_scancode scancode);
 
 - (void)removeiOSKeyboard
 {
+    //TODO: Litchie commented out by tvd
+    /*
     if (vk.useNativeKeyboard != YES)
         return;
     // Hide the virtual native keyboard
     // However, we are still listening to external keyboard input
     vk.active = NO;
     vk.useNativeKeyboard=NO;
-    vk.active = YES;        
+    vk.active = YES;
+     */
 }
 
 - (void)createiOSKeyboard
 {
+    //TODO: Litchie commented out by tvd
+    /*
     if (vk.active)
         vk.active = NO;
     vk.useNativeKeyboard = YES;
-    vk.active = YES;
+    vk.active = YES;*/
 }
 
 - (void)NOT_IMPLEMENTED(createPCKeyboard);

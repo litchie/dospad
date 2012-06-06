@@ -24,7 +24,7 @@
 #import "SDL_uikitopenglview.h"
 #import "KeyboardView.h"
 #import "GamePadView.h"
-#import "VKView.h"
+//#import "VKView.h"
 #import "PianoKeyboard.h"
 
 @interface DOSPadBaseViewController : UIViewController
@@ -36,7 +36,7 @@
     HoldIndicator *holdIndicator;
     
     // Input Devices
-    VKView *vk; // Background, conflicts with iOS keyboard
+    //VKView *vk; // Background, conflicts with iOS keyboard
     GamePadView *gamepad;
     GamePadView *joystick;
     KeyboardView *kbd;

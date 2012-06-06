@@ -395,7 +395,7 @@ int main(int argc, char *argv[]) {
         strcat(automount_path, [dPath UTF8String]);
     }
 #endif    
-    int retVal = UIApplicationMain(argc, argv, nil, nil);
+    int retVal = UIApplicationMain(argc, argv, @"DosPadUIApplication", nil);
     [pool release];
     return retVal;
 }
