@@ -25,7 +25,7 @@
 #import "CommandListView.h"
 #import "SliderView.h"
 #import "GamePadView.h"
-#import "VKView.h"
+//#import "VKView.h"
 #import "DOSPadBaseViewController.h"
 #import "FloatPanel.h"
 
