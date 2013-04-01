@@ -89,7 +89,7 @@
     navController = [[UINavigationController alloc] initWithRootViewController:dospad];
     navController.navigationBar.barStyle = UIBarStyleBlack;
     navController.navigationBar.translucent=YES;
-	[uiwindow addSubview:navController.view];
+	uiwindow.rootViewController = navController;
     [uiwindow makeKeyAndVisible];
 	[super applicationDidFinishLaunching:application];
 #ifdef THREADED
