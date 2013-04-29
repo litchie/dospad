@@ -58,6 +58,7 @@ NSString *get_temporary_merged_file(NSString *f1, NSString *f2)
     NSString *s = [NSString stringWithContentsOfFile:f1
                                             encoding:NSUTF8StringEncoding
                                                error:NULL];
+    if (s == nil) s = @"";
     s = [s stringByAppendingString:@"\n"];
     s = [s stringByAppendingString:[NSString stringWithContentsOfFile:f2
                                                              encoding:NSUTF8StringEncoding
@@ -384,12 +385,14 @@ int main(int argc, char *argv[]) {
     
     get_dospad_config();
      
+    /* On Non-JB device, /var/mobile/Documents doesn't exists */
     if ([fso ensureDirectoryExists:cPath]) {
         strcpy(automount_path, [cPath UTF8String]);
 #ifndef IDOS
         strcat(automount_path, ";");
 #endif
     }
+	
 #ifndef IDOS    
     if ([fso ensureDirectoryExists:dPath]) {
         strcat(automount_path, [dPath UTF8String]);
