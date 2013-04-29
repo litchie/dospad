@@ -26,95 +26,61 @@ extern int SDL_SendKeyboardKey(int index, Uint8 state, SDL_scancode scancode);
 
 @implementation DosPadUIApplication
 
+- (void)sendkey:(int)scancode pressed:(BOOL)pressed
+{
+	SDL_SendKeyboardKey(0, pressed?SDL_PRESSED:SDL_RELEASED, scancode);
+}
+
+- (void)onFlagsChange:(int)eventFlags
+{
+	if ((eventFlags ^ lastEventFlags) & GSEVENT_FLAG_LSHIFT)
+		[self sendkey:SDL_SCANCODE_LSHIFT pressed:!!(eventFlags & GSEVENT_FLAG_LSHIFT)];
+
+	if ((eventFlags ^ lastEventFlags) & GSEVENT_FLAG_RSHIFT)
+		[self sendkey:SDL_SCANCODE_RSHIFT pressed:!!(eventFlags & GSEVENT_FLAG_RSHIFT)];
+
+	if ((eventFlags ^ lastEventFlags) & GSEVENT_FLAG_LCTRL)
+		[self sendkey:SDL_SCANCODE_LCTRL pressed:!!(eventFlags & GSEVENT_FLAG_LCTRL)];
+
+	if ((eventFlags ^ lastEventFlags) & GSEVENT_FLAG_RCTRL)
+		[self sendkey:GSEVENT_FLAG_RCTRL pressed:!!(eventFlags & GSEVENT_FLAG_RCTRL)];
+
+	if ((eventFlags ^ lastEventFlags) & GSEVENT_FLAG_LALT)
+		[self sendkey:SDL_SCANCODE_LALT pressed:!!(eventFlags & GSEVENT_FLAG_LALT)];
+
+	if ((eventFlags ^ lastEventFlags) & GSEVENT_FLAG_RALT)
+		[self sendkey:SDL_SCANCODE_RALT pressed:!!(eventFlags & GSEVENT_FLAG_RALT)];
+}
+
 - (void)sendEvent:(UIEvent *)event
 {
-    [super sendEvent:event];
-    
-    if ([event respondsToSelector:@selector(_gsEvent)]) {
-        
-        int *eventMem;
-        eventMem = (int *)[event performSelector:@selector(_gsEvent)];
-        if (eventMem) {
-            
-            int eventType = eventMem[GSEVENT_TYPE];
-            int eventFlags = eventMem[GSEVENT_FLAGS];
-            //NSLog(@"event flags: %i", eventFlags);
-            
-            if((eventFlags & GSEVENT_FLAG_LSHIFT) == GSEVENT_FLAG_LSHIFT)
-            {
-                SDL_SendKeyboardKey(0, SDL_PRESSED, SDL_SCANCODE_LSHIFT);
-            }
-            else
-            {
-                SDL_SendKeyboardKey(0, SDL_RELEASED, SDL_SCANCODE_LSHIFT);
-            }
-            
-            if((eventFlags & GSEVENT_FLAG_RSHIFT) == GSEVENT_FLAG_RSHIFT)
-            {
-                SDL_SendKeyboardKey(0, SDL_PRESSED, SDL_SCANCODE_RSHIFT);
-            }
-            else
-            {
-                SDL_SendKeyboardKey(0, SDL_RELEASED, SDL_SCANCODE_RSHIFT);
-            }
-            
-            if((eventFlags & GSEVENT_FLAG_LCTRL) == GSEVENT_FLAG_LCTRL)
-            {
-                SDL_SendKeyboardKey(0, SDL_PRESSED, SDL_SCANCODE_LCTRL);
-            }
-            else
-            {
-                SDL_SendKeyboardKey(0, SDL_RELEASED, SDL_SCANCODE_LCTRL);
-            }
-            
-            if((eventFlags & GSEVENT_FLAG_RCTRL) == GSEVENT_FLAG_RCTRL)
-            {
-                SDL_SendKeyboardKey(0, SDL_PRESSED, SDL_SCANCODE_RCTRL);
-            }
-            else
-            {
-                SDL_SendKeyboardKey(0, SDL_RELEASED, SDL_SCANCODE_RCTRL);
-            }
-            
-            if((eventFlags & GSEVENT_FLAG_LALT) == GSEVENT_FLAG_LALT)
-            {
-                SDL_SendKeyboardKey(0, SDL_PRESSED, SDL_SCANCODE_LALT);
-            }
-            else
-            {
-                SDL_SendKeyboardKey(0, SDL_RELEASED, SDL_SCANCODE_LALT);
-            }
-            
-            if((eventFlags & GSEVENT_FLAG_RALT) == GSEVENT_FLAG_RALT)
-            {
-                SDL_SendKeyboardKey(0, SDL_PRESSED, SDL_SCANCODE_RALT);
-            }
-            else
-            {
-                SDL_SendKeyboardKey(0, SDL_RELEASED, SDL_SCANCODE_RALT);
-            }
-            
-            if((eventFlags & GSEVENT_FLAG_LCMD) == GSEVENT_FLAG_LCMD)
-            {
-                SDL_SendKeyboardKey(0, SDL_PRESSED, SDL_SCANCODE_LGUI);
-            }
-            else
-            {
-                SDL_SendKeyboardKey(0, SDL_RELEASED, SDL_SCANCODE_LGUI);
-            }
-            
-            if (eventType == GSEVENT_TYPE_KEYUP) {
-                int scancode = eventMem[GSEVENTKEY_KEYCODE];
-                SDL_SendKeyboardKey(0, SDL_RELEASED, scancode);
-            }
-            
-            if(eventType == GSEVENT_TYPE_KEYDOWN)
-            {
-                int scancode = eventMem[GSEVENTKEY_KEYCODE];
-                SDL_SendKeyboardKey(0, SDL_PRESSED, scancode);
-            }
-        }
-    }
+	[super sendEvent:event];
+	
+	if ([event respondsToSelector:@selector(_gsEvent)]) {
+		int *eventMem;
+		eventMem = (int *)[event performSelector:@selector(_gsEvent)];
+		if (eventMem) {
+			int eventType = eventMem[GSEVENT_TYPE];
+			int eventFlags = eventMem[GSEVENT_FLAGS];
+			//NSLog(@"event flags: %i type %d", eventFlags, eventType);
+			
+			if (lastEventFlags ^ eventFlags) {
+				[self onFlagsChange:eventFlags];
+				lastEventFlags = eventFlags;
+			}
+			
+			if (eventType == GSEVENT_TYPE_KEYUP) {
+				int scancode = eventMem[GSEVENTKEY_KEYCODE];
+				SDL_SendKeyboardKey(0, SDL_RELEASED, scancode);
+			}
+			
+			if(eventType == GSEVENT_TYPE_KEYDOWN)
+			{
+				int scancode = eventMem[GSEVENTKEY_KEYCODE];
+				SDL_SendKeyboardKey(0, SDL_PRESSED, scancode);
+			}
+		}
+	}
 }
 
 @end

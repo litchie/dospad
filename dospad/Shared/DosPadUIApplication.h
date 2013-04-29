@@ -9,5 +9,7 @@
 #import <UIKit/UIKit.h>
 
 @interface DosPadUIApplication : UIApplication
-
+{
+	int lastEventFlags;
+}
 @end
