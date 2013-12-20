@@ -1141,6 +1141,7 @@ static void dyn_loop(LoopTypes type) {
 		dyn_branchflag_to_reg(BR_Z);
 		branch1=gen_create_branch_on_nonzero(FC_RETOP,true);
 		break;
+   default:;
 	}
 	switch (type) {
 	case LOOP_E:
@@ -1155,6 +1156,7 @@ static void dyn_loop(LoopTypes type) {
 		MOV_REG_WORD_TO_HOST_REG(FC_OP1,DRC_REG_ECX,decode.big_addr);
 		branch2=gen_create_branch_on_nonzero(FC_OP1,decode.big_addr);
 		break;
+   default:;
 	}
 	gen_add_direct_word(&reg_eip,eip_base+eip_add,true);
 	gen_jmp_ptr(&decode.block->link[0].to,offsetof(CacheBlockDynRec,cache.start));

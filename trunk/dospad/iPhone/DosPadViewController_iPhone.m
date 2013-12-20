@@ -53,7 +53,7 @@ static struct {
 
 - (void)drawRect:(CGRect)rect
 {
-    UIImage *backgroundImage = [UIImage imageNamed:@"bar-portrait-iphone.png"];
+    UIImage *backgroundImage = [UIImage imageNamed:@"bar-portrait-iphone"];
     [backgroundImage drawInRect:rect];
 }
 
@@ -84,17 +84,17 @@ static struct {
     UIButton *btnOption = [[[UIButton alloc] initWithFrame:CGRectMake(0,0,32,25)] autorelease];
     UIButton *btnLeft = [[[UIButton alloc] initWithFrame:CGRectMake(33,0,67,25)] autorelease];
     UIButton *btnRight = [[[UIButton alloc] initWithFrame:CGRectMake(100,0,67,25)] autorelease];
-    [btnLeft setImage:[UIImage imageNamed:@"leftmouse.png"] forState:UIControlStateHighlighted];
-    [btnRight setImage:[UIImage imageNamed:@"rightmouse.png"] forState:UIControlStateHighlighted];
+    [btnLeft setImage:[UIImage imageNamed:@"leftmouse"] forState:UIControlStateHighlighted];
+    [btnRight setImage:[UIImage imageNamed:@"rightmouse"] forState:UIControlStateHighlighted];
     
     // Create the button larger than the image, so we have a bigger clickable area,
     // while visually takes smaller place
     UIButton *btnDPadSwitch = [[[UIButton alloc] initWithFrame:CGRectMake(170,0,76,25)] autorelease];
     UIImageView *imgTmp = [[[UIImageView alloc] initWithFrame:CGRectMake(2, 2, 72, 16)] autorelease];
-    imgTmp.image = [UIImage imageNamed:@"switch.png"];
+    imgTmp.image = [UIImage imageNamed:@"switch"];
     [btnDPadSwitch addSubview:imgTmp];
     slider = [[UIImageView alloc] initWithFrame:CGRectMake(21,7,17,8)];
-    slider.image = [UIImage imageNamed:@"switchbutton.png"];
+    slider.image = [UIImage imageNamed:@"switchbutton"];
     [btnDPadSwitch addSubview:slider];
     
     [btnOption addTarget:self action:@selector(showOption) forControlEvents:UIControlEventTouchUpInside];
@@ -171,7 +171,7 @@ static struct {
     fullscreenPanel = [[FloatPanel alloc] initWithFrame:CGRectMake(0,0,480,32)];
     UIButton *btnExitFS = [[UIButton alloc] initWithFrame:CGRectMake(0,0,48,24)];
     btnExitFS.center=CGPointMake(44, 13);
-    [btnExitFS setImage:[UIImage imageNamed:@"exitfull.png"] forState:UIControlStateNormal];
+    [btnExitFS setImage:[UIImage imageNamed:@"exitfull"] forState:UIControlStateNormal];
     [btnExitFS addTarget:self action:@selector(toggleScreenSize) forControlEvents:UIControlEventTouchUpInside];
     [fullscreenPanel.contentView addSubview:btnExitFS];
     [btnExitFS release];
@@ -194,7 +194,7 @@ static struct {
     NSMutableArray *items = [NSMutableArray arrayWithCapacity:16];
     
     UIImageView *cpuWindow = [[[UIImageView alloc] initWithFrame:CGRectMake(0,0,48,24)] autorelease];
-    cpuWindow.image = [UIImage imageNamed:@"cpuwindow.png"];
+    cpuWindow.image = [UIImage imageNamed:@"cpuwindow"];
     
     if (labCycles2 == nil)
     {
@@ -230,7 +230,7 @@ static struct {
     }
         
     UIButton *btnOption = [[[UIButton alloc] initWithFrame:CGRectMake(380,0,48,24)] autorelease];
-    [btnOption setImage:[UIImage imageNamed:@"options.png"] forState:UIControlStateNormal];
+    [btnOption setImage:[UIImage imageNamed:@"options"] forState:UIControlStateNormal];
     [btnOption addTarget:self action:@selector(showOption) forControlEvents:UIControlEventTouchUpInside];
     [items addObject:btnOption];
     
@@ -298,7 +298,7 @@ static struct {
     btnMouseLeft = [[UIButton alloc] initWithFrame:CGRectMake(440,160,48,80)];
     [btnMouseLeft setTitle:@"L" forState:UIControlStateNormal];
     [btnMouseLeft setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];
-    [btnMouseLeft setBackgroundImage:[UIImage imageNamed:@"longbutton.png"] 
+    [btnMouseLeft setBackgroundImage:[UIImage imageNamed:@"longbutton"] 
                            forState:UIControlStateNormal];
     [btnMouseLeft addTarget:self
                     action:@selector(onMouseLeftDown)
@@ -312,7 +312,7 @@ static struct {
     btnMouseRight = [[UIButton alloc] initWithFrame:CGRectMake(440,80,48,80)];
     [btnMouseRight setTitle:@"R" forState:UIControlStateNormal];
     [btnMouseRight setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];
-    [btnMouseRight setBackgroundImage:[UIImage imageNamed:@"longbutton.png"] 
+    [btnMouseRight setBackgroundImage:[UIImage imageNamed:@"longbutton"] 
                             forState:UIControlStateNormal];
     [btnMouseRight addTarget:self
                      action:@selector(onMouseRightDown)

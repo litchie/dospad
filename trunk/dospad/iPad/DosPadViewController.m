@@ -134,8 +134,8 @@ static struct {
     //---------------------------------------------------
     // 10. Create light of input controls
     //---------------------------------------------------    
-    gamepadLight = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"light.png"]];
-    joystiqLight = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"light.png"]];
+    gamepadLight = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"light"]];
+    joystiqLight = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"light"]];
     gamepadLight.frame=CGRectMake(236,976,20,14);
     joystiqLight.frame=CGRectMake(328,976,20,14);
     gamepadLight.alpha=0;
@@ -168,7 +168,7 @@ static struct {
     fullscreenPanel = [[FloatPanel alloc] initWithFrame:CGRectMake(0,0,700,47)];
     UIButton *btnExitFS = [[[UIButton alloc] initWithFrame:CGRectMake(0,0,72,36)] autorelease];
     btnExitFS.center=CGPointMake(63, 18);
-    [btnExitFS setImage:[UIImage imageNamed:@"exitfull~ipad.png"] forState:UIControlStateNormal];
+    [btnExitFS setImage:[UIImage imageNamed:@"exitfull~ipad"] forState:UIControlStateNormal];
     [btnExitFS addTarget:self action:@selector(toggleScreenSize) forControlEvents:UIControlEventTouchUpInside];
     [fullscreenPanel.contentView addSubview:btnExitFS];
 }
@@ -202,7 +202,7 @@ static struct {
     NSMutableArray *items = [NSMutableArray arrayWithCapacity:16];
     
     UIImageView *cpuWindow = [[[UIImageView alloc] initWithFrame:CGRectMake(0,0,72,36)] autorelease];
-    cpuWindow.image = [UIImage imageNamed:@"cpuwindow.png"];
+    cpuWindow.image = [UIImage imageNamed:@"cpuwindow"];
     
     if (labCycles2 == nil)
     {
@@ -238,7 +238,7 @@ static struct {
     }
     
     UIButton *btnOpt = [[[UIButton alloc] initWithFrame:CGRectMake(0,0,72,36)] autorelease];
-    [btnOpt setImage:[UIImage imageNamed:@"options.png"] forState:UIControlStateNormal];
+    [btnOpt setImage:[UIImage imageNamed:@"options"] forState:UIControlStateNormal];
     [btnOpt addTarget:self action:@selector(showOption) forControlEvents:UIControlEventTouchUpInside];
     [items addObject:btnOpt];
     
@@ -311,7 +311,7 @@ static struct {
     btnMouseLeft = [[UIButton alloc] initWithFrame:CGRectMake(980,550,48,90)];
     [btnMouseLeft setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];
     [btnMouseLeft setTitle:@"L" forState:UIControlStateNormal];
-    [btnMouseLeft setBackgroundImage:[UIImage imageNamed:@"longbutton.png"] 
+    [btnMouseLeft setBackgroundImage:[UIImage imageNamed:@"longbutton"] 
                            forState:UIControlStateNormal];
     [btnMouseLeft addTarget:self
                     action:@selector(onMouseLeftDown)
@@ -322,7 +322,7 @@ static struct {
     [self.view addSubview:btnMouseLeft];
     [btnMouseRight setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];
     [btnMouseRight setTitle:@"R" forState:UIControlStateNormal];
-    [btnMouseRight setBackgroundImage:[UIImage imageNamed:@"longbutton.png"] 
+    [btnMouseRight setBackgroundImage:[UIImage imageNamed:@"longbutton"] 
                             forState:UIControlStateNormal];
     [btnMouseRight addTarget:self
                      action:@selector(onMouseRightDown)
@@ -351,8 +351,8 @@ static struct {
 
     if (![self isFullscreen])
     {
-        UIImageView *left = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"ipadleftside.png"]];
-        UIImageView *right = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"ipadrightside.png"]];
+        UIImageView *left = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"ipadleftside"]];
+        UIImageView *right = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"ipadrightside"]];
         left.frame = CGRectMake(1,19,280,378);
         right.frame = CGRectMake(441,30,327,315);
         gpad.backgroundColor=[UIColor clearColor];

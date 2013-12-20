@@ -400,6 +400,7 @@ static void FinishSetMode(bool clearmem) {
 			/* Hack we just acess the memory directly */
 			memset(vga.mem.linear,0,vga.vmemsize);
 			memset(vga.fastmem, 0, vga.vmemsize<<1);
+      default:;
 		}
 	}
 	/* Setup the BIOS */
@@ -453,6 +454,7 @@ bool INT10_SetVideoMode_OTHER(Bit16u mode,bool clearmem) {
 		CurMode=&Hercules_Mode;
 		mode=7; // in case the video parameter table is modified
 		break;
+   default:;
 	}
 	LOG(LOG_INT10,LOG_NORMAL)("Set Video Mode %X",mode);
 
@@ -495,6 +497,7 @@ bool INT10_SetVideoMode_OTHER(Bit16u mode,bool clearmem) {
 		if (CurMode->mode!=0x9) scanline=2;
 		else scanline=4;
 		break;
+   default:;
 	}
 	IO_WriteW(crtc_base,0x09 | (scanline-1) << 8);
 	//Setup the CGA palette using VGA DAC palette
@@ -590,6 +593,7 @@ bool INT10_SetVideoMode_OTHER(Bit16u mode,bool clearmem) {
 		IO_WriteB(0x3d9,color_select);
 		real_writeb(BIOSMEM_SEG,BIOSMEM_CURRENT_PAL,color_select);
 		break;
+      default:;
 	}
 
 	RealPt vparams = RealGetVec(0x1d);
@@ -747,6 +751,7 @@ bool INT10_SetVideoMode(Bit16u mode) {
 		seq_data[2]|=0xf;				//Enable all planes for writing
 		seq_data[4]|=0xc;				//Graphics - odd/even - Chained
 		break;
+   default:;
 	}
 	for (Bit8u ct=0;ct<SEQ_REGS;ct++) {
 		IO_Write(0x3c4,ct);
@@ -894,6 +899,7 @@ bool INT10_SetVideoMode(Bit16u mode) {
 	case M_CGA4:
 		max_scanline|=1;
 		break;
+   default:;
 	}
 	if (CurMode->vdispend==350) underline=0x0f;
 
@@ -974,6 +980,7 @@ bool INT10_SetVideoMode(Bit16u mode) {
 		if (CurMode->special & _VGA_PIXEL_DOUBLE)
 			mode_control |= 0x08;
 		break;
+   default:;
 	}
 
 	IO_Write(crtc_base,0x17);IO_Write(crtc_base+1,mode_control);
@@ -1046,6 +1053,7 @@ bool INT10_SetVideoMode(Bit16u mode) {
 			gfx_data[0x6]|=0x0f;		//graphics mode at at 0xb800=0xbfff
 		}
 		break;
+   default:;
 	}
 	for (Bit8u ct=0;ct<GFX_REGS;ct++) {
 		IO_Write(0x3ce,ct);
@@ -1142,6 +1150,7 @@ att_text16:
 		for (Bit8u ct=0;ct<16;ct++) att_data[ct]=ct;
 		att_data[0x10]=0x41;		//Color Graphics 8-bit
 		break;
+   default:;
 	}
 	IO_Read(mono_mode ? 0x3ba : 0x3da);
 	if ((modeset_ctl & 8)==0) {
@@ -1217,6 +1226,7 @@ dac_text16:
 				IO_Write(0x3c9,vga_palette[i][2]);
 			}
 			break;
+      default:;
 		}
 		if (IS_VGA_ARCH) {
 			/* check if gray scale summing is enabled */
@@ -1264,6 +1274,7 @@ dac_text16:
 	case M_VGA:
 		feature=(feature&~0x30);
 		break;
+   default:;
 	}
 	// disabled, has to be set in bios.cpp exclusively
 //	real_writeb(BIOSMEM_SEG,BIOSMEM_INITIAL_MODE,feature);
@@ -1409,6 +1420,7 @@ Bitu VideoModeMemSize(Bitu mode) {
 		return vmodeBlock->swidth*vmodeBlock->sheight*4;
 	case M_TEXT:
 		return vmodeBlock->twidth*vmodeBlock->theight*2;
+   default:;
 	}
 	// Return 0 for all other types, those always fit in memory
 	return 0;

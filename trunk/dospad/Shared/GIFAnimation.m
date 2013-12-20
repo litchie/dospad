@@ -121,7 +121,7 @@
 		bBuffer[4] |= 0x08;
 	}
     
-	[GIF_string setData:[[NSString stringWithString:@"GIF89a"] dataUsingEncoding: NSASCIIStringEncoding]];
+	[GIF_string setData:[@"GIF89a" dataUsingEncoding: NSASCIIStringEncoding]];
 	[GIF_screen setData:[NSData dataWithBytes:bBuffer length:blength]];
 	[self GIFPutBytes:GIF_screen];
     

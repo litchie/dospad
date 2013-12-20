@@ -251,8 +251,9 @@ static SystemSoundID sound_joystick_move=0;
                     break;
                 case DPadDown:
                     SDL_SendKeyboardKey(0, SDL_RELEASED, SDL_SCANCODE_DOWN);
-                    break;            
-            }            
+                    break;
+               default:;
+            }
             
             switch (dir)
             {
@@ -267,7 +268,8 @@ static SystemSoundID sound_joystick_move=0;
                     break;                
                 case DPadDown:
                     SDL_SendKeyboardKey(0, SDL_PRESSED, SDL_SCANCODE_DOWN);
-                    break;                
+                    break;
+               default:;
             }
         }
         
@@ -674,15 +676,15 @@ static SystemSoundID sound_joystick_move=0;
         if (GamePadJoystick == mode)
         {
             NSArray *a = [NSArray arrayWithObjects:
-                          [UIImage imageNamed:@"glass-centre.png"],
-                          [UIImage imageNamed:@"glass-east.png"],
-                          [UIImage imageNamed:@"glass-northeast.png"],
-                          [UIImage imageNamed:@"glass-north.png"],
-                          [UIImage imageNamed:@"glass-northwest.png"],
-                          [UIImage imageNamed:@"glass-west.png"],
-                          [UIImage imageNamed:@"glass-southwest.png"],
-                          [UIImage imageNamed:@"glass-south.png"],
-                          [UIImage imageNamed:@"glass-southeast.png"],
+                          [UIImage imageNamed:@"glass-centre"],
+                          [UIImage imageNamed:@"glass-east"],
+                          [UIImage imageNamed:@"glass-northeast"],
+                          [UIImage imageNamed:@"glass-north"],
+                          [UIImage imageNamed:@"glass-northwest"],
+                          [UIImage imageNamed:@"glass-west"],
+                          [UIImage imageNamed:@"glass-southwest"],
+                          [UIImage imageNamed:@"glass-south"],
+                          [UIImage imageNamed:@"glass-southeast"],
                           nil];
             dpad.backgroundImage=nil;
             dpad.centerStickImage=nil;
@@ -691,31 +693,31 @@ static SystemSoundID sound_joystick_move=0;
         }
         else
         {
-            dpad.backgroundImage = [UIImage imageNamed:@"dpadglass.png"];
+            dpad.backgroundImage = [UIImage imageNamed:@"dpadglass"];
             dpad.centerStickImage = nil;
-            dpad.sidedStickImage = [UIImage imageNamed:@"dpadpressed.png"];
+            dpad.sidedStickImage = [UIImage imageNamed:@"dpadpressed"];
             dpad.images=nil;
         }
     }
     else if (GamePadDefault == mode)
     {
-        dpad.backgroundImage = [UIImage imageNamed:@"dpad.png"];
+        dpad.backgroundImage = [UIImage imageNamed:@"dpad"];
         dpad.centerStickImage = nil;
-        dpad.sidedStickImage = [UIImage imageNamed:@"dpadpressed.png"];
+        dpad.sidedStickImage = [UIImage imageNamed:@"dpadpressed"];
         dpad.images=nil;
     }
     else
     {
         NSArray *a = [NSArray arrayWithObjects:
-                      [UIImage imageNamed:@"centre.png"],
-                      [UIImage imageNamed:@"east.png"],
-                      [UIImage imageNamed:@"northeast.png"],
-                      [UIImage imageNamed:@"north.png"],
-                      [UIImage imageNamed:@"northwest.png"],
-                      [UIImage imageNamed:@"west.png"],
-                      [UIImage imageNamed:@"southwest.png"],
-                      [UIImage imageNamed:@"south.png"],
-                      [UIImage imageNamed:@"southeast.png"],
+                      [UIImage imageNamed:@"centre"],
+                      [UIImage imageNamed:@"east"],
+                      [UIImage imageNamed:@"northeast"],
+                      [UIImage imageNamed:@"north"],
+                      [UIImage imageNamed:@"northwest"],
+                      [UIImage imageNamed:@"west"],
+                      [UIImage imageNamed:@"southwest"],
+                      [UIImage imageNamed:@"south"],
+                      [UIImage imageNamed:@"southeast"],
                       nil];
         dpad.backgroundImage=nil;
         dpad.centerStickImage=nil;
@@ -754,13 +756,13 @@ static SystemSoundID sound_joystick_move=0;
     if (b) 
     {
         NSArray *a = [NSArray arrayWithObjects:
-                      [UIImage imageNamed:@"btn.png"],
-                      [UIImage imageNamed:@"btnpressed.png"],nil];
+                      [UIImage imageNamed:@"btn"],
+                      [UIImage imageNamed:@"btnpressed"],nil];
         btn[0].images = a;
         btn[0].showFire = YES;
         a = [NSArray arrayWithObjects:
-             [UIImage imageNamed:@"btn.png"],
-             [UIImage imageNamed:@"btnpressed.png"],nil];
+             [UIImage imageNamed:@"btn"],
+             [UIImage imageNamed:@"btnpressed"],nil];
         for (int i = 1; i < MAX_GAMEPAD_BUTTON; i++)
         {
             btn[i].images = a;

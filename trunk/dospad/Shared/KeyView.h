@@ -38,10 +38,10 @@
     UIEdgeInsets padding;
 }
 
-@property UIEdgeInsets padding;
-@property BOOL highlight;
+@property (nonatomic) UIEdgeInsets padding;
+@property (nonatomic) BOOL highlight;
 @property (nonatomic,retain)NSString *title;
-@property int code;
+@property (nonatomic) int code;
 @property (nonatomic, retain) UIColor *textColor;
 @property (nonatomic, retain) UIColor *bkgColor,*edgeColor;
 @property (nonatomic,assign) id<KeyDelegate> delegate;

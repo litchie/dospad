@@ -665,6 +665,7 @@ Module::Module( Section* configuration ) : Module_base(configuration) {
 	case OPL_opl3:
 		Init( Adlib::MODE_OPL3 );
 		break;
+   default:;
 	}
 	//0x388 range
 	WriteHandler[0].Install(0x388,OPL_Write,IO_MB, 4 );

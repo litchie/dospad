@@ -491,6 +491,7 @@ void INT10_SetupVESA(void) {
 	switch (svgaCard) {
 	case SVGA_S3Trio:
 		break;
+   default:;
 	}
 	callback.setwindow=CALLBACK_Allocate();
 	callback.pmPalette=CALLBACK_Allocate();
