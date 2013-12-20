@@ -24,7 +24,7 @@
 #import "SDL_uikitopenglview.h"
 
 /* *INDENT-OFF* */
-@interface SDLUIKitDelegate:NSObject<UIApplicationDelegate> {
+@interface SDLUIKitDelegate:NSObject {
     SDL_Window *window;
     IBOutlet UIWindow *uiwindow;
 }
@@ -35,6 +35,8 @@
 +(SDLUIKitDelegate *)sharedAppDelegate;
 -(SDL_uikitopenglview*)screen;
 -(void)setWindowTitle:(char*)title;
+
+- (void)applicationDidFinishLaunching:(UIApplication *)application;
 
 @end
 /* *INDENT-ON* */

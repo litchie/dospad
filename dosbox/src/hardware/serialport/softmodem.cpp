@@ -155,6 +155,7 @@ void CSerialModem::SendRes(ResTypes response) {
 		case ResNODIALTONE: string="NO DIALTONE"; code=6; break;
 		case ResNOCARRIER:	string="NO CARRIER" ;code=3; break;
 		case ResCONNECT:	string="CONNECT 57600"; code=1; break;
+      default:;
 	}
 	
 	if(doresponse!=1) {
@@ -271,7 +272,7 @@ void CSerialModem::EnterIdleState(void){
 	}
 	// get rid of everything
 	if(serversocket) {
-		while(waitingclientsocket=serversocket->Accept())
+		while((waitingclientsocket=serversocket->Accept()))
 			delete waitingclientsocket;
 	} else if (listenport) {
 		

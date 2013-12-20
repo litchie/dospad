@@ -303,7 +303,8 @@ extern int SDL_SendKeyboardKey(int index, Uint8 state, SDL_scancode scancode);
         {
             return btnMouseLeft != nil && btnMouseRight != nil;
             break;
-        }            
+        }
+        default:;
     }    
     return NO;
 }
@@ -386,7 +387,8 @@ extern int SDL_SendKeyboardKey(int index, Uint8 state, SDL_scancode scancode);
         {
             [self createMouseButtons];
             break;
-        }            
+        }
+        default:;
     }    
 }
 
@@ -478,7 +480,8 @@ extern int SDL_SendKeyboardKey(int index, Uint8 state, SDL_scancode scancode);
                 btnMouseRight = nil;
             }
             break;
-        }            
+        }
+        default:;
     }
 }
 

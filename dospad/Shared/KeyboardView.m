@@ -105,8 +105,12 @@ KeyDesc combo_4[] = {
 @synthesize keys;
 @synthesize capsLock, numLock;
 
+const CGFloat kIPhoneLandscapeKeyboardWidth = 480.0;//1024 : 288
+const CGFloat kIPhoneLandscapeKeyboardHeight = 200.0;// : 288
+
 -(KeyView*)createKey:(const char*)title code:(int)scancode x:(int)x y:(int)y width:(int)w height:(int)h
 {
+
     KeyView *btn = [[[KeyView alloc] initWithFrame:CGRectMake(x, y,w,h)] autorelease];
     btn.code = scancode;
     btn.title = [NSString stringWithFormat:@"%s",title];
@@ -158,6 +162,12 @@ KeyDesc combo_4[] = {
     float y = 15;
     float maxwidth = x0 + kw * 1.5 + 13 * (kw + marginx);
     float rowY[6];
+   
+//   float scale = maxwidth / self.frame.size.width;
+//   x0 *= scale;
+//   kw *+ scale;
+//   marginx *=
+   
     
     [self createKey:"ESC" code:SDL_SCANCODE_ESCAPE x:x y:y width:kw height:kh];
     
@@ -588,16 +598,21 @@ KeyDesc combo_4[] = {
 
 -(void)createIphoneLandscapeKeys
 {
+
+// Use scale to gain layout support for iPad
+   CGFloat scaleX = self.frame.size.width / kIPhoneLandscapeKeyboardWidth;
+   CGFloat scaleY = self.frame.size.height / kIPhoneLandscapeKeyboardHeight;
+
     [self removeKeys];
     KeyView *key;
     BOOL fullKeys = FALSE;
-    int mainKeysWidth = 480;
+    int mainKeysWidth = kIPhoneLandscapeKeyboardWidth * scaleX;
     self.keys = [NSArray array];
-    float x0 = 4;
-    float marginy = 2;
-    float kw = 32;
-    float kh = 36;
-    float marginx = (mainKeysWidth-x0-x0-14.5*kw)/13;
+    float x0 = 4 * scaleX;
+    float marginy = 2 * scaleY;
+    float kw = 32 * scaleX;
+    float kh = 36 * scaleY;
+    float marginx = (mainKeysWidth-x0-x0-14.5*kw)/13 * scaleX;
     float x = x0;
     float y = 4;
     float maxwidth = x0 + kw * 1.5 + 13 * (kw + marginx);
@@ -710,6 +725,8 @@ KeyDesc combo_4[] = {
     x += tmp_kw + marginx;
     key = [self createKey:"RIGHT" code:SDL_SCANCODE_RIGHT x:x y:y+tmp_kh+tmp_marginy width:tmp_kw height:tmp_kh];    
     key.padding = UIEdgeInsetsMake(0, 0, 7, 0);
+   
+   
     
     [self updateKeyLock];
 }
@@ -728,9 +745,17 @@ KeyDesc combo_4[] = {
                 case KeyboardTypeLandscape:  
                 {
                     transparentKeys = YES;
-                    self.backgroundImage = [UIImage imageNamed:@"landkey~ipad.png"];
-                    keyPadding = UIEdgeInsetsMake(3,3,11,9);
+                  if (0 == DEFS_GET_INT(InputSource_KeyName(InputSource_NumPad)))
+                  {
+                    self.backgroundImage = [UIImage imageNamed:@"shortlandkey"];
+                    [self createIphoneLandscapeKeys];
+                  }
+                  else
+                  {
+                    self.backgroundImage = [UIImage imageNamed:@"widelandkey"];
                     [self createIPadLandscapeKeys];
+                  }
+                    keyPadding = UIEdgeInsetsMake(3,3,11,9);
                     break;
                 }
                     
@@ -753,7 +778,7 @@ KeyDesc combo_4[] = {
             switch (type)
             {
                 case KeyboardTypeNumPad:   
-                    self.backgroundImage = [UIImage imageNamed:@"landnumpad.png"];
+                    self.backgroundImage = [UIImage imageNamed:@"landnumpad"];
                     keyPadding = UIEdgeInsetsMake(0,  /* top */
                                                   3,  /* left */ 
                                                   5,  /* bottom */
@@ -761,7 +786,7 @@ KeyDesc combo_4[] = {
                     [self createNumPadKeys];
                     break;
                 case KeyboardTypeLandscape: 
-                    self.backgroundImage = [UIImage imageNamed:@"landkey.png"];
+                    self.backgroundImage = [UIImage imageNamed:@"shortlandkey"];
                     keyPadding = UIEdgeInsetsMake(0,  /* top */
                                                   2,  /* left */ 
                                                   9,  /* bottom */

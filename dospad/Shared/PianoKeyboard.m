@@ -351,10 +351,10 @@ extern int SDL_SendKeyboardKey(int index, Uint8 state, SDL_scancode scancode);
 // An empty implementation adversely affects performance during animation.
 - (void)drawRect:(CGRect)rect {
     if (ISIPAD()) {
-        UIImage *image = [UIImage imageNamed:@"25-Keys-with-6x4-grid.png"];
+        UIImage *image = [UIImage imageNamed:@"25-Keys-with-6x4-grid"];
         [image drawInRect:rect];
     } else {
-        UIImage *image = [UIImage imageNamed:@"25-keys.png"];
+        UIImage *image = [UIImage imageNamed:@"25-keys"];
         [image drawInRect:rect];
     }
 }
