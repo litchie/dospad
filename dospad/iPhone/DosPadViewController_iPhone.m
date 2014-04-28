@@ -350,7 +350,8 @@ static struct {
     kbd = [[KeyboardView alloc] initWithType:KeyboardTypeLandscape 
                                        frame:CGRectMake(0, 120, 480, 200)];
     kbd.alpha = [self floatAlpha];    
-    [self.view addSubview:kbd];  
+    [self.view addSubview:kbd];
+    
     
     CGPoint ptOld = kbd.center;
     kbd.center = CGPointMake(ptOld.x, ptOld.y+kbd.frame.size.height);
