@@ -27,6 +27,7 @@
 #import "keyinfotable.h"
 #import "SDL_uikitappdelegate.h"
 #import "SDL_uikitwindow.h"
+#import "UIExtendedTextField.h"
 #endif
 
 #ifdef IPHONEOS
@@ -58,13 +59,16 @@ void SDL_init_keyboard()
 }
 
 - (id)initWithFrame:(CGRect)frame {
-
+    
 	self = [super initWithFrame: frame];
 	
 #if SDL_IPHONE_KEYBOARD
 	[self initializeKeyboard];
-#endif	
-
+    
+    // register for keyboard notifications
+    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
+#endif
+    
 	int i;
 	for (i=0; i<MAX_SIMULTANEOUS_TOUCHES; i++) {
         mice[i].id = i;
@@ -72,9 +76,9 @@ void SDL_init_keyboard()
 		SDL_AddMouse(&mice[i], "Mouse", 0, 0, 1);
 	}
 	self.multipleTouchEnabled = YES;
-			
+    
 	return self;
-
+    
 }
 
 #ifdef IPHONEOS
@@ -83,9 +87,16 @@ void SDL_init_keyboard()
 {
     if (index >= 0 && index < SDL_GetNumMice()) {
         SDL_SendMouseButton(index,
-                            isDown?SDL_PRESSED:SDL_RELEASED, 
+                            isDown?SDL_PRESSED:SDL_RELEASED,
                             isLeft?SDL_BUTTON_LEFT:SDL_BUTTON_RIGHT);
     }
+}
+
+- (void)keyboardWillShow:(id)sender
+{
+    // we never want this keyboard to show
+    // the uitextfield is our proxy for receiving external keyboard input
+    [self hideKeyboard];
 }
 
 -(id)initWithCoder:(NSCoder *)aDecoder
@@ -94,7 +105,7 @@ void SDL_init_keyboard()
 	
 	self.multipleTouchEnabled = YES;
     
-	return self;    
+	return self;
 }
 -(CGFloat) distanceBetween: (CGPoint) point1 and: (CGPoint)point2
 {
@@ -111,8 +122,8 @@ void SDL_init_keyboard()
     // Play safer here.
     if (mice[i].driverdata!=NULL) {
         if (extmice[i].mouseHold==MOUSE_HOLD_WAIT) {
-            SDL_SendMouseButton(i, SDL_PRESSED, 
-                extmice[i].leftHold?SDL_BUTTON_LEFT:SDL_BUTTON_RIGHT);
+            SDL_SendMouseButton(i, SDL_PRESSED,
+                                extmice[i].leftHold?SDL_BUTTON_LEFT:SDL_BUTTON_RIGHT);
             extmice[i].mouseHold = MOUSE_HOLD_YES;
             if (mouseHoldDelegate) {
                 [mouseHoldDelegate onHold:extmice[i].ptOrig];
@@ -124,7 +135,7 @@ void SDL_init_keyboard()
 -(void)cancelHold
 {
     // We could use cancelPreviousPerformRequestsWithTarget,
-    // 
+    //
     //  [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(holdButton:) object:(index)];
     //
     // but here for simplicity
@@ -158,15 +169,15 @@ void SDL_init_keyboard()
 	int i;
 	int found = 0;
 	for(i=0; touch && i < MAX_SIMULTANEOUS_TOUCHES; i++) {
-	
+        
 		/* check if this mouse is already tracking a touch */
 		if (mice[i].driverdata != NULL) {
 			continue;
 		}
-		/*	
-			mouse not associated with anything right now,
-			associate the touch with this mouse
-		*/
+		/*
+         mouse not associated with anything right now,
+         associate the touch with this mouse
+         */
 		found = 1;
 		
 		/* save old mouse so we can switch back */
@@ -179,7 +190,7 @@ void SDL_init_keyboard()
 		/* set driver data to touch object, we'll use touch object later */
 		mice[i].driverdata = [touch retain];
 		
-#ifdef IPHONEOS		
+#ifdef IPHONEOS
         extmice[i].ptOrig = locationInView;
         extmice[i].timestamp = touch.timestamp;
         extmice[i].mouseHold=MOUSE_HOLD_NO;
@@ -199,8 +210,8 @@ void SDL_init_keyboard()
             [self cancelHold]; // Should come first because it will clear hold data
             extmice[i].mouseHold=MOUSE_HOLD_WAIT;
             extmice[i].leftHold = leftHold;
-            [self performSelector:@selector(holdButton:) 
-                       withObject:[NSNumber numberWithInt:i] 
+            [self performSelector:@selector(holdButton:)
+                       withObject:[NSNumber numberWithInt:i]
                        afterDelay:MOUSE_HOLD_INTERVAL];
         }
 #else
@@ -213,12 +224,12 @@ void SDL_init_keyboard()
 		SDL_GetRelativeMouseState(i, NULL, NULL);
 		
 		/* grab next touch */
-		touch = (UITouch*)[enumerator nextObject]; 
+		touch = (UITouch*)[enumerator nextObject];
 		
 		/* switch back to our old mouse */
 		SDL_SelectMouse(oldMouse);
 		
-	}	
+	}
 }
 
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
@@ -275,7 +286,7 @@ void SDL_init_keyboard()
                         [mouseHoldDelegate cancelHold:extmice[i].ptOrig];
                     }
                 }
-
+                
 #else
 				SDL_SendMouseButton(i, SDL_RELEASED, SDL_BUTTON_LEFT);
 #endif
@@ -288,10 +299,10 @@ void SDL_init_keyboard()
 
 - (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event {
 	/*
-		this can happen if the user puts more than 5 touches on the screen
-		at once, or perhaps in other circumstances.  Usually (it seems)
-		all active touches are canceled.
-	*/
+     this can happen if the user puts more than 5 touches on the screen
+     at once, or perhaps in other circumstances.  Usually (it seems)
+     all active touches are canceled.
+     */
 	[self touchesEnded: touches withEvent: event];
 }
 
@@ -315,8 +326,8 @@ void SDL_init_keyboard()
                 if (mouseSpeed == 0) mouseSpeed=0.5;
                 float scale = 1+2*mouseSpeed;
                 CGPoint ptOrig = [self convertPoint:extmice[i].ptOrig toView:[self superview]];
-                if (MOUSE_HOLD_NO!=extmice[i].mouseHold 
-                    && [self distanceBetween:ptOrig and:locationInView] > POSITION_CHANGE_THRESHOLD) 
+                if (MOUSE_HOLD_NO!=extmice[i].mouseHold
+                    && [self distanceBetween:ptOrig and:locationInView] > POSITION_CHANGE_THRESHOLD)
                 {
                     if (extmice[i].mouseHold == MOUSE_HOLD_WAIT) {
                         [self cancelHold];
@@ -344,8 +355,8 @@ void SDL_init_keyboard()
 }
 
 /*
-	---- Keyboard related functionality below this line ----
-*/
+ ---- Keyboard related functionality below this line ----
+ */
 #if SDL_IPHONE_KEYBOARD
 
 /* Is the iPhone virtual keyboard visible onscreen? */
@@ -355,11 +366,11 @@ void SDL_init_keyboard()
 
 /* Set ourselves up as a UITextFieldDelegate */
 - (void)initializeKeyboard {
-		
-	textField = [[[UITextField alloc] initWithFrame: CGRectZero] autorelease];
+    
+	textField = [[[UIExtendedTextField alloc] initWithFrame: CGRectZero] autorelease];
 	textField.delegate = self;
 	/* placeholder so there is something to delete! */
-	textField.text = @" ";	
+	textField.text = @" ";
 	
 	/* set UITextInputTrait properties, mostly to defaults */
 	textField.autocapitalizationType = UITextAutocapitalizationTypeNone;
@@ -368,12 +379,13 @@ void SDL_init_keyboard()
 	textField.keyboardAppearance = UIKeyboardAppearanceDefault;
 	textField.keyboardType = UIKeyboardTypeDefault;
 	textField.returnKeyType = UIReturnKeyDefault;
-	textField.secureTextEntry = NO;	
-	
+	textField.secureTextEntry = NO;
 	textField.hidden = YES;
+    
 	keyboardVisible = NO;
 	/* add the UITextField (hidden) to our view */
-	[self addSubview: textField];
+	[self addSubview:textField];
+    [self showKeyboard];
 	
 	/* create our SDL_Keyboard */
 	SDL_Keyboard keyboard;
@@ -382,8 +394,9 @@ void SDL_init_keyboard()
 	SDLKey keymap[SDL_NUM_SCANCODES];
 	SDL_GetDefaultKeymap(keymap);
 	SDL_SetKeymap(0, 0, keymap, SDL_NUM_SCANCODES);
-	
 }
+
+
 
 /* reveal onscreen virtual keyboard */
 - (void)showKeyboard {
@@ -402,12 +415,12 @@ void SDL_init_keyboard()
 	
 	if ([string length] == 0) {
 		/* it wants to replace text with nothing, ie a delete */
-		SDL_SendKeyboardKey( 0, SDL_PRESSED, SDL_SCANCODE_DELETE);
-		SDL_SendKeyboardKey( 0, SDL_RELEASED, SDL_SCANCODE_DELETE);
+		SDL_SendKeyboardKey( 0, SDL_PRESSED, SDL_SCANCODE_BACKSPACE);
+		SDL_SendKeyboardKey( 0, SDL_RELEASED, SDL_SCANCODE_BACKSPACE);
 	}
 	else {
 		/* go through all the characters in the string we've been sent
-		   and convert them to key presses */
+         and convert them to key presses */
 		int i;
 		for (i=0; i<[string length]; i++) {
 			
@@ -437,7 +450,7 @@ void SDL_init_keyboard()
 			if (mod & KMOD_SHIFT) {
 				/* If character uses shift, press shift back up */
 				SDL_SendKeyboardKey( 0, SDL_RELEASED, SDL_SCANCODE_LSHIFT);
-			}			
+			}
 		}
 	}
 	return NO; /* don't allow the edit! (keep placeholder text there) */
@@ -445,8 +458,10 @@ void SDL_init_keyboard()
 
 /* Terminates the editing session */
 - (BOOL)textFieldShouldReturn:(UITextField*)_textField {
-	[self hideKeyboard];
-	return YES;
+	//[self hideKeyboard];
+    SDL_SendKeyboardKey( 0, SDL_PRESSED, SDL_SCANCODE_RETURN);
+    SDL_SendKeyboardKey( 0, SDL_RELEASED, SDL_SCANCODE_RETURN);
+	return NO;
 }
 
 #endif
@@ -487,7 +502,7 @@ int SDL_iPhoneKeyboardHide(SDL_Window * window) {
 	if (NULL == window) {
 		SDL_SetError("Window does not exist");
 		return -1;
-	}	
+	}
 	
 	data = (SDL_WindowData *)window->driverdata;
 	view = data->view;
@@ -510,7 +525,7 @@ SDL_bool SDL_iPhoneKeyboardIsShown(SDL_Window * window) {
 	if (NULL == window) {
 		SDL_SetError("Window does not exist");
 		return -1;
-	}	
+	}
 	
 	data = (SDL_WindowData *)window->driverdata;
 	view = data->view;
@@ -532,7 +547,7 @@ int SDL_iPhoneKeyboardToggle(SDL_Window * window) {
 	if (NULL == window) {
 		SDL_SetError("Window does not exist");
 		return -1;
-	}	
+	}
 	
 	data = (SDL_WindowData *)window->driverdata;
 	view = data->view;

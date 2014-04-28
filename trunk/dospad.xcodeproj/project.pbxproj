@@ -54,6 +54,7 @@
 		04F2AF541104ABC300D6DDF7 /* SDL_assert.h in Headers */ = {isa = PBXBuildFile; fileRef = 04F2AF531104ABC300D6DDF7 /* SDL_assert.h */; };
 		04F2AF561104ABD200D6DDF7 /* SDL_assert.c in Sources */ = {isa = PBXBuildFile; fileRef = 04F2AF551104ABD200D6DDF7 /* SDL_assert.c */; };
 		862A6C2D1864663F00D421DC /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 862A6C2C1864663F00D421DC /* Images.xcassets */; };
+		CDF011FF190E11B000020D19 /* UIExtendedTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = CDF011FE190E11B000020D19 /* UIExtendedTextField.m */; };
 		E70C044112A4B43F00AC178F /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E70C044012A4B43F00AC178F /* AVFoundation.framework */; };
 		E70C044612A4B45D00AC178F /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E70C044012A4B43F00AC178F /* AVFoundation.framework */; };
 		E70C045412A4B4D700AC178F /* start-up.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = E70C045312A4B4D700AC178F /* start-up.mp3 */; };
@@ -893,6 +894,8 @@
 		1D3623EB0D0F72F000981E51 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		1DF5F4DF0D08C38300B7A737 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		862A6C2C1864663F00D421DC /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = iDOS/Images.xcassets; sourceTree = "<group>"; };
+		CDF011FD190E11B000020D19 /* UIExtendedTextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UIExtendedTextField.h; sourceTree = "<group>"; };
+		CDF011FE190E11B000020D19 /* UIExtendedTextField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UIExtendedTextField.m; sourceTree = "<group>"; };
 		E70C044012A4B43F00AC178F /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		E70C045312A4B4D700AC178F /* start-up.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; name = "start-up.mp3"; path = "dospad/audio-res/start-up.mp3"; sourceTree = "<group>"; };
 		E70EA4101242F83200528C9D /* SliderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SliderView.h; path = ../iPad/SliderView.h; sourceTree = "<group>"; };
@@ -2327,6 +2330,8 @@
 				E79970041241F09400502015 /* cmd_history.h */,
 				E799702912421D9F00502015 /* ModalViewController.h */,
 				E799702A12421D9F00502015 /* ModalViewController.m */,
+				CDF011FD190E11B000020D19 /* UIExtendedTextField.h */,
+				CDF011FE190E11B000020D19 /* UIExtendedTextField.m */,
 				E799706212422D6800502015 /* FloatingView.h */,
 				E799706312422D6800502015 /* FloatingView.m */,
 				E7A94CDB127D68B7006509E1 /* GamePadView.h */,
@@ -3430,6 +3435,7 @@
 				E745CE3F11F5991F00F00F7F /* HoldIndicator.m in Sources */,
 				E76DAEAF123EE08B00C2AEF7 /* FrameskipIndicator.m in Sources */,
 				E775412112403C3C009EC11A /* KeyLockIndicator.m in Sources */,
+				CDF011FF190E11B000020D19 /* UIExtendedTextField.m in Sources */,
 				E7996FAD1241C0A800502015 /* TipView.m in Sources */,
 				E79970261241FE4A00502015 /* CommandListView.m in Sources */,
 				E799702B12421D9F00502015 /* ModalViewController.m in Sources */,
@@ -3876,7 +3882,7 @@
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				VALID_ARCHS = armv7;
+				VALID_ARCHS = "armv7 armv7s";
 			};
 			name = Debug;
 		};
@@ -3913,7 +3919,7 @@
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = NO;
-				VALID_ARCHS = armv7;
+				VALID_ARCHS = "armv7 armv7s";
 				ZERO_LINK = NO;
 			};
 			name = Release;
@@ -4124,7 +4130,7 @@
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
-				VALID_ARCHS = armv7;
+				VALID_ARCHS = "armv7 armv7s";
 			};
 			name = Debug;
 		};
@@ -4145,7 +4151,7 @@
 				PRODUCT_NAME = SDLiPhoneOS;
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
-				VALID_ARCHS = armv7;
+				VALID_ARCHS = "armv7 armv7s";
 				ZERO_LINK = NO;
 			};
 			name = Release;
