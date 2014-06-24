@@ -13,7 +13,12 @@ extern int SDL_SendKeyboardKey(int index, Uint8 state, SDL_scancode scancode);
 
 #define GSEVENT_TYPE 2
 #define GSEVENT_FLAGS 12
-#define GSEVENTKEY_KEYCODE 15
+#ifndef IS_IOS7
+#define IS_IOS7 ([[UIDevice currentDevice].systemVersion floatValue]>=7.0)
+#endif
+
+#define IS_64BIT (sizeof(NSUInteger)==8)
+#define GSEVENTKEY_KEYCODE  (IS_64BIT?19:(IS_IOS7?17:15))
 #define GSEVENT_TYPE_KEYUP 11
 #define GSEVENT_TYPE_KEYDOWN 10
 #define GSEVENT_FLAG_LSHIFT 131072
