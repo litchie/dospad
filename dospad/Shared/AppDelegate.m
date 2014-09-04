@@ -19,6 +19,7 @@
 #import "AppDelegate.h"
 #import "DOSPadBaseViewController.h"
 #import "Common.h"
+#import <AVFoundation/AVFoundation.h>
 
 @implementation AppDelegate
 @synthesize frameskip;
@@ -83,6 +84,17 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions 
 {
+	// Make sure we are allowed to play in lock screen
+	NSError *setCategoryErr = nil;
+	NSError *activationErr  = nil;
+	[[AVAudioSession sharedInstance]
+		setCategory: AVAudioSessionCategoryPlayback
+		error: &setCategoryErr];
+	[[AVAudioSession sharedInstance]
+		setActive: YES
+		error: &activationErr];
+	
+
     screenView = [[SDL_uikitopenglview alloc] initWithFrame:CGRectMake(0,0,640,400)];
     DOSPadBaseViewController *dospad = [DOSPadBaseViewController dospadWithConfig:get_dospad_config()];
     dospad.screenView = screenView;
