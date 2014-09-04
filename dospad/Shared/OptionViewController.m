@@ -67,13 +67,10 @@ enum {
 #endif
 
 #define OPT_CREDITS                  OPT_ID(OPT_GROUP_SUPPORT,0)
-#ifndef IDOS
 #define OPT_HOMEPAGE                 OPT_ID(OPT_GROUP_SUPPORT,1)
-#else
-#define OPT_FEEDBACK                 OPT_ID(OPT_GROUP_SUPPORT,1)
-#endif
-#define OPT_FORUM                    OPT_ID(OPT_GROUP_SUPPORT,2)
-#define OPT_GROUP_SUPPORT_COUNT 3
+#define OPT_FEEDBACK                 OPT_ID(OPT_GROUP_SUPPORT,2)
+#define OPT_FORUM                    OPT_ID(OPT_GROUP_SUPPORT,3)
+#define OPT_GROUP_SUPPORT_COUNT 4
 
 #define CELL_HEIGHT_NORMAL  50
 #define CELL_HEIGHT_SLIDER  72
@@ -181,13 +178,15 @@ enum {
 -(void)sendFeedback
 {
     MFMailComposeViewController *controller = [[MFMailComposeViewController alloc] init];
+	if (controller == nil)
+		return;
     controller.mailComposeDelegate = self;
     #ifndef IDOS
     [controller setSubject:@"Feedback on DOSPad"];
     #else
     [controller setSubject:@"Feedback on iDOS"];
     #endif
-    NSArray *recip = [NSArray arrayWithObject:@"support@fast-intelligence.com"];
+    NSArray *recip = [NSArray arrayWithObject:@"support@litchie.com"];
     [controller setToRecipients:recip];
     [self presentModalViewController:controller animated:YES];
     [controller release];
@@ -357,15 +356,10 @@ enum {
         case OPT_FORUM:
         {
             cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:nil];
-#ifndef IDOS
-            cell.textLabel.text=@"DOSPad Forum";
-#else
-            cell.textLabel.text=@"iDOS Forum";            
-#endif
+            cell.textLabel.text=@"iDOS/DOSPad Forum";
             cell.detailTextLabel.text=@"Ask for help in our community";
             return [cell autorelease];
         }
-#ifndef IDOS            
         case OPT_HOMEPAGE:
         {
             cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:nil];
@@ -373,14 +367,12 @@ enum {
             cell.detailTextLabel.text=@"Getting Started";
             return [cell autorelease];            
         }
-#else            
         case OPT_FEEDBACK:
         {
             cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:nil];
             cell.textLabel.text=@"Send Feedback/Bug Report";
             return [cell autorelease];            
         }
-#endif        
     }
     return cell;
 }
@@ -469,27 +461,21 @@ heightForRowAtIndexPath:(NSIndexPath*)indexPath
         }
         case OPT_FORUM:
         {
-#ifndef IDOS            
-            [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://www.dospad.com/forum"]];
-#else
-            [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://www.litchie.net/idos/forum"]];
-#endif            
+            [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://www.litchie.com/forum/viewforum.php?f=8"]];
             break;
         }
-#ifndef IDOS        
         case OPT_HOMEPAGE:
         {
-            [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://www.litchie.net/dospad"]];
+            [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://www.litchie.com/blog/?page_id=123"]];
             break;
         }
-#else        
-       case OPT_FEEDBACK:
-       {
-           [self sendFeedback];
-           break;
-       }
-#endif
-       
+		
+		case OPT_FEEDBACK:
+		{
+		   [self sendFeedback];
+		   break;
+		}
+			
 #ifndef IDOS
         case OPT_DONATE:
         {
