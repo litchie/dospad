@@ -25,7 +25,6 @@
 #import "FrameskipIndicator.h"
 #import "GamePadView.h"
 #import "VKView.h"
-#import "FloatingView.h"
 #import "SliderView.h"
 #import "DOSPadBaseViewController.h"
 #import "FloatPanel.h"
@@ -35,19 +34,16 @@
 
 
 @interface DosPadViewController_iPhone : DOSPadBaseViewController
-<FloatingViewDelegate>
 {
     GamePadMode mode;
-    
+    UIButton *btnDPadSwitch;
     ToolPanelView  *toolPanel;
     UILabel *labCycles;
     UILabel *labCycles2;
     FrameskipIndicator *fsIndicator;
     FrameskipIndicator *fsIndicator2;
     UIButton *btnShowKeyboard;
-    
-    FloatingView *overlay;
-    
+	
     UIImageView *slider;
     UILabel *banner;
     FloatPanel *fullscreenPanel;

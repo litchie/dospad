@@ -25,14 +25,30 @@ static SystemSoundID keyPressSound=0;
 
 @implementation KeyView
 
-@synthesize code,title,highlight,padding;
+@synthesize code,title,altTitle,highlight,padding;
 @synthesize textColor;
-@synthesize bkgColor,edgeColor;
+@synthesize bkgColor,edgeColor,bottomColor,highlightColor;
 @synthesize delegate;
+@synthesize newStyle;
+
+-(void)setNewStyle:(BOOL)b
+{
+	newStyle = b;
+    [self setNeedsDisplay];
+}
+
 
 -(void)setHighlight:(BOOL)b
 {
     highlight=b;
+    [self setNeedsDisplay];
+}
+
+-(void)setAltTitle:(NSString *)t
+{
+    if (altTitle != nil) [altTitle release];
+    altTitle = t;
+    [altTitle retain];
     [self setNeedsDisplay];
 }
 
@@ -156,8 +172,60 @@ static SystemSoundID keyPressSound=0;
     CGContextStrokeRect(context, self.bounds);
 }
 
+// Only override drawRect: if you perform custom drawing.
+// An empty implementation adversely affects performance during animation.
+- (void)drawRectNew:(CGRect)rect {
+	CGContextRef ctx = UIGraphicsGetCurrentContext();
+
+	UIBezierPath* path = [UIBezierPath
+		bezierPathWithRoundedRect:rect
+		byRoundingCorners:UIRectCornerAllCorners
+		cornerRadii:CGSizeMake(3, 3)];
+	[path addClip];
+
+	if (!self.highlight) {
+		//[[UIColor colorWithRed:0.588 green:0.514 blue:0.439 alpha:1] set];
+		[bkgColor set];
+		CGContextFillRect(ctx, rect);
+	//		[[UIColor colorWithRed:0.361 green:0.333 blue:0.267 alpha:1] set];
+		[bottomColor set];
+		CGContextFillRect(ctx, CGRectMake(0, rect.size.height*0.9, rect.size.width, rect.size.height*0.1));
+	} else {
+		[highlightColor set];
+		CGContextFillRect(ctx, rect);
+	}
+
+    BOOL isIPad = (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad);
+	BOOL hasAltTitle = altTitle != nil && altTitle.length > 0;
+	
+    UIFont *font = [UIFont systemFontOfSize:isIPad?12:10];
+	CGSize size = [title sizeWithFont:font];
+	float offsetX = (self.bounds.size.width - size.width)/2;
+	float offsetY = (self.bounds.size.height - size.height)/2;
+	
+	if (hasAltTitle) {
+		offsetY = self.bounds.size.height/2+(self.bounds.size.height/2 - size.height)/2;
+		offsetY -= 2;
+	}
+	
+	[textColor set];
+	[title drawInRect:CGRectMake(offsetX,offsetY,size.width,size.height) withFont:font];
+
+	if (hasAltTitle) {
+		size = [altTitle sizeWithFont:font];
+		offsetX = (self.bounds.size.width - size.width)/2;
+		offsetY = (self.bounds.size.height/2 - size.height)/2;
+		[altTitle drawInRect:CGRectMake(offsetX,offsetY,size.width,size.height) withFont:font];
+	}
+}
+
 - (void)drawRect:(CGRect)rect 
 {
+	if (newStyle) {
+		[self drawRectNew:rect];
+		return;
+	}
+
     BOOL isIPad = (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad);
     CGRect contentRect = UIEdgeInsetsInsetRect(rect, padding);
     
@@ -220,10 +288,13 @@ static SystemSoundID keyPressSound=0;
 }
 
 - (void)dealloc {
+	self.highlightColor = nil;
+	self.bottomColor = nil;
     self.textColor = nil;
     self.bkgColor = nil;
     self.title = nil;
     self.edgeColor=nil;
+	self.altTitle = nil;
     [super dealloc];
 }
 

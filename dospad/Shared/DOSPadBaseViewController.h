@@ -69,8 +69,6 @@
 - (void)addInputSourceExclusively:(InputSourceType)type;
 - (void)removeInputSource:(InputSourceType)type;
 - (void)removeAllInputSources;
-- (void)removeiOSKeyboard;
-- (void)createiOSKeyboard;
 - (void)createPCKeyboard;
 - (void)createNumpad;
 - (void)createGamepad;

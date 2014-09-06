@@ -295,7 +295,7 @@ static struct {
 - (void)createPCKeyboard
 {
     kbd = [[KeyboardView alloc] initWithType:KeyboardTypeLandscape
-                                                   frame:CGRectMake(0,480,1024,288)];
+                                                   frame:CGRectMake(0,self.view.bounds.size.height-250,1024,250)];
     kbd.alpha = [self floatAlpha];
     [self.view addSubview:kbd];
     CGPoint ptOld = kbd.center;
@@ -415,7 +415,7 @@ static struct {
     float sh = self.screenView.bounds.size.height;
     float sw = self.screenView.bounds.size.width;
     float additionalScaleY = 1.0;
-    if (sh / sw != 0.75 && DEFS_GET_INT(kForceAspect)) 
+    if (sh / sw != 0.75)
     {
         additionalScaleY = 0.75 / (sh/sw);
     } 
