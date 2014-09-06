@@ -606,7 +606,7 @@ static SystemSoundID sound_joystick_move=0;
     }
     
     NSString *label = nil;
-    if (buttonIndex > 0)
+    if (buttonIndex >= 0)
     {
         if (joy)
         {
@@ -619,7 +619,7 @@ static SystemSoundID sound_joystick_move=0;
         
         if (label)
         {
-            float fontSize = MIN(14, rect.size.height/4);
+            float fontSize = MIN(10, rect.size.height/4);
             
             UIFont *fnt = [UIFont systemFontOfSize:fontSize];
             CGSize size = [label sizeWithFont:fnt];
@@ -763,7 +763,7 @@ static SystemSoundID sound_joystick_move=0;
         a = [NSArray arrayWithObjects:
              [UIImage imageNamed:@"btn"],
              [UIImage imageNamed:@"btnpressed"],nil];
-        for (int i = 1; i < MAX_GAMEPAD_BUTTON; i++)
+        for (int i = 0; i < MAX_GAMEPAD_BUTTON; i++)
         {
             btn[i].images = a;
             btn[i].textColor = [UIColor whiteColor];
@@ -771,10 +771,14 @@ static SystemSoundID sound_joystick_move=0;
     }
     else
     {
+        NSArray *a = [NSArray arrayWithObjects:
+                      [UIImage imageNamed:@"button"],
+                      [UIImage imageNamed:@"buttonpressed"],nil];
+	
         btn[0].showFire = NO;
         for (int i = 0; i < MAX_GAMEPAD_BUTTON; i++)
         {
-            btn[i].images = nil;
+            btn[i].images = a;
             btn[i].textColor = [UIColor blackColor];
         }
     }

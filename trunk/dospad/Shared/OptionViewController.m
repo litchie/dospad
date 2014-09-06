@@ -51,11 +51,10 @@ enum {
 #define OPT_GAME_CONTROL             OPT_ID(OPT_GROUP_GENERAL,0)
 #define OPT_OVERLAY_TRANSPARENCY     OPT_ID(OPT_GROUP_GENERAL,1)
 #define OPT_DPAD_MOVABLE             OPT_ID(OPT_GROUP_GENERAL,2)
-#define OPT_FORCE_ASPECT_RATIO       OPT_ID(OPT_GROUP_GENERAL,3)
-#define OPT_KEY_SOUND                OPT_ID(OPT_GROUP_GENERAL,4)
-#define OPT_GAMEPAD_SOUND            OPT_ID(OPT_GROUP_GENERAL,5)
-#define OPT_MOUSE_SPEED              OPT_ID(OPT_GROUP_GENERAL,6)
-#define OPT_GROUP_GENERAL_COUNT 7
+#define OPT_KEY_SOUND                OPT_ID(OPT_GROUP_GENERAL,3)
+#define OPT_GAMEPAD_SOUND            OPT_ID(OPT_GROUP_GENERAL,4)
+#define OPT_MOUSE_SPEED              OPT_ID(OPT_GROUP_GENERAL,5)
+#define OPT_GROUP_GENERAL_COUNT 6
 
 #define OPT_INPUT_NUMPAD             OPT_ID(OPT_GROUP_LANDSCAPE_INPUTS, 0)
 #define OPT_INPUT_JOYSTICK           OPT_ID(OPT_GROUP_LANDSCAPE_INPUTS, 1)
@@ -105,9 +104,6 @@ enum {
         case OPT_GAMEPAD_SOUND:
             DEFS_SET_INT(kDisableGamePadSound, sw.on);
             break;
-        case OPT_FORCE_ASPECT_RATIO:
-            DEFS_SET_INT(kForceAspect, sw.on);
-            break;
         case OPT_KEY_SOUND:
             DEFS_SET_INT(kDisableKeySound, sw.on);
             break;
@@ -134,7 +130,7 @@ enum {
     NSUserDefaults*defs=[NSUserDefaults standardUserDefaults];
     self.slider.value=[defs floatForKey:kTransparency];
     self.sliderMouseSpeed.value=[defs floatForKey:kMouseSpeed];
-    self.title = @"Option";
+    self.title = @"Settings";
 }
 
 
@@ -288,13 +284,6 @@ enum {
                                              tag:OPT_DPAD_MOVABLE];
             return [cell autorelease];
         }
-        case OPT_FORCE_ASPECT_RATIO:
-        {
-            cell = [self createBooleanOptionCell:@"Force 4:3 Aspect" 
-                                              on:DEFS_GET_INT(kForceAspect)
-                                             tag:OPT_FORCE_ASPECT_RATIO];
-            return [cell autorelease];
-        }
         case OPT_KEY_SOUND:
         {
             cell = [self createBooleanOptionCell:@"Disable Key Sound" 
@@ -340,9 +329,9 @@ enum {
         case OPT_DONATE:
         {
             cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:nil];
-            cell.textLabel.text=@"Donate";
-            cell.detailTextLabel.text = @"Keep updates coming";
-            return [cell autorelease];            
+            cell.textLabel.text=@"Donate to development";
+			cell.imageView.image = [UIImage imageNamed:@"gift"];
+            return [cell autorelease];
         }
 #endif            
         case OPT_CREDITS:
@@ -377,6 +366,17 @@ enum {
     return cell;
 }
 
+- (NSString*)tableView:(UITableView *)tableView titleForFooterInSection:(NSInteger)section
+{
+    switch (section)
+    {
+		case OPT_GROUP_SUPPORT:
+			return [NSString stringWithFormat:@"version %@", BUILD_VERSION];
+
+        default:
+            return @"";
+    }
+}
 
 -(CGFloat) tableView:(UITableView*)tableView
 heightForRowAtIndexPath:(NSIndexPath*)indexPath
@@ -479,7 +479,7 @@ heightForRowAtIndexPath:(NSIndexPath*)indexPath
 #ifndef IDOS
         case OPT_DONATE:
         {
-            NSString *url = @"http://www.litchie.net/dospad/donate";
+            NSString *url = @"http://www.litchie.com/dospad/donate";
             [[UIApplication sharedApplication] openURL:[NSURL URLWithString:url]];
         }
 #endif        

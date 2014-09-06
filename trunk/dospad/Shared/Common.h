@@ -36,7 +36,7 @@
 
 #define kFirstRun     @"firstRun"
 #define kTransparency @"transparency"
-#define kTransparencyDefault 0.3
+#define kTransparencyDefault 0.2
 
 #define kFullscreenKeypad @"fullscreenKeypad"
 #define kForceAspect @"ForceAspect"
@@ -45,6 +45,12 @@
 #define kDisableNativeKeyboard @"DisableNativeKeyboard"
 #define kDisableGamePadSound @"DisableGamePadSound"
 #define kDPadMovable @"DPadMovable"
+#define BUILD_VERSION [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleVersion"]
+
+#define HexColor(h) [UIColor colorWithRed:(((h)>>16)&0xff)/255.0f \
+	green:(((h)>>8) &0xff)/255.0f \
+	blue:((h)&0xff)/255.0f \
+	alpha:1.0f]
 
 typedef enum {
     InputSource_PCKeyboard = 0,

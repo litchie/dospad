@@ -97,9 +97,13 @@ extern int SDL_SendKeyboardKey(int index, Uint8 state, SDL_scancode scancode);
     holdIndicator.alpha = 0;
     holdIndicator.transform = CGAffineTransformMakeScale(1.5, 1.5);
     [self.view addSubview:holdIndicator];
-    
-    self.title = @"DOS";
-    
+
+#ifdef IDOS
+    self.title = @"iDOS";
+#else
+    self.title = @"DOSpad";
+#endif
+
     if (configPath == nil)
     {
         self.configPath = get_dospad_config();
@@ -309,30 +313,6 @@ extern int SDL_SendKeyboardKey(int index, Uint8 state, SDL_scancode scancode);
     return NO;
 }
 
-- (void)removeiOSKeyboard
-{
-    //TODO: Litchie commented out by tvd
-    /*
-    if (vk.useNativeKeyboard != YES)
-        return;
-    // Hide the virtual native keyboard
-    // However, we are still listening to external keyboard input
-    vk.active = NO;
-    vk.useNativeKeyboard=NO;
-    vk.active = YES;
-     */
-}
-
-- (void)createiOSKeyboard
-{
-    //TODO: Litchie commented out by tvd
-    /*
-    if (vk.active)
-        vk.active = NO;
-    vk.useNativeKeyboard = YES;
-    vk.active = YES;*/
-}
-
 - (void)NOT_IMPLEMENTED(createPCKeyboard);
 - (void)NOT_IMPLEMENTED(createNumpad);
 - (void)NOT_IMPLEMENTED(createGamepad);
@@ -428,11 +408,6 @@ extern int SDL_SendKeyboardKey(int index, Uint8 state, SDL_scancode scancode);
                 [kbd release];
                 kbd = nil;
             }
-            break;
-        }
-        case InputSource_iOSKeyboard:
-        {
-            [self removeiOSKeyboard];
             break;
         }
         case InputSource_GamePad:

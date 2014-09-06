@@ -44,7 +44,7 @@
     if (locked) {
         col=[UIColor colorWithRed:28/255.0 green:217/255.0 blue:3/255.0 alpha:1];
     } else {
-        col=[UIColor blackColor];
+        col=[UIColor grayColor];
     }
     [col set];
     CGContextRef context=UIGraphicsGetCurrentContext();

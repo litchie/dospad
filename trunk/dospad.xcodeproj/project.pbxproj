@@ -53,7 +53,6 @@
 		04EC8B521025D12900431D42 /* SDL_config_iphoneos.h in Headers */ = {isa = PBXBuildFile; fileRef = 04EC8B501025D12900431D42 /* SDL_config_iphoneos.h */; };
 		04F2AF541104ABC300D6DDF7 /* SDL_assert.h in Headers */ = {isa = PBXBuildFile; fileRef = 04F2AF531104ABC300D6DDF7 /* SDL_assert.h */; };
 		04F2AF561104ABD200D6DDF7 /* SDL_assert.c in Sources */ = {isa = PBXBuildFile; fileRef = 04F2AF551104ABD200D6DDF7 /* SDL_assert.c */; };
-		862A6C2D1864663F00D421DC /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 862A6C2C1864663F00D421DC /* Images.xcassets */; };
 		CDF011FF190E11B000020D19 /* UIExtendedTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = CDF011FE190E11B000020D19 /* UIExtendedTextField.m */; };
 		E70C044112A4B43F00AC178F /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E70C044012A4B43F00AC178F /* AVFoundation.framework */; };
 		E70C044612A4B45D00AC178F /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E70C044012A4B43F00AC178F /* AVFoundation.framework */; };
@@ -477,6 +476,12 @@
 		E746A30E12A8E70D00422236 /* installcomplete.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = E746A30D12A8E70D00422236 /* installcomplete.mp3 */; };
 		E74BB2B615C93DBC005EC552 /* DosPadUIApplication.m in Sources */ = {isa = PBXBuildFile; fileRef = E74BB2B515C93DBC005EC552 /* DosPadUIApplication.m */; };
 		E74BB2B715C93DBC005EC552 /* DosPadUIApplication.m in Sources */ = {isa = PBXBuildFile; fileRef = E74BB2B515C93DBC005EC552 /* DosPadUIApplication.m */; };
+		E750BE3C19B86CBC001D5681 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E750BE3B19B86CBC001D5681 /* Default-568h@2x.png */; };
+		E750BE3F19B89066001D5681 /* button.png in Resources */ = {isa = PBXBuildFile; fileRef = E750BE3D19B89066001D5681 /* button.png */; };
+		E750BE4019B89066001D5681 /* buttonpressed.png in Resources */ = {isa = PBXBuildFile; fileRef = E750BE3E19B89066001D5681 /* buttonpressed.png */; };
+		E750BE4219B8949E001D5681 /* kbd.png in Resources */ = {isa = PBXBuildFile; fileRef = E750BE4119B8949E001D5681 /* kbd.png */; };
+		E750BE4619B8B0D2001D5681 /* gift.png in Resources */ = {isa = PBXBuildFile; fileRef = E750BE4519B8B0D2001D5681 /* gift.png */; };
+		E750BE4919B9E909001D5681 /* ColorTheme.m in Sources */ = {isa = PBXBuildFile; fileRef = E750BE4819B9E909001D5681 /* ColorTheme.m */; };
 		E75276E712A0A77E00278BA1 /* modekeyoff.png in Resources */ = {isa = PBXBuildFile; fileRef = E75276E112A0A77E00278BA1 /* modekeyoff.png */; };
 		E75276E812A0A77E00278BA1 /* modekeyoff@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E75276E212A0A77E00278BA1 /* modekeyoff@2x.png */; };
 		E75276E912A0A77E00278BA1 /* modekeyoff~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = E75276E312A0A77E00278BA1 /* modekeyoff~ipad.png */; };
@@ -893,7 +898,6 @@
 		1D30AB110D05D00D00671497 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		1D3623EB0D0F72F000981E51 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		1DF5F4DF0D08C38300B7A737 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
-		862A6C2C1864663F00D421DC /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = iDOS/Images.xcassets; sourceTree = "<group>"; };
 		CDF011FD190E11B000020D19 /* UIExtendedTextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UIExtendedTextField.h; sourceTree = "<group>"; };
 		CDF011FE190E11B000020D19 /* UIExtendedTextField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UIExtendedTextField.m; sourceTree = "<group>"; };
 		E70C044012A4B43F00AC178F /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
@@ -1247,6 +1251,13 @@
 		E746A30D12A8E70D00422236 /* installcomplete.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; name = installcomplete.mp3; path = "dospad/audio-res/installcomplete.mp3"; sourceTree = "<group>"; };
 		E74BB2B415C93DBC005EC552 /* DosPadUIApplication.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DosPadUIApplication.h; sourceTree = "<group>"; };
 		E74BB2B515C93DBC005EC552 /* DosPadUIApplication.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DosPadUIApplication.m; sourceTree = "<group>"; };
+		E750BE3B19B86CBC001D5681 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
+		E750BE3D19B89066001D5681 /* button.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = button.png; path = "dospad/gamepad-res/button.png"; sourceTree = "<group>"; };
+		E750BE3E19B89066001D5681 /* buttonpressed.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = buttonpressed.png; path = "dospad/gamepad-res/buttonpressed.png"; sourceTree = "<group>"; };
+		E750BE4119B8949E001D5681 /* kbd.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = kbd.png; path = "dospad/misc-res/kbd.png"; sourceTree = "<group>"; };
+		E750BE4519B8B0D2001D5681 /* gift.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = gift.png; path = "dospad/misc-res/gift.png"; sourceTree = "<group>"; };
+		E750BE4719B9E909001D5681 /* ColorTheme.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ColorTheme.h; sourceTree = "<group>"; };
+		E750BE4819B9E909001D5681 /* ColorTheme.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ColorTheme.m; sourceTree = "<group>"; };
 		E75276E112A0A77E00278BA1 /* modekeyoff.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = modekeyoff.png; sourceTree = "<group>"; };
 		E75276E212A0A77E00278BA1 /* modekeyoff@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "modekeyoff@2x.png"; sourceTree = "<group>"; };
 		E75276E312A0A77E00278BA1 /* modekeyoff~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "modekeyoff~ipad.png"; sourceTree = "<group>"; };
@@ -1648,7 +1659,6 @@
 		29B97314FDCFA39411CA2CEA /* CustomTemplate */ = {
 			isa = PBXGroup;
 			children = (
-				862A6C2C1864663F00D421DC /* Images.xcassets */,
 				E77DAFAF11B5D83600B78E69 /* dospad */,
 				E71E60F211B550FD00EC5A05 /* dosbox */,
 				FD99B8BC0DD52E5C00FB1D6B /* SDL Headers */,
@@ -2151,6 +2161,8 @@
 		E72BE6F412911DD1009DC46A /* misc-res */ = {
 			isa = PBXGroup;
 			children = (
+				E750BE4519B8B0D2001D5681 /* gift.png */,
+				E750BE4119B8949E001D5681 /* kbd.png */,
 				E794F3F912DB4EDC00427836 /* 25-Keys-with-6x4-grid.png */,
 				E794F3FA12DB4EDC00427836 /* 25-keys.png */,
 				E793705212A1F3CA008A2012 /* idos-splash.gif */,
@@ -2188,6 +2200,86 @@
 			name = "misc-res";
 			sourceTree = "<group>";
 		};
+		E750BE3A19B86CBC001D5681 /* LaunchImages */ = {
+			isa = PBXGroup;
+			children = (
+				E750BE3B19B86CBC001D5681 /* Default-568h@2x.png */,
+			);
+			name = LaunchImages;
+			path = dospad/LaunchImages;
+			sourceTree = "<group>";
+		};
+		E750BE4A19BAE441001D5681 /* Util */ = {
+			isa = PBXGroup;
+			children = (
+				E723F0C41286A1680009E3DA /* VKView.h */,
+				E723F0C51286A1680009E3DA /* VKView.m */,
+				E72BE6D612911B5C009DC46A /* ZipArchive.h */,
+				E72BE6D712911B5C009DC46A /* ZipArchive.m */,
+				E73A211E128EC1F5001FA168 /* AlertPrompt.h */,
+				E73A211F128EC1F5001FA168 /* AlertPrompt.m */,
+				E750BE4719B9E909001D5681 /* ColorTheme.h */,
+				E750BE4819B9E909001D5681 /* ColorTheme.m */,
+				E72BE6C712911B5C009DC46A /* FileSystemObject.h */,
+				E72BE6C812911B5C009DC46A /* FileSystemObject.m */,
+			);
+			name = Util;
+			sourceTree = "<group>";
+		};
+		E750BE4B19BAE47E001D5681 /* CustomView */ = {
+			isa = PBXGroup;
+			children = (
+				E70EA4101242F83200528C9D /* SliderView.h */,
+				E70EA4111242F83200528C9D /* SliderView.m */,
+				E799706212422D6800502015 /* FloatingView.h */,
+				E799706312422D6800502015 /* FloatingView.m */,
+				E7A94CDB127D68B7006509E1 /* GamePadView.h */,
+				E7A94CDC127D68B7006509E1 /* GamePadView.m */,
+				E76C49361299490200901B69 /* FloatPanel.h */,
+				E76C49371299490200901B69 /* FloatPanel.m */,
+				E7D78AE3129E9E420020D4A7 /* GIFAnimation.h */,
+				E7D78AE4129E9E420020D4A7 /* GIFAnimation.m */,
+				E794F3FD12DB4F0E00427836 /* PianoKeyboard.h */,
+				E794F3FE12DB4F0E00427836 /* PianoKeyboard.m */,
+				E745CE3D11F5991F00F00F7F /* HoldIndicator.h */,
+				E745CE3E11F5991F00F00F7F /* HoldIndicator.m */,
+				E76DAEAD123EE08B00C2AEF7 /* FrameskipIndicator.h */,
+				E76DAEAE123EE08B00C2AEF7 /* FrameskipIndicator.m */,
+				E775411F12403C3C009EC11A /* KeyLockIndicator.h */,
+				E775412012403C3C009EC11A /* KeyLockIndicator.m */,
+				E7996FAB1241C0A800502015 /* TipView.h */,
+				E7996FAC1241C0A800502015 /* TipView.m */,
+				E79970041241F09400502015 /* cmd_history.h */,
+				E72BE6C912911B5C009DC46A /* KeyboardView.h */,
+				E72BE6CA12911B5C009DC46A /* KeyboardView.m */,
+				E72BE6CB12911B5C009DC46A /* KeyView.h */,
+				E72BE6CC12911B5C009DC46A /* KeyView.m */,
+			);
+			name = CustomView;
+			sourceTree = "<group>";
+		};
+		E750BE4C19BAE4EA001D5681 /* ViewControllers */ = {
+			isa = PBXGroup;
+			children = (
+				E799702912421D9F00502015 /* ModalViewController.h */,
+				E799702A12421D9F00502015 /* ModalViewController.m */,
+				E793720312A243C6008A2012 /* SplashViewController.h */,
+				E793720412A243C6008A2012 /* SplashViewController.m */,
+				E715B3591293B7740098D437 /* DOSPadBaseViewController.h */,
+				E715B35A1293B7750098D437 /* DOSPadBaseViewController.m */,
+				E72BE6CD12911B5C009DC46A /* OptionViewController.h */,
+				E72BE6CE12911B5C009DC46A /* OptionViewController.m */,
+				E72BE6CF12911B5C009DC46A /* OptionViewController.xib */,
+				E72BE6D012911B5C009DC46A /* TextViewController.h */,
+				E72BE6D112911B5C009DC46A /* TextViewController.m */,
+				E72BE6D212911B5C009DC46A /* TextViewController.xib */,
+				E72BE6D312911B5C009DC46A /* WebViewController.h */,
+				E72BE6D412911B5C009DC46A /* WebViewController.m */,
+				E72BE6D512911B5C009DC46A /* WebViewController.xib */,
+			);
+			name = ViewControllers;
+			sourceTree = "<group>";
+		};
 		E7734DDC128A71AF0009CBEA /* audio */ = {
 			isa = PBXGroup;
 			children = (
@@ -2204,6 +2296,8 @@
 		E7734DDD128A720B0009CBEA /* gamepad */ = {
 			isa = PBXGroup;
 			children = (
+				E750BE3D19B89066001D5681 /* button.png */,
+				E750BE3E19B89066001D5681 /* buttonpressed.png */,
 				E7D78AC4129E98480020D4A7 /* fire.png */,
 				E7D78AC5129E98480020D4A7 /* firepressed.png */,
 				E7D78A61129E19380020D4A7 /* btn.png */,
@@ -2278,38 +2372,16 @@
 		E77DAFC311B5D83600B78E69 /* Shared */ = {
 			isa = PBXGroup;
 			children = (
+				E750BE4C19BAE4EA001D5681 /* ViewControllers */,
+				E750BE4B19BAE47E001D5681 /* CustomView */,
+				E750BE4A19BAE441001D5681 /* Util */,
 				E74BB2B415C93DBC005EC552 /* DosPadUIApplication.h */,
 				E74BB2B515C93DBC005EC552 /* DosPadUIApplication.m */,
 				E79C2E5611E131DB002FE898 /* MainWindow.xib */,
 				E72BE6C312911B5C009DC46A /* AppDelegate.h */,
 				E72BE6C412911B5C009DC46A /* AppDelegate.m */,
-				E715B3591293B7740098D437 /* DOSPadBaseViewController.h */,
-				E715B35A1293B7750098D437 /* DOSPadBaseViewController.m */,
 				E72BE6C512911B5C009DC46A /* DosEmuThread.h */,
 				E72BE6C612911B5C009DC46A /* DosEmuThread.m */,
-				E72BE6C712911B5C009DC46A /* FileSystemObject.h */,
-				E72BE6C812911B5C009DC46A /* FileSystemObject.m */,
-				E72BE6C912911B5C009DC46A /* KeyboardView.h */,
-				E72BE6CA12911B5C009DC46A /* KeyboardView.m */,
-				E72BE6CB12911B5C009DC46A /* KeyView.h */,
-				E72BE6CC12911B5C009DC46A /* KeyView.m */,
-				E72BE6CD12911B5C009DC46A /* OptionViewController.h */,
-				E72BE6CE12911B5C009DC46A /* OptionViewController.m */,
-				E72BE6CF12911B5C009DC46A /* OptionViewController.xib */,
-				E72BE6D012911B5C009DC46A /* TextViewController.h */,
-				E72BE6D112911B5C009DC46A /* TextViewController.m */,
-				E72BE6D212911B5C009DC46A /* TextViewController.xib */,
-				E72BE6D312911B5C009DC46A /* WebViewController.h */,
-				E72BE6D412911B5C009DC46A /* WebViewController.m */,
-				E72BE6D512911B5C009DC46A /* WebViewController.xib */,
-				E72BE6D612911B5C009DC46A /* ZipArchive.h */,
-				E72BE6D712911B5C009DC46A /* ZipArchive.m */,
-				E73A211E128EC1F5001FA168 /* AlertPrompt.h */,
-				E73A211F128EC1F5001FA168 /* AlertPrompt.m */,
-				E70EA4101242F83200528C9D /* SliderView.h */,
-				E70EA4111242F83200528C9D /* SliderView.m */,
-				E723F0C41286A1680009E3DA /* VKView.h */,
-				E723F0C51286A1680009E3DA /* VKView.m */,
 				E792A4BA11E36C9C00894C71 /* Common.h */,
 				E77DAFB311B5D83600B78E69 /* dospad_Prefix.pch */,
 				E77DAFC411B5D83600B78E69 /* main.m */,
@@ -2319,31 +2391,8 @@
 				FD689F170E26E5D900F90B21 /* SDL_uikitopenglview.m */,
 				FD689FCD0E26E9D400F90B21 /* SDL_uikitappdelegate.h */,
 				FD689FCC0E26E9D400F90B21 /* SDL_uikitappdelegate.m */,
-				E745CE3D11F5991F00F00F7F /* HoldIndicator.h */,
-				E745CE3E11F5991F00F00F7F /* HoldIndicator.m */,
-				E76DAEAD123EE08B00C2AEF7 /* FrameskipIndicator.h */,
-				E76DAEAE123EE08B00C2AEF7 /* FrameskipIndicator.m */,
-				E775411F12403C3C009EC11A /* KeyLockIndicator.h */,
-				E775412012403C3C009EC11A /* KeyLockIndicator.m */,
-				E7996FAB1241C0A800502015 /* TipView.h */,
-				E7996FAC1241C0A800502015 /* TipView.m */,
-				E79970041241F09400502015 /* cmd_history.h */,
-				E799702912421D9F00502015 /* ModalViewController.h */,
-				E799702A12421D9F00502015 /* ModalViewController.m */,
 				CDF011FD190E11B000020D19 /* UIExtendedTextField.h */,
 				CDF011FE190E11B000020D19 /* UIExtendedTextField.m */,
-				E799706212422D6800502015 /* FloatingView.h */,
-				E799706312422D6800502015 /* FloatingView.m */,
-				E7A94CDB127D68B7006509E1 /* GamePadView.h */,
-				E7A94CDC127D68B7006509E1 /* GamePadView.m */,
-				E76C49361299490200901B69 /* FloatPanel.h */,
-				E76C49371299490200901B69 /* FloatPanel.m */,
-				E7D78AE3129E9E420020D4A7 /* GIFAnimation.h */,
-				E7D78AE4129E9E420020D4A7 /* GIFAnimation.m */,
-				E793720312A243C6008A2012 /* SplashViewController.h */,
-				E793720412A243C6008A2012 /* SplashViewController.m */,
-				E794F3FD12DB4F0E00427836 /* PianoKeyboard.h */,
-				E794F3FE12DB4F0E00427836 /* PianoKeyboard.m */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
@@ -2360,6 +2409,7 @@
 		E79E44F411EC2D5200DEAA7B /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				E750BE3A19B86CBC001D5681 /* LaunchImages */,
 				E7107146129A8E5A00B21291 /* floatpanel-res */,
 				E72BE6F412911DD1009DC46A /* misc-res */,
 				E7734DEF128A728B0009CBEA /* appicon */,
@@ -3132,6 +3182,8 @@
 				E773501D128ACE3C0009CBEA /* east.png in Resources */,
 				E773501E128ACE3C0009CBEA /* north.png in Resources */,
 				E773501F128ACE3C0009CBEA /* northeast.png in Resources */,
+				E750BE3F19B89066001D5681 /* button.png in Resources */,
+				E750BE4619B8B0D2001D5681 /* gift.png in Resources */,
 				E7735020128ACE3C0009CBEA /* northwest.png in Resources */,
 				E7735021128ACE3C0009CBEA /* south.png in Resources */,
 				E7735022128ACE3C0009CBEA /* southeast.png in Resources */,
@@ -3201,6 +3253,7 @@
 				E729BE0A129B506E002B05B2 /* modejoy~ipad.png in Resources */,
 				E729BE0B129B506E002B05B2 /* modejoypressed~ipad.png in Resources */,
 				E729BE0C129B506E002B05B2 /* modenumpad~ipad.png in Resources */,
+				E750BE4019B89066001D5681 /* buttonpressed.png in Resources */,
 				E729BE0D129B506E002B05B2 /* modenumpadpressed~ipad.png in Resources */,
 				E729BE0E129B506E002B05B2 /* options@2x.png in Resources */,
 				E729BE0F129B506E002B05B2 /* options~ipad.png in Resources */,
@@ -3213,6 +3266,7 @@
 				E729BF57129BF18F002B05B2 /* mouseoff~ipad.png in Resources */,
 				E729BF58129BF18F002B05B2 /* mouseon.png in Resources */,
 				E729BF59129BF18F002B05B2 /* mouseon@2x.png in Resources */,
+				E750BE3C19B86CBC001D5681 /* Default-568h@2x.png in Resources */,
 				E729BF5A129BF18F002B05B2 /* mouseon~ipad.png in Resources */,
 				E7123FF3129D0D470021237F /* dpadglass.png in Resources */,
 				E7123FF4129D0D470021237F /* glass-centre.png in Resources */,
@@ -3241,6 +3295,7 @@
 				E793704012A1EE87008A2012 /* widelandkey.png in Resources */,
 				E70C045512A4B4D700AC178F /* start-up.mp3 in Resources */,
 				E7EB354912A7C4320091D718 /* exitfull@2x.png in Resources */,
+				E750BE4219B8949E001D5681 /* kbd.png in Resources */,
 				E794F3DD12DB4B6D00427836 /* modepianopressed.png in Resources */,
 				E794F3DE12DB4B6D00427836 /* modepianopressed@2x.png in Resources */,
 				E794F3DF12DB4B6D00427836 /* modepianopressed~ipad.png in Resources */,
@@ -3307,7 +3362,6 @@
 				E770957F1297BA4C0040ADA2 /* ipadrightside.png in Resources */,
 				E77096201297F5670040ADA2 /* light.png in Resources */,
 				E71A268E129A1B2D0013D51C /* landbariphon.png in Resources */,
-				862A6C2D1864663F00D421DC /* Images.xcassets in Resources */,
 				E71A268F129A1B2D0013D51C /* landbariphon@2x.png in Resources */,
 				E7107154129A8E5A00B21291 /* cpuwindow.png in Resources */,
 				E7107155129A8E5A00B21291 /* exitfull.png in Resources */,
@@ -3454,6 +3508,7 @@
 				E72BE6DF12911B5C009DC46A /* TextViewController.m in Sources */,
 				E72BE6E112911B5C009DC46A /* WebViewController.m in Sources */,
 				E72BE6E312911B5C009DC46A /* ZipArchive.m in Sources */,
+				E750BE4919B9E909001D5681 /* ColorTheme.m in Sources */,
 				E715B35C1293B7750098D437 /* DOSPadBaseViewController.m in Sources */,
 				E76C49391299490300901B69 /* FloatPanel.m in Sources */,
 				E7D78AE6129E9E420020D4A7 /* GIFAnimation.m in Sources */,
@@ -3853,8 +3908,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon-2";
-				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = "LaunchImage-2";
+				ARCHS = (
+					armv7s,
+					armv7,
+				);
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
@@ -3867,7 +3924,7 @@
 				HEADER_SEARCH_PATHS = ./include;
 				INFOPLIST_FILE = "dospad-Info.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
-				IPHONEOS_DEPLOYMENT_TARGET = 4.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = (
@@ -3890,8 +3947,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon-2";
-				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = "LaunchImage-2";
+				ARCHS = (
+					armv7s,
+					armv7,
+				);
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;
@@ -3903,7 +3962,7 @@
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				INFOPLIST_FILE = "dospad-Info.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
-				IPHONEOS_DEPLOYMENT_TARGET = 4.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = (

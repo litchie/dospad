@@ -31,19 +31,22 @@
     int code;
     UIColor *textColor;
     UIColor *bkgColor;
+    UIColor *bottomColor,*highlightColor;
     UIColor *edgeColor;
-    NSString *title;
+    NSString *title,*altTitle;
     BOOL highlight;
     id<KeyDelegate> delegate;
     UIEdgeInsets padding;
+	BOOL newStyle;
 }
 
 @property (nonatomic) UIEdgeInsets padding;
 @property (nonatomic) BOOL highlight;
-@property (nonatomic,retain)NSString *title;
+@property (nonatomic,retain)NSString *title,*altTitle;
 @property (nonatomic) int code;
 @property (nonatomic, retain) UIColor *textColor;
-@property (nonatomic, retain) UIColor *bkgColor,*edgeColor;
+@property (nonatomic, retain) UIColor *bkgColor,*edgeColor,*bottomColor,*highlightColor;
 @property (nonatomic,assign) id<KeyDelegate> delegate;
+@property (nonatomic, assign) BOOL newStyle;
 
 @end

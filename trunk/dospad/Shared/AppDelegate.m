@@ -20,6 +20,7 @@
 #import "DOSPadBaseViewController.h"
 #import "Common.h"
 #import <AVFoundation/AVFoundation.h>
+#import "ColorTheme.h"
 
 @implementation AppDelegate
 @synthesize frameskip;
@@ -82,8 +83,19 @@
     }
 }
 
+- (void)initColorTheme
+{
+	NSString *path = [[NSBundle mainBundle].bundlePath stringByAppendingPathComponent:@"configs/colortheme.json"];
+	ColorTheme *theme = [[ColorTheme alloc] initWithPath:path];
+	[ColorTheme setDefaultTheme:theme];
+	[theme release];
+}
+
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions 
 {
+
+	[self initColorTheme];
+
 	// Make sure we are allowed to play in lock screen
 	NSError *setCategoryErr = nil;
 	NSError *activationErr  = nil;
