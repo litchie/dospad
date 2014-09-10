@@ -149,6 +149,10 @@ extern int SDL_SendKeyboardKey(int index, Uint8 state, SDL_scancode scancode);
     // e.g. self.myOutlet = nil;
 }
 
+- (NSUInteger)supportedInterfaceOrientations
+{
+	return UIInterfaceOrientationMaskAll;
+}
 
 - (void)dealloc {
     [screenView release];
