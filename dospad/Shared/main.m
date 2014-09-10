@@ -354,7 +354,7 @@ int main(int argc, char *argv[]) {
     FileSystemObject *fso = [[FileSystemObject alloc] autorelease];
 
     // Auto mount
-#ifndef IDOS // DOSPAD for CYDIA
+#ifdef CYDIA // DOSPAD for CYDIA
     strcpy(diskc, "/var/mobile/Documents");
     strcpy(diskd, [[fso documentsDirectory] UTF8String]);
 #else
