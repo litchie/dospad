@@ -60,7 +60,7 @@ extern int SDL_SendKeyboardKey(int index, Uint8 state, SDL_scancode scancode);
 - (void)sendEvent:(UIEvent *)event
 {
 	[super sendEvent:event];
-	
+#ifndef APPSTORE
 	if ([event respondsToSelector:@selector(_gsEvent)]) {
 		int *eventMem;
 		eventMem = (int *)[event performSelector:@selector(_gsEvent)];
@@ -86,6 +86,7 @@ extern int SDL_SendKeyboardKey(int index, Uint8 state, SDL_scancode scancode);
 			}
 		}
 	}
+#endif
 }
 
 @end
