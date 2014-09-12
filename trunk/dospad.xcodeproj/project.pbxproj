@@ -53,7 +53,6 @@
 		04EC8B521025D12900431D42 /* SDL_config_iphoneos.h in Headers */ = {isa = PBXBuildFile; fileRef = 04EC8B501025D12900431D42 /* SDL_config_iphoneos.h */; };
 		04F2AF541104ABC300D6DDF7 /* SDL_assert.h in Headers */ = {isa = PBXBuildFile; fileRef = 04F2AF531104ABC300D6DDF7 /* SDL_assert.h */; };
 		04F2AF561104ABD200D6DDF7 /* SDL_assert.c in Sources */ = {isa = PBXBuildFile; fileRef = 04F2AF551104ABD200D6DDF7 /* SDL_assert.c */; };
-		CDF011FF190E11B000020D19 /* UIExtendedTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = CDF011FE190E11B000020D19 /* UIExtendedTextField.m */; };
 		E70C044112A4B43F00AC178F /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E70C044012A4B43F00AC178F /* AVFoundation.framework */; };
 		E70C044612A4B45D00AC178F /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E70C044012A4B43F00AC178F /* AVFoundation.framework */; };
 		E70C045412A4B4D700AC178F /* start-up.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = E70C045312A4B4D700AC178F /* start-up.mp3 */; };
@@ -124,6 +123,17 @@
 		E7124000129D0D470021237F /* glass-southeast.png in Resources */ = {isa = PBXBuildFile; fileRef = E7123FDA129D0D470021237F /* glass-southeast.png */; };
 		E7124002129D0D470021237F /* glass-southwest.png in Resources */ = {isa = PBXBuildFile; fileRef = E7123FDC129D0D470021237F /* glass-southwest.png */; };
 		E7124004129D0D470021237F /* glass-west.png in Resources */ = {isa = PBXBuildFile; fileRef = E7123FDE129D0D470021237F /* glass-west.png */; };
+		E714BC5819C1EA3B009CF594 /* UIExtendedTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = E714BC5719C1EA3B009CF594 /* UIExtendedTextField.m */; };
+		E714BC5919C1EA3B009CF594 /* UIExtendedTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = E714BC5719C1EA3B009CF594 /* UIExtendedTextField.m */; };
+		E714BC5A19C1EA5F009CF594 /* PianoKeyboard.m in Sources */ = {isa = PBXBuildFile; fileRef = E794F3FE12DB4F0E00427836 /* PianoKeyboard.m */; };
+		E714BC5B19C1EA79009CF594 /* CoreMIDI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E7F2A9CD12CD99EC0091B859 /* CoreMIDI.framework */; };
+		E714BC5C19C1EA8B009CF594 /* ColorTheme.m in Sources */ = {isa = PBXBuildFile; fileRef = E750BE4819B9E909001D5681 /* ColorTheme.m */; };
+		E714BC5D19C1EAA7009CF594 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E750BE3B19B86CBC001D5681 /* Default-568h@2x.png */; };
+		E714BC5E19C207E5009CF594 /* kbd.png in Resources */ = {isa = PBXBuildFile; fileRef = E750BE4119B8949E001D5681 /* kbd.png */; };
+		E714BC5F19C207EC009CF594 /* 25-Keys-with-6x4-grid.png in Resources */ = {isa = PBXBuildFile; fileRef = E794F3F912DB4EDC00427836 /* 25-Keys-with-6x4-grid.png */; };
+		E714BC6019C207EF009CF594 /* 25-keys.png in Resources */ = {isa = PBXBuildFile; fileRef = E794F3FA12DB4EDC00427836 /* 25-keys.png */; };
+		E714BC6119C2082C009CF594 /* button.png in Resources */ = {isa = PBXBuildFile; fileRef = E750BE3D19B89066001D5681 /* button.png */; };
+		E714BC6219C2082F009CF594 /* buttonpressed.png in Resources */ = {isa = PBXBuildFile; fileRef = E750BE3E19B89066001D5681 /* buttonpressed.png */; };
 		E715B35B1293B7750098D437 /* DOSPadBaseViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E715B35A1293B7750098D437 /* DOSPadBaseViewController.m */; };
 		E715B35C1293B7750098D437 /* DOSPadBaseViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E715B35A1293B7750098D437 /* DOSPadBaseViewController.m */; };
 		E71A268E129A1B2D0013D51C /* landbariphon.png in Resources */ = {isa = PBXBuildFile; fileRef = E71A268C129A1B2D0013D51C /* landbariphon.png */; };
@@ -489,8 +499,6 @@
 		E75276F012A0A77E00278BA1 /* modekeyon.png in Resources */ = {isa = PBXBuildFile; fileRef = E75276E412A0A77E00278BA1 /* modekeyon.png */; };
 		E75276F112A0A77E00278BA1 /* modekeyon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E75276E512A0A77E00278BA1 /* modekeyon@2x.png */; };
 		E75276F212A0A77E00278BA1 /* modekeyon~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = E75276E612A0A77E00278BA1 /* modekeyon~ipad.png */; };
-		E752775C12A0C48700278BA1 /* shortlandkey.png in Resources */ = {isa = PBXBuildFile; fileRef = E752775A12A0C48700278BA1 /* shortlandkey.png */; };
-		E752775D12A0C48700278BA1 /* shortlandkey@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E752775B12A0C48700278BA1 /* shortlandkey@2x.png */; };
 		E76C49381299490200901B69 /* FloatPanel.m in Sources */ = {isa = PBXBuildFile; fileRef = E76C49371299490200901B69 /* FloatPanel.m */; };
 		E76C49391299490300901B69 /* FloatPanel.m in Sources */ = {isa = PBXBuildFile; fileRef = E76C49371299490200901B69 /* FloatPanel.m */; };
 		E76DAEAF123EE08B00C2AEF7 /* FrameskipIndicator.m in Sources */ = {isa = PBXBuildFile; fileRef = E76DAEAE123EE08B00C2AEF7 /* FrameskipIndicator.m */; };
@@ -528,7 +536,6 @@
 		E77DB04811B5E11900B78E69 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E77DB04711B5E11900B78E69 /* OpenGLES.framework */; };
 		E77DB04B11B5E12000B78E69 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FDB9E4CC0DEB84540027A75A /* AudioToolbox.framework */; };
 		E77DB04E11B5E12600B78E69 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D30AB110D05D00D00671497 /* Foundation.framework */; };
-		E77DB05211B5E12C00B78E69 /* GameKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E77DB05111B5E12C00B78E69 /* GameKit.framework */; };
 		E77DB05611B5E13600B78E69 /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E77DB05511B5E13600B78E69 /* MessageUI.framework */; };
 		E77DB05C11B5E17500B78E69 /* libstdc++.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E77DB05B11B5E17500B78E69 /* libstdc++.dylib */; };
 		E78F5D0F11EF615300E2A70F /* diskc in Resources */ = {isa = PBXBuildFile; fileRef = E78F5B2511EF615200E2A70F /* diskc */; };
@@ -599,13 +606,44 @@
 		E7BE1309128BF31A0046990B /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E77DB04711B5E11900B78E69 /* OpenGLES.framework */; };
 		E7BE130A128BF31A0046990B /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FDB9E4CC0DEB84540027A75A /* AudioToolbox.framework */; };
 		E7BE130B128BF31A0046990B /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D30AB110D05D00D00671497 /* Foundation.framework */; };
-		E7BE130C128BF31A0046990B /* GameKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E77DB05111B5E12C00B78E69 /* GameKit.framework */; };
 		E7BE130D128BF31A0046990B /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E77DB05511B5E13600B78E69 /* MessageUI.framework */; };
 		E7BE130E128BF31A0046990B /* libstdc++.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E77DB05B11B5E17500B78E69 /* libstdc++.dylib */; };
 		E7BE130F128BF31A0046990B /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E7D6B8CE11BF332400D34665 /* libz.dylib */; };
 		E7BE1310128BF31A0046990B /* libminizip.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E7D6B89811BF322E00D34665 /* libminizip.a */; };
 		E7BE1311128BF31A0046990B /* libc.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E79E4A0011EC6BF400DEAA7B /* libc.dylib */; };
 		E7BE1312128BF31A0046990B /* libSDL_net.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E778B2B2123918F6008AF49A /* libSDL_net.a */; };
+		E7CDE7D919C2D3AE0079570C /* Icon-iPad-72.png in Resources */ = {isa = PBXBuildFile; fileRef = E7CDE7C919C2D3AE0079570C /* Icon-iPad-72.png */; };
+		E7CDE7DA19C2D3AE0079570C /* Icon-iPad-72.png in Resources */ = {isa = PBXBuildFile; fileRef = E7CDE7C919C2D3AE0079570C /* Icon-iPad-72.png */; };
+		E7CDE7DB19C2D3AE0079570C /* Icon-iPad-72@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E7CDE7CA19C2D3AE0079570C /* Icon-iPad-72@2x.png */; };
+		E7CDE7DC19C2D3AE0079570C /* Icon-iPad-72@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E7CDE7CA19C2D3AE0079570C /* Icon-iPad-72@2x.png */; };
+		E7CDE7DD19C2D3AE0079570C /* Icon-iPad-76.png in Resources */ = {isa = PBXBuildFile; fileRef = E7CDE7CB19C2D3AE0079570C /* Icon-iPad-76.png */; };
+		E7CDE7DE19C2D3AE0079570C /* Icon-iPad-76.png in Resources */ = {isa = PBXBuildFile; fileRef = E7CDE7CB19C2D3AE0079570C /* Icon-iPad-76.png */; };
+		E7CDE7DF19C2D3AE0079570C /* Icon-iPad-76@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E7CDE7CC19C2D3AE0079570C /* Icon-iPad-76@2x.png */; };
+		E7CDE7E019C2D3AE0079570C /* Icon-iPad-76@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E7CDE7CC19C2D3AE0079570C /* Icon-iPad-76@2x.png */; };
+		E7CDE7E119C2D3AE0079570C /* Icon-iPad-Small-29.png in Resources */ = {isa = PBXBuildFile; fileRef = E7CDE7CD19C2D3AE0079570C /* Icon-iPad-Small-29.png */; };
+		E7CDE7E219C2D3AE0079570C /* Icon-iPad-Small-29.png in Resources */ = {isa = PBXBuildFile; fileRef = E7CDE7CD19C2D3AE0079570C /* Icon-iPad-Small-29.png */; };
+		E7CDE7E319C2D3AE0079570C /* Icon-iPad-Small-29@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E7CDE7CE19C2D3AE0079570C /* Icon-iPad-Small-29@2x.png */; };
+		E7CDE7E419C2D3AE0079570C /* Icon-iPad-Small-29@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E7CDE7CE19C2D3AE0079570C /* Icon-iPad-Small-29@2x.png */; };
+		E7CDE7E519C2D3AE0079570C /* Icon-iPad-Small-40.png in Resources */ = {isa = PBXBuildFile; fileRef = E7CDE7CF19C2D3AE0079570C /* Icon-iPad-Small-40.png */; };
+		E7CDE7E619C2D3AE0079570C /* Icon-iPad-Small-40.png in Resources */ = {isa = PBXBuildFile; fileRef = E7CDE7CF19C2D3AE0079570C /* Icon-iPad-Small-40.png */; };
+		E7CDE7E719C2D3AE0079570C /* Icon-iPad-Small-40@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E7CDE7D019C2D3AE0079570C /* Icon-iPad-Small-40@2x.png */; };
+		E7CDE7E819C2D3AE0079570C /* Icon-iPad-Small-40@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E7CDE7D019C2D3AE0079570C /* Icon-iPad-Small-40@2x.png */; };
+		E7CDE7E919C2D3AE0079570C /* Icon-iPad-Small-50.png in Resources */ = {isa = PBXBuildFile; fileRef = E7CDE7D119C2D3AE0079570C /* Icon-iPad-Small-50.png */; };
+		E7CDE7EA19C2D3AE0079570C /* Icon-iPad-Small-50.png in Resources */ = {isa = PBXBuildFile; fileRef = E7CDE7D119C2D3AE0079570C /* Icon-iPad-Small-50.png */; };
+		E7CDE7EB19C2D3AE0079570C /* Icon-iPad-Small-50@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E7CDE7D219C2D3AE0079570C /* Icon-iPad-Small-50@2x.png */; };
+		E7CDE7EC19C2D3AE0079570C /* Icon-iPad-Small-50@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E7CDE7D219C2D3AE0079570C /* Icon-iPad-Small-50@2x.png */; };
+		E7CDE7ED19C2D3AE0079570C /* Icon-iPhone-57.png in Resources */ = {isa = PBXBuildFile; fileRef = E7CDE7D319C2D3AE0079570C /* Icon-iPhone-57.png */; };
+		E7CDE7EE19C2D3AE0079570C /* Icon-iPhone-57.png in Resources */ = {isa = PBXBuildFile; fileRef = E7CDE7D319C2D3AE0079570C /* Icon-iPhone-57.png */; };
+		E7CDE7EF19C2D3AE0079570C /* Icon-iPhone-57@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E7CDE7D419C2D3AE0079570C /* Icon-iPhone-57@2x.png */; };
+		E7CDE7F019C2D3AE0079570C /* Icon-iPhone-57@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E7CDE7D419C2D3AE0079570C /* Icon-iPhone-57@2x.png */; };
+		E7CDE7F119C2D3AE0079570C /* Icon-iPhone-60@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E7CDE7D519C2D3AE0079570C /* Icon-iPhone-60@2x.png */; };
+		E7CDE7F219C2D3AE0079570C /* Icon-iPhone-60@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E7CDE7D519C2D3AE0079570C /* Icon-iPhone-60@2x.png */; };
+		E7CDE7F319C2D3AE0079570C /* Icon-iPhone-Small-29.png in Resources */ = {isa = PBXBuildFile; fileRef = E7CDE7D619C2D3AE0079570C /* Icon-iPhone-Small-29.png */; };
+		E7CDE7F419C2D3AE0079570C /* Icon-iPhone-Small-29.png in Resources */ = {isa = PBXBuildFile; fileRef = E7CDE7D619C2D3AE0079570C /* Icon-iPhone-Small-29.png */; };
+		E7CDE7F519C2D3AE0079570C /* Icon-iPhone-Small-29@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E7CDE7D719C2D3AE0079570C /* Icon-iPhone-Small-29@2x.png */; };
+		E7CDE7F619C2D3AE0079570C /* Icon-iPhone-Small-29@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E7CDE7D719C2D3AE0079570C /* Icon-iPhone-Small-29@2x.png */; };
+		E7CDE7F719C2D3AE0079570C /* Icon-iPhone-Small-40@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E7CDE7D819C2D3AE0079570C /* Icon-iPhone-Small-40@2x.png */; };
+		E7CDE7F819C2D3AE0079570C /* Icon-iPhone-Small-40@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E7CDE7D819C2D3AE0079570C /* Icon-iPhone-Small-40@2x.png */; };
 		E7D214C811E45BDE00D9654E /* keys.m in Sources */ = {isa = PBXBuildFile; fileRef = E7D214C711E45BDE00D9654E /* keys.m */; };
 		E7D6B8AD11BF325700D34665 /* crypt.h in Headers */ = {isa = PBXBuildFile; fileRef = E7D6B89E11BF325700D34665 /* crypt.h */; };
 		E7D6B8AE11BF325700D34665 /* ioapi.c in Sources */ = {isa = PBXBuildFile; fileRef = E7D6B89F11BF325700D34665 /* ioapi.c */; };
@@ -886,8 +924,6 @@
 		1D30AB110D05D00D00671497 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		1D3623EB0D0F72F000981E51 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		1DF5F4DF0D08C38300B7A737 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
-		CDF011FD190E11B000020D19 /* UIExtendedTextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UIExtendedTextField.h; sourceTree = "<group>"; };
-		CDF011FE190E11B000020D19 /* UIExtendedTextField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UIExtendedTextField.m; sourceTree = "<group>"; };
 		E70C044012A4B43F00AC178F /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		E70C045312A4B4D700AC178F /* start-up.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; name = "start-up.mp3"; path = "dospad/audio-res/start-up.mp3"; sourceTree = "<group>"; };
 		E70EA4101242F83200528C9D /* SliderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SliderView.h; path = ../iPad/SliderView.h; sourceTree = "<group>"; };
@@ -925,6 +961,8 @@
 		E7123FDA129D0D470021237F /* glass-southeast.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "glass-southeast.png"; sourceTree = "<group>"; };
 		E7123FDC129D0D470021237F /* glass-southwest.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "glass-southwest.png"; sourceTree = "<group>"; };
 		E7123FDE129D0D470021237F /* glass-west.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "glass-west.png"; sourceTree = "<group>"; };
+		E714BC5619C1EA3B009CF594 /* UIExtendedTextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UIExtendedTextField.h; sourceTree = "<group>"; };
+		E714BC5719C1EA3B009CF594 /* UIExtendedTextField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UIExtendedTextField.m; sourceTree = "<group>"; };
 		E715B3591293B7740098D437 /* DOSPadBaseViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DOSPadBaseViewController.h; sourceTree = "<group>"; };
 		E715B35A1293B7750098D437 /* DOSPadBaseViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DOSPadBaseViewController.m; sourceTree = "<group>"; };
 		E71A268C129A1B2D0013D51C /* landbariphon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = landbariphon.png; path = "dospad/misc-res/landbariphon.png"; sourceTree = "<group>"; };
@@ -1288,7 +1326,6 @@
 		E77DB04111B5E10700B78E69 /* libstdc++.6.0.9.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libstdc++.6.0.9.dylib"; path = "usr/lib/libstdc++.6.0.9.dylib"; sourceTree = SDKROOT; };
 		E77DB04311B5E11100B78E69 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		E77DB04711B5E11900B78E69 /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
-		E77DB05111B5E12C00B78E69 /* GameKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GameKit.framework; path = System/Library/Frameworks/GameKit.framework; sourceTree = SDKROOT; };
 		E77DB05511B5E13600B78E69 /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
 		E77DB05B11B5E17500B78E69 /* libstdc++.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libstdc++.dylib"; path = "usr/lib/gcc/arm-apple-darwin10/4.2.1/libstdc++.dylib"; sourceTree = SDKROOT; };
 		E78F5B2511EF615200E2A70F /* diskc */ = {isa = PBXFileReference; lastKnownFileType = folder; path = diskc; sourceTree = "<group>"; };
@@ -1326,6 +1363,22 @@
 		E7BE0F01128B85140046990B /* packages */ = {isa = PBXFileReference; lastKnownFileType = folder; path = packages; sourceTree = "<group>"; };
 		E7BE1316128BF31A0046990B /* iDOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iDOS.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E7BE1318128BF31A0046990B /* iDOS-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "iDOS-Info.plist"; sourceTree = "<group>"; };
+		E7CDE7C919C2D3AE0079570C /* Icon-iPad-72.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-iPad-72.png"; sourceTree = "<group>"; };
+		E7CDE7CA19C2D3AE0079570C /* Icon-iPad-72@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-iPad-72@2x.png"; sourceTree = "<group>"; };
+		E7CDE7CB19C2D3AE0079570C /* Icon-iPad-76.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-iPad-76.png"; sourceTree = "<group>"; };
+		E7CDE7CC19C2D3AE0079570C /* Icon-iPad-76@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-iPad-76@2x.png"; sourceTree = "<group>"; };
+		E7CDE7CD19C2D3AE0079570C /* Icon-iPad-Small-29.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-iPad-Small-29.png"; sourceTree = "<group>"; };
+		E7CDE7CE19C2D3AE0079570C /* Icon-iPad-Small-29@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-iPad-Small-29@2x.png"; sourceTree = "<group>"; };
+		E7CDE7CF19C2D3AE0079570C /* Icon-iPad-Small-40.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-iPad-Small-40.png"; sourceTree = "<group>"; };
+		E7CDE7D019C2D3AE0079570C /* Icon-iPad-Small-40@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-iPad-Small-40@2x.png"; sourceTree = "<group>"; };
+		E7CDE7D119C2D3AE0079570C /* Icon-iPad-Small-50.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-iPad-Small-50.png"; sourceTree = "<group>"; };
+		E7CDE7D219C2D3AE0079570C /* Icon-iPad-Small-50@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-iPad-Small-50@2x.png"; sourceTree = "<group>"; };
+		E7CDE7D319C2D3AE0079570C /* Icon-iPhone-57.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-iPhone-57.png"; sourceTree = "<group>"; };
+		E7CDE7D419C2D3AE0079570C /* Icon-iPhone-57@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-iPhone-57@2x.png"; sourceTree = "<group>"; };
+		E7CDE7D519C2D3AE0079570C /* Icon-iPhone-60@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-iPhone-60@2x.png"; sourceTree = "<group>"; };
+		E7CDE7D619C2D3AE0079570C /* Icon-iPhone-Small-29.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-iPhone-Small-29.png"; sourceTree = "<group>"; };
+		E7CDE7D719C2D3AE0079570C /* Icon-iPhone-Small-29@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-iPhone-Small-29@2x.png"; sourceTree = "<group>"; };
+		E7CDE7D819C2D3AE0079570C /* Icon-iPhone-Small-40@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-iPhone-Small-40@2x.png"; sourceTree = "<group>"; };
 		E7D214C511E45BD000D9654E /* keys.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = keys.h; sourceTree = "<group>"; };
 		E7D214C711E45BDE00D9654E /* keys.m */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; path = keys.m; sourceTree = "<group>"; };
 		E7D6B89811BF322E00D34665 /* libminizip.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libminizip.a; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -1526,7 +1579,6 @@
 				E77DB04811B5E11900B78E69 /* OpenGLES.framework in Frameworks */,
 				E77DB04B11B5E12000B78E69 /* AudioToolbox.framework in Frameworks */,
 				E77DB04E11B5E12600B78E69 /* Foundation.framework in Frameworks */,
-				E77DB05211B5E12C00B78E69 /* GameKit.framework in Frameworks */,
 				E77DB05611B5E13600B78E69 /* MessageUI.framework in Frameworks */,
 				E77DB05C11B5E17500B78E69 /* libstdc++.dylib in Frameworks */,
 				E7D6B8CF11BF332400D34665 /* libz.dylib in Frameworks */,
@@ -1563,9 +1615,9 @@
 				E7BE1309128BF31A0046990B /* OpenGLES.framework in Frameworks */,
 				E7BE130A128BF31A0046990B /* AudioToolbox.framework in Frameworks */,
 				E7BE130B128BF31A0046990B /* Foundation.framework in Frameworks */,
-				E7BE130C128BF31A0046990B /* GameKit.framework in Frameworks */,
 				E7BE130D128BF31A0046990B /* MessageUI.framework in Frameworks */,
 				E7BE130E128BF31A0046990B /* libstdc++.dylib in Frameworks */,
+				E714BC5B19C1EA79009CF594 /* CoreMIDI.framework in Frameworks */,
 				E7BE130F128BF31A0046990B /* libz.dylib in Frameworks */,
 				E7BE1310128BF31A0046990B /* libminizip.a in Frameworks */,
 				E7BE1311128BF31A0046990B /* libc.dylib in Frameworks */,
@@ -1644,6 +1696,7 @@
 		29B97314FDCFA39411CA2CEA /* CustomTemplate */ = {
 			isa = PBXGroup;
 			children = (
+				E79E44F411EC2D5200DEAA7B /* Resources */,
 				E77DAFAF11B5D83600B78E69 /* dospad */,
 				E71E60F211B550FD00EC5A05 /* dosbox */,
 				FD99B8BC0DD52E5C00FB1D6B /* SDL Headers */,
@@ -1658,7 +1711,6 @@
 				E77DB04111B5E10700B78E69 /* libstdc++.6.0.9.dylib */,
 				E77DB04311B5E11100B78E69 /* QuartzCore.framework */,
 				E77DB04711B5E11900B78E69 /* OpenGLES.framework */,
-				E77DB05111B5E12C00B78E69 /* GameKit.framework */,
 				E77DB05511B5E13600B78E69 /* MessageUI.framework */,
 				E77DB05B11B5E17500B78E69 /* libstdc++.dylib */,
 				E7D6B8CE11BF332400D34665 /* libz.dylib */,
@@ -2335,7 +2387,6 @@
 				E79C2E5511E131B8002FE898 /* iPhone */,
 				E77DAFB411B5D83600B78E69 /* iPad */,
 				E77DAFC311B5D83600B78E69 /* Shared */,
-				E79E44F411EC2D5200DEAA7B /* Resources */,
 			);
 			path = dospad;
 			sourceTree = "<group>";
@@ -2354,6 +2405,8 @@
 		E77DAFC311B5D83600B78E69 /* Shared */ = {
 			isa = PBXGroup;
 			children = (
+				E714BC5619C1EA3B009CF594 /* UIExtendedTextField.h */,
+				E714BC5719C1EA3B009CF594 /* UIExtendedTextField.m */,
 				E750BE4C19BAE4EA001D5681 /* ViewControllers */,
 				E750BE4B19BAE47E001D5681 /* CustomView */,
 				E750BE4A19BAE441001D5681 /* Util */,
@@ -2373,8 +2426,6 @@
 				FD689F170E26E5D900F90B21 /* SDL_uikitopenglview.m */,
 				FD689FCD0E26E9D400F90B21 /* SDL_uikitappdelegate.h */,
 				FD689FCC0E26E9D400F90B21 /* SDL_uikitappdelegate.m */,
-				CDF011FD190E11B000020D19 /* UIExtendedTextField.h */,
-				CDF011FE190E11B000020D19 /* UIExtendedTextField.m */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
@@ -2391,6 +2442,7 @@
 		E79E44F411EC2D5200DEAA7B /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				E7CDE7C819C2D3AE0079570C /* AppIcons */,
 				E750BE3A19B86CBC001D5681 /* LaunchImages */,
 				E7107146129A8E5A00B21291 /* floatpanel-res */,
 				E72BE6F412911DD1009DC46A /* misc-res */,
@@ -2402,7 +2454,29 @@
 				E7BE1318128BF31A0046990B /* iDOS-Info.plist */,
 			);
 			name = Resources;
-			path = ..;
+			sourceTree = "<group>";
+		};
+		E7CDE7C819C2D3AE0079570C /* AppIcons */ = {
+			isa = PBXGroup;
+			children = (
+				E7CDE7C919C2D3AE0079570C /* Icon-iPad-72.png */,
+				E7CDE7CA19C2D3AE0079570C /* Icon-iPad-72@2x.png */,
+				E7CDE7CB19C2D3AE0079570C /* Icon-iPad-76.png */,
+				E7CDE7CC19C2D3AE0079570C /* Icon-iPad-76@2x.png */,
+				E7CDE7CD19C2D3AE0079570C /* Icon-iPad-Small-29.png */,
+				E7CDE7CE19C2D3AE0079570C /* Icon-iPad-Small-29@2x.png */,
+				E7CDE7CF19C2D3AE0079570C /* Icon-iPad-Small-40.png */,
+				E7CDE7D019C2D3AE0079570C /* Icon-iPad-Small-40@2x.png */,
+				E7CDE7D119C2D3AE0079570C /* Icon-iPad-Small-50.png */,
+				E7CDE7D219C2D3AE0079570C /* Icon-iPad-Small-50@2x.png */,
+				E7CDE7D319C2D3AE0079570C /* Icon-iPhone-57.png */,
+				E7CDE7D419C2D3AE0079570C /* Icon-iPhone-57@2x.png */,
+				E7CDE7D519C2D3AE0079570C /* Icon-iPhone-60@2x.png */,
+				E7CDE7D619C2D3AE0079570C /* Icon-iPhone-Small-29.png */,
+				E7CDE7D719C2D3AE0079570C /* Icon-iPhone-Small-29@2x.png */,
+				E7CDE7D819C2D3AE0079570C /* Icon-iPhone-Small-40@2x.png */,
+			);
+			path = AppIcons;
 			sourceTree = "<group>";
 		};
 		E7D6B89C11BF325700D34665 /* minizip */ = {
@@ -3122,6 +3196,16 @@
 			isa = PBXProject;
 			attributes = {
 				LastUpgradeCheck = 0500;
+				TargetAttributes = {
+					E7BE1297128BF31A0046990B = {
+						DevelopmentTeam = 4C8YZND49H;
+						SystemCapabilities = {
+							com.apple.GameCenter = {
+								enabled = 0;
+							};
+						};
+					};
+				};
 			};
 			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "dospad" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -3166,6 +3250,7 @@
 				E773501F128ACE3C0009CBEA /* northeast.png in Resources */,
 				E750BE3F19B89066001D5681 /* button.png in Resources */,
 				E750BE4619B8B0D2001D5681 /* gift.png in Resources */,
+				E7CDE7DF19C2D3AE0079570C /* Icon-iPad-76@2x.png in Resources */,
 				E7735020128ACE3C0009CBEA /* northwest.png in Resources */,
 				E7735021128ACE3C0009CBEA /* south.png in Resources */,
 				E7735022128ACE3C0009CBEA /* southeast.png in Resources */,
@@ -3173,9 +3258,11 @@
 				E7735024128ACE3C0009CBEA /* west.png in Resources */,
 				E773502F128AD0540009CBEA /* centre@2x.png in Resources */,
 				E7735042128AD8BD0009CBEA /* dpad.png in Resources */,
+				E7CDE7DB19C2D3AE0079570C /* Icon-iPad-72@2x.png in Resources */,
 				E7735043128AD8BD0009CBEA /* dpad@2x.png in Resources */,
 				E7735044128AD8BD0009CBEA /* dpadpressed.png in Resources */,
 				E72BE6DE12911B5C009DC46A /* OptionViewController.xib in Resources */,
+				E7CDE7E919C2D3AE0079570C /* Icon-iPad-Small-50.png in Resources */,
 				E72BE6E012911B5C009DC46A /* TextViewController.xib in Resources */,
 				E72BE6E212911B5C009DC46A /* WebViewController.xib in Resources */,
 				E72BE72C12911E2B009DC46A /* bar-portrait-iphone.png in Resources */,
@@ -3184,7 +3271,9 @@
 				E72BE73012911E2B009DC46A /* dospadportrait.jpg in Resources */,
 				E72BE73112911E2B009DC46A /* dpnote.png in Resources */,
 				E72BE73212911E2B009DC46A /* gear.png in Resources */,
+				E7CDE7E319C2D3AE0079570C /* Icon-iPad-Small-29@2x.png in Resources */,
 				E72BE73312911E2B009DC46A /* holdfinger.png in Resources */,
+				E7CDE7F319C2D3AE0079570C /* Icon-iPhone-Small-29.png in Resources */,
 				E72BE73612911E2B009DC46A /* keyboard.png in Resources */,
 				E72BE73712911E2B009DC46A /* leftmouse.png in Resources */,
 				E72BE73812911E2B009DC46A /* leftmouse@2x.png in Resources */,
@@ -3214,7 +3303,9 @@
 				E7107167129A8E5A00B21291 /* modegamepadpressed.png in Resources */,
 				E7107168129A8E5A00B21291 /* modejoy.png in Resources */,
 				E7107169129A8E5A00B21291 /* modejoypressed.png in Resources */,
+				E7CDE7E719C2D3AE0079570C /* Icon-iPad-Small-40@2x.png in Resources */,
 				E710716A129A8E5A00B21291 /* modenumpad.png in Resources */,
+				E7CDE7EF19C2D3AE0079570C /* Icon-iPhone-57@2x.png in Resources */,
 				E710716B129A8E5A00B21291 /* modenumpadpressed.png in Resources */,
 				E710716C129A8E5A00B21291 /* options.png in Resources */,
 				E710716D129A8E5A00B21291 /* sticky.png in Resources */,
@@ -3226,16 +3317,20 @@
 				E71071B2129AA00000B21291 /* modenumpadpressed@2x.png in Resources */,
 				E71071B6129AA13500B21291 /* cpuwindow@2x.png in Resources */,
 				E71071D9129AA7CF00B21291 /* unsticky.png in Resources */,
+				E7CDE7E119C2D3AE0079570C /* Icon-iPad-Small-29.png in Resources */,
 				E710722D129AB6F200B21291 /* modegamepad~ipad.png in Resources */,
 				E710722E129AB6F200B21291 /* modegamepadpressed~ipad.png in Resources */,
 				E729BE08129B506E002B05B2 /* cpuwindow~ipad.png in Resources */,
 				E729BE09129B506E002B05B2 /* exitfull~ipad.png in Resources */,
+				E7CDE7F119C2D3AE0079570C /* Icon-iPhone-60@2x.png in Resources */,
 				E729BE0A129B506E002B05B2 /* modejoy~ipad.png in Resources */,
 				E729BE0B129B506E002B05B2 /* modejoypressed~ipad.png in Resources */,
 				E729BE0C129B506E002B05B2 /* modenumpad~ipad.png in Resources */,
+				E7CDE7DD19C2D3AE0079570C /* Icon-iPad-76.png in Resources */,
 				E750BE4019B89066001D5681 /* buttonpressed.png in Resources */,
 				E729BE0D129B506E002B05B2 /* modenumpadpressed~ipad.png in Resources */,
 				E729BE0E129B506E002B05B2 /* options@2x.png in Resources */,
+				E7CDE7D919C2D3AE0079570C /* Icon-iPad-72.png in Resources */,
 				E729BE0F129B506E002B05B2 /* options~ipad.png in Resources */,
 				E729BE10129B506E002B05B2 /* sticky@2x.png in Resources */,
 				E729BE11129B506E002B05B2 /* sticky~ipad.png in Resources */,
@@ -3251,11 +3346,13 @@
 				E7123FF3129D0D470021237F /* dpadglass.png in Resources */,
 				E7123FF4129D0D470021237F /* glass-centre.png in Resources */,
 				E7123FF6129D0D470021237F /* glass-east.png in Resources */,
+				E7CDE7F719C2D3AE0079570C /* Icon-iPhone-Small-40@2x.png in Resources */,
 				E7123FF8129D0D470021237F /* glass-north.png in Resources */,
 				E7123FFA129D0D470021237F /* glass-northeast.png in Resources */,
 				E7123FFC129D0D470021237F /* glass-northwest.png in Resources */,
 				E7123FFE129D0D470021237F /* glass-south.png in Resources */,
 				E7124000129D0D470021237F /* glass-southeast.png in Resources */,
+				E7CDE7ED19C2D3AE0079570C /* Icon-iPhone-57.png in Resources */,
 				E7124002129D0D470021237F /* glass-southwest.png in Resources */,
 				E7124004129D0D470021237F /* glass-west.png in Resources */,
 				E7D78A69129E19380020D4A7 /* btn.png in Resources */,
@@ -3263,9 +3360,12 @@
 				E7D78AC8129E98480020D4A7 /* fire.png in Resources */,
 				E7D78AC9129E98480020D4A7 /* firepressed.png in Resources */,
 				E75276ED12A0A77E00278BA1 /* modekeyoff.png in Resources */,
+				E7CDE7E519C2D3AE0079570C /* Icon-iPad-Small-40.png in Resources */,
+				E7CDE7EB19C2D3AE0079570C /* Icon-iPad-Small-50@2x.png in Resources */,
 				E75276EE12A0A77E00278BA1 /* modekeyoff@2x.png in Resources */,
 				E75276EF12A0A77E00278BA1 /* modekeyoff~ipad.png in Resources */,
 				E75276F012A0A77E00278BA1 /* modekeyon.png in Resources */,
+				E7CDE7F519C2D3AE0079570C /* Icon-iPhone-Small-29@2x.png in Resources */,
 				E75276F112A0A77E00278BA1 /* modekeyon@2x.png in Resources */,
 				E75276F212A0A77E00278BA1 /* modekeyon~ipad.png in Resources */,
 				E7EB354912A7C4320091D718 /* exitfull@2x.png in Resources */,
@@ -3296,6 +3396,7 @@
 				E7BE12D1128BF31A0046990B /* east.png in Resources */,
 				E7BE12D2128BF31A0046990B /* north.png in Resources */,
 				E7BE12D3128BF31A0046990B /* northeast.png in Resources */,
+				E714BC5F19C207EC009CF594 /* 25-Keys-with-6x4-grid.png in Resources */,
 				E7BE12D4128BF31A0046990B /* northwest.png in Resources */,
 				E7BE12D5128BF31A0046990B /* south.png in Resources */,
 				E7BE12D6128BF31A0046990B /* southeast.png in Resources */,
@@ -3307,16 +3408,22 @@
 				E7BE12E4128BF31A0046990B /* dpadpressed.png in Resources */,
 				E7BE12E6128BF31A0046990B /* packages in Resources */,
 				E72BE6EA12911B5C009DC46A /* OptionViewController.xib in Resources */,
+				E7CDE7F619C2D3AE0079570C /* Icon-iPhone-Small-29@2x.png in Resources */,
 				E72BE6EC12911B5C009DC46A /* TextViewController.xib in Resources */,
 				E72BE6EE12911B5C009DC46A /* WebViewController.xib in Resources */,
+				E7CDE7EC19C2D3AE0079570C /* Icon-iPad-Small-50@2x.png in Resources */,
 				E72BE74212911E2B009DC46A /* bar-portrait-iphone.png in Resources */,
+				E7CDE7E019C2D3AE0079570C /* Icon-iPad-76@2x.png in Resources */,
 				E72BE74312911E2B009DC46A /* bar-portrait-iphone@2x.png in Resources */,
 				E72BE74412911E2B009DC46A /* bar.png in Resources */,
+				E7CDE7F219C2D3AE0079570C /* Icon-iPhone-60@2x.png in Resources */,
 				E72BE74712911E2B009DC46A /* dpnote.png in Resources */,
 				E72BE74812911E2B009DC46A /* gear.png in Resources */,
 				E72BE74912911E2B009DC46A /* holdfinger.png in Resources */,
 				E72BE74C12911E2B009DC46A /* keyboard.png in Resources */,
+				E7CDE7EA19C2D3AE0079570C /* Icon-iPad-Small-50.png in Resources */,
 				E72BE74D12911E2B009DC46A /* leftmouse.png in Resources */,
+				E7CDE7DA19C2D3AE0079570C /* Icon-iPad-72.png in Resources */,
 				E72BE74E12911E2B009DC46A /* leftmouse@2x.png in Resources */,
 				E72BE74F12911E2B009DC46A /* longbutton.png in Resources */,
 				E72BE75012911E2B009DC46A /* modesel.png in Resources */,
@@ -3326,6 +3433,7 @@
 				E72BE75412911E2B009DC46A /* switch.png in Resources */,
 				E72BE75512911E2B009DC46A /* switch@2x.png in Resources */,
 				E72BE75612911E2B009DC46A /* switchbutton.png in Resources */,
+				E7CDE7DC19C2D3AE0079570C /* Icon-iPad-72@2x.png in Resources */,
 				E72BE75712911E2B009DC46A /* switchbutton@2x.png in Resources */,
 				E72BE75E12911E83009DC46A /* joystickbtn.wav in Resources */,
 				E72BE75F12911E83009DC46A /* joystickmove.wav in Resources */,
@@ -3338,11 +3446,13 @@
 				E7107154129A8E5A00B21291 /* cpuwindow.png in Resources */,
 				E7107155129A8E5A00B21291 /* exitfull.png in Resources */,
 				E7107156129A8E5A00B21291 /* landbarblank.png in Resources */,
+				E714BC5D19C1EAA7009CF594 /* Default-568h@2x.png in Resources */,
 				E7107157129A8E5A00B21291 /* landbarblank@2x.png in Resources */,
 				E7107158129A8E5A00B21291 /* landbarblank~iPad.png in Resources */,
 				E7107159129A8E5A00B21291 /* modegamepad.png in Resources */,
 				E710715A129A8E5A00B21291 /* modegamepadpressed.png in Resources */,
 				E710715B129A8E5A00B21291 /* modejoy.png in Resources */,
+				E7CDE7EE19C2D3AE0079570C /* Icon-iPhone-57.png in Resources */,
 				E710715C129A8E5A00B21291 /* modejoypressed.png in Resources */,
 				E710715D129A8E5A00B21291 /* modenumpad.png in Resources */,
 				E710715E129A8E5A00B21291 /* modenumpadpressed.png in Resources */,
@@ -3350,6 +3460,7 @@
 				E7107160129A8E5A00B21291 /* sticky.png in Resources */,
 				E71071A7129AA00000B21291 /* modegamepad@2x.png in Resources */,
 				E71071A8129AA00000B21291 /* modegamepadpressed@2x.png in Resources */,
+				E7CDE7E819C2D3AE0079570C /* Icon-iPad-Small-40@2x.png in Resources */,
 				E71071A9129AA00000B21291 /* modejoy@2x.png in Resources */,
 				E71071AA129AA00000B21291 /* modejoypressed@2x.png in Resources */,
 				E71071AB129AA00000B21291 /* modenumpad@2x.png in Resources */,
@@ -3358,18 +3469,21 @@
 				E71071D8129AA7CF00B21291 /* unsticky.png in Resources */,
 				E710722B129AB6F200B21291 /* modegamepad~ipad.png in Resources */,
 				E710722C129AB6F200B21291 /* modegamepadpressed~ipad.png in Resources */,
+				E7CDE7F819C2D3AE0079570C /* Icon-iPhone-Small-40@2x.png in Resources */,
 				E729BDFC129B506E002B05B2 /* cpuwindow~ipad.png in Resources */,
 				E729BDFD129B506E002B05B2 /* exitfull~ipad.png in Resources */,
 				E729BDFE129B506E002B05B2 /* modejoy~ipad.png in Resources */,
 				E729BDFF129B506E002B05B2 /* modejoypressed~ipad.png in Resources */,
 				E729BE00129B506E002B05B2 /* modenumpad~ipad.png in Resources */,
 				E729BE01129B506E002B05B2 /* modenumpadpressed~ipad.png in Resources */,
+				E7CDE7E619C2D3AE0079570C /* Icon-iPad-Small-40.png in Resources */,
 				E729BE02129B506E002B05B2 /* options@2x.png in Resources */,
 				E729BE03129B506E002B05B2 /* options~ipad.png in Resources */,
 				E729BE04129B506E002B05B2 /* sticky@2x.png in Resources */,
 				E729BE05129B506E002B05B2 /* sticky~ipad.png in Resources */,
 				E729BE06129B506E002B05B2 /* unsticky@2x.png in Resources */,
 				E729BE07129B506E002B05B2 /* unsticky~ipad.png in Resources */,
+				E714BC6119C2082C009CF594 /* button.png in Resources */,
 				E729BF4F129BF18F002B05B2 /* mouseoff.png in Resources */,
 				E729BF50129BF18F002B05B2 /* mouseoff@2x.png in Resources */,
 				E729BF51129BF18F002B05B2 /* mouseoff~ipad.png in Resources */,
@@ -3379,14 +3493,19 @@
 				E7123FE0129D0D470021237F /* dpadglass.png in Resources */,
 				E7123FE1129D0D470021237F /* glass-centre.png in Resources */,
 				E7123FE3129D0D470021237F /* glass-east.png in Resources */,
+				E7CDE7E419C2D3AE0079570C /* Icon-iPad-Small-29@2x.png in Resources */,
+				E7CDE7F419C2D3AE0079570C /* Icon-iPhone-Small-29.png in Resources */,
 				E7123FE5129D0D470021237F /* glass-north.png in Resources */,
 				E7123FE7129D0D470021237F /* glass-northeast.png in Resources */,
+				E7CDE7DE19C2D3AE0079570C /* Icon-iPad-76.png in Resources */,
 				E7123FE9129D0D470021237F /* glass-northwest.png in Resources */,
 				E7123FEB129D0D470021237F /* glass-south.png in Resources */,
 				E7123FED129D0D470021237F /* glass-southeast.png in Resources */,
 				E7123FEF129D0D470021237F /* glass-southwest.png in Resources */,
 				E7123FF1129D0D470021237F /* glass-west.png in Resources */,
 				E7D78A0A129DF3210020D4A7 /* idos-portrait.jpg in Resources */,
+				E714BC6219C2082F009CF594 /* buttonpressed.png in Resources */,
+				E714BC6019C207EF009CF594 /* 25-keys.png in Resources */,
 				E7D78A65129E19380020D4A7 /* btn.png in Resources */,
 				E7D78A67129E19380020D4A7 /* btnpressed.png in Resources */,
 				E7D78AC6129E98480020D4A7 /* fire.png in Resources */,
@@ -3396,10 +3515,11 @@
 				E75276E912A0A77E00278BA1 /* modekeyoff~ipad.png in Resources */,
 				E75276EA12A0A77E00278BA1 /* modekeyon.png in Resources */,
 				E75276EB12A0A77E00278BA1 /* modekeyon@2x.png in Resources */,
+				E714BC5E19C207E5009CF594 /* kbd.png in Resources */,
+				E7CDE7F019C2D3AE0079570C /* Icon-iPhone-57@2x.png in Resources */,
 				E75276EC12A0A77E00278BA1 /* modekeyon~ipad.png in Resources */,
-				E752775C12A0C48700278BA1 /* shortlandkey.png in Resources */,
-				E752775D12A0C48700278BA1 /* shortlandkey@2x.png in Resources */,
 				E793705312A1F3CA008A2012 /* idos-splash.gif in Resources */,
+				E7CDE7E219C2D3AE0079570C /* Icon-iPad-Small-29.png in Resources */,
 				E70C045412A4B4D700AC178F /* start-up.mp3 in Resources */,
 				E7B59B3012A65E3F00D4DB01 /* installcomplete.wav in Resources */,
 				E7EB354812A7C4320091D718 /* exitfull@2x.png in Resources */,
@@ -3450,6 +3570,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E714BC5819C1EA3B009CF594 /* UIExtendedTextField.m in Sources */,
 				E77DAFC811B5D83700B78E69 /* DosPadViewController.m in Sources */,
 				E77DAFCF11B5D83700B78E69 /* main.m in Sources */,
 				E7D214C811E45BDE00D9654E /* keys.m in Sources */,
@@ -3458,7 +3579,6 @@
 				E745CE3F11F5991F00F00F7F /* HoldIndicator.m in Sources */,
 				E76DAEAF123EE08B00C2AEF7 /* FrameskipIndicator.m in Sources */,
 				E775412112403C3C009EC11A /* KeyLockIndicator.m in Sources */,
-				CDF011FF190E11B000020D19 /* UIExtendedTextField.m in Sources */,
 				E7996FAD1241C0A800502015 /* TipView.m in Sources */,
 				E79970261241FE4A00502015 /* CommandListView.m in Sources */,
 				E799702B12421D9F00502015 /* ModalViewController.m in Sources */,
@@ -3625,11 +3745,13 @@
 				E7BE12EA128BF31A0046990B /* DosPadViewController.m in Sources */,
 				E7BE12EB128BF31A0046990B /* main.m in Sources */,
 				E7BE12F3128BF31A0046990B /* keys.m in Sources */,
+				E714BC5C19C1EA8B009CF594 /* ColorTheme.m in Sources */,
 				E7BE12F4128BF31A0046990B /* SDL_uikitopenglview.m in Sources */,
 				E7BE12F5128BF31A0046990B /* SDL_uikitappdelegate.m in Sources */,
 				E7BE12F6128BF31A0046990B /* HoldIndicator.m in Sources */,
 				E7BE12F7128BF31A0046990B /* FrameskipIndicator.m in Sources */,
 				E7BE12F8128BF31A0046990B /* KeyLockIndicator.m in Sources */,
+				E714BC5919C1EA3B009CF594 /* UIExtendedTextField.m in Sources */,
 				E7BE12F9128BF31A0046990B /* TipView.m in Sources */,
 				E7BE12FA128BF31A0046990B /* CommandListView.m in Sources */,
 				E7BE12FB128BF31A0046990B /* ModalViewController.m in Sources */,
@@ -3646,6 +3768,7 @@
 				E72BE6E812911B5C009DC46A /* KeyView.m in Sources */,
 				E72BE6E912911B5C009DC46A /* OptionViewController.m in Sources */,
 				E72BE6EB12911B5C009DC46A /* TextViewController.m in Sources */,
+				E714BC5A19C1EA5F009CF594 /* PianoKeyboard.m in Sources */,
 				E72BE6ED12911B5C009DC46A /* WebViewController.m in Sources */,
 				E72BE6EF12911B5C009DC46A /* ZipArchive.m in Sources */,
 				E715B35B1293B7750098D437 /* DOSPadBaseViewController.m in Sources */,
@@ -3855,7 +3978,7 @@
 				GCC_DEBUGGING_SYMBOLS = full;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = NO;
-				IPHONEOS_DEPLOYMENT_TARGET = 3.1.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
 				ONLY_ACTIVE_ARCH = YES;
 				PREBINDING = NO;
 				SDKROOT = iphoneos;
@@ -3870,7 +3993,7 @@
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = NO;
-				IPHONEOS_DEPLOYMENT_TARGET = 3.1.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
 				PREBINDING = NO;
 				SDKROOT = iphoneos;
 			};
@@ -4036,6 +4159,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
@@ -4054,7 +4178,7 @@
 				HEADER_SEARCH_PATHS = ./include;
 				INFOPLIST_FILE = "iDOS-Info.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
-				IPHONEOS_DEPLOYMENT_TARGET = 3.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.1.1;
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = (
@@ -4068,9 +4192,9 @@
 				PROVISIONING_PROFILE = "";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
 				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
+				SKIP_INSTALL = NO;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				VALID_ARCHS = armv6;
+				VALID_ARCHS = "armv7 arm64 armv7s";
 			};
 			name = Debug;
 		};
@@ -4078,6 +4202,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
@@ -4094,7 +4219,7 @@
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				INFOPLIST_FILE = "iDOS-Info.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
-				IPHONEOS_DEPLOYMENT_TARGET = 3.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.1.1;
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = (
@@ -4108,12 +4233,202 @@
 				PROVISIONING_PROFILE = "";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
 				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
+				SKIP_INSTALL = NO;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = NO;
 				ZERO_LINK = NO;
 			};
 			name = Release;
+		};
+		E7CDE7C019C2B3550079570C /* AppStore */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
+				GCC_C_LANGUAGE_STANDARD = c99;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = NO;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
+				PREBINDING = NO;
+				SDKROOT = iphoneos;
+			};
+			name = AppStore;
+		};
+		E7CDE7C119C2B3550079570C /* AppStore */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = " $(ARCHS_STANDARD_32_BIT)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEPLOYMENT_LOCATION = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_PREPROCESSOR_DEFINITIONS = IPHONEOS;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				IPHONEOS_DEPLOYMENT_TARGET = 3.2;
+				ONLY_ACTIVE_ARCH = YES;
+				PREBINDING = NO;
+				PRODUCT_NAME = SDLiPhoneOS;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				VALID_ARCHS = "armv7 armv7s arm64";
+				ZERO_LINK = NO;
+			};
+			name = AppStore;
+		};
+		E7CDE7C219C2B3550079570C /* AppStore */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = " $(ARCHS_STANDARD_32_BIT)";
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				PRODUCT_NAME = "Generate Header Files";
+				ZERO_LINK = NO;
+			};
+			name = AppStore;
+		};
+		E7CDE7C319C2B3550079570C /* AppStore */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = " $(ARCHS_STANDARD_32_BIT)";
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				ONLY_ACTIVE_ARCH = YES;
+				PREBINDING = NO;
+				PRODUCT_NAME = SDL_net;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				USER_HEADER_SEARCH_PATHS = "./include/**";
+				ZERO_LINK = NO;
+			};
+			name = AppStore;
+		};
+		E7CDE7C419C2B3550079570C /* AppStore */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = " $(ARCHS_STANDARD_32_BIT)";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Chaoji Li (4C8YZND49H)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/UIKit.framework/Headers/UIKit.h";
+				GCC_PREPROCESSOR_DEFINITIONS = IPHONEOS;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				INFOPLIST_FILE = "dospad-Info.plist";
+				INSTALL_PATH = /Applications;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.1.1;
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				ONLY_ACTIVE_ARCH = YES;
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					UIKit,
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = dospad;
+				PROVISIONING_PROFILE = "94FE8ACA-23B3-49A8-BD6D-722796413BC2";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = NO;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = NO;
+				VALID_ARCHS = "armv7s armv7 arm64";
+				ZERO_LINK = NO;
+			};
+			name = AppStore;
+		};
+		E7CDE7C519C2B3550079570C /* AppStore */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = " $(ARCHS_STANDARD_32_BIT)";
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_PREPROCESSOR_DEFINITIONS = IPHONEOS;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				HEADER_SEARCH_PATHS = ./include;
+				IPHONEOS_DEPLOYMENT_TARGET = 3.2;
+				ONLY_ACTIVE_ARCH = YES;
+				PREBINDING = NO;
+				PRODUCT_NAME = dosbox;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				ZERO_LINK = NO;
+			};
+			name = AppStore;
+		};
+		E7CDE7C619C2B3550079570C /* AppStore */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = " $(ARCHS_STANDARD_32_BIT)";
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				IPHONEOS_DEPLOYMENT_TARGET = 3.2;
+				ONLY_ACTIVE_ARCH = YES;
+				PREBINDING = NO;
+				PRODUCT_NAME = minizip;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				ZERO_LINK = NO;
+			};
+			name = AppStore;
+		};
+		E7CDE7C719C2B3550079570C /* AppStore */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/UIKit.framework/Headers/UIKit.h";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					IDOS,
+					IPHONEOS,
+					APPSTORE,
+				);
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				INFOPLIST_FILE = "iDOS-Info.plist";
+				INSTALL_PATH = "$(HOME)/Applications";
+				IPHONEOS_DEPLOYMENT_TARGET = 5.1.1;
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				ONLY_ACTIVE_ARCH = YES;
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					UIKit,
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = iDOS;
+				PROVISIONING_PROFILE = "";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = NO;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = NO;
+				ZERO_LINK = NO;
+			};
+			name = AppStore;
 		};
 		E7D6B89911BF323200D34665 /* Debug */ = {
 			isa = XCBuildConfiguration;
@@ -4207,6 +4522,7 @@
 			buildConfigurations = (
 				00646540107E3D7500183915 /* Debug */,
 				00646541107E3D7500183915 /* Release */,
+				E7CDE7C219C2B3550079570C /* AppStore */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -4216,6 +4532,7 @@
 			buildConfigurations = (
 				C01FCF4F08A954540054247B /* Debug */,
 				C01FCF5008A954540054247B /* Release */,
+				E7CDE7C019C2B3550079570C /* AppStore */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -4225,6 +4542,7 @@
 			buildConfigurations = (
 				E71E60E311B5502800EC5A05 /* Debug */,
 				E71E60E411B5502800EC5A05 /* Release */,
+				E7CDE7C419C2B3550079570C /* AppStore */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -4234,6 +4552,7 @@
 			buildConfigurations = (
 				E71E60EC11B5506800EC5A05 /* Debug */,
 				E71E60ED11B5506800EC5A05 /* Release */,
+				E7CDE7C519C2B3550079570C /* AppStore */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -4243,6 +4562,7 @@
 			buildConfigurations = (
 				E778B2B3123918F7008AF49A /* Debug */,
 				E778B2B4123918F7008AF49A /* Release */,
+				E7CDE7C319C2B3550079570C /* AppStore */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -4252,6 +4572,7 @@
 			buildConfigurations = (
 				E7BE1314128BF31A0046990B /* Debug */,
 				E7BE1315128BF31A0046990B /* Release */,
+				E7CDE7C719C2B3550079570C /* AppStore */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -4261,6 +4582,7 @@
 			buildConfigurations = (
 				E7D6B89911BF323200D34665 /* Debug */,
 				E7D6B89A11BF323200D34665 /* Release */,
+				E7CDE7C619C2B3550079570C /* AppStore */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -4270,6 +4592,7 @@
 			buildConfigurations = (
 				FD6526640DE8FCCB002AD96B /* Debug */,
 				FD6526650DE8FCCB002AD96B /* Release */,
+				E7CDE7C119C2B3550079570C /* AppStore */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

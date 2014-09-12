@@ -5,23 +5,70 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>English</string>
 	<key>CFBundleDisplayName</key>
-	<string>iDOS</string>
+	<string>iDOS 2</string>
 	<key>CFBundleExecutable</key>
 	<string>${EXECUTABLE_NAME}</string>
 	<key>CFBundleIconFile</key>
-	<string>dpicon.png</string>
+	<string>Icon-iPhone-57.png</string>
+	<key>CFBundleIconFiles</key>
+	<array>
+		<string>Icon-iPhone-57.png</string>
+		<string>Icon-iPhone-57@2x.png</string>
+		<string>Icon-iPad-72.png</string>
+		<string>Icon-iPad-72@2x.png</string>
+	</array>
+	<key>CFBundleIcons</key>
+	<dict>
+		<key>CFBundlePrimaryIcon</key>
+		<dict>
+			<key>CFBundleIconFiles</key>
+			<array>
+				<string>Icon-iPhone-Small-29</string>
+				<string>Icon-iPhone-Small-29@2x</string>
+				<string>Icon-iPhone-Small-40@2x</string>
+				<string>Icon-iPhone-60@2x</string>
+				<string>Icon-iPhone-57</string>
+				<string>Icon-iPhone-57@2x</string>
+			</array>
+			<key>UIPrerenderedIcon</key>
+			<true/>
+		</dict>
+	</dict>
+	<key>CFBundleIcons~ipad</key>
+	<dict>
+		<key>CFBundlePrimaryIcon</key>
+		<dict>
+			<key>CFBundleIconFiles</key>
+			<array>
+				<string>Icon-iPad-Small-29</string>
+				<string>Icon-iPad-Small-29@2x</string>
+				<string>Icon-iPad-Small-40</string>
+				<string>Icon-iPad-Small-40@2x</string>
+				<string>Icon-iPad-Small-50</string>
+				<string>Icon-iPad-Small-50@2x</string>
+				<string>Icon-iPad-72</string>
+				<string>Icon-iPad-72@2x</string>
+				<string>Icon-iPad-76</string>
+				<string>Icon-iPad-76@2x</string>
+			</array>
+			<key>UIPrerenderedIcon</key>
+			<true/>
+		</dict>
+	</dict>
 	<key>CFBundleIdentifier</key>
-	<string>8HLDK844H7.net.litchie.idos</string>
+	<string>com.litchie.idosgames</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
-	<string>iDOS</string>
+	<string>iDOS2</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
+	<key>CFBundleShortVersionString</key>
+	<string>1.0</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>2.0.1</string>
+	<string>1.0</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSMainNibFile</key>
