@@ -57,10 +57,10 @@ extern int SDL_SendKeyboardKey(int index, Uint8 state, SDL_scancode scancode);
 		[self sendkey:SDL_SCANCODE_RALT pressed:!!(eventFlags & GSEVENT_FLAG_RALT)];
 }
 
+#ifndef APPSTORE
 - (void)sendEvent:(UIEvent *)event
 {
 	[super sendEvent:event];
-#ifndef APPSTORE
 	if ([event respondsToSelector:@selector(_gsEvent)]) {
 		int *eventMem;
 		eventMem = (int *)[event performSelector:@selector(_gsEvent)];
@@ -86,7 +86,7 @@ extern int SDL_SendKeyboardKey(int index, Uint8 state, SDL_scancode scancode);
 			}
 		}
 	}
-#endif
 }
+#endif
 
 @end
