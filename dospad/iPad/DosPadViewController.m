@@ -93,8 +93,8 @@ static struct {
     //---------------------------------------------------
     // 5. Create Mouse Buttons
     //---------------------------------------------------    
-    btnMouseLeftP=[[UIButton buttonWithType:UIButtonTypeCustom] retain];
-    btnMouseRightP=[[UIButton buttonWithType:UIButtonTypeCustom] retain];
+    btnMouseLeftP=[[UIButton alloc] initWithFrame:CGRectMake(735, 310, 23, 89)];
+    btnMouseRightP=[[UIButton alloc] initWithFrame:CGRectMake(735, 209, 23, 89)];
     [btnMouseLeftP addTarget:self action:@selector(onMouseLeftDown) forControlEvents:UIControlEventTouchDown];
     [btnMouseLeftP addTarget:self action:@selector(onMouseLeftUp) forControlEvents:UIControlEventTouchUpInside];
     [btnMouseRightP addTarget:self action:@selector(onMouseRightDown) forControlEvents:UIControlEventTouchDown];
