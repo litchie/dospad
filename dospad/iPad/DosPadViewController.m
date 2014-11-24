@@ -113,7 +113,7 @@ static struct {
     //---------------------------------------------------
     // 8. Create Command List Button
     //---------------------------------------------------    
-    UIButton *btnShowCommands = [[[UIButton alloc] initWithFrame:CGRectMake(69, 581, 85, 70)] autorelease];
+    btnShowCommands = [[UIButton alloc] initWithFrame:CGRectMake(69, 581, 85, 70)];
     [btnShowCommands addTarget:self
                         action:@selector(showCommandList)
               forControlEvents:UIControlEventTouchUpInside];
@@ -428,6 +428,7 @@ static struct {
         labCycles.alpha=0;
         btnMouseLeftP.alpha = 0;
         btnMouseRightP.alpha = 0;
+		btnShowCommands.alpha = 0;
         if (useOriginalScreenSize)
         {
             float maxWidth = 640;
@@ -463,7 +464,7 @@ static struct {
         if (sw < 640) { scale = 640.0f/sw; }
         screenView.transform=CGAffineTransformMakeScale(scale,scale*additionalScaleY);
         screenView.center=CGPointMake(384, 314);
-            
+        btnShowCommands.alpha = 1;
         btnOption.alpha=1;
         labCycles.alpha=1;
         sliderInput.alpha=1;
@@ -571,7 +572,8 @@ static struct {
 }
 
 
-- (void)dealloc {    
+- (void)dealloc {
+	[btnShowCommands release];
     [btnMouseLeftP release];
     [btnMouseRightP release];
     [labCycles2 release];
