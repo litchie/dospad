@@ -76,6 +76,8 @@ typedef enum {
 #define DEFS_GET_INT(name)  [[NSUserDefaults standardUserDefaults] integerForKey:name]
 #define DEFS_SET_INT(name,value) [[NSUserDefaults standardUserDefaults] setInteger:value forKey:name]
 #define MAX_HISTORY_ITEMS 20
+#define IS_IOS7 ([[UIDevice currentDevice].systemVersion floatValue]>=7.0)
+#define IS_IOS8 ([[UIDevice currentDevice].systemVersion floatValue]>=8.0)
 
 NSString *get_default_config();
 NSString *get_dospad_config();

@@ -39,57 +39,45 @@
     [self.textView resignFirstResponder];
 }
 
--(void) keyboardWillShow:(NSNotification *)note
+- (CGFloat)keyboardHeightFromNotification:(NSNotification*)note
 {
-    // Only available in 3.2?
-    //[[note.userInfo valueForKey:UIKeyboardFrameEndUserInfoKey] getValue: &keyboardBounds];
-    
     float keyboardHeight;
-    switch (self.interfaceOrientation)
-    {
-        case UIInterfaceOrientationPortrait:
-        case UIInterfaceOrientationPortraitUpsideDown:
-            keyboardHeight = KBD_PORTRAIT_HEIGHT;
-            break;
-        default:
-            keyboardHeight = KBD_LANDSCAPE_HEIGHT;
-            break;
-    }
-    CGRect frame = self.textView.frame;
-    frame.size.height -= keyboardHeight;
-    
+	CGRect keyboardFrame = [[[note userInfo] objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
+	
+	if (ISLANDSCAPE(self.interfaceOrientation)) {
+		if (IS_IOS8) {
+			keyboardHeight = keyboardFrame.size.height;
+		} else {
+			keyboardHeight = keyboardFrame.size.width;
+		}
+	} else {
+		keyboardFrame = [[[note userInfo] objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
+		keyboardHeight = keyboardFrame.size.height;
+	}
+	return keyboardHeight;
+}
+
+- (void)adjustViewForKeyboardHeight:(CGFloat)keyboardHeight
+{
+	CGRect frame = CGRectZero;
+	CGFloat topMargin = 0;
+	frame.size.width = self.view.frame.size.width;
+	frame.size.height = self.view.frame.size.height-keyboardHeight;
     [UIView beginAnimations:nil context:NULL];
     [UIView setAnimationBeginsFromCurrentState:YES];
     [UIView setAnimationDuration:0.3f];
     self.textView.frame = frame;
-    
     [UIView commitAnimations];
+}
+
+-(void) keyboardWillShow:(NSNotification *)note
+{
+	[self adjustViewForKeyboardHeight:[self keyboardHeightFromNotification:note]];
 }
 
 -(void) keyboardWillHide:(NSNotification *)note
 {
-    //  CGRect keyboardBounds;
-    //[[note.userInfo valueForKey:UIKeyboardFrameBeginUserInfoKey] getValue: &keyboardBounds];
-    float keyboardHeight;
-    switch (self.interfaceOrientation)
-    {
-        case UIInterfaceOrientationPortrait:
-        case UIInterfaceOrientationPortraitUpsideDown:
-            keyboardHeight = KBD_PORTRAIT_HEIGHT;
-            break;
-        default:
-            keyboardHeight = KBD_LANDSCAPE_HEIGHT;
-            break;
-    }
-    
-    CGRect frame = self.textView.frame;
-    frame.size.height += keyboardHeight;
-    
-    [UIView beginAnimations:nil context:NULL];
-    [UIView setAnimationBeginsFromCurrentState:YES];
-    [UIView setAnimationDuration:0.3f];
-    self.textView.frame = frame;
-    [UIView commitAnimations];
+	[self adjustViewForKeyboardHeight:0];
 }
 
 -(void)viewWillDisappear:(BOOL)animated
