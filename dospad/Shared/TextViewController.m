@@ -83,14 +83,6 @@
 -(void)viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear:animated];
-    if (textChanged)
-    {
-        [self.textView.text writeToFile:self.filePath
-                             atomically:YES  
-                               encoding:NSUTF8StringEncoding
-                                  error:NULL];    
-    }
-    
     [[NSNotificationCenter defaultCenter]
      removeObserver:self
      name:UIKeyboardWillShowNotification
@@ -117,6 +109,18 @@
      object:nil];
 }
 
+- (void)saveFile
+{
+    if (textChanged)
+    {
+        [self.textView.text writeToFile:self.filePath
+                             atomically:YES  
+                               encoding:NSUTF8StringEncoding
+                                  error:NULL];
+    }
+	self.navigationItem.rightBarButtonItem.enabled = NO;
+}
+
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -129,6 +133,8 @@
         self.textView.font=[UIFont fontWithName:@"Courier New" size:14];        
     }
     [self loadText];
+	self.navigationItem.rightBarButtonItem = [[[UIBarButtonItem alloc] initWithTitle:@"Save" style:UIBarButtonItemStyleDone target:self action:@selector(saveFile)] autorelease];
+	self.navigationItem.rightBarButtonItem.enabled = NO;
 }
 
 
@@ -163,6 +169,7 @@
 - (void)textViewDidChange:(UITextView *)textView
 {
     textChanged=YES;
+	self.navigationItem.rightBarButtonItem.enabled = YES;
 }
 
 @end
