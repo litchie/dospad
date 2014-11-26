@@ -24,9 +24,9 @@
 		<dict>
 			<key>CFBundleIconFiles</key>
 			<array>
-				<string>Icon-iPhone-Small-29</string>
-				<string>Icon-iPhone-Small-29@2x</string>
-				<string>Icon-iPhone-Small-40@2x</string>
+				<string>Icon-iPhone-29</string>
+				<string>Icon-iPhone-29@2x</string>
+				<string>Icon-iPhone-40@2x</string>
 				<string>Icon-iPhone-60@2x</string>
 				<string>Icon-iPhone-57</string>
 				<string>Icon-iPhone-57@2x</string>
@@ -41,12 +41,12 @@
 		<dict>
 			<key>CFBundleIconFiles</key>
 			<array>
-				<string>Icon-iPad-Small-29</string>
-				<string>Icon-iPad-Small-29@2x</string>
-				<string>Icon-iPad-Small-40</string>
-				<string>Icon-iPad-Small-40@2x</string>
-				<string>Icon-iPad-Small-50</string>
-				<string>Icon-iPad-Small-50@2x</string>
+				<string>Icon-iPad-29</string>
+				<string>Icon-iPad-29@2x</string>
+				<string>Icon-iPad-40</string>
+				<string>Icon-iPad-40@2x</string>
+				<string>Icon-iPad-50</string>
+				<string>Icon-iPad-50@2x</string>
 				<string>Icon-iPad-72</string>
 				<string>Icon-iPad-72@2x</string>
 				<string>Icon-iPad-76</string>

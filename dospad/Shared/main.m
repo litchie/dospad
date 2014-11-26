@@ -52,61 +52,6 @@ void dospad_launch_done()
     }
 }
 
-NSString *get_temporary_merged_file(NSString *f1, NSString *f2)
-{
-    NSString *f = [NSTemporaryDirectory() stringByAppendingPathComponent:@"cfgtmp"];
-    NSString *s = [NSString stringWithContentsOfFile:f1
-                                            encoding:NSUTF8StringEncoding
-                                               error:NULL];
-    if (s == nil) s = @"";
-    s = [s stringByAppendingString:@"\n"];
-    s = [s stringByAppendingString:[NSString stringWithContentsOfFile:f2
-                                                             encoding:NSUTF8StringEncoding
-                                                                error:NULL]];
-    [s writeToFile:f
-        atomically:YES  
-          encoding:NSUTF8StringEncoding
-             error:NULL];  
-    return f;
-}
-
-
-NSString *get_default_config()
-{
-    NSString *srcpath = [[[NSBundle mainBundle] bundlePath] stringByAppendingPathComponent:@"configs"];
-    srcpath = [srcpath stringByAppendingPathComponent:@"default.cfg"];  
-    return srcpath;
-}
-
-NSString *get_dospad_config()
-{
-    NSString *cfg;
-    FileSystemObject *fso = [[FileSystemObject alloc] autorelease];
-    NSString *cfgDir = [NSString stringWithUTF8String:diskc];
-    NSString *filename= @"dospad.cfg";
-    cfg = [cfgDir stringByAppendingPathComponent:filename];
-    NSString *cfg_uc = [cfgDir stringByAppendingPathComponent:[filename uppercaseString]];
-    if ([fso fileExists:cfg]) 
-    {
-        /* This is good */
-    } 
-    else if ([fso fileExists:cfg_uc]) 
-    {
-        cfg = cfg_uc;
-    } 
-    else 
-    {
-        NSFileManager *fileManager = [NSFileManager defaultManager];
-        NSString *srcpath = [[[NSBundle mainBundle] bundlePath] stringByAppendingPathComponent:@"configs"];
-        srcpath = [srcpath stringByAppendingPathComponent:(ISIPAD()?@"dospad-ipad.cfg":@"dospad-iphone.cfg")];  
-        if (![fso fileExists:srcpath])
-            return nil;
-        cfg = [cfgDir stringByAppendingPathComponent:@"dospad.cfg"];
-        [fileManager copyItemAtPath:srcpath toPath:cfg error:NULL];
-    }
-
-    return cfg;
-}
 
 static int strcmp_case_insensitive(const char *cs, const char *ct)
 {
@@ -205,10 +150,6 @@ void dospad_should_pause()
     }
 }
 
-const char *dospad_config_dir()
-{
-    return diskc;
-}
 
 static void fixsep(char*path)
 {
@@ -331,7 +272,7 @@ int main(int argc, char *argv[]) {
     
     // Initialize Options
     NSUserDefaults *defs=[NSUserDefaults standardUserDefaults];
-    int firstRun = [defs integerForKey:kFirstRun];
+    int firstRun = (int)[defs integerForKey:kFirstRun];
     if (firstRun==0) {
         [defs setFloat:kTransparencyDefault forKey:kTransparency];
         [defs setInteger:1 forKey:kFirstRun];
@@ -382,9 +323,9 @@ int main(int argc, char *argv[]) {
     
     // Initalize command history
     dospad_init_history();
-    
-    get_dospad_config();
-     
+	
+	[ConfigManager init];
+	
     /* On Non-JB device, /var/mobile/Documents doesn't exists */
     if ([fso ensureDirectoryExists:cPath]) {
         strcpy(automount_path, [cPath UTF8String]);

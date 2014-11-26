@@ -345,7 +345,7 @@ static struct {
                          @"[gamepad.ipad.portrait]" : 
                          @"[gamepad.ipad.landscape]");
     
-    NSString *ui_cfg = get_temporary_merged_file(configPath, get_default_config());
+    NSString *ui_cfg = [ConfigManager uiConfigFile];
 
     gpad = [[GamePadView alloc] initWithConfig:ui_cfg section:section];
 

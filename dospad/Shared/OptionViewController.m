@@ -20,6 +20,8 @@
 #import "Common.h"
 #import "WebViewController.h"
 #import "TextViewController.h"
+#import "ConfigsViewController.h"
+#import "ConfigFileListController.h"
 
 /* Here we are assuming that there are not more than 8 groups
  and at most 32 items in a single group. 
@@ -124,6 +126,16 @@ enum {
 #pragma mark -
 #pragma mark View lifecycle
 
+- (void)onDone
+{
+	[self.navigationController dismissModalViewControllerAnimated:YES];
+}
+
+- (UIBarButtonItem*)doneButtonItem
+{
+	return [[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(onDone)] autorelease];
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -131,12 +143,13 @@ enum {
     self.slider.value=[defs floatForKey:kTransparency];
     self.sliderMouseSpeed.value=[defs floatForKey:kMouseSpeed];
     self.title = @"Settings";
+	self.navigationItem.rightBarButtonItem = [self doneButtonItem];
 }
 
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    [self.navigationController setNavigationBarHidden:NO animated:YES];
+ //   [self.navigationController setNavigationBarHidden:NO animated:YES];
 }
 
 /*
@@ -146,7 +159,7 @@ enum {
 */
 
 - (void)viewWillDisappear:(BOOL)animated {
-    [self.navigationController setNavigationBarHidden:YES animated:YES];
+   // [self.navigationController setNavigationBarHidden:YES animated:YES];
     [super viewWillDisappear:animated];
 }
 
@@ -262,15 +275,15 @@ enum {
 {
     UITableViewCell *cell = nil;
 
-    int section = [indexPath section];
-    int row = [indexPath row];
+    NSInteger section = [indexPath section];
+    NSInteger row = [indexPath row];
     switch (OPT_ID(section, row)) 
     {
         case OPT_GAME_CONTROL:
         {
             cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:nil];
-            cell.textLabel.text=@"Customize config";
-            cell.accessoryType=UITableViewCellAccessoryDisclosureIndicator;
+            cell.textLabel.text=@"Configurations";
+            cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
             return [cell autorelease];
         }
         case OPT_OVERLAY_TRANSPARENCY:
@@ -438,19 +451,17 @@ heightForRowAtIndexPath:(NSIndexPath*)indexPath
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath 
 {    
-    int section = [indexPath section];
-    int row = [indexPath row];
+    NSInteger section = [indexPath section];
+    NSInteger row = [indexPath row];
     switch (OPT_ID(section, row))
     {
         case OPT_GAME_CONTROL: 
         {
-            TextViewController *ctrl = [[TextViewController alloc] initWithNibName:@"TextViewController"
-                                                                            bundle:nil];
-            ctrl.filePath = configPath == nil ? get_dospad_config() : configPath;
-            [self.navigationController pushViewController:ctrl animated:YES];
-            [ctrl release];
+			ConfigsViewController *ctrl = [[[ConfigsViewController alloc] initWithStyle:UITableViewStyleGrouped] autorelease];
+            [self.navigationController pushViewController:ctrl animated:YES];			
             break;
         }
+		
         case OPT_CREDITS:
         {
             WebViewController *webctrl=[[[WebViewController alloc] initWithNibName:@"WebViewController" bundle:nil] autorelease];

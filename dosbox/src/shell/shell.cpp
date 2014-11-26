@@ -386,7 +386,7 @@ void DOS_Shell::Run(void) {
                 if (fp != NULL)
                 {
                     char buf[256];
-                    int sectionLength = strlen(dospad_launch_section);
+                    size_t sectionLength = strlen(dospad_launch_section);
                     while (fgets(buf, 256, fp))
                     {
                         if (strncmp(buf, dospad_launch_section, sectionLength) == 0)

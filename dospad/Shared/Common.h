@@ -33,6 +33,7 @@
 
 #include "keys.h"
 #include "cmd_history.h"
+#import "ConfigManager.h"
 
 #define kFirstRun     @"firstRun"
 #define kTransparency @"transparency"
@@ -79,9 +80,6 @@ typedef enum {
 #define IS_IOS7 ([[UIDevice currentDevice].systemVersion floatValue]>=7.0)
 #define IS_IOS8 ([[UIDevice currentDevice].systemVersion floatValue]>=8.0)
 
-NSString *get_default_config();
-NSString *get_dospad_config();
-NSString *get_temporary_merged_file(NSString *f1, NSString *f2);
 void dospad_pause();
 void dospad_resume();
 extern int SDL_SendKeyboardKey(int index, Uint8 state, SDL_scancode scancode);

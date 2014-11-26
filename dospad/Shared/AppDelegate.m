@@ -108,7 +108,7 @@
 	
 
     screenView = [[SDL_uikitopenglview alloc] initWithFrame:CGRectMake(0,0,640,400)];
-    DOSPadBaseViewController *dospad = [DOSPadBaseViewController dospadWithConfig:get_dospad_config()];
+    DOSPadBaseViewController *dospad = [DOSPadBaseViewController dospadWithConfig:[ConfigManager dospadConfigFile]];
     dospad.screenView = screenView;
     navController = [[UINavigationController alloc] initWithRootViewController:dospad];
     navController.navigationBar.barStyle = UIBarStyleBlack;

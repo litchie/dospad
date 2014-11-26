@@ -185,7 +185,7 @@ static struct {
 - (void)toggleInputSource:(id)sender
 {
 	UIButton *btn = (UIButton*)sender;
-	InputSourceType type = [btn tag];
+	InputSourceType type = (InputSourceType)[btn tag];
 	if ([self isInputSourceActive:type]) {
 		[self removeInputSource:type];
 	} else {
@@ -398,7 +398,7 @@ static struct {
 		maxSize > 480 ? @"iphone5" : @"iphone",
 		[self isPortrait] ? @"portrait" : @"landscape"];
 	
-	NSString *ui_cfg = get_temporary_merged_file(configPath, get_default_config());
+	NSString *ui_cfg = [ConfigManager uiConfigFile];
 	if (ui_cfg != nil)
 	{
 		gpad = [[GamePadView alloc] initWithConfig:ui_cfg section:section];

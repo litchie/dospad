@@ -106,7 +106,7 @@ extern int SDL_SendKeyboardKey(int index, Uint8 state, SDL_scancode scancode);
 
     if (configPath == nil)
     {
-        self.configPath = get_dospad_config();
+        self.configPath = [ConfigManager dospadConfigFile];
     }
     else
     {        
@@ -260,10 +260,13 @@ extern int SDL_SendKeyboardKey(int index, Uint8 state, SDL_scancode scancode);
 
 -(void)showOption
 {
+	UINavigationController *nav;
     OptionViewController *ctrl = [[OptionViewController alloc] initWithNibName:@"OptionViewController" bundle:nil];
     ctrl.configPath = configPath;
-    [self.navigationController pushViewController:ctrl animated:YES];
+	nav = [[UINavigationController alloc] initWithRootViewController:ctrl];
+	[self presentViewController:nav animated:YES completion:nil];
     [ctrl release];
+	[nav release];
 }
 
 - (BOOL)isPortrait
@@ -325,7 +328,7 @@ extern int SDL_SendKeyboardKey(int index, Uint8 state, SDL_scancode scancode);
 
 - (void)createPianoKeyboard
 {
-    NSString *ui_cfg = get_temporary_merged_file(configPath, get_default_config());
+    NSString *ui_cfg = [ConfigManager uiConfigFile];
     
     if (ui_cfg != nil)
     {
