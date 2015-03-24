@@ -502,7 +502,7 @@ heightForRowAtIndexPath:(NSIndexPath*)indexPath
 #ifndef IDOS
         case OPT_DONATE:
         {
-            NSString *url = @"http://www.litchie.com/dospad/donate";
+            NSString *url = @"http://www.litchie.com/pages/dospad-donate.html";
             [[UIApplication sharedApplication] openURL:[NSURL URLWithString:url]];
         }
 #endif        
