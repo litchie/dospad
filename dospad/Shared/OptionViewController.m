@@ -56,7 +56,8 @@ enum {
 #define OPT_KEY_SOUND                OPT_ID(OPT_GROUP_GENERAL,3)
 #define OPT_GAMEPAD_SOUND            OPT_ID(OPT_GROUP_GENERAL,4)
 #define OPT_MOUSE_SPEED              OPT_ID(OPT_GROUP_GENERAL,5)
-#define OPT_GROUP_GENERAL_COUNT 6
+#define OPT_MOUSE_RIGHTCLICK         OPT_ID(OPT_GROUP_GENERAL,6)
+#define OPT_GROUP_GENERAL_COUNT 7
 
 #define OPT_INPUT_NUMPAD             OPT_ID(OPT_GROUP_LANDSCAPE_INPUTS, 0)
 #define OPT_INPUT_JOYSTICK           OPT_ID(OPT_GROUP_LANDSCAPE_INPUTS, 1)
@@ -102,6 +103,9 @@ enum {
     {
         case OPT_DPAD_MOVABLE:
             DEFS_SET_INT(kDPadMovable, sw.on);
+            break;
+        case OPT_MOUSE_RIGHTCLICK:
+            DEFS_SET_INT(kDoubleTapAsRightClick, sw.on);
             break;
         case OPT_GAMEPAD_SOUND:
             DEFS_SET_INT(kDisableGamePadSound, sw.on);
@@ -308,6 +312,14 @@ enum {
         {
             return cellMouseSpeed;
         }
+		case OPT_MOUSE_RIGHTCLICK:
+		{
+            cell = [self createBooleanOptionCell:@"Double Tap As Right Click"
+                                              on:DEFS_GET_INT(kDoubleTapAsRightClick)
+                                             tag:OPT_MOUSE_RIGHTCLICK];
+            return [cell autorelease];
+		}
+		
         case OPT_GAMEPAD_SOUND:
         {
             cell = [self createBooleanOptionCell:@"Disable GamePad Sound"

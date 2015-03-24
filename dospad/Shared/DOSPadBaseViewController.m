@@ -217,6 +217,15 @@ extern int SDL_SendKeyboardKey(int index, Uint8 state, SDL_scancode scancode);
     [UIView commitAnimations];    
 }
 
+- (MouseRightClickMode)currentRightClickMode
+{
+	if (DEFS_GET_INT(kDoubleTapAsRightClick) == 1) {
+		return MouseRightClickWithDoubleTap;
+	} else {
+		return MouseRightClickDefault;
+	}
+}
+
 -(void)onResize:(CGSize)sizeNew
 {
     NSLog(@"Warning: onResize not implemented");

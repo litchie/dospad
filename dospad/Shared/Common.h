@@ -42,6 +42,7 @@
 #define kFullscreenKeypad @"fullscreenKeypad"
 #define kForceAspect @"ForceAspect"
 #define kDisableKeySound @"DisableKeySound"
+#define kDoubleTapAsRightClick @"DoubleTapAsRightClick"
 #define kMouseSpeed @"MouseSpeed"
 #define kDisableNativeKeyboard @"DisableNativeKeyboard"
 #define kDisableGamePadSound @"DisableGamePadSound"

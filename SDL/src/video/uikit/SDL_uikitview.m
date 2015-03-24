@@ -260,7 +260,9 @@ void SDL_init_keyboard()
                 if ([touch tapCount] == 2) {
                     if (rightClick) {
                         [self cancelHold];
-                    }
+                    } else if ([mouseHoldDelegate currentRightClickMode] == MouseRightClickWithDoubleTap) {
+						rightClick = 1;
+					}
                     SDL_SendMouseButton(i, SDL_PRESSED,  !rightClick?SDL_BUTTON_LEFT:SDL_BUTTON_RIGHT);
                     // Must have or won't work
                     [NSThread sleepForTimeInterval:0.01];

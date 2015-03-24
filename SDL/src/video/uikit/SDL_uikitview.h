@@ -38,6 +38,11 @@
 #define MOUSE_HOLD_INTERVAL 1.5f /* mouse hold happens after 1s */
 #define TAP_THRESHOLD 0.3f /* Tap interval should be less than 0.3s */
 
+typedef enum {
+	MouseRightClickDefault,
+	MouseRightClickWithDoubleTap
+} MouseRightClickMode;
+
 typedef struct {
     CGPoint ptOrig;
     int leftHold;
@@ -49,6 +54,7 @@ typedef struct {
 
 -(void)onHold:(CGPoint)pt;
 -(void)cancelHold:(CGPoint)pt;
+- (MouseRightClickMode)currentRightClickMode;
 
 @end
 
