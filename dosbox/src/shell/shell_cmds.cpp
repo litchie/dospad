@@ -398,6 +398,12 @@ void DOS_Shell::CMD_DIR(char * args) {
 	char numformat[16];
 	char path[DOS_PATHLENGTH];
 
+
+	Bit8u drive = DOS_GetDefaultDrive();
+	if (Drives[drive]) {
+		Drives[drive]->EmptyCache();
+	}
+
 	std::string line;
 	if(GetEnvStr("DIRCMD",line)){
 		std::string::size_type idx = line.find('=');

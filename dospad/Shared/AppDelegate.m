@@ -21,11 +21,52 @@
 #import "Common.h"
 #import <AVFoundation/AVFoundation.h>
 #import "ColorTheme.h"
+#import "ZipArchive.h"
 
 @implementation AppDelegate
 @synthesize frameskip;
 @synthesize cycles;
 @synthesize maxPercent;
+
+
+- (NSString*)getDecompressDirForFile:(NSString*)filePath
+{
+	return [[[FileSystemObject sharedObject] documentsDirectory]
+		stringByAppendingPathComponent:filePath.lastPathComponent.stringByDeletingPathExtension];
+}
+
+
+- (void)unzip:(NSString*)filepath
+{
+	NSString *dir = [self getDecompressDirForFile:filepath];
+	BOOL ret = NO;
+	ZipArchive *ar = [[ZipArchive alloc] init];
+	
+	if ([ar UnzipOpenFile:filepath]) {
+		[[FileSystemObject sharedObject] ensureDirectoryExists:dir];
+		ret = [ar UnzipFileTo:dir overWrite:YES];
+		[ar UnzipCloseFile];
+		[[FileSystemObject sharedObject] removeFileAtPath:filepath];
+	}
+	
+	[ar release];
+}
+
+- (void)importFile:(NSURL*)url
+{
+	NSString *srcpath = [url path];
+	NSString *filename = [srcpath lastPathComponent];
+	if ([filename.pathExtension.lowercaseString isEqualToString:@"zip"]) {
+		[self unzip:srcpath];
+	}
+}
+
+- (BOOL)application:(UIApplication *)application openURL:(NSURL *)url
+	sourceApplication:(NSString *)sourceApplication annotation:(id)annotation
+{
+	[self importFile:url];
+	return YES;
+}
 
 -(SDL_uikitopenglview*)screen
 {
