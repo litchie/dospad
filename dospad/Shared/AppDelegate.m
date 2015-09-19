@@ -158,7 +158,8 @@
     [uiwindow makeKeyAndVisible];
 	[super applicationDidFinishLaunching:application];
 #ifdef THREADED
-    [self performSelector:@selector(startDOS) withObject:nil afterDelay:0.5];
+	// FIXME: Launch emulation thread two seconds later to avoid crash
+    [self performSelector:@selector(startDOS) withObject:nil afterDelay:2];
 #endif
     return YES;
 }

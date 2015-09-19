@@ -538,7 +538,7 @@ int SDLNet_UDP_SendV(UDPsocket sock, UDPpacket **packets, int npackets)
 			sock_addr.sin_addr.s_addr = packets[i]->address.host;
 			sock_addr.sin_port = packets[i]->address.port;
 			sock_addr.sin_family = AF_INET;
-			status = sendto(sock->channel, 
+			status = (int)sendto(sock->channel,
 					packets[i]->data, packets[i]->len, 0,
 					(struct sockaddr *)&sock_addr,sock_len);
 			if ( status >= 0 )
@@ -589,7 +589,7 @@ int SDLNet_UDP_SendV(UDPsocket sock, UDPpacket **packets, int npackets)
 				sock_addr.sin_addr.s_addr = binding->address[j].host;
 				sock_addr.sin_port = binding->address[j].port;
 				sock_addr.sin_family = AF_INET;
-				status = sendto(sock->channel, 
+				status = (int)sendto(sock->channel,
 						packets[i]->data, packets[i]->len, 0,
 						(struct sockaddr *)&sock_addr,sock_len);
 				if ( status >= 0 )

@@ -368,7 +368,6 @@
 		E71E62E511B550FD00EC5A05 /* shell_cmds.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E71E61F611B550FD00EC5A05 /* shell_cmds.cpp */; };
 		E71E62E611B550FD00EC5A05 /* shell_misc.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E71E61F711B550FD00EC5A05 /* shell_misc.cpp */; };
 		E71E636D11B5659F00EC5A05 /* libdosbox.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E71E60EB11B5506800EC5A05 /* libdosbox.a */; };
-		E723F0C61286A1680009E3DA /* VKView.m in Sources */ = {isa = PBXBuildFile; fileRef = E723F0C51286A1680009E3DA /* VKView.m */; };
 		E729BDFC129B506E002B05B2 /* cpuwindow~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = E729BDF0129B506E002B05B2 /* cpuwindow~ipad.png */; };
 		E729BDFD129B506E002B05B2 /* exitfull~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = E729BDF1129B506E002B05B2 /* exitfull~ipad.png */; };
 		E729BDFE129B506E002B05B2 /* modejoy~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = E729BDF2129B506E002B05B2 /* modejoy~ipad.png */; };
@@ -597,7 +596,6 @@
 		E7BE12FC128BF31A0046990B /* FloatingView.m in Sources */ = {isa = PBXBuildFile; fileRef = E799706312422D6800502015 /* FloatingView.m */; };
 		E7BE12FD128BF31A0046990B /* SliderView.m in Sources */ = {isa = PBXBuildFile; fileRef = E70EA4111242F83200528C9D /* SliderView.m */; };
 		E7BE12FF128BF31A0046990B /* GamePadView.m in Sources */ = {isa = PBXBuildFile; fileRef = E7A94CDC127D68B7006509E1 /* GamePadView.m */; };
-		E7BE1301128BF31A0046990B /* VKView.m in Sources */ = {isa = PBXBuildFile; fileRef = E723F0C51286A1680009E3DA /* VKView.m */; };
 		E7BE1305128BF31A0046990B /* libSDLiPhoneOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FD6526630DE8FCCB002AD96B /* libSDLiPhoneOS.a */; };
 		E7BE1306128BF31A0046990B /* libdosbox.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E71E60EB11B5506800EC5A05 /* libdosbox.a */; };
 		E7BE1307128BF31A0046990B /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D3623EB0D0F72F000981E51 /* CoreGraphics.framework */; };
@@ -3642,7 +3640,6 @@
 				E799706412422D6800502015 /* FloatingView.m in Sources */,
 				E70EA4121242F83200528C9D /* SliderView.m in Sources */,
 				E7A94CDD127D68B7006509E1 /* GamePadView.m in Sources */,
-				E723F0C61286A1680009E3DA /* VKView.m in Sources */,
 				E73A2120128EC1F5001FA168 /* AlertPrompt.m in Sources */,
 				E72BE69612911096009DC46A /* DosPadViewController_iPhone.m in Sources */,
 				E72BE6D812911B5C009DC46A /* AppDelegate.m in Sources */,
@@ -3818,7 +3815,6 @@
 				E7BE12FC128BF31A0046990B /* FloatingView.m in Sources */,
 				E7BE12FD128BF31A0046990B /* SliderView.m in Sources */,
 				E7BE12FF128BF31A0046990B /* GamePadView.m in Sources */,
-				E7BE1301128BF31A0046990B /* VKView.m in Sources */,
 				E7EF4372128FCE470014D060 /* AlertPrompt.m in Sources */,
 				E72BE69712911096009DC46A /* DosPadViewController_iPhone.m in Sources */,
 				E72BE6E412911B5C009DC46A /* AppDelegate.m in Sources */,
@@ -4067,6 +4063,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
+				ENABLE_BITCODE = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -4104,6 +4101,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_BITCODE = NO;
 				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/UIKit.framework/Headers/UIKit.h";
@@ -4214,11 +4212,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
+				ENABLE_BITCODE = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -4256,12 +4253,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_BITCODE = NO;
 				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/UIKit.framework/Headers/UIKit.h";
@@ -4367,6 +4363,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_BITCODE = NO;
 				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/UIKit.framework/Headers/UIKit.h";
@@ -4438,12 +4435,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_BITCODE = NO;
 				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/UIKit.framework/Headers/UIKit.h";
