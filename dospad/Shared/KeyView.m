@@ -21,7 +21,6 @@
 #import <AudioToolbox/AudioServices.h>
 #import "Common.h"
 #include "SDL.h"
-static SystemSoundID keyPressSound=0;
 
 @implementation KeyView
 
@@ -300,12 +299,17 @@ static SystemSoundID keyPressSound=0;
 
 -(void)playKeyPressSound
 {
-    if (DEFS_GET_INT(kDisableKeySound)) return;
-    if (keyPressSound == 0) {
-        NSString *path = [[NSBundle mainBundle] pathForResource:@"keypress" ofType:@"wav"];
-        AudioServicesCreateSystemSoundID((CFURLRef)[NSURL fileURLWithPath:path],&keyPressSound);
-    }
-    if (keyPressSound != 0) AudioServicesPlaySystemSound(keyPressSound);
+	static SystemSoundID keyPressSound = 0;
+
+    if (DEFS_GET_BOOL(kKeySoundEnabled)) {
+		if (keyPressSound == 0) {
+			NSString *path = [[NSBundle mainBundle] pathForResource:@"keypress" ofType:@"wav"];
+			AudioServicesCreateSystemSoundID((CFURLRef)[NSURL fileURLWithPath:path],&keyPressSound);
+		}
+		if (keyPressSound != 0) {
+			AudioServicesPlaySystemSound(keyPressSound);
+		}
+	}
 }
 
 -(void)showHighlight

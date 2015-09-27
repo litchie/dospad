@@ -123,21 +123,4 @@ const char *dospad_config_dir()
 	return [[NSUserDefaults standardUserDefaults] stringForKey:kActiveConfig];
 }
 
-+ (BOOL)setActiveConfig:(NSString*)configName
-{
-	NSString *docDir = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
-	NSString *configDir = [docDir stringByAppendingPathComponent:@"config"];
-	configDir = [configDir stringByAppendingPathComponent:configName];
-	NSFileManager *fileManager = [NSFileManager defaultManager];
-	BOOL isDir = NO;
-	
-	if (![fileManager fileExistsAtPath:configDir isDirectory:&isDir] || !isDir) {
-		return NO;
-	}
-	
-	[[NSUserDefaults standardUserDefaults] setObject:configName forKey:kActiveConfig];
-	[[NSUserDefaults standardUserDefaults] synchronize];
-	return YES;
-}
-
 @end

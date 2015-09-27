@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-#define kActiveConfig @"ActiveConfig"
+#define kActiveConfig @"config_dir"
 
 @interface ConfigManager : NSObject
 
@@ -19,6 +19,5 @@
 + (NSString*)dospadConfigFile;
 + (NSString*)uiConfigFile;
 + (NSString*)activeConfig;
-+ (BOOL)setActiveConfig:(NSString*)configName;
 
 @end

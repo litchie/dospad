@@ -21,7 +21,6 @@
 #include <assert.h>
 #include <string.h>
 #import "Common.h"
-#import "ModalViewController.h"
 #import "CommandListView.h"
 
 #include "SDL.h"
@@ -188,7 +187,7 @@ static struct {
 - (void)toggleInputSource:(id)sender
 {
     UIButton *btn = (UIButton*)sender;
-    InputSourceType type = [btn tag];
+    InputSourceType type = (int)[btn tag];
     if ([self isInputSourceActive:type]) {
         [self removeInputSource:type];
     } else {
@@ -223,7 +222,7 @@ static struct {
     [items addObject:cpuWindow];
     
     for (int i = 0; i < NUM_BUTTON_INFO; i++) {
-        if (DEFS_GET_INT(InputSource_KeyName(toggleButtonInfo[i].type)))
+		if ([self isInputSourceEnabled:toggleButtonInfo[i].type])
         {
             UIButton *btn = [[[UIButton alloc] initWithFrame:CGRectMake(0,0,72,36)] autorelease];
             NSString *on = [NSString stringWithUTF8String:toggleButtonInfo[i].onImageName];

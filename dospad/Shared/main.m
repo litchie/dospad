@@ -267,31 +267,10 @@ int dospad_get(const char *url, const char *path)
 }
 
 
-int main(int argc, char *argv[]) {
+int main(int argc, char *argv[])
+{
     NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
-    
-    // Initialize Options
-    NSUserDefaults *defs=[NSUserDefaults standardUserDefaults];
-    int firstRun = (int)[defs integerForKey:kFirstRun];
-    if (firstRun==0) {
-        [defs setFloat:kTransparencyDefault forKey:kTransparency];
-        [defs setInteger:1 forKey:kFirstRun];
-    }
-    
-    if ([defs floatForKey:kMouseSpeed]==0) {
-        [defs setFloat:0.5 forKey:kMouseSpeed];
-    }
-    
-    if (DEFS_GET_INT(kInputSource) < 1) {
-        DEFS_SET_INT(kInputSource, 1);
-        DEFS_SET_INT(InputSource_KeyName(InputSource_PCKeyboard), 1);
-        DEFS_SET_INT(InputSource_KeyName(InputSource_MouseButtons), 1);
-        DEFS_SET_INT(InputSource_KeyName(InputSource_NumPad), 1);
-        DEFS_SET_INT(InputSource_KeyName(InputSource_GamePad), 1);
-        DEFS_SET_INT(InputSource_KeyName(InputSource_Joystick), 1);
-        DEFS_SET_INT(InputSource_KeyName(InputSource_PianoKeyboard), 0);
-    }
-
+        
     FileSystemObject *fso = [[FileSystemObject alloc] autorelease];
 
     // Auto mount
@@ -324,7 +303,6 @@ int main(int argc, char *argv[]) {
     // Initalize command history
     dospad_init_history();
 	
-	[ConfigManager init];
 	
     /* On Non-JB device, /var/mobile/Documents doesn't exists */
     if ([fso ensureDirectoryExists:cPath]) {
@@ -338,7 +316,10 @@ int main(int argc, char *argv[]) {
     if ([fso ensureDirectoryExists:dPath]) {
         strcat(automount_path, [dPath UTF8String]);
     }
-#endif    
+#endif
+
+	/* ------------------------------------------- */
+	
     int retVal = UIApplicationMain(argc, argv, @"DosPadUIApplication", nil);
     [pool release];
     return retVal;

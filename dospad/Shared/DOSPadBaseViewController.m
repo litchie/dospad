@@ -18,7 +18,6 @@
 
 #import "DOSPadBaseViewController.h"
 #include "keys.h"
-#import "OptionViewController.h"
 #import "DosPadViewController.h"
 #import "DosPadViewController_iPhone.h"
 #import "AppDelegate.h"
@@ -31,6 +30,23 @@ extern int SDL_SendKeyboardKey(int index, Uint8 state, SDL_scancode scancode);
 @synthesize autoExit;
 @synthesize configPath;
 @synthesize screenView;
+
+
+- (bool)isInputSourceEnabled:(InputSourceType)type
+{
+	switch (type) {
+		case InputSource_PCKeyboard:
+		case InputSource_GamePad:
+		case InputSource_MouseButtons:
+			return true;
+		case InputSource_Joystick:
+			return DEFS_GET_BOOL(kJoystickEnabled);
+		case InputSource_NumPad:
+			return DEFS_GET_BOOL(kNumpadEnabled);
+		default:
+			return false;
+	}
+}
 
 - (NSString*)currentCycles
 {
@@ -269,13 +285,18 @@ extern int SDL_SendKeyboardKey(int index, Uint8 state, SDL_scancode scancode);
 
 -(void)showOption
 {
+#if 1
+	[[UIApplication sharedApplication] openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString]];
+#else
 	UINavigationController *nav;
-    OptionViewController *ctrl = [[OptionViewController alloc] initWithNibName:@"OptionViewController" bundle:nil];
-    ctrl.configPath = configPath;
+	OptionViewController *ctrl = [[OptionViewController alloc] initWithNibName:@"OptionViewController" bundle:nil];
+	ctrl.configPath = configPath;
 	nav = [[UINavigationController alloc] initWithRootViewController:ctrl];
+
 	[self presentViewController:nav animated:YES completion:nil];
-    [ctrl release];
+	[ctrl release];
 	[nav release];
+#endif
 }
 
 - (BOOL)isPortrait

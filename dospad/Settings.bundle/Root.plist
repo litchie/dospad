@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>PreferenceSpecifiers</key>
+	<array>
+		<dict>
+			<key>Title</key>
+			<string>General</string>
+			<key>Type</key>
+			<string>PSGroupSpecifier</string>
+		</dict>
+		<dict>
+			<key>DefaultValue</key>
+			<false/>
+			<key>Key</key>
+			<string>dpad_movable</string>
+			<key>Title</key>
+			<string>DPad Movable</string>
+			<key>Type</key>
+			<string>PSToggleSwitchSpecifier</string>
+		</dict>
+		<dict>
+			<key>DefaultValue</key>
+			<true/>
+			<key>Key</key>
+			<string>key_sound_enabled</string>
+			<key>Title</key>
+			<string>Key Sound enabled</string>
+			<key>Type</key>
+			<string>PSToggleSwitchSpecifier</string>
+		</dict>
+		<dict>
+			<key>DefaultValue</key>
+			<true/>
+			<key>Key</key>
+			<string>gamepad_sound_enabled</string>
+			<key>Title</key>
+			<string>GamePad Sound Enabled</string>
+			<key>Type</key>
+			<string>PSToggleSwitchSpecifier</string>
+		</dict>
+		<dict>
+			<key>DefaultValue</key>
+			<false/>
+			<key>Key</key>
+			<string>double_tap_as_right_click</string>
+			<key>Title</key>
+			<string>Double Tap As Right Click</string>
+			<key>Type</key>
+			<string>PSToggleSwitchSpecifier</string>
+		</dict>
+		<dict>
+			<key>Title</key>
+			<string>Overlay Control Transparency</string>
+			<key>Type</key>
+			<string>PSGroupSpecifier</string>
+		</dict>
+		<dict>
+			<key>DefaultValue</key>
+			<real>0.2</real>
+			<key>Key</key>
+			<string>transparency</string>
+			<key>MaximumValue</key>
+			<integer>1</integer>
+			<key>MinimumValue</key>
+			<integer>0</integer>
+			<key>Type</key>
+			<string>PSSliderSpecifier</string>
+		</dict>
+		<dict>
+			<key>Title</key>
+			<string>Mouse Speed</string>
+			<key>Type</key>
+			<string>PSGroupSpecifier</string>
+		</dict>
+		<dict>
+			<key>DefaultValue</key>
+			<real>0.5</real>
+			<key>Key</key>
+			<string>mouse_speed</string>
+			<key>MaximumValue</key>
+			<integer>1</integer>
+			<key>MinimumValue</key>
+			<integer>0</integer>
+			<key>Type</key>
+			<string>PSSliderSpecifier</string>
+		</dict>
+		<dict>
+			<key>FooterText</key>
+			<string>Display optional input options in landscape mode (Currently iPad only).</string>
+			<key>Title</key>
+			<string>Optional Input Sources</string>
+			<key>Type</key>
+			<string>PSGroupSpecifier</string>
+		</dict>
+		<dict>
+			<key>DefaultValue</key>
+			<true/>
+			<key>Key</key>
+			<string>numpad_enabled</string>
+			<key>Title</key>
+			<string>NumPad Enabled (iPhone)</string>
+			<key>Type</key>
+			<string>PSToggleSwitchSpecifier</string>
+		</dict>
+		<dict>
+			<key>DefaultValue</key>
+			<true/>
+			<key>Key</key>
+			<string>joystick_enabled</string>
+			<key>Title</key>
+			<string>JoyStick Enabled</string>
+			<key>Type</key>
+			<string>PSToggleSwitchSpecifier</string>
+		</dict>
+		<dict>
+			<key>FooterText</key>
+			<string>The name of the directory where config files (*.cfg) are stored. Do not change unless you know what you are doing. Default value is &quot;default&quot;.</string>
+			<key>Title</key>
+			<string>Configuration Directory</string>
+			<key>Type</key>
+			<string>PSGroupSpecifier</string>
+		</dict>
+		<dict>
+			<key>AutocorrectionType</key>
+			<string>No</string>
+			<key>AutocapitalizationType</key>
+			<string>None</string>
+			<key>Key</key>
+			<string>config_dir</string>
+			<key>Title</key>
+			<string>Name</string>
+			<key>DefaultValue</key>
+			<string>default</string>
+			<key>Type</key>
+			<string>PSTextFieldSpecifier</string>
+		</dict>
+		<dict>
+			<key>Title</key>
+			<string>==== Credits ====</string>
+			<key>FooterText</key>
+			<string> - iDOS 2 is based on dosbox 0.74. DOSBox is a DOS-emulator that uses the SDL-library which makes DOSBox very easy to port to different platforms. DOSBox is developed by DOSBox Team. Visit `http://www.dosbox.com` for more details.
+			
+ - The source code for iDOS 2 is hosted at `https://github.com/litchie/dospad`.
+			</string>
+			<key>Type</key>
+			<string>PSGroupSpecifier</string>
+		</dict>
+	</array>
+	<key>StringsTable</key>
+	<string>Root</string>
+</dict>
+</plist>

@@ -324,7 +324,7 @@ void SDL_init_keyboard()
                 CGPoint prevLocation = [touch previousLocationInView: [self superview]];
                 float dx = locationInView.x-prevLocation.x;
                 float dy = locationInView.y-prevLocation.y;
-                float mouseSpeed = [[NSUserDefaults standardUserDefaults] floatForKey:@"MouseSpeed"];
+                float mouseSpeed = [[NSUserDefaults standardUserDefaults] floatForKey:@"mouse_speed"];
                 if (mouseSpeed == 0) mouseSpeed=0.5;
                 float scale = 1+2*mouseSpeed;
                 CGPoint ptOrig = [self convertPoint:extmice[i].ptOrig toView:[self superview]];

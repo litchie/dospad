@@ -132,9 +132,30 @@
 	[theme release];
 }
 
+- (void)registerDefaultSettings
+{
+	NSString *path = [[NSBundle mainBundle] bundlePath];
+	path = [path stringByAppendingPathComponent:@"Settings.bundle"];
+	path = [path stringByAppendingPathComponent:@"Root.plist"];
+	NSDictionary *settingsDict = [NSDictionary dictionaryWithContentsOfFile:path];
+	NSArray *prefs = settingsDict[@"PreferenceSpecifiers"];
+	NSMutableDictionary *defs = [NSMutableDictionary dictionary];
+	for (NSDictionary *item in prefs) {
+		NSString *key = item[@"Key"];
+		NSObject *obj = item[@"DefaultValue"];
+		if (key && obj) {
+			defs[key] = obj;
+		}
+	}
+	if (defs.count > 0) {
+		[[NSUserDefaults standardUserDefaults] registerDefaults:defs];
+	}
+}
+
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions 
 {
-
+	[self registerDefaultSettings];
+	[ConfigManager init];
 	[self initColorTheme];
 
 	// Make sure we are allowed to play in lock screen
@@ -157,15 +178,16 @@
 	uiwindow.rootViewController = navController;
     [uiwindow makeKeyAndVisible];
 	[super applicationDidFinishLaunching:application];
+	
 #ifdef THREADED
 	// FIXME: Launch emulation thread two seconds later to avoid crash
     [self performSelector:@selector(startDOS) withObject:nil afterDelay:2];
 #endif
+
     return YES;
 }
 
 - (void)dealloc {
-    [splashController release];
     [navController release];
     [screenView release];
     [super dealloc];

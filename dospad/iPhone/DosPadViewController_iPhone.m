@@ -18,22 +18,22 @@
 
 #import "DosPadViewController_iPhone.h"
 #import "FileSystemObject.h"
-#import "OptionViewController.h"
 #import "Common.h"
 #import "AppDelegate.h"
 #import "ColorTheme.h"
+
 
 static struct {
 	InputSourceType type;
 	const char *onImageName;
 	const char *offImageName;
 } toggleButtonInfo [] = {
-	{InputSource_PCKeyboard, "modekeyon.png", "modekeyoff.png"},
-	{InputSource_MouseButtons, "mouseon.png", "mouseoff.png"},
-	{InputSource_GamePad, "modegamepadpressed.png", "modegamepad.png"},
-	{InputSource_Joystick, "modejoypressed.png", "modejoy.png"},
-	{InputSource_NumPad, "modenumpadpressed.png", "modenumpad.png"},
-	{InputSource_PianoKeyboard, "modepianopressed.png", "modepiano.png"},
+	{InputSource_PCKeyboard,    "modekeyon.png",          "modekeyoff.png"    },
+	{InputSource_MouseButtons,  "mouseon.png",            "mouseoff.png"      },
+	{InputSource_GamePad,       "modegamepadpressed.png", "modegamepad.png"   },
+	{InputSource_Joystick,      "modejoypressed.png",     "modejoy.png"       },
+	{InputSource_NumPad,        "modenumpadpressed.png",  "modenumpad.png"    },
+	{InputSource_PianoKeyboard, "modepianopressed.png",   "modepiano.png"     },
 };
 #define NUM_BUTTON_INFO (sizeof(toggleButtonInfo)/sizeof(toggleButtonInfo[0]))
 
@@ -220,8 +220,7 @@ static struct {
 	[items addObject:cpuWindow];
 	
 	for (int i = 0; i < NUM_BUTTON_INFO; i++) {
-		if (DEFS_GET_INT(InputSource_KeyName(toggleButtonInfo[i].type)))
-		{
+		if ([self isInputSourceEnabled:toggleButtonInfo[i].type]) {
 			UIButton *btn = [[[UIButton alloc] initWithFrame:CGRectMake(0,0,48,24)] autorelease];
 			NSString *on = [NSString stringWithUTF8String:toggleButtonInfo[i].onImageName];
 			NSString *off = [NSString stringWithUTF8String:toggleButtonInfo[i].offImageName];
@@ -290,7 +289,7 @@ static struct {
 	if ([self isLandscape])
 	{
 		gamepad.alpha=a;
-		gamepad.dpadMovable = DEFS_GET_INT(kDPadMovable);
+		gamepad.dpadMovable = DEFS_GET_BOOL(kDPadMovable);
 	}
 	numpad.alpha=a;
 	btnMouseLeft.alpha=a;

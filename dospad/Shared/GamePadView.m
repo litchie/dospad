@@ -46,7 +46,7 @@ static SystemSoundID sound_joystick_move=0;
         // Initialization code
         self.backgroundColor=[UIColor clearColor];
         minDistance=MAX(10, frame.size.width/2 * 0.4);
-        quiet = DEFS_GET_INT(kDisableGamePadSound);
+        quiet = !DEFS_GET_BOOL(kGamePadSoundEnabled);
     }
     return self;
 }
@@ -452,7 +452,7 @@ static SystemSoundID sound_joystick_move=0;
 - (id)initWithFrame:(CGRect)frame {
     if ((self = [super initWithFrame:frame])) {
         self.backgroundColor=[UIColor clearColor];
-        quiet = DEFS_GET_INT(kDisableGamePadSound);
+        quiet = !DEFS_GET_BOOL(kGamePadSoundEnabled);
         self.textColor = [UIColor blackColor];
     }
     return self;

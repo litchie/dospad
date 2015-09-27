@@ -19,12 +19,10 @@
 #import <Foundation/Foundation.h>
 #import "SDL_uikitappdelegate.h"
 #import "DosEmuThread.h"
-#import "SplashViewController.h"
 
 @interface AppDelegate : SDLUIKitDelegate 
 {
     UINavigationController *navController;
-    SplashViewController *splashController;
     SDL_uikitopenglview *screenView;
     DosEmuThread * emuThread;
     int cycles;
