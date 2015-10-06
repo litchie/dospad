@@ -29,16 +29,11 @@
 @synthesize maxPercent;
 
 
-- (NSString*)getDecompressDirForFile:(NSString*)filePath
+/*
+ * Unzip file into directory `dir'.
+ */
+- (void)unzip:(NSString*)filepath toDir:(NSString*)dir
 {
-	return [[[FileSystemObject sharedObject] documentsDirectory]
-		stringByAppendingPathComponent:filePath.lastPathComponent.stringByDeletingPathExtension];
-}
-
-
-- (void)unzip:(NSString*)filepath
-{
-	NSString *dir = [self getDecompressDirForFile:filepath];
 	BOOL ret = NO;
 	ZipArchive *ar = [[ZipArchive alloc] init];
 	
@@ -52,12 +47,19 @@
 	[ar release];
 }
 
+
+/*
+ * Import a zip package and unzip its content under `Documents' folder.
+ * Warning: It will overwrite the contents of that folder.
+ */
 - (void)importFile:(NSURL*)url
 {
 	NSString *srcpath = [url path];
 	NSString *filename = [srcpath lastPathComponent];
 	if ([filename.pathExtension.lowercaseString isEqualToString:@"zip"]) {
-		[self unzip:srcpath];
+		[self unzip:srcpath
+			toDir:[[FileSystemObject sharedObject] documentsDirectory]
+		];
 	}
 }
 
