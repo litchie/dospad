@@ -491,6 +491,12 @@
 		E76C49381299490200901B69 /* FloatPanel.m in Sources */ = {isa = PBXBuildFile; fileRef = E76C49371299490200901B69 /* FloatPanel.m */; };
 		E76C49391299490300901B69 /* FloatPanel.m in Sources */ = {isa = PBXBuildFile; fileRef = E76C49371299490200901B69 /* FloatPanel.m */; };
 		E76DAEAF123EE08B00C2AEF7 /* FrameskipIndicator.m in Sources */ = {isa = PBXBuildFile; fileRef = E76DAEAE123EE08B00C2AEF7 /* FrameskipIndicator.m */; };
+		E76DFD7D1BC36BF700930FFE /* mongoose.c in Sources */ = {isa = PBXBuildFile; fileRef = E76DFD7B1BC36BF700930FFE /* mongoose.c */; settings = {ASSET_TAGS = (); }; };
+		E76DFD811BC36C3700930FFE /* MongooseDaemon.m in Sources */ = {isa = PBXBuildFile; fileRef = E76DFD801BC36C3700930FFE /* MongooseDaemon.m */; settings = {ASSET_TAGS = (); }; };
+		E76DFD821BC36D2300930FFE /* libMongooseDaemon.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E76DFD711BC36BDA00930FFE /* libMongooseDaemon.a */; };
+		E76DFD831BC36E1D00930FFE /* libMongooseDaemon.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E76DFD711BC36BDA00930FFE /* libMongooseDaemon.a */; };
+		E76DFD851BC36FE200930FFE /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E76DFD841BC36FE200930FFE /* SystemConfiguration.framework */; };
+		E76DFD861BC36FEC00930FFE /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E76DFD841BC36FE200930FFE /* SystemConfiguration.framework */; };
 		E770957E1297BA4C0040ADA2 /* ipadleftside.png in Resources */ = {isa = PBXBuildFile; fileRef = E770957C1297BA4B0040ADA2 /* ipadleftside.png */; };
 		E770957F1297BA4C0040ADA2 /* ipadrightside.png in Resources */ = {isa = PBXBuildFile; fileRef = E770957D1297BA4C0040ADA2 /* ipadrightside.png */; };
 		E77095801297BA4C0040ADA2 /* ipadleftside.png in Resources */ = {isa = PBXBuildFile; fileRef = E770957C1297BA4B0040ADA2 /* ipadleftside.png */; };
@@ -879,6 +885,18 @@
 			remoteInfo = minizip;
 		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		E76DFD6F1BC36BDA00930FFE /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "include/$(PRODUCT_NAME)";
+			dstSubfolderSpec = 16;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		043DD76B10FD8A0000DED673 /* SDL_alphamult.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = SDL_alphamult.c; sourceTree = "<group>"; };
@@ -1277,6 +1295,12 @@
 		E76C49371299490200901B69 /* FloatPanel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FloatPanel.m; sourceTree = "<group>"; };
 		E76DAEAD123EE08B00C2AEF7 /* FrameskipIndicator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FrameskipIndicator.h; sourceTree = "<group>"; };
 		E76DAEAE123EE08B00C2AEF7 /* FrameskipIndicator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FrameskipIndicator.m; sourceTree = "<group>"; };
+		E76DFD711BC36BDA00930FFE /* libMongooseDaemon.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libMongooseDaemon.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		E76DFD7B1BC36BF700930FFE /* mongoose.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = mongoose.c; path = MongooseDaemon/mongoose.c; sourceTree = "<group>"; };
+		E76DFD7C1BC36BF700930FFE /* mongoose.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mongoose.h; path = MongooseDaemon/mongoose.h; sourceTree = "<group>"; };
+		E76DFD7F1BC36C3700930FFE /* MongooseDaemon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MongooseDaemon.h; path = MongooseDaemon/MongooseDaemon.h; sourceTree = "<group>"; };
+		E76DFD801BC36C3700930FFE /* MongooseDaemon.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MongooseDaemon.m; path = MongooseDaemon/MongooseDaemon.m; sourceTree = "<group>"; };
+		E76DFD841BC36FE200930FFE /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		E770957C1297BA4B0040ADA2 /* ipadleftside.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = ipadleftside.png; path = "dospad/gamepad-res/ipadleftside.png"; sourceTree = "<group>"; };
 		E770957D1297BA4C0040ADA2 /* ipadrightside.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = ipadrightside.png; path = "dospad/gamepad-res/ipadrightside.png"; sourceTree = "<group>"; };
 		E770961F1297F5670040ADA2 /* light.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = light.png; path = "dospad/gamepad-res/light.png"; sourceTree = "<group>"; };
@@ -1553,6 +1577,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E76DFD861BC36FEC00930FFE /* SystemConfiguration.framework in Frameworks */,
+				E76DFD831BC36E1D00930FFE /* libMongooseDaemon.a in Frameworks */,
 				E71E60E611B5503500EC5A05 /* libSDLiPhoneOS.a in Frameworks */,
 				E71E636D11B5659F00EC5A05 /* libdosbox.a in Frameworks */,
 				E77DB03E11B5E0F600B78E69 /* CoreGraphics.framework in Frameworks */,
@@ -1578,6 +1604,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		E76DFD6E1BC36BDA00930FFE /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		E778B2B0123918F6008AF49A /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -1589,6 +1622,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E76DFD851BC36FE200930FFE /* SystemConfiguration.framework in Frameworks */,
+				E76DFD821BC36D2300930FFE /* libMongooseDaemon.a in Frameworks */,
 				E7BE1305128BF31A0046990B /* libSDLiPhoneOS.a in Frameworks */,
 				E7BE1306128BF31A0046990B /* libdosbox.a in Frameworks */,
 				E7BE1307128BF31A0046990B /* CoreGraphics.framework in Frameworks */,
@@ -1670,6 +1705,7 @@
 				E7D6B89811BF322E00D34665 /* libminizip.a */,
 				E778B2B2123918F6008AF49A /* libSDL_net.a */,
 				E7BE1316128BF31A0046990B /* iDOS.app */,
+				E76DFD711BC36BDA00930FFE /* libMongooseDaemon.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1690,6 +1726,7 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				E76DFD841BC36FE200930FFE /* SystemConfiguration.framework */,
 				E79E4A0011EC6BF400DEAA7B /* libc.dylib */,
 				E7D6B8CE11BF332400D34665 /* libz.dylib */,
 				E77DB05B11B5E17500B78E69 /* libstdc++.dylib */,
@@ -2265,26 +2302,29 @@
 			name = CustomView;
 			sourceTree = "<group>";
 		};
-		E750BE4C19BAE4EA001D5681 /* ViewControllers */ = {
-			isa = PBXGroup;
-			children = (
-				E715B3591293B7740098D437 /* DOSPadBaseViewController.h */,
-				E715B35A1293B7750098D437 /* DOSPadBaseViewController.m */,
-			);
-			name = ViewControllers;
-			sourceTree = "<group>";
-		};
 		E76DFD5A1BC356BB00930FFE /* Sources */ = {
 			isa = PBXGroup;
 			children = (
 				E71E60F211B550FD00EC5A05 /* dosbox */,
 				E77DAFAF11B5D83600B78E69 /* dospad */,
 				E7D6B89C11BF325700D34665 /* minizip */,
+				E76DFD7E1BC36C1F00930FFE /* MongooseDaemon */,
 				FD99B8BC0DD52E5C00FB1D6B /* SDL Headers */,
 				FD99B8BD0DD52E6D00FB1D6B /* SDL Sources */,
 				E778B2BA12391963008AF49A /* SDL_net */,
 			);
 			name = Sources;
+			sourceTree = "<group>";
+		};
+		E76DFD7E1BC36C1F00930FFE /* MongooseDaemon */ = {
+			isa = PBXGroup;
+			children = (
+				E76DFD7F1BC36C3700930FFE /* MongooseDaemon.h */,
+				E76DFD801BC36C3700930FFE /* MongooseDaemon.m */,
+				E76DFD7B1BC36BF700930FFE /* mongoose.c */,
+				E76DFD7C1BC36BF700930FFE /* mongoose.h */,
+			);
+			name = MongooseDaemon;
 			sourceTree = "<group>";
 		};
 		E7734DDC128A71AF0009CBEA /* audio */ = {
@@ -2386,6 +2426,8 @@
 				E72BE6C512911B5C009DC46A /* DosEmuThread.h */,
 				E72BE6C612911B5C009DC46A /* DosEmuThread.m */,
 				E77DAFB311B5D83600B78E69 /* dospad_Prefix.pch */,
+				E715B3591293B7740098D437 /* DOSPadBaseViewController.h */,
+				E715B35A1293B7750098D437 /* DOSPadBaseViewController.m */,
 				E74BB2B415C93DBC005EC552 /* DosPadUIApplication.h */,
 				E74BB2B515C93DBC005EC552 /* DosPadUIApplication.m */,
 				E7D214C511E45BD000D9654E /* keys.h */,
@@ -2399,7 +2441,6 @@
 				E714BC5619C1EA3B009CF594 /* UIExtendedTextField.h */,
 				E714BC5719C1EA3B009CF594 /* UIExtendedTextField.m */,
 				E750BE4A19BAE441001D5681 /* Util */,
-				E750BE4C19BAE4EA001D5681 /* ViewControllers */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
@@ -3103,6 +3144,23 @@
 			productReference = E71E60EB11B5506800EC5A05 /* libdosbox.a */;
 			productType = "com.apple.product-type.library.static";
 		};
+		E76DFD701BC36BDA00930FFE /* MongooseDaemon */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = E76DFD7A1BC36BDA00930FFE /* Build configuration list for PBXNativeTarget "MongooseDaemon" */;
+			buildPhases = (
+				E76DFD6D1BC36BDA00930FFE /* Sources */,
+				E76DFD6E1BC36BDA00930FFE /* Frameworks */,
+				E76DFD6F1BC36BDA00930FFE /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = MongooseDaemon;
+			productName = MongooseDaemon;
+			productReference = E76DFD711BC36BDA00930FFE /* libMongooseDaemon.a */;
+			productType = "com.apple.product-type.library.static";
+		};
 		E778B2B1123918F6008AF49A /* SDL_net */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = E778B2B91239191D008AF49A /* Build configuration list for PBXNativeTarget "SDL_net" */;
@@ -3188,6 +3246,9 @@
 					E71E60DF11B5502700EC5A05 = {
 						DevelopmentTeam = 4C8YZND49H;
 					};
+					E76DFD701BC36BDA00930FFE = {
+						CreatedOnToolsVersion = 7.0;
+					};
 					E7BE1297128BF31A0046990B = {
 						DevelopmentTeam = 4C8YZND49H;
 						SystemCapabilities = {
@@ -3219,6 +3280,7 @@
 				E71E60EA11B5506800EC5A05 /* dosbox */,
 				E7D6B89711BF322E00D34665 /* minizip */,
 				E7BE1297128BF31A0046990B /* iDOS */,
+				E76DFD701BC36BDA00930FFE /* MongooseDaemon */,
 			);
 		};
 /* End PBXProject section */
@@ -3727,6 +3789,15 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		E76DFD6D1BC36BDA00930FFE /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E76DFD811BC36C3700930FFE /* MongooseDaemon.m in Sources */,
+				E76DFD7D1BC36BF700930FFE /* mongoose.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		E778B2AF123918F6008AF49A /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -4108,6 +4179,122 @@
 				ZERO_LINK = NO;
 			};
 			name = Release;
+		};
+		E76DFD771BC36BDA00930FFE /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		E76DFD781BC36BDA00930FFE /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		E76DFD791BC36BDA00930FFE /* AppStore */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = AppStore;
 		};
 		E778B2B3123918F7008AF49A /* Debug */ = {
 			isa = XCBuildConfiguration;
@@ -4528,6 +4715,16 @@
 				E71E60EC11B5506800EC5A05 /* Debug */,
 				E71E60ED11B5506800EC5A05 /* Release */,
 				E7CDE7C519C2B3550079570C /* AppStore */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		E76DFD7A1BC36BDA00930FFE /* Build configuration list for PBXNativeTarget "MongooseDaemon" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E76DFD771BC36BDA00930FFE /* Debug */,
+				E76DFD781BC36BDA00930FFE /* Release */,
+				E76DFD791BC36BDA00930FFE /* AppStore */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

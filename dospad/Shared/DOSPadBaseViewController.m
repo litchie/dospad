@@ -102,6 +102,37 @@ extern int SDL_SendKeyboardKey(int index, Uint8 state, SDL_scancode scancode);
     dospad_pause();
 }
 
+- (void)displayServerInfo
+{
+	AppDelegate *d = [[UIApplication sharedApplication] delegate];
+	if (
+		d.httpDaemon && d.httpDaemon.localIPAddress &&
+		![d.httpDaemon.localIPAddress isEqualToString:@"error"]
+	){
+		labServerInfo = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 200, 32)];
+		labServerInfo.text = [NSString stringWithFormat:@"http://%@:%@",
+			d.httpDaemon.localIPAddress,
+			DEFS_GET_STRING(kWebServerPort)
+		];
+		labServerInfo.textColor = [UIColor grayColor];
+		[self.view addSubview:labServerInfo];
+
+		[UIView
+			animateWithDuration:2
+			delay:10 // seconds
+			options:UIViewAnimationOptionCurveEaseOut
+			animations:^{
+				labServerInfo.alpha = 0;
+			}
+			completion:^(BOOL finished) {
+				[labServerInfo release];
+				labServerInfo = nil;
+			}
+		];
+	}
+
+}
+
 - (void)viewDidLoad 
 {
     [super viewDidLoad];

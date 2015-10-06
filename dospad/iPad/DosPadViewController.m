@@ -492,6 +492,8 @@ static struct {
     [self onResize:self.screenView.bounds.size];
     [self refreshFullscreenPanel];
     //[vk becomeFirstResponder]; TODO Litchie commented out by tvd
+	
+	[self displayServerInfo];
 }
 
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.

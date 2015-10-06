@@ -56,6 +56,7 @@ typedef enum {
     UIButton *btnMouseLeft;
     UIButton *btnMouseRight;
     PianoKeyboard *piano;
+	UILabel *labServerInfo;
 }
 
 @property (nonatomic, retain) NSString *configPath;
@@ -71,6 +72,8 @@ typedef enum {
 - (void)onLaunchExit;
 - (void)sendCommandToDOS:(NSString*)cmd;
 - (void)showOption;
+- (void)displayServerInfo;
+
 - (NSString*)currentCycles;
 - (int)currentFrameskip;
 - (BOOL)isPortrait;

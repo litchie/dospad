@@ -115,6 +115,34 @@
 			<string>PSToggleSwitchSpecifier</string>
 		</dict>
 		<dict>
+			<key>Type</key>
+			<string>PSGroupSpecifier</string>
+			<key>Title</key>
+			<string>Web Server</string>
+			<key>FooterText</key>
+			<string>Read only, for file browsing purpose. Must restart app to for changes to take effect.</string>
+		</dict>
+		<dict>
+			<key>Type</key>
+			<string>PSToggleSwitchSpecifier</string>
+			<key>Title</key>
+			<string>Start after launch</string>
+			<key>Key</key>
+			<string>httpd_enabled</string>
+			<key>DefaultValue</key>
+			<false/>
+		</dict>
+		<dict>
+			<key>Type</key>
+			<string>PSTextFieldSpecifier</string>
+			<key>Title</key>
+			<string>Port</string>
+			<key>Key</key>
+			<string>httpd_port</string>
+			<key>DefaultValue</key>
+			<string>8080</string>
+		</dict>
+		<dict>
 			<key>FooterText</key>
 			<string>The name of the directory where config files (*.cfg) are stored. Do not change unless you know what you are doing. Default value is &quot;default&quot;.</string>
 			<key>Title</key>

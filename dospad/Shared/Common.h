@@ -42,6 +42,8 @@
 #define kDPadMovable           @"dpad_movable"
 #define kNumpadEnabled         @"numpad_enabled"
 #define kJoystickEnabled       @"joystick_enabled"
+#define KWebServerEnabled      @"httpd_enabled"
+#define kWebServerPort         @"httpd_port"
 
 /*
  * NOTE: If you are modifying this string,
@@ -75,6 +77,7 @@
 
 #define DEFS_GET_INT(name)    [[NSUserDefaults standardUserDefaults] integerForKey:(name)]
 #define DEFS_GET_BOOL(name)   [[NSUserDefaults standardUserDefaults] boolForKey:(name)]
+#define DEFS_GET_STRING(name) [[NSUserDefaults standardUserDefaults] stringForKey:(name)]
 #define DEFS_GET_FLOAT(name)  [[NSUserDefaults standardUserDefaults] floatForKey:(name)]
 
 #define MAX_HISTORY_ITEMS 20
