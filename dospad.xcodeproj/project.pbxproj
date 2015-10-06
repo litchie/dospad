@@ -1677,26 +1677,12 @@
 		29B97314FDCFA39411CA2CEA /* CustomTemplate */ = {
 			isa = PBXGroup;
 			children = (
-				E79E44F411EC2D5200DEAA7B /* Resources */,
-				E77DAFAF11B5D83600B78E69 /* dospad */,
-				E71E60F211B550FD00EC5A05 /* dosbox */,
-				FD99B8BC0DD52E5C00FB1D6B /* SDL Headers */,
-				FD99B8BD0DD52E6D00FB1D6B /* SDL Sources */,
-				E778B2BA12391963008AF49A /* SDL_net */,
-				E7D6B89C11BF325700D34665 /* minizip */,
 				E73B77D7127ED67300184D3B /* configs */,
 				E78F5B2511EF615200E2A70F /* diskc */,
 				29B97323FDCFA39411CA2CEA /* Frameworks */,
 				19C28FACFE9D520D11CA2CBB /* Products */,
-				E77DB04111B5E10700B78E69 /* libstdc++.6.0.9.dylib */,
-				E77DB04311B5E11100B78E69 /* QuartzCore.framework */,
-				E77DB04711B5E11900B78E69 /* OpenGLES.framework */,
-				E77DB05511B5E13600B78E69 /* MessageUI.framework */,
-				E77DB05B11B5E17500B78E69 /* libstdc++.dylib */,
-				E7D6B8CE11BF332400D34665 /* libz.dylib */,
-				E79E4A0011EC6BF400DEAA7B /* libc.dylib */,
-				E70C044012A4B43F00AC178F /* AVFoundation.framework */,
-				E7F2A9CD12CD99EC0091B859 /* CoreMIDI.framework */,
+				E79E44F411EC2D5200DEAA7B /* Resources */,
+				E76DFD5A1BC356BB00930FFE /* Sources */,
 			);
 			name = CustomTemplate;
 			sourceTree = "<group>";
@@ -1704,10 +1690,19 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				E79E4A0011EC6BF400DEAA7B /* libc.dylib */,
+				E7D6B8CE11BF332400D34665 /* libz.dylib */,
+				E77DB05B11B5E17500B78E69 /* libstdc++.dylib */,
+				E77DB04111B5E10700B78E69 /* libstdc++.6.0.9.dylib */,
+				E7F2A9CD12CD99EC0091B859 /* CoreMIDI.framework */,
 				FDB9E4CC0DEB84540027A75A /* AudioToolbox.framework */,
 				FDB9E40C0DEB81970027A75A /* CoreAudio.framework */,
 				FDB9E4060DEB81870027A75A /* AudioUnit.framework */,
 				FD99BCEF0DD532AE00FB1D6B /* OpenGLES.framework */,
+				E70C044012A4B43F00AC178F /* AVFoundation.framework */,
+				E77DB05511B5E13600B78E69 /* MessageUI.framework */,
+				E77DB04711B5E11900B78E69 /* OpenGLES.framework */,
+				E77DB04311B5E11100B78E69 /* QuartzCore.framework */,
 				1D3623EB0D0F72F000981E51 /* CoreGraphics.framework */,
 				1DF5F4DF0D08C38300B7A737 /* UIKit.framework */,
 				1D30AB110D05D00D00671497 /* Foundation.framework */,
@@ -2277,6 +2272,19 @@
 				E715B35A1293B7750098D437 /* DOSPadBaseViewController.m */,
 			);
 			name = ViewControllers;
+			sourceTree = "<group>";
+		};
+		E76DFD5A1BC356BB00930FFE /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+				E71E60F211B550FD00EC5A05 /* dosbox */,
+				E77DAFAF11B5D83600B78E69 /* dospad */,
+				E7D6B89C11BF325700D34665 /* minizip */,
+				FD99B8BC0DD52E5C00FB1D6B /* SDL Headers */,
+				FD99B8BD0DD52E6D00FB1D6B /* SDL Sources */,
+				E778B2BA12391963008AF49A /* SDL_net */,
+			);
+			name = Sources;
 			sourceTree = "<group>";
 		};
 		E7734DDC128A71AF0009CBEA /* audio */ = {
