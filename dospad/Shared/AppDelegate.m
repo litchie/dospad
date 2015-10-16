@@ -27,7 +27,6 @@
 @synthesize frameskip;
 @synthesize cycles;
 @synthesize maxPercent;
-@synthesize httpDaemon = mongooseDaemon;
 
 /*
  * Unzip file into directory `dir'.
@@ -160,11 +159,6 @@
 	[ConfigManager init];
 	[self initColorTheme];
 
-	if (DEFS_GET_BOOL(KWebServerEnabled)) {
-		mongooseDaemon = [[MongooseDaemon alloc] init];
-		[mongooseDaemon startMongooseDaemon:DEFS_GET_STRING(kWebServerPort)];
-	}
-
 	// Make sure we are allowed to play in lock screen
 	NSError *setCategoryErr = nil;
 	NSError *activationErr  = nil;
@@ -197,7 +191,6 @@
 - (void)dealloc {
     [navController release];
     [screenView release];
-	[mongooseDaemon release];
     [super dealloc];
 }
 

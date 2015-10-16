@@ -541,8 +541,6 @@ static struct {
 #else
 	[self hideNavigationBar];
 #endif
-
-	[self displayServerInfo];
 }
 
 -(void)viewWillDisappear:(BOOL)animated

@@ -13,6 +13,8 @@
 			<array>
 				<string>Icon-iPad-40@2x</string>
 			</array>
+			<key>CFBundleTypeName</key>
+			<string>Zip Archive</string>
 			<key>LSItemContentTypes</key>
 			<array>
 				<string>com.pkware.zip-archive</string>

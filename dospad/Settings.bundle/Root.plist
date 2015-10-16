@@ -115,34 +115,6 @@
 			<string>PSToggleSwitchSpecifier</string>
 		</dict>
 		<dict>
-			<key>Type</key>
-			<string>PSGroupSpecifier</string>
-			<key>Title</key>
-			<string>Web Server</string>
-			<key>FooterText</key>
-			<string>Read only, for file browsing purpose. Must restart app to for changes to take effect.</string>
-		</dict>
-		<dict>
-			<key>Type</key>
-			<string>PSToggleSwitchSpecifier</string>
-			<key>Title</key>
-			<string>Start after launch</string>
-			<key>Key</key>
-			<string>httpd_enabled</string>
-			<key>DefaultValue</key>
-			<false/>
-		</dict>
-		<dict>
-			<key>Type</key>
-			<string>PSTextFieldSpecifier</string>
-			<key>Title</key>
-			<string>Port</string>
-			<key>Key</key>
-			<string>httpd_port</string>
-			<key>DefaultValue</key>
-			<string>8080</string>
-		</dict>
-		<dict>
 			<key>FooterText</key>
 			<string>The name of the directory where config files (*.cfg) are stored. Do not change unless you know what you are doing. Default value is &quot;default&quot;.</string>
 			<key>Title</key>
@@ -168,9 +140,11 @@
 			<key>Title</key>
 			<string>==== Credits ====</string>
 			<key>FooterText</key>
-			<string> - iDOS 2 is based on dosbox 0.74. DOSBox is a DOS-emulator that uses the SDL-library which makes DOSBox very easy to port to different platforms. DOSBox is developed by DOSBox Team. Visit `http://www.dosbox.com` for more details.
+			<string> - iDOS 2 is based on dosbox 0.74. DOSBox is a DOS-emulator that uses the SDL-library which makes DOSBox very easy to port to different platforms. DOSBox is developed by DOSBox Team. Visit `http://www.dosbox.com' for more details.
 			
- - The source code for iDOS 2 is hosted at `https://github.com/litchie/dospad`.
+ - The source code for iDOS 2 is hosted at `https://github.com/litchie/dospad'.
+ 
+ - Bug reports, feedbacks or BETA test requests can be sent to `idos@litchie.com'.
 			</string>
 			<key>Type</key>
 			<string>PSGroupSpecifier</string>

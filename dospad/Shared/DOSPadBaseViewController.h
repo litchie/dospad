@@ -72,7 +72,6 @@ typedef enum {
 - (void)onLaunchExit;
 - (void)sendCommandToDOS:(NSString*)cmd;
 - (void)showOption;
-- (void)displayServerInfo;
 
 - (NSString*)currentCycles;
 - (int)currentFrameskip;

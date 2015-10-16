@@ -19,7 +19,6 @@
 #import <Foundation/Foundation.h>
 #import "SDL_uikitappdelegate.h"
 #import "DosEmuThread.h"
-#import "MongooseDaemon.h"
 
 @interface AppDelegate : SDLUIKitDelegate 
 {
@@ -29,14 +28,12 @@
 	int cycles;
 	int frameskip;
 	int maxPercent;
-	
-	MongooseDaemon   *mongooseDaemon;
 }
 
 @property (nonatomic, readonly) int cycles;
 @property (nonatomic, readonly) int frameskip;
 @property (nonatomic, readonly) int maxPercent;
-@property (nonatomic, readonly) MongooseDaemon *httpDaemon;
+
 -(void)onLaunchExit;
 
 @end
