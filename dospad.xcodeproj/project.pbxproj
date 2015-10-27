@@ -1274,6 +1274,7 @@
 		E75276E612A0A77E00278BA1 /* modekeyon~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "modekeyon~ipad.png"; sourceTree = "<group>"; };
 		E752775A12A0C48700278BA1 /* shortlandkey.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = shortlandkey.png; path = "dospad/misc-res/shortlandkey.png"; sourceTree = "<group>"; };
 		E752775B12A0C48700278BA1 /* shortlandkey@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "shortlandkey@2x.png"; path = "dospad/misc-res/shortlandkey@2x.png"; sourceTree = "<group>"; };
+		E75C2A2A1BDF27AA00CCC770 /* iDOS-Beta-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "iDOS-Beta-Info.plist"; sourceTree = "<group>"; };
 		E7685A891BB76C8200FAC866 /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = Settings.bundle; path = dospad/Settings.bundle; sourceTree = "<group>"; };
 		E76C49361299490200901B69 /* FloatPanel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FloatPanel.h; sourceTree = "<group>"; };
 		E76C49371299490200901B69 /* FloatPanel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FloatPanel.m; sourceTree = "<group>"; };
@@ -2424,6 +2425,7 @@
 				E73A766F12504B73000E1743 /* credits.html */,
 				E71E60E211B5502800EC5A05 /* dospad-Info.plist */,
 				E7BE1318128BF31A0046990B /* iDOS-Info.plist */,
+				E75C2A2A1BDF27AA00CCC770 /* iDOS-Beta-Info.plist */,
 				E7685A891BB76C8200FAC866 /* Settings.bundle */,
 			);
 			name = Resources;
@@ -4107,6 +4109,189 @@
 			};
 			name = Release;
 		};
+		E75C2A221BDF26C400CCC770 /* AppStoreBeta */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
+				GCC_C_LANGUAGE_STANDARD = c99;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = NO;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
+				PREBINDING = NO;
+				SDKROOT = iphoneos;
+			};
+			name = AppStoreBeta;
+		};
+		E75C2A231BDF26C400CCC770 /* AppStoreBeta */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEPLOYMENT_LOCATION = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_PREPROCESSOR_DEFINITIONS = IPHONEOS;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				IPHONEOS_DEPLOYMENT_TARGET = 3.2;
+				ONLY_ACTIVE_ARCH = NO;
+				PREBINDING = NO;
+				PRODUCT_NAME = SDLiPhoneOS;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				VALID_ARCHS = "armv7 armv7s arm64";
+				ZERO_LINK = NO;
+			};
+			name = AppStoreBeta;
+		};
+		E75C2A241BDF26C400CCC770 /* AppStoreBeta */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				PRODUCT_NAME = "Generate Header Files";
+				ZERO_LINK = NO;
+			};
+			name = AppStoreBeta;
+		};
+		E75C2A251BDF26C400CCC770 /* AppStoreBeta */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				ONLY_ACTIVE_ARCH = NO;
+				PREBINDING = NO;
+				PRODUCT_NAME = SDL_net;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				USER_HEADER_SEARCH_PATHS = "./include/**";
+				ZERO_LINK = NO;
+			};
+			name = AppStoreBeta;
+		};
+		E75C2A261BDF26C400CCC770 /* AppStoreBeta */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_BITCODE = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/UIKit.framework/Headers/UIKit.h";
+				GCC_PREPROCESSOR_DEFINITIONS = IPHONEOS;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				INFOPLIST_FILE = "dospad-Info.plist";
+				INSTALL_PATH = /Applications;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.1.1;
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				ONLY_ACTIVE_ARCH = NO;
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					UIKit,
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = dospad;
+				PROVISIONING_PROFILE = "";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = NO;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = NO;
+				VALID_ARCHS = "armv7s armv7 arm64";
+				ZERO_LINK = NO;
+			};
+			name = AppStoreBeta;
+		};
+		E75C2A271BDF26C400CCC770 /* AppStoreBeta */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_PREPROCESSOR_DEFINITIONS = IPHONEOS;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				HEADER_SEARCH_PATHS = ./include;
+				IPHONEOS_DEPLOYMENT_TARGET = 3.2;
+				ONLY_ACTIVE_ARCH = NO;
+				PREBINDING = NO;
+				PRODUCT_NAME = dosbox;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				ZERO_LINK = NO;
+			};
+			name = AppStoreBeta;
+		};
+		E75C2A281BDF26C400CCC770 /* AppStoreBeta */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				IPHONEOS_DEPLOYMENT_TARGET = 3.2;
+				ONLY_ACTIVE_ARCH = NO;
+				PREBINDING = NO;
+				PRODUCT_NAME = minizip;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				ZERO_LINK = NO;
+			};
+			name = AppStoreBeta;
+		};
+		E75C2A291BDF26C400CCC770 /* AppStoreBeta */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Chaoji Li (4C8YZND49H)";
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_BITCODE = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/UIKit.framework/Headers/UIKit.h";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					IDOS,
+					IPHONEOS,
+					APPSTORE,
+				);
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				INFOPLIST_FILE = "iDOS-Beta-Info.plist";
+				INSTALL_PATH = "$(HOME)/Applications";
+				IPHONEOS_DEPLOYMENT_TARGET = 5.1.1;
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				ONLY_ACTIVE_ARCH = NO;
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					UIKit,
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = iDOS;
+				PROVISIONING_PROFILE = "";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "cfee2b53-ffaf-444c-bc07-b77b4eadae0e";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = NO;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+				ZERO_LINK = NO;
+			};
+			name = AppStoreBeta;
+		};
 		E778B2B3123918F7008AF49A /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -4161,7 +4346,7 @@
 				);
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				HEADER_SEARCH_PATHS = ./include;
-				INFOPLIST_FILE = "iDOS-Info.plist";
+				INFOPLIST_FILE = "iDOS-Beta-Info.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.1.1;
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
@@ -4201,7 +4386,7 @@
 					IPHONEOS,
 				);
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
-				INFOPLIST_FILE = "iDOS-Info.plist";
+				INFOPLIST_FILE = "iDOS-Beta-Info.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.1.1;
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
@@ -4496,6 +4681,7 @@
 				00646540107E3D7500183915 /* Debug */,
 				00646541107E3D7500183915 /* Release */,
 				E7CDE7C219C2B3550079570C /* AppStore */,
+				E75C2A241BDF26C400CCC770 /* AppStoreBeta */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -4506,6 +4692,7 @@
 				C01FCF4F08A954540054247B /* Debug */,
 				C01FCF5008A954540054247B /* Release */,
 				E7CDE7C019C2B3550079570C /* AppStore */,
+				E75C2A221BDF26C400CCC770 /* AppStoreBeta */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -4516,6 +4703,7 @@
 				E71E60E311B5502800EC5A05 /* Debug */,
 				E71E60E411B5502800EC5A05 /* Release */,
 				E7CDE7C419C2B3550079570C /* AppStore */,
+				E75C2A261BDF26C400CCC770 /* AppStoreBeta */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -4526,6 +4714,7 @@
 				E71E60EC11B5506800EC5A05 /* Debug */,
 				E71E60ED11B5506800EC5A05 /* Release */,
 				E7CDE7C519C2B3550079570C /* AppStore */,
+				E75C2A271BDF26C400CCC770 /* AppStoreBeta */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -4536,6 +4725,7 @@
 				E778B2B3123918F7008AF49A /* Debug */,
 				E778B2B4123918F7008AF49A /* Release */,
 				E7CDE7C319C2B3550079570C /* AppStore */,
+				E75C2A251BDF26C400CCC770 /* AppStoreBeta */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -4546,6 +4736,7 @@
 				E7BE1314128BF31A0046990B /* Debug */,
 				E7BE1315128BF31A0046990B /* Release */,
 				E7CDE7C719C2B3550079570C /* AppStore */,
+				E75C2A291BDF26C400CCC770 /* AppStoreBeta */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -4556,6 +4747,7 @@
 				E7D6B89911BF323200D34665 /* Debug */,
 				E7D6B89A11BF323200D34665 /* Release */,
 				E7CDE7C619C2B3550079570C /* AppStore */,
+				E75C2A281BDF26C400CCC770 /* AppStoreBeta */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -4566,6 +4758,7 @@
 				FD6526640DE8FCCB002AD96B /* Debug */,
 				FD6526650DE8FCCB002AD96B /* Release */,
 				E7CDE7C119C2B3550079570C /* AppStore */,
+				E75C2A231BDF26C400CCC770 /* AppStoreBeta */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
