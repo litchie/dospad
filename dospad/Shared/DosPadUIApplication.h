@@ -10,6 +10,6 @@
 
 @interface DosPadUIApplication : UIApplication
 {
-	int lastEventFlags;
+	NSInteger lastEventFlags;
 }
 @end

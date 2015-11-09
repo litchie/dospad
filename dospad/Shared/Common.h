@@ -44,6 +44,11 @@
 #define kJoystickEnabled       @"joystick_enabled"
 #define KWebServerEnabled      @"httpd_enabled"
 #define kWebServerPort         @"httpd_port"
+#define kiCloudBackupEnabled   @"icloud_backup_enabled"
+
+#define DOCUMENTS_DIR [\
+	NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) \
+	objectAtIndex:0]
 
 /*
  * NOTE: If you are modifying this string,

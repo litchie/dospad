@@ -153,10 +153,44 @@
 	}
 }
 
-- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions 
+// Reference: https://developer.apple.com/library/ios/qa/qa1719/_index.html
+- (BOOL)setBackupAttributeToItemAtPath:(NSString *)filePathString skip:(BOOL)skip
+{
+    NSURL* URL = [NSURL fileURLWithPath: filePathString];
+    assert([[NSFileManager defaultManager] fileExistsAtPath: [URL path]]);
+ 
+    NSError *error = nil;
+    BOOL success = [URL setResourceValue:[NSNumber numberWithBool:skip]
+                                  forKey:NSURLIsExcludedFromBackupKey error:&error];
+    if (!success)
+	{
+        NSLog(
+			@"Error %@ `%@' from backup: %@",
+			(skip?@"excluding":@"including"),
+			[URL lastPathComponent], error
+		);
+    }
+    return success;
+}
+
+/*
+ * Exclude or include Documents folder for iCloud/iTunes backup,
+ * depending on user settings.
+ */
+- (void)initBackup
+{
+	if (DEFS_GET_BOOL(kiCloudBackupEnabled)) {
+		[self setBackupAttributeToItemAtPath:DOCUMENTS_DIR skip:NO];
+	} else {
+		[self setBackupAttributeToItemAtPath:DOCUMENTS_DIR skip:YES];
+	}
+}
+
+- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
 	[self registerDefaultSettings];
 	[ConfigManager init];
+	[self initBackup];
 	[self initColorTheme];
 
 	// Make sure we are allowed to play in lock screen
