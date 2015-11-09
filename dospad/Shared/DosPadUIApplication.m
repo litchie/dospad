@@ -41,7 +41,7 @@ extern int SDL_SendKeyboardKey(int index, Uint8 state, SDL_scancode scancode);
 	SDL_SendKeyboardKey(0, pressed?SDL_PRESSED:SDL_RELEASED, scancode);
 }
 
-- (void)onFlagsChange:(int)eventFlags
+- (void)onFlagsChange:(NSInteger)eventFlags
 {
 	if ((eventFlags ^ lastEventFlags) & GSEVENT_FLAG_LSHIFT)
 		[self sendkey:SDL_SCANCODE_LSHIFT pressed:!!(eventFlags & GSEVENT_FLAG_LSHIFT)];
@@ -53,7 +53,7 @@ extern int SDL_SendKeyboardKey(int index, Uint8 state, SDL_scancode scancode);
 		[self sendkey:SDL_SCANCODE_LCTRL pressed:!!(eventFlags & GSEVENT_FLAG_LCTRL)];
 
 	if ((eventFlags ^ lastEventFlags) & GSEVENT_FLAG_RCTRL)
-		[self sendkey:GSEVENT_FLAG_RCTRL pressed:!!(eventFlags & GSEVENT_FLAG_RCTRL)];
+		[self sendkey:SDL_SCANCODE_RCTRL pressed:!!(eventFlags & GSEVENT_FLAG_RCTRL)];
 
 	if ((eventFlags ^ lastEventFlags) & GSEVENT_FLAG_LALT)
 		[self sendkey:SDL_SCANCODE_LALT pressed:!!(eventFlags & GSEVENT_FLAG_LALT)];
@@ -64,10 +64,11 @@ extern int SDL_SendKeyboardKey(int index, Uint8 state, SDL_scancode scancode);
 
 #ifndef APPSTORE
 
-- (void)DecodeKeyEvent:(NSInteger *)eventMem
+- (void)decodeKeyEvent:(NSInteger *)eventMem
 {
-    NSInteger eventType = eventMem[GSEVENT_TYPE];
+    NSInteger eventType  = eventMem[GSEVENT_TYPE];
     NSInteger eventFlags = eventMem[GSEVENT_FLAGS];
+	
     //NSLog(@"event flags: %i type %d", eventFlags, eventType);
     
     if (lastEventFlags ^ eventFlags) {
@@ -76,26 +77,22 @@ extern int SDL_SendKeyboardKey(int index, Uint8 state, SDL_scancode scancode);
     }
     
     if (eventType == GSEVENT_TYPE_KEYUP) {
-        int scancode = eventMem[GSEVENTKEY_KEYCODE];
+        int scancode = (int)eventMem[GSEVENTKEY_KEYCODE];
         SDL_SendKeyboardKey(0, SDL_RELEASED, scancode);
-    }
-    
-    if(eventType == GSEVENT_TYPE_KEYDOWN)
-    {
-        int scancode = eventMem[GSEVENTKEY_KEYCODE];
+    } else if(eventType == GSEVENT_TYPE_KEYDOWN) {
+        int scancode = (int)eventMem[GSEVENTKEY_KEYCODE];
         SDL_SendKeyboardKey(0, SDL_PRESSED, scancode);
     }
 }
 
 - (void)handleKeyUIEvent:(UIEvent *)event
 {
-    [super handleKeyUIEvent:event];
-    
     if ([event respondsToSelector:@selector(_gsEvent)]) {
         NSInteger *eventMem;
+		
         eventMem = (NSInteger *)[event performSelector:@selector(_gsEvent)];
         if (eventMem) {
-            [self DecodeKeyEvent:eventMem];
+            [self decodeKeyEvent:eventMem];
         }
     }
 }
@@ -104,13 +101,15 @@ extern int SDL_SendKeyboardKey(int index, Uint8 state, SDL_scancode scancode);
 {
 	[super sendEvent:event];
 	if ([event respondsToSelector:@selector(_gsEvent)]) {
-		int *eventMem;
-		eventMem = (int *)[event performSelector:@selector(_gsEvent)];
+		NSInteger *eventMem;
+		
+		eventMem = (NSInteger*)[event performSelector:@selector(_gsEvent)];
 		if (eventMem) {
-            [self DecodeKeyEvent:(NSInteger*)eventMem];
+            [self decodeKeyEvent:eventMem];
         }
     }
 }
+
 #endif
 
 @end
