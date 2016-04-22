@@ -21,11 +21,51 @@
 #import "Common.h"
 #import <AVFoundation/AVFoundation.h>
 #import "ColorTheme.h"
+#import "ZipArchive.h"
 
 @implementation AppDelegate
 @synthesize frameskip;
 @synthesize cycles;
 @synthesize maxPercent;
+
+/*
+ * Unzip file into directory `dir'.
+ */
+- (void)unzip:(NSString*)filepath toDir:(NSString*)dir
+{
+	BOOL ret = NO;
+	ZipArchive *ar = [[ZipArchive alloc] init];
+	
+	if ([ar UnzipOpenFile:filepath]) {
+		[[FileSystemObject sharedObject] ensureDirectoryExists:dir];
+		ret = [ar UnzipFileTo:dir overWrite:YES];
+		[ar UnzipCloseFile];
+		[[FileSystemObject sharedObject] removeFileAtPath:filepath];
+	}	
+}
+
+
+/*
+ * Import a zip package and unzip its content under `Documents' folder.
+ * Warning: It will overwrite the contents of that folder.
+ */
+- (void)importFile:(NSURL*)url
+{
+	NSString *srcpath = [url path];
+	NSString *filename = [srcpath lastPathComponent];
+	if ([filename.pathExtension.lowercaseString isEqualToString:@"zip"]) {
+		[self unzip:srcpath
+			toDir:[[FileSystemObject sharedObject] documentsDirectory]
+		];
+	}
+}
+
+- (BOOL)application:(UIApplication *)application openURL:(NSURL *)url
+	sourceApplication:(NSString *)sourceApplication annotation:(id)annotation
+{
+	[self importFile:url];
+	return YES;
+}
 
 -(SDL_uikitopenglview*)screen
 {
@@ -171,7 +211,8 @@
     [uiwindow makeKeyAndVisible];
 	[super applicationDidFinishLaunching:application];
 #ifdef THREADED
-    [self performSelector:@selector(startDOS) withObject:nil afterDelay:0.5];
+	// FIXME: Launch emulation thread two seconds later to avoid crash
+    [self performSelector:@selector(startDOS) withObject:nil afterDelay:2];
 #endif
     return YES;
 }
