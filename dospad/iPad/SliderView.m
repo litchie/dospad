@@ -61,7 +61,7 @@
 {
     if ((self = [super initWithFrame:frame])) {
         self.backgroundColor=[UIColor clearColor];
-        slider = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"slider"]];
+        slider = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"slider.png"]];
         slider.userInteractionEnabled = YES;
         [self addSubview:slider];
         [self setPosition:0];
@@ -75,11 +75,6 @@
     [slider sizeToFit];
 }
 
-- (void)dealloc
-{
-    [slider release];
-    [super dealloc];
-}
 
 
 @end

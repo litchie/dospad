@@ -18,7 +18,6 @@
 
         [self addSubview:theTextField];
         self.textField = theTextField;
-        [theTextField release];
         
         NSString *ver = [[UIDevice currentDevice] systemVersion];
         int verNumber = [ver intValue];
@@ -38,11 +37,6 @@
 {
     return textField.text;
 }
-- (void)dealloc
-{
-    [textField release];
-    [super dealloc];
-}
 @end
 
 
@@ -55,7 +49,7 @@
 
 +(void)show:(NSString *)title message:(NSString*)msg
 {
-    UIAlertView *alert = [[[UIAlertView alloc] init] autorelease];
+    UIAlertView *alert = [[UIAlertView alloc] init];
     [alert setTitle:title];
     if (msg) [alert setMessage:msg];
     [alert addButtonWithTitle:TEXT("OK")];

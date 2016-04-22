@@ -5,78 +5,35 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>English</string>
 	<key>CFBundleDisplayName</key>
-	<string>iDOS 2</string>
+	<string>iDOS</string>
 	<key>CFBundleExecutable</key>
 	<string>${EXECUTABLE_NAME}</string>
 	<key>CFBundleIconFile</key>
-	<string>Icon-iPhone-57.png</string>
+	<string>dpicon.png</string>
 	<key>CFBundleIconFiles</key>
 	<array>
-		<string>Icon-iPhone-57.png</string>
-		<string>Icon-iPhone-57@2x.png</string>
-		<string>Icon-iPad-72.png</string>
-		<string>Icon-iPad-72@2x.png</string>
+		<string>dpicon.png</string>
+		<string>dpicon@2x.png</string>
+		<string>dpicon~ipad.png</string>
 	</array>
-	<key>CFBundleIcons</key>
-	<dict>
-		<key>CFBundlePrimaryIcon</key>
-		<dict>
-			<key>CFBundleIconFiles</key>
-			<array>
-				<string>Icon-iPhone-29</string>
-				<string>Icon-iPhone-29@2x</string>
-				<string>Icon-iPhone-40@2x</string>
-				<string>Icon-iPhone-60@2x</string>
-				<string>Icon-iPhone-57</string>
-				<string>Icon-iPhone-57@2x</string>
-			</array>
-			<key>UIPrerenderedIcon</key>
-			<true/>
-		</dict>
-	</dict>
-	<key>CFBundleIcons~ipad</key>
-	<dict>
-		<key>CFBundlePrimaryIcon</key>
-		<dict>
-			<key>CFBundleIconFiles</key>
-			<array>
-				<string>Icon-iPad-29</string>
-				<string>Icon-iPad-29@2x</string>
-				<string>Icon-iPad-40</string>
-				<string>Icon-iPad-40@2x</string>
-				<string>Icon-iPad-50</string>
-				<string>Icon-iPad-50@2x</string>
-				<string>Icon-iPad-72</string>
-				<string>Icon-iPad-72@2x</string>
-				<string>Icon-iPad-76</string>
-				<string>Icon-iPad-76@2x</string>
-			</array>
-			<key>UIPrerenderedIcon</key>
-			<true/>
-		</dict>
-	</dict>
 	<key>CFBundleIdentifier</key>
-	<string>com.litchie.idosgames</string>
+	<string>8HLDK844H7.net.litchie.idos</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
-	<string>iDOS2</string>
+	<string>iDOS</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
-	<key>CFBundleShortVersionString</key>
-	<string>1.4.1</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>20151027.1133</string>
+	<string>2.0.1</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSMainNibFile</key>
 	<string>MainWindow</string>
 	<key>NSMainNibFile~ipad</key>
 	<string>MainWindow</string>
-	<key>UIFileSharingEnabled</key>
-	<false/>
 	<key>UIRequiresFullScreen</key>
 	<true/>
 	<key>UIStatusBarHidden</key>
@@ -84,7 +41,9 @@
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
+		<string>UIInterfaceOrientationLandscapeRight</string>
 		<string>UIInterfaceOrientationPortraitUpsideDown</string>
+		<string>UIInterfaceOrientationLandscapeLeft</string>
 	</array>
 	<key>UISupportedInterfaceOrientations~ipad</key>
 	<array>

@@ -31,23 +31,6 @@ extern int SDL_SendKeyboardKey(int index, Uint8 state, SDL_scancode scancode);
 @synthesize configPath;
 @synthesize screenView;
 
-
-- (bool)isInputSourceEnabled:(InputSourceType)type
-{
-	switch (type) {
-		case InputSource_PCKeyboard:
-		case InputSource_GamePad:
-		case InputSource_MouseButtons:
-			return true;
-		case InputSource_Joystick:
-			return DEFS_GET_BOOL(kJoystickEnabled);
-		case InputSource_NumPad:
-			return DEFS_GET_BOOL(kNumpadEnabled);
-		default:
-			return false;
-	}
-}
-
 - (NSString*)currentCycles
 {
     AppDelegate *d = (AppDelegate*)[[UIApplication sharedApplication] delegate];
@@ -74,13 +57,13 @@ extern int SDL_SendKeyboardKey(int index, Uint8 state, SDL_scancode scancode);
     {
         DosPadViewController *ctrl = [[DosPadViewController alloc] init];
         ctrl.configPath = configPath;
-        return [ctrl autorelease];
+        return ctrl;
     }
     else
     {
         DosPadViewController_iPhone *ctrl = [[DosPadViewController_iPhone alloc] init];
         ctrl.configPath = configPath;
-        return [ctrl autorelease];        
+        return ctrl;        
     }
 }
 
@@ -113,13 +96,9 @@ extern int SDL_SendKeyboardKey(int index, Uint8 state, SDL_scancode scancode);
     holdIndicator.alpha = 0;
     holdIndicator.transform = CGAffineTransformMakeScale(1.5, 1.5);
     [self.view addSubview:holdIndicator];
-
-#ifdef IDOS
-    self.title = @"iDOS";
-#else
-    self.title = @"DOSpad";
-#endif
-
+    
+    self.title = @"DOS";
+    
     if (configPath == nil)
     {
         self.configPath = [ConfigManager dospadConfigFile];
@@ -165,20 +144,12 @@ extern int SDL_SendKeyboardKey(int index, Uint8 state, SDL_scancode scancode);
     // e.g. self.myOutlet = nil;
 }
 
-- (NSUInteger)supportedInterfaceOrientations
-{
-	return UIInterfaceOrientationMaskAll;
-}
 
 - (void)dealloc {
-    [screenView release];
-    [configPath release];
-    [holdIndicator release];
     [self removeAllInputSources];
     
     //TODO LITCHIE commented out by TVD
     //[vk release];
-    [super dealloc];
 }
 
 - (void)onLaunchExit
@@ -233,15 +204,6 @@ extern int SDL_SendKeyboardKey(int index, Uint8 state, SDL_scancode scancode);
     [UIView commitAnimations];    
 }
 
-- (MouseRightClickMode)currentRightClickMode
-{
-	if (DEFS_GET_INT(kDoubleTapAsRightClick) == 1) {
-		return MouseRightClickWithDoubleTap;
-	} else {
-		return MouseRightClickDefault;
-	}
-}
-
 -(void)onResize:(CGSize)sizeNew
 {
     NSLog(@"Warning: onResize not implemented");
@@ -285,18 +247,7 @@ extern int SDL_SendKeyboardKey(int index, Uint8 state, SDL_scancode scancode);
 
 -(void)showOption
 {
-#if 1
 	[[UIApplication sharedApplication] openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString]];
-#else
-	UINavigationController *nav;
-	OptionViewController *ctrl = [[OptionViewController alloc] initWithNibName:@"OptionViewController" bundle:nil];
-	ctrl.configPath = configPath;
-	nav = [[UINavigationController alloc] initWithRootViewController:ctrl];
-
-	[self presentViewController:nav animated:YES completion:nil];
-	[ctrl release];
-	[nav release];
-#endif
 }
 
 - (BOOL)isPortrait
@@ -344,10 +295,37 @@ extern int SDL_SendKeyboardKey(int index, Uint8 state, SDL_scancode scancode);
         {
             return btnMouseLeft != nil && btnMouseRight != nil;
             break;
-        }
-        default:;
+        }            
     }    
     return NO;
+}
+
+- (BOOL)prefersStatusBarHidden {
+	return YES;
+}
+
+- (void)removeiOSKeyboard
+{
+    //TODO: Litchie commented out by tvd
+    /*
+    if (vk.useNativeKeyboard != YES)
+        return;
+    // Hide the virtual native keyboard
+    // However, we are still listening to external keyboard input
+    vk.active = NO;
+    vk.useNativeKeyboard=NO;
+    vk.active = YES;
+     */
+}
+
+- (void)createiOSKeyboard
+{
+    //TODO: Litchie commented out by tvd
+    /*
+    if (vk.active)
+        vk.active = NO;
+    vk.useNativeKeyboard = YES;
+    vk.active = YES;*/
 }
 
 - (void)NOT_IMPLEMENTED(createPCKeyboard);
@@ -358,7 +336,7 @@ extern int SDL_SendKeyboardKey(int index, Uint8 state, SDL_scancode scancode);
 
 - (void)createPianoKeyboard
 {
-    NSString *ui_cfg = [ConfigManager uiConfigFile];
+    NSString *ui_cfg = 0;//get_temporary_merged_file(configPath, get_default_config());
     
     if (ui_cfg != nil)
     {
@@ -404,8 +382,7 @@ extern int SDL_SendKeyboardKey(int index, Uint8 state, SDL_scancode scancode);
         {
             [self createMouseButtons];
             break;
-        }
-        default:;
+        }            
     }    
 }
 
@@ -432,7 +409,6 @@ extern int SDL_SendKeyboardKey(int index, Uint8 state, SDL_scancode scancode);
             if (numpad) 
             {
                 [numpad removeFromSuperview];
-                [numpad release];
                 numpad = nil;
             }
             break;
@@ -442,9 +418,13 @@ extern int SDL_SendKeyboardKey(int index, Uint8 state, SDL_scancode scancode);
             if (kbd) 
             {
                 [kbd removeFromSuperview];
-                [kbd release];
                 kbd = nil;
             }
+            break;
+        }
+        case InputSource_iOSKeyboard:
+        {
+            [self removeiOSKeyboard];
             break;
         }
         case InputSource_GamePad:
@@ -452,7 +432,6 @@ extern int SDL_SendKeyboardKey(int index, Uint8 state, SDL_scancode scancode);
             if (gamepad) 
             {
                 [gamepad removeFromSuperview];
-                [gamepad release];
                 gamepad = nil;
             }
             break;
@@ -462,7 +441,6 @@ extern int SDL_SendKeyboardKey(int index, Uint8 state, SDL_scancode scancode);
             if (joystick) 
             {
                 [joystick removeFromSuperview];
-                [joystick release];
                 joystick = nil;
             }
             break;
@@ -472,7 +450,6 @@ extern int SDL_SendKeyboardKey(int index, Uint8 state, SDL_scancode scancode);
             if (piano)
             {
                 [piano removeFromSuperview];
-                [piano release];
                 piano = nil;
             }
             break;
@@ -482,18 +459,15 @@ extern int SDL_SendKeyboardKey(int index, Uint8 state, SDL_scancode scancode);
             if (btnMouseLeft) 
             {
                 [btnMouseLeft removeFromSuperview];
-                [btnMouseLeft release];
                 btnMouseLeft = nil;
             }
             if (btnMouseRight) 
             {
                 [btnMouseRight removeFromSuperview];
-                [btnMouseRight release];
                 btnMouseRight = nil;
             }
             break;
-        }
-        default:;
+        }            
     }
 }
 

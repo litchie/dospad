@@ -56,16 +56,13 @@
     CGGradientRelease(myGradient);
     CGColorSpaceRelease(myColorspace);
     
-    UIImage *img=[UIImage imageNamed:@"holdfinger"];
+    UIImage *img=[UIImage imageNamed:@"holdfinger.png"];
     CGRect imgRect=CGRectMake( (rect.size.width-img.size.width)/2,
                             (rect.size.height-img.size.height)/2,
                               img.size.width,img.size.height);
     [img drawInRect:imgRect];
 }
 
-- (void)dealloc {
-    [super dealloc];
-}
 
 
 @end

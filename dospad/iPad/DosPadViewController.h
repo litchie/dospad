@@ -37,7 +37,6 @@
     KeyboardView *keyboard;
     UIButton *btnOption,*btnBack;
     UIButton *btnMouseLeftP, *btnMouseRightP; /* portrait mode */
-	UIButton *btnShowCommands;
     UILabel *labCycles;
     SliderView *sliderInput;
     UIImageView *gamepadLight;

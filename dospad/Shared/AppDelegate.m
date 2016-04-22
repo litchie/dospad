@@ -21,53 +21,11 @@
 #import "Common.h"
 #import <AVFoundation/AVFoundation.h>
 #import "ColorTheme.h"
-#import "ZipArchive.h"
 
 @implementation AppDelegate
 @synthesize frameskip;
 @synthesize cycles;
 @synthesize maxPercent;
-
-/*
- * Unzip file into directory `dir'.
- */
-- (void)unzip:(NSString*)filepath toDir:(NSString*)dir
-{
-	BOOL ret = NO;
-	ZipArchive *ar = [[ZipArchive alloc] init];
-	
-	if ([ar UnzipOpenFile:filepath]) {
-		[[FileSystemObject sharedObject] ensureDirectoryExists:dir];
-		ret = [ar UnzipFileTo:dir overWrite:YES];
-		[ar UnzipCloseFile];
-		[[FileSystemObject sharedObject] removeFileAtPath:filepath];
-	}
-	
-	[ar release];
-}
-
-
-/*
- * Import a zip package and unzip its content under `Documents' folder.
- * Warning: It will overwrite the contents of that folder.
- */
-- (void)importFile:(NSURL*)url
-{
-	NSString *srcpath = [url path];
-	NSString *filename = [srcpath lastPathComponent];
-	if ([filename.pathExtension.lowercaseString isEqualToString:@"zip"]) {
-		[self unzip:srcpath
-			toDir:[[FileSystemObject sharedObject] documentsDirectory]
-		];
-	}
-}
-
-- (BOOL)application:(UIApplication *)application openURL:(NSURL *)url
-	sourceApplication:(NSString *)sourceApplication annotation:(id)annotation
-{
-	[self importFile:url];
-	return YES;
-}
 
 -(SDL_uikitopenglview*)screen
 {
@@ -130,7 +88,6 @@
 	NSString *path = [[NSBundle mainBundle].bundlePath stringByAppendingPathComponent:@"configs/colortheme.json"];
 	ColorTheme *theme = [[ColorTheme alloc] initWithPath:path];
 	[ColorTheme setDefaultTheme:theme];
-	[theme release];
 }
 
 - (void)registerDefaultSettings
@@ -186,7 +143,8 @@
 	}
 }
 
-- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
+
+- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions 
 {
 	[self registerDefaultSettings];
 	[ConfigManager init];
@@ -202,7 +160,6 @@
 	[[AVAudioSession sharedInstance]
 		setActive: YES
 		error: &activationErr];
-	
 
     screenView = [[SDL_uikitopenglview alloc] initWithFrame:CGRectMake(0,0,640,400)];
     DOSPadBaseViewController *dospad = [DOSPadBaseViewController dospadWithConfig:[ConfigManager dospadConfigFile]];
@@ -213,20 +170,12 @@
 	uiwindow.rootViewController = navController;
     [uiwindow makeKeyAndVisible];
 	[super applicationDidFinishLaunching:application];
-	
 #ifdef THREADED
-	// FIXME: Launch emulation thread two seconds later to avoid crash
-    [self performSelector:@selector(startDOS) withObject:nil afterDelay:2];
+    [self performSelector:@selector(startDOS) withObject:nil afterDelay:0.5];
 #endif
-
     return YES;
 }
 
-- (void)dealloc {
-    [navController release];
-    [screenView release];
-    [super dealloc];
-}
 
 -(void)setWindowTitle:(char *)title
 {
@@ -258,7 +207,6 @@
         }
         
     }
-    [t release];
 }
 
 -(void)onLaunchExit

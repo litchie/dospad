@@ -27,17 +27,7 @@
 //#import "VKView.h"
 #import "PianoKeyboard.h"
 
-
-typedef enum {
-    InputSource_PCKeyboard = 0,
-    InputSource_MouseButtons,
-    InputSource_iOSKeyboard,
-    InputSource_NumPad,
-    InputSource_GamePad,
-    InputSource_Joystick,
-    InputSource_PianoKeyboard,
-    InputSource_TotalCount
-} InputSourceType;
+@class PianoKeyboard;
 
 @interface DOSPadBaseViewController : UIViewController
 <SDL_uikitopenglview_delegate,MouseHoldDelegate>
@@ -56,12 +46,11 @@ typedef enum {
     UIButton *btnMouseLeft;
     UIButton *btnMouseRight;
     PianoKeyboard *piano;
-	UILabel *labServerInfo;
 }
 
-@property (nonatomic, retain) NSString *configPath;
+@property (nonatomic, strong) NSString *configPath;
 @property (nonatomic, assign) BOOL autoExit;
-@property (nonatomic, retain) SDL_uikitopenglview *screenView;
+@property (nonatomic, strong) SDL_uikitopenglview *screenView;
 
 + (DOSPadBaseViewController*)dospadWithConfig:(NSString*)configPath;
 
@@ -72,18 +61,18 @@ typedef enum {
 - (void)onLaunchExit;
 - (void)sendCommandToDOS:(NSString*)cmd;
 - (void)showOption;
-
 - (NSString*)currentCycles;
 - (int)currentFrameskip;
 - (BOOL)isPortrait;
 - (BOOL)isLandscape;
 
-- (BOOL)isInputSourceEnabled:(InputSourceType)type;
 - (BOOL)isInputSourceActive:(InputSourceType)type;
 - (void)addInputSource:(InputSourceType)type;
 - (void)addInputSourceExclusively:(InputSourceType)type;
 - (void)removeInputSource:(InputSourceType)type;
 - (void)removeAllInputSources;
+- (void)removeiOSKeyboard;
+- (void)createiOSKeyboard;
 - (void)createPCKeyboard;
 - (void)createNumpad;
 - (void)createGamepad;

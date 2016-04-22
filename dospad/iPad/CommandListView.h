@@ -28,6 +28,6 @@
     UIButton *btnEnter;
     BOOL selected;
 }
-@property (nonatomic, retain) NSString *selectedCommand;
+@property (nonatomic, strong) NSString *selectedCommand;
 @property (readonly) BOOL selected;
 @end

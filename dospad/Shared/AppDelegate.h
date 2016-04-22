@@ -19,15 +19,17 @@
 #import <Foundation/Foundation.h>
 #import "SDL_uikitappdelegate.h"
 #import "DosEmuThread.h"
+#import "SplashViewController.h"
 
 @interface AppDelegate : SDLUIKitDelegate 
 {
-	UINavigationController *navController;
-	SDL_uikitopenglview *screenView;
-	DosEmuThread * emuThread;
-	int cycles;
-	int frameskip;
-	int maxPercent;
+    UINavigationController *navController;
+    SplashViewController *splashController;
+    SDL_uikitopenglview *screenView;
+    DosEmuThread * emuThread;
+    int cycles;
+    int frameskip;
+    int maxPercent;
 }
 
 @property (nonatomic, readonly) int cycles;

@@ -94,7 +94,7 @@ const char *dospad_config_dir()
 		}
 	}
 
-	_currentConfigDirectory = [[[ConfigManager configsDirectory] stringByAppendingPathComponent:configName] retain];
+	_currentConfigDirectory = [[ConfigManager configsDirectory] stringByAppendingPathComponent:configName];
 	return YES;
 }
 

@@ -63,9 +63,6 @@
     CGContextFillPath(context);
 }
 
-- (void)dealloc {
-    [super dealloc];
-}
 
 
 @end

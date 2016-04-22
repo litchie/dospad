@@ -37,7 +37,7 @@ extern int SDL_SendKeyboardKey(int index, Uint8 state, SDL_scancode scancode);
 + (TPos*)positionWithLine:(int)line column:(int)column
 {
     TPos *tp = [[TPos alloc] initWithLine:line Column:column];
-    return [tp autorelease];
+    return tp;
 }
 
 - (NSString*)description
@@ -69,17 +69,17 @@ extern int SDL_SendKeyboardKey(int index, Uint8 state, SDL_scancode scancode);
 
 - (id)initWithPos:(TPos*)beg end:(TPos*)endPos
 {
-    if (start!=nil) [start release];
-    if (end !=nil) [end release];
-    start = beg; [start retain];
-    end = endPos; [end retain];
+    if (start!=nil) ;
+    if (end !=nil) ;
+    start = beg; 
+    end = endPos; 
     return self;
 }
 
 + (TRange*)rangeWithStart:(TPos *)start end:(TPos *)end
 {
     TRange *range = [[TRange alloc] initWithPos:start end:end];
-    return [range autorelease];
+    return range;
 }
 
 - (NSString*)description
@@ -94,12 +94,6 @@ extern int SDL_SendKeyboardKey(int index, Uint8 state, SDL_scancode scancode);
     return start.line==end.line && start.column == end.column;
 }
 
-- (void)dealloc
-{
-    [start release];
-    [end release];
-    [super dealloc];
-}
 
 @end
 
@@ -150,7 +144,7 @@ extern int SDL_SendKeyboardKey(int index, Uint8 state, SDL_scancode scancode);
     UIView *inputView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 1, 1)];
     inputView.backgroundColor=[UIColor clearColor];
     inputView.alpha=0;
-    return [inputView autorelease];
+    return inputView;
 }
 
 - (id)initWithFrame:(CGRect)frame
@@ -160,7 +154,6 @@ extern int SDL_SendKeyboardKey(int index, Uint8 state, SDL_scancode scancode);
         self.backgroundColor=[UIColor blueColor];
         selectedTextRange = [TRange rangeWithStart:[TPos positionWithLine:0 column:0]
                                                end:[TPos positionWithLine:0 column:0]];
-        [selectedTextRange retain];       
     }
     return self;
 }
@@ -175,11 +168,6 @@ extern int SDL_SendKeyboardKey(int index, Uint8 state, SDL_scancode scancode);
 }
  */
 
-- (void)dealloc {
-    [selectedTextRange release];
-    [text release];
-    [super dealloc];
-}
 
 - (void)sendKeyEvent:(int)keyCode
 {
@@ -220,8 +208,7 @@ extern int SDL_SendKeyboardKey(int index, Uint8 state, SDL_scancode scancode);
 }
 - (void)insertText:(NSString *)_text
 {
-    if (text) [text release];
-    text = [_text retain];
+    text = _text;
     unichar c = [_text characterAtIndex:0];
     
     if ([_text isEqualToString:@"\n"]) [self sendKeyEvent:SDL_SCANCODE_RETURN];
@@ -249,7 +236,7 @@ extern int SDL_SendKeyboardKey(int index, Uint8 state, SDL_scancode scancode);
 //==============================================================================
 #pragma mark UITextInput implementation
 
-@synthesize inputDelegate;
+//@synthesize inputDelegate;
 @synthesize selectionAffinity;
 
 //------------------------------------------------------------------------------
@@ -365,9 +352,7 @@ extern int SDL_SendKeyboardKey(int index, Uint8 state, SDL_scancode scancode);
         [self sendKeyEvent:SDL_SCANCODE_LEFT];
     }
 
-    if (selectedTextRange) [selectedTextRange release];
     selectedTextRange = (TRange*)range;
-    [selectedTextRange retain];
 }
 
 - (UITextPosition*)beginningOfDocument

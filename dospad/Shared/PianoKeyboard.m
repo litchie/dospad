@@ -25,9 +25,7 @@ extern int SDL_SendKeyboardKey(int index, Uint8 state, SDL_scancode scancode);
 
 - (void)setTitle:(NSString *)s
 {
-    if (title) [title release];
     title = s;
-    [title retain];
     [self setNeedsDisplay];
 }
 
@@ -164,12 +162,6 @@ extern int SDL_SendKeyboardKey(int index, Uint8 state, SDL_scancode scancode);
 #endif
 }
 
-- (void)dealloc
-{
-    [title release];
-    [textColor release];
-    [super dealloc];
-}
 
 @end
 
@@ -351,20 +343,19 @@ extern int SDL_SendKeyboardKey(int index, Uint8 state, SDL_scancode scancode);
 // An empty implementation adversely affects performance during animation.
 - (void)drawRect:(CGRect)rect {
     if (ISIPAD()) {
-        UIImage *image = [UIImage imageNamed:@"25-Keys-with-6x4-grid"];
+        UIImage *image = [UIImage imageNamed:@"25-Keys-with-6x4-grid.png"];
         [image drawInRect:rect];
     } else {
-        UIImage *image = [UIImage imageNamed:@"25-keys"];
+        UIImage *image = [UIImage imageNamed:@"25-keys.png"];
         [image drawInRect:rect];
     }
 }
 
 - (void)dealloc {
     for (int i = 0; i < MAX_PIANO_KEYS; i++)
-        [keys[i] release];
+        ;
     for (int i = 0; i < MAX_PIANO_GRIDS; i++)
-        [grids[i] release];
-    [super dealloc];
+        ;
 }
 
 

@@ -44,7 +44,7 @@
 /* *INDENT-OFF* */
 @interface SDL_uikitopenglview : SDL_uikitview {
 #ifdef IPHONEOS
-    id<SDL_uikitopenglview_delegate> delegate;
+    id<SDL_uikitopenglview_delegate> __weak delegate;
     CGSize newSize;
     BOOL resizeDone;
 #endif
@@ -63,7 +63,7 @@
 	
 }
 
-@property (nonatomic, retain, readonly) EAGLContext *context;
+@property (nonatomic, strong, readonly) EAGLContext *context;
 
 - (void)swapBuffers;
 - (void)setCurrentContext;
@@ -77,7 +77,7 @@
 	depthBits:(int)depthBits;
 
 #ifdef IPHONEOS
-@property (nonatomic, assign) id<SDL_uikitopenglview_delegate> delegate;
+@property (nonatomic, weak) id<SDL_uikitopenglview_delegate> delegate;
 - (BOOL)resize:(CGSize)sizeNew;
 - (UIImage*)capture;
 #endif

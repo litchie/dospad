@@ -35,6 +35,8 @@
 #include "cmd_history.h"
 #import "ConfigManager.h"
 
+#import "ConfigManager.h"
+
 #define kTransparency          @"transparency"
 #define kKeySoundEnabled       @"key_sound_enabled"
 #define kDoubleTapAsRightClick @"double_tap_as_right_click"
@@ -50,13 +52,19 @@
 	NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) \
 	objectAtIndex:0]
 
-/*
- * NOTE: If you are modifying this string,
- *       you must manually update SDL_uikitview.m!
- */
-#define kMouseSpeed            @"mouse_speed"
+typedef enum {
+    InputSource_PCKeyboard = 0,
+    InputSource_MouseButtons,
+    InputSource_iOSKeyboard,
+    InputSource_NumPad,
+    InputSource_GamePad,
+    InputSource_Joystick,
+    InputSource_PianoKeyboard,
+    InputSource_TotalCount
+} InputSourceType;
 
-
+#define kInputSource @"InputSource"
+#define InputSource_KeyName(type) [NSString stringWithFormat:@"%@%d", kInputSource, type]
 #define BUILD_VERSION [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleVersion"]
 
 #define HexColor(h) [UIColor colorWithRed:(((h)>>16)&0xff)/255.0f \
@@ -66,21 +74,15 @@
 
 
 #define ISIPAD()  (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
-
 #define KBD_LANDSCAPE_HEIGHT  (ISIPAD()?352:162)
 #define KBD_PORTRAIT_HEIGHT   (ISIPAD()?262:216)
-
 #define ISLANDSCAPE(o) ((o) == UIInterfaceOrientationLandscapeLeft || \
                          (o) == UIInterfaceOrientationLandscapeRight)
-
 #define ISPORTRAIT(o) ((o) == UIInterfaceOrientationPortrait || \
                        (o) == UIInterfaceOrientationPortraitUpsideDown)
+#define DEFS_GET_INT(name)  [[NSUserDefaults standardUserDefaults] integerForKey:name]
+#define DEFS_SET_INT(name,value) [[NSUserDefaults standardUserDefaults] setInteger:value forKey:name]
 
-#define IS_IOS7 ([[UIDevice currentDevice].systemVersion floatValue]>=7.0)
-#define IS_IOS8 ([[UIDevice currentDevice].systemVersion floatValue]>=8.0)
-
-
-#define DEFS_GET_INT(name)    [[NSUserDefaults standardUserDefaults] integerForKey:(name)]
 #define DEFS_GET_BOOL(name)   [[NSUserDefaults standardUserDefaults] boolForKey:(name)]
 #define DEFS_GET_STRING(name) [[NSUserDefaults standardUserDefaults] stringForKey:(name)]
 #define DEFS_GET_FLOAT(name)  [[NSUserDefaults standardUserDefaults] floatForKey:(name)]

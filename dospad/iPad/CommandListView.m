@@ -26,7 +26,6 @@
 {
     if (self = [super initWithParent:parent]) {
         cmdList=[NSMutableArray arrayWithCapacity:cmd_count];
-        [cmdList retain];
         cmd_entry*p;
         lineCount=17; /* Align with image file */
         int n = 0;
@@ -34,7 +33,7 @@
             [cmdList addObject:[NSString stringWithUTF8String:p->cmd]];
             n++;
         }
-        UIImage *img=[UIImage imageNamed:@"dpnote"];
+        UIImage *img=[UIImage imageNamed:@"dpnote.png"];
         
         imgRect = CGRectMake( (self.bounds.size.width-img.size.width)/2, 20,
                              img.size.width,img.size.height);
@@ -77,7 +76,7 @@
 // An empty implementation adversely affects performance during animation.
 - (void)drawRect:(CGRect)rect {
     // Drawing code
-    UIImage *img=[UIImage imageNamed:@"dpnote"];
+    UIImage *img=[UIImage imageNamed:@"dpnote.png"];
     [img drawInRect:imgRect];
     for (int i = 0; i < [cmdList count]; i++) {
         NSString *s = [cmdList objectAtIndex:i];
@@ -88,11 +87,6 @@
     }
 }
 
-- (void)dealloc {
-    self.selectedCommand=nil;
-    [cmdList release];
-    [super dealloc];
-}
 
 
 @end

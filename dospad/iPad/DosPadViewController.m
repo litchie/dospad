@@ -21,6 +21,7 @@
 #include <assert.h>
 #include <string.h>
 #import "Common.h"
+#import "ModalViewController.h"
 #import "CommandListView.h"
 
 #include "SDL.h"
@@ -53,7 +54,7 @@ static struct {
     //---------------------------------------------------
     // 1. Create View
     //---------------------------------------------------
-    UIImageView *baseView = [[[UIImageView alloc] initWithFrame:CGRectMake(0,0,768,1024)] autorelease];
+    UIImageView *baseView = [[UIImageView alloc] initWithFrame:CGRectMake(0,0,768,1024)];
     baseView.contentMode = UIViewContentModeCenter;
     self.view = baseView;
     self.view.backgroundColor = [UIColor blackColor];
@@ -92,8 +93,8 @@ static struct {
     //---------------------------------------------------
     // 5. Create Mouse Buttons
     //---------------------------------------------------    
-    btnMouseLeftP=[[UIButton alloc] initWithFrame:CGRectMake(735, 310, 23, 89)];
-    btnMouseRightP=[[UIButton alloc] initWithFrame:CGRectMake(735, 209, 23, 89)];
+    btnMouseLeftP=[UIButton buttonWithType:UIButtonTypeCustom];
+    btnMouseRightP=[UIButton buttonWithType:UIButtonTypeCustom];
     [btnMouseLeftP addTarget:self action:@selector(onMouseLeftDown) forControlEvents:UIControlEventTouchDown];
     [btnMouseLeftP addTarget:self action:@selector(onMouseLeftUp) forControlEvents:UIControlEventTouchUpInside];
     [btnMouseRightP addTarget:self action:@selector(onMouseRightDown) forControlEvents:UIControlEventTouchDown];
@@ -112,7 +113,7 @@ static struct {
     //---------------------------------------------------
     // 8. Create Command List Button
     //---------------------------------------------------    
-    btnShowCommands = [[UIButton alloc] initWithFrame:CGRectMake(69, 581, 85, 70)];
+    UIButton *btnShowCommands = [[UIButton alloc] initWithFrame:CGRectMake(69, 581, 85, 70)];
     [btnShowCommands addTarget:self
                         action:@selector(showCommandList)
               forControlEvents:UIControlEventTouchUpInside];
@@ -133,8 +134,8 @@ static struct {
     //---------------------------------------------------
     // 10. Create light of input controls
     //---------------------------------------------------    
-    gamepadLight = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"light"]];
-    joystiqLight = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"light"]];
+    gamepadLight = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"light.png"]];
+    joystiqLight = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"light.png"]];
     gamepadLight.frame=CGRectMake(236,976,20,14);
     joystiqLight.frame=CGRectMake(328,976,20,14);
     gamepadLight.alpha=0;
@@ -151,7 +152,6 @@ static struct {
                      action:@selector(toggleGamePad)
            forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:btnToGamePad];
-    [btnToGamePad release];
     
     UIButton *btnToJoy = [[UIButton alloc] initWithFrame:CGRectMake(326,968,72,34)];
     [btnToJoy addTarget:self
@@ -159,15 +159,14 @@ static struct {
            forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:btnToJoy];
     
-    [btnToJoy release];
     
     //---------------------------------------------------
     // 12. Fullscreen Panel
     //---------------------------------------------------    
     fullscreenPanel = [[FloatPanel alloc] initWithFrame:CGRectMake(0,0,700,47)];
-    UIButton *btnExitFS = [[[UIButton alloc] initWithFrame:CGRectMake(0,0,72,36)] autorelease];
+    UIButton *btnExitFS = [[UIButton alloc] initWithFrame:CGRectMake(0,0,72,36)];
     btnExitFS.center=CGPointMake(63, 18);
-    [btnExitFS setImage:[UIImage imageNamed:@"exitfull~ipad"] forState:UIControlStateNormal];
+    [btnExitFS setImage:[UIImage imageNamed:@"exitfull~ipad.png"] forState:UIControlStateNormal];
     [btnExitFS addTarget:self action:@selector(toggleScreenSize) forControlEvents:UIControlEventTouchUpInside];
     [fullscreenPanel.contentView addSubview:btnExitFS];
 }
@@ -187,7 +186,7 @@ static struct {
 - (void)toggleInputSource:(id)sender
 {
     UIButton *btn = (UIButton*)sender;
-    InputSourceType type = (int)[btn tag];
+    InputSourceType type = [btn tag];
     if ([self isInputSourceActive:type]) {
         [self removeInputSource:type];
     } else {
@@ -200,8 +199,8 @@ static struct {
 {
     NSMutableArray *items = [NSMutableArray arrayWithCapacity:16];
     
-    UIImageView *cpuWindow = [[[UIImageView alloc] initWithFrame:CGRectMake(0,0,72,36)] autorelease];
-    cpuWindow.image = [UIImage imageNamed:@"cpuwindow"];
+    UIImageView *cpuWindow = [[UIImageView alloc] initWithFrame:CGRectMake(0,0,72,36)];
+    cpuWindow.image = [UIImage imageNamed:@"cpuwindow.png"];
     
     if (labCycles2 == nil)
     {
@@ -222,9 +221,9 @@ static struct {
     [items addObject:cpuWindow];
     
     for (int i = 0; i < NUM_BUTTON_INFO; i++) {
-		if ([self isInputSourceEnabled:toggleButtonInfo[i].type])
+        if (DEFS_GET_INT(InputSource_KeyName(toggleButtonInfo[i].type)))
         {
-            UIButton *btn = [[[UIButton alloc] initWithFrame:CGRectMake(0,0,72,36)] autorelease];
+            UIButton *btn = [[UIButton alloc] initWithFrame:CGRectMake(0,0,72,36)];
             NSString *on = [NSString stringWithUTF8String:toggleButtonInfo[i].onImageName];
             NSString *off = [NSString stringWithUTF8String:toggleButtonInfo[i].offImageName];
             BOOL active = [self isInputSourceActive:toggleButtonInfo[i].type];
@@ -236,8 +235,8 @@ static struct {
         }
     }
     
-    UIButton *btnOpt = [[[UIButton alloc] initWithFrame:CGRectMake(0,0,72,36)] autorelease];
-    [btnOpt setImage:[UIImage imageNamed:@"options"] forState:UIControlStateNormal];
+    UIButton *btnOpt = [[UIButton alloc] initWithFrame:CGRectMake(0,0,72,36)];
+    [btnOpt setImage:[UIImage imageNamed:@"options.png"] forState:UIControlStateNormal];
     [btnOpt addTarget:self action:@selector(showOption) forControlEvents:UIControlEventTouchUpInside];
     [items addObject:btnOpt];
     
@@ -294,7 +293,7 @@ static struct {
 - (void)createPCKeyboard
 {
     kbd = [[KeyboardView alloc] initWithType:KeyboardTypeLandscape
-                                                   frame:CGRectMake(0,self.view.bounds.size.height-250,1024,250)];
+                                                   frame:CGRectMake(0,480,1024,288)];
     kbd.alpha = [self floatAlpha];
     [self.view addSubview:kbd];
     CGPoint ptOld = kbd.center;
@@ -310,7 +309,7 @@ static struct {
     btnMouseLeft = [[UIButton alloc] initWithFrame:CGRectMake(980,550,48,90)];
     [btnMouseLeft setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];
     [btnMouseLeft setTitle:@"L" forState:UIControlStateNormal];
-    [btnMouseLeft setBackgroundImage:[UIImage imageNamed:@"longbutton"] 
+    [btnMouseLeft setBackgroundImage:[UIImage imageNamed:@"longbutton.png"] 
                            forState:UIControlStateNormal];
     [btnMouseLeft addTarget:self
                     action:@selector(onMouseLeftDown)
@@ -321,7 +320,7 @@ static struct {
     [self.view addSubview:btnMouseLeft];
     [btnMouseRight setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];
     [btnMouseRight setTitle:@"R" forState:UIControlStateNormal];
-    [btnMouseRight setBackgroundImage:[UIImage imageNamed:@"longbutton"] 
+    [btnMouseRight setBackgroundImage:[UIImage imageNamed:@"longbutton.png"] 
                             forState:UIControlStateNormal];
     [btnMouseRight addTarget:self
                      action:@selector(onMouseRightDown)
@@ -344,21 +343,19 @@ static struct {
                          @"[gamepad.ipad.portrait]" : 
                          @"[gamepad.ipad.landscape]");
     
-    NSString *ui_cfg = [ConfigManager uiConfigFile];
+    NSString *ui_cfg = 0;//get_temporary_merged_file(configPath, get_default_config());
 
     gpad = [[GamePadView alloc] initWithConfig:ui_cfg section:section];
 
     if (![self isFullscreen])
     {
-        UIImageView *left = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"ipadleftside"]];
-        UIImageView *right = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"ipadrightside"]];
+        UIImageView *left = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"ipadleftside.png"]];
+        UIImageView *right = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"ipadrightside.png"]];
         left.frame = CGRectMake(1,19,280,378);
         right.frame = CGRectMake(441,30,327,315);
         gpad.backgroundColor=[UIColor clearColor];
         [gpad insertSubview:left atIndex:0];
         [gpad insertSubview:right atIndex:0];
-        [left release];
-        [right release];
     }
     
     gpad.mode = mod;    
@@ -414,7 +411,7 @@ static struct {
     float sh = self.screenView.bounds.size.height;
     float sw = self.screenView.bounds.size.width;
     float additionalScaleY = 1.0;
-    if (sh / sw != 0.75)
+    if (sh / sw != 0.75) 
     {
         additionalScaleY = 0.75 / (sh/sw);
     } 
@@ -427,7 +424,6 @@ static struct {
         labCycles.alpha=0;
         btnMouseLeftP.alpha = 0;
         btnMouseRightP.alpha = 0;
-		btnShowCommands.alpha = 0;
         if (useOriginalScreenSize)
         {
             float maxWidth = 640;
@@ -463,7 +459,7 @@ static struct {
         if (sw < 640) { scale = 640.0f/sw; }
         screenView.transform=CGAffineTransformMakeScale(scale,scale*additionalScaleY);
         screenView.center=CGPointMake(384, 314);
-        btnShowCommands.alpha = 1;
+            
         btnOption.alpha=1;
         labCycles.alpha=1;
         sliderInput.alpha=1;
@@ -491,7 +487,7 @@ static struct {
     [self updateAlpha];
     [self onResize:self.screenView.bounds.size];
     [self refreshFullscreenPanel];
-    //[vk becomeFirstResponder]; TODO Litchie commented out by tvd	
+    //[vk becomeFirstResponder]; TODO Litchie commented out by tvd
 }
 
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
@@ -571,23 +567,6 @@ static struct {
 }
 
 
-- (void)dealloc {
-	[btnShowCommands release];
-    [btnMouseLeftP release];
-    [btnMouseRightP release];
-    [labCycles2 release];
-    [fsIndicator2 release];
-    [fullscreenPanel release];
-    [gamepadLight release];
-    [joystiqLight release];
-    [btnBack release];
-    [btnOption release];
-    [keyboard release];
-    [labCycles release];
-    [fsIndicator release];
-    [sliderInput release];
-    [super dealloc];
-}
 
 -(void)onResize:(CGSize)sizeNew
 {
@@ -606,7 +585,6 @@ static struct {
     } else if ([fltView tag] == TAG_INPUT) {
         
     }
-    [fltView release];
 }
 
 - (void)showCommandList

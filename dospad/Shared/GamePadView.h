@@ -45,10 +45,10 @@ typedef enum
     NSArray *images;
 }
 
-@property (nonatomic, retain) NSArray *images;
-@property (nonatomic, retain) UIImage *backgroundImage;
-@property (nonatomic, retain) UIImage *centerStickImage;
-@property (nonatomic, retain) UIImage *sidedStickImage;
+@property (nonatomic, strong) NSArray *images;
+@property (nonatomic, strong) UIImage *backgroundImage;
+@property (nonatomic, strong) UIImage *centerStickImage;
+@property (nonatomic, strong) UIImage *sidedStickImage;
 @property (nonatomic, assign) DPadDirection currentDirection;
 @property (nonatomic, assign) BOOL useArrowKeys;
 @property (nonatomic, assign) BOOL quiet;
@@ -78,10 +78,10 @@ typedef enum
     UIColor *textColor;
 }
 
-@property (nonatomic, retain) UIColor *textColor;
+@property (nonatomic, strong) UIColor *textColor;
 @property (nonatomic, assign) int buttonIndex;
-@property (nonatomic, retain) NSArray *images;
-@property (nonatomic, retain) NSString *title;
+@property (nonatomic, strong) NSArray *images;
+@property (nonatomic, strong) NSString *title;
 @property (nonatomic, assign) BOOL pressed;
 @property (nonatomic, assign) int keyCode;
 @property (nonatomic, assign) int keyCode2;

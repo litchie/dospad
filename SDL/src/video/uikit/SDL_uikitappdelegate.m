@@ -135,9 +135,5 @@ int main(int argc, char **argv) {
     printf("%s\n", title);
 }
 
--(void)dealloc {
-	[uiwindow release];
-	[super dealloc];
-}
 
 @end
