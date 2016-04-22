@@ -24,10 +24,18 @@
 #import "SDL_uikitopenglview.h"
 #import "KeyboardView.h"
 #import "GamePadView.h"
-//#import "VKView.h"
 #import "PianoKeyboard.h"
 
-@class PianoKeyboard;
+typedef enum {
+    InputSource_PCKeyboard = 0,
+    InputSource_MouseButtons,
+    InputSource_iOSKeyboard,
+    InputSource_NumPad,
+    InputSource_GamePad,
+    InputSource_Joystick,
+    InputSource_PianoKeyboard,
+    InputSource_TotalCount
+} InputSourceType;
 
 @interface DOSPadBaseViewController : UIViewController
 <SDL_uikitopenglview_delegate,MouseHoldDelegate>
@@ -66,6 +74,7 @@
 - (BOOL)isPortrait;
 - (BOOL)isLandscape;
 
+- (bool)isInputSourceEnabled:(InputSourceType)type;
 - (BOOL)isInputSourceActive:(InputSourceType)type;
 - (void)addInputSource:(InputSourceType)type;
 - (void)addInputSourceExclusively:(InputSourceType)type;

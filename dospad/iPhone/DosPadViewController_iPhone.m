@@ -255,8 +255,7 @@ static struct {
     [items addObject:cpuWindow];
 
     for (int i = 0; i < NUM_BUTTON_INFO; i++) {
-        if (DEFS_GET_INT(InputSource_KeyName(toggleButtonInfo[i].type)))
-        {
+		if ([self isInputSourceEnabled:toggleButtonInfo[i].type]) {
             UIButton *btn = [[UIButton alloc] initWithFrame:CGRectMake(0,0,48,24)];
             NSString *on = [NSString stringWithUTF8String:toggleButtonInfo[i].onImageName];
             NSString *off = [NSString stringWithUTF8String:toggleButtonInfo[i].offImageName];

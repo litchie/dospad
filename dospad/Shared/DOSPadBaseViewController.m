@@ -31,6 +31,22 @@ extern int SDL_SendKeyboardKey(int index, Uint8 state, SDL_scancode scancode);
 @synthesize configPath;
 @synthesize screenView;
 
+- (bool)isInputSourceEnabled:(InputSourceType)type
+{
+	switch (type) {
+		case InputSource_PCKeyboard:
+		case InputSource_GamePad:
+		case InputSource_MouseButtons:
+			return true;
+		case InputSource_Joystick:
+			return DEFS_GET_BOOL(kJoystickEnabled);
+		case InputSource_NumPad:
+			return DEFS_GET_BOOL(kNumpadEnabled);
+		default:
+			return false;
+	}
+}
+
 - (NSString*)currentCycles
 {
     AppDelegate *d = (AppDelegate*)[[UIApplication sharedApplication] delegate];
