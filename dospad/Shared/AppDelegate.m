@@ -211,8 +211,12 @@
     [uiwindow makeKeyAndVisible];
 	[super applicationDidFinishLaunching:application];
 #ifdef THREADED
-	// FIXME: Launch emulation thread two seconds later to avoid crash
-    [self performSelector:@selector(startDOS) withObject:nil afterDelay:2];
+	// TODO: On 64bit devices, it is a must to delay emulation thread by 2 seconds,
+	// otherwise it will crash on launch.
+	// However, rotating the screen still causes it to crash.
+	// Apparently we are not 64bit-ready yet.
+	// Let's just keep it 0.5s at present.
+    [self performSelector:@selector(startDOS) withObject:nil afterDelay:0.5];
 #endif
     return YES;
 }
