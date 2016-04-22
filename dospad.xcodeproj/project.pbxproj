@@ -1321,7 +1321,7 @@
 		E77DB05111B5E12C00B78E69 /* GameKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GameKit.framework; path = System/Library/Frameworks/GameKit.framework; sourceTree = SDKROOT; };
 		E77DB05511B5E13600B78E69 /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
 		E77DB05B11B5E17500B78E69 /* libstdc++.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libstdc++.dylib"; path = "usr/lib/gcc/arm-apple-darwin10/4.2.1/libstdc++.dylib"; sourceTree = SDKROOT; };
-		E78F5B2511EF615200E2A70F /* diskc */ = {isa = PBXFileReference; lastKnownFileType = folder; path = diskc; sourceTree = "<group>"; };
+		E78F5B2511EF615200E2A70F /* diskc */ = {isa = PBXFileReference; lastKnownFileType = folder; path = diskc; sourceTree = SOURCE_ROOT; };
 		E792A4BA11E36C9C00894C71 /* Common.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Common.h; sourceTree = "<group>"; };
 		E793703E12A1EE87008A2012 /* landkey~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "landkey~ipad.png"; path = "dospad/misc-res/landkey~ipad.png"; sourceTree = "<group>"; };
 		E793705212A1F3CA008A2012 /* idos-splash.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; name = "idos-splash.gif"; path = "dospad/misc-res/idos-splash.gif"; sourceTree = "<group>"; };
