@@ -54,9 +54,6 @@
     FloatPanel *fullscreenPanel;
     
     BOOL useOriginalScreenSize;
-    BOOL remapControlsModeOn;
-    UILabel *remappingOnLabel;
-    UIButton *resetMappingsButton;
 }
 
 - (void)refreshFullscreenPanel;

@@ -22,6 +22,9 @@
 #include <string.h>
 #import "Common.h"
 #import "CommandListView.h"
+#import "KeyMapper.h"
+#import "MfiGameControllerHandler.h"
+#import "MfiControllerInputHandler.h"
 
 #include "SDL.h"
 
@@ -40,6 +43,23 @@ static struct {
     {InputSource_PianoKeyboard, "modepianopressed~ipad.png", "modepiano~ipad.png"},
 };
 #define NUM_BUTTON_INFO (sizeof(toggleButtonInfo)/sizeof(toggleButtonInfo[0]))
+
+@interface DOSPadBaseViewController()
+
+-(void) remapControlsButtonTapped:(id)sender;
+-(void) refreshKeyMappingsInViews;
+-(void) resetMappingsButtonTapped:(id)sender;
+
+@end
+
+@interface DosPadViewController()
+
+@property(nonatomic, strong) KeyMapper *keyMapper;
+@property(nonatomic, strong) UIAlertView *keyMapperAlertView;
+@property(nonatomic, strong) MfiGameControllerHandler *mfiHandler;
+@property(nonatomic, strong) MfiControllerInputHandler *mfiInputHandler;
+
+@end
 
 @implementation DosPadViewController
 
@@ -237,6 +257,12 @@ static struct {
     [btnOpt setImage:[UIImage imageNamed:@"options.png"] forState:UIControlStateNormal];
     [btnOpt addTarget:self action:@selector(showOption) forControlEvents:UIControlEventTouchUpInside];
     [items addObject:btnOpt];
+
+    // Remap controls button
+    UIButton *btnRemap = [[UIButton alloc] initWithFrame:CGRectMake(0,0,72,36)];
+    [btnRemap setTitle:@"R" forState:UIControlStateNormal];
+    [btnRemap addTarget:self action:@selector(remapControlsButtonTapped:) forControlEvents:UIControlEventTouchUpInside];
+    [items addObject:btnRemap];
     
     [fullscreenPanel setItems:items];
 }
@@ -294,6 +320,7 @@ static struct {
                                                    frame:CGRectMake(0,self.view.bounds.size.height-250,1024,250)];
     kbd.alpha = [self floatAlpha];
     [self.view addSubview:kbd];
+    [self refreshKeyMappingsInViews];
     CGPoint ptOld = kbd.center;
     kbd.center = CGPointMake(ptOld.x, ptOld.y+kbd.frame.size.height);
     [UIView beginAnimations:nil context:NULL];
@@ -592,6 +619,18 @@ static struct {
     [v setTag:TAG_CMD];
     [v setDelegate:self];
     [v show];     
+}
+
+-(void) remapControlsButtonTapped:(id)sender {
+    [super remapControlsButtonTapped:sender];
+}
+
+-(void) refreshKeyMappingsInViews {
+    [super refreshKeyMappingsInViews];
+}
+
+-(void) resetMappingsButtonTapped:(id)sender {
+    [super resetMappingsButtonTapped:sender];
 }
 
 

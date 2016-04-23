@@ -38,7 +38,7 @@ typedef enum {
 } InputSourceType;
 
 @interface DOSPadBaseViewController : UIViewController
-<SDL_uikitopenglview_delegate,MouseHoldDelegate>
+<SDL_uikitopenglview_delegate,MouseHoldDelegate,KeyDelegate,UIAlertViewDelegate>
 {
     NSString *configPath;
     BOOL autoExit;
@@ -54,6 +54,11 @@ typedef enum {
     UIButton *btnMouseLeft;
     UIButton *btnMouseRight;
     PianoKeyboard *piano;
+    
+    BOOL remapControlsModeOn;
+    UILabel *remappingOnLabel;
+    UIButton *resetMappingsButton;
+    
 }
 
 @property (nonatomic, strong) NSString *configPath;

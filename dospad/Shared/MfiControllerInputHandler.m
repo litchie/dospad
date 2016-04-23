@@ -171,6 +171,11 @@ extern int SDL_PrivateJoystickAxis(SDL_Joystick * joystick, Uint8 axis, Sint16 v
         controller.extendedGamepad.leftThumbstick.valueChangedHandler = joystickHandler;
     }
     
+    // reset all button handlers
+    for (GCControllerButtonInput *buttonInput in @[buttonX,buttonY,buttonA,buttonB,buttonRS,buttonRT,buttonLS,buttonLT]) {
+        buttonInput.valueChangedHandler = nil;
+    }    
+    
     //
     // mapped keys
     NSInteger mappedKey = [self.keyMapper getMappedKeyForControl:MFI_BUTTON_X];

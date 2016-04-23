@@ -211,6 +211,15 @@ static SystemSoundID keyPressSound=0;
 		offsetY = (self.bounds.size.height/2 - size.height)/2;
 		[altTitle drawInRect:CGRectMake(offsetX,offsetY,size.width,size.height) withFont:font];
 	}
+    
+    if ( self.mappedKey != nil && [self.mappedKey length] > 0 ) {
+        UIFont *font = [UIFont systemFontOfSize:isIPad?12:10];
+        CGSize size = [self.mappedKey sizeWithFont:font];
+        float offsetX = self.bounds.size.width - size.width;
+        float offsetY = self.bounds.size.height - size.height;
+        [self.mappedKey drawInRect:CGRectMake(offsetX, offsetY, size.width, size.height) withFont:font];
+    }
+
 }
 
 - (void)drawRect:(CGRect)rect 
