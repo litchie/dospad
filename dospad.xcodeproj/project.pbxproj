@@ -413,20 +413,12 @@
 		E72BE6DA12911B5C009DC46A /* FileSystemObject.m in Sources */ = {isa = PBXBuildFile; fileRef = E72BE6C812911B5C009DC46A /* FileSystemObject.m */; };
 		E72BE6DB12911B5C009DC46A /* KeyboardView.m in Sources */ = {isa = PBXBuildFile; fileRef = E72BE6CA12911B5C009DC46A /* KeyboardView.m */; };
 		E72BE6DC12911B5C009DC46A /* KeyView.m in Sources */ = {isa = PBXBuildFile; fileRef = E72BE6CC12911B5C009DC46A /* KeyView.m */; };
-		E72BE6DF12911B5C009DC46A /* TextViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E72BE6D112911B5C009DC46A /* TextViewController.m */; };
-		E72BE6E012911B5C009DC46A /* TextViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = E72BE6D212911B5C009DC46A /* TextViewController.xib */; };
-		E72BE6E112911B5C009DC46A /* WebViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E72BE6D412911B5C009DC46A /* WebViewController.m */; };
-		E72BE6E212911B5C009DC46A /* WebViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = E72BE6D512911B5C009DC46A /* WebViewController.xib */; };
 		E72BE6E312911B5C009DC46A /* ZipArchive.m in Sources */ = {isa = PBXBuildFile; fileRef = E72BE6D712911B5C009DC46A /* ZipArchive.m */; };
 		E72BE6E412911B5C009DC46A /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = E72BE6C412911B5C009DC46A /* AppDelegate.m */; };
 		E72BE6E512911B5C009DC46A /* DosEmuThread.m in Sources */ = {isa = PBXBuildFile; fileRef = E72BE6C612911B5C009DC46A /* DosEmuThread.m */; };
 		E72BE6E612911B5C009DC46A /* FileSystemObject.m in Sources */ = {isa = PBXBuildFile; fileRef = E72BE6C812911B5C009DC46A /* FileSystemObject.m */; };
 		E72BE6E712911B5C009DC46A /* KeyboardView.m in Sources */ = {isa = PBXBuildFile; fileRef = E72BE6CA12911B5C009DC46A /* KeyboardView.m */; };
 		E72BE6E812911B5C009DC46A /* KeyView.m in Sources */ = {isa = PBXBuildFile; fileRef = E72BE6CC12911B5C009DC46A /* KeyView.m */; };
-		E72BE6EB12911B5C009DC46A /* TextViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E72BE6D112911B5C009DC46A /* TextViewController.m */; };
-		E72BE6EC12911B5C009DC46A /* TextViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = E72BE6D212911B5C009DC46A /* TextViewController.xib */; };
-		E72BE6ED12911B5C009DC46A /* WebViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E72BE6D412911B5C009DC46A /* WebViewController.m */; };
-		E72BE6EE12911B5C009DC46A /* WebViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = E72BE6D512911B5C009DC46A /* WebViewController.xib */; };
 		E72BE6EF12911B5C009DC46A /* ZipArchive.m in Sources */ = {isa = PBXBuildFile; fileRef = E72BE6D712911B5C009DC46A /* ZipArchive.m */; };
 		E72BE72C12911E2B009DC46A /* bar-portrait-iphone.png in Resources */ = {isa = PBXBuildFile; fileRef = E72BE71612911E2B009DC46A /* bar-portrait-iphone.png */; };
 		E72BE72D12911E2B009DC46A /* bar-portrait-iphone@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E72BE71712911E2B009DC46A /* bar-portrait-iphone@2x.png */; };
@@ -531,7 +523,6 @@
 		E77DB05611B5E13600B78E69 /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E77DB05511B5E13600B78E69 /* MessageUI.framework */; };
 		E77DB05C11B5E17500B78E69 /* libstdc++.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E77DB05B11B5E17500B78E69 /* libstdc++.dylib */; };
 		E78F5D0F11EF615300E2A70F /* diskc in Resources */ = {isa = PBXBuildFile; fileRef = E78F5B2511EF615200E2A70F /* diskc */; };
-		E793720512A243C6008A2012 /* SplashViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E793720412A243C6008A2012 /* SplashViewController.m */; };
 		E794F3DD12DB4B6D00427836 /* modepianopressed.png in Resources */ = {isa = PBXBuildFile; fileRef = E794F3DA12DB4B6D00427836 /* modepianopressed.png */; };
 		E794F3DE12DB4B6D00427836 /* modepianopressed@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E794F3DB12DB4B6D00427836 /* modepianopressed@2x.png */; };
 		E794F3DF12DB4B6D00427836 /* modepianopressed~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = E794F3DC12DB4B6D00427836 /* modepianopressed~ipad.png */; };
@@ -543,7 +534,6 @@
 		E794F3FF12DB4F0E00427836 /* PianoKeyboard.m in Sources */ = {isa = PBXBuildFile; fileRef = E794F3FE12DB4F0E00427836 /* PianoKeyboard.m */; };
 		E7996FAD1241C0A800502015 /* TipView.m in Sources */ = {isa = PBXBuildFile; fileRef = E7996FAC1241C0A800502015 /* TipView.m */; };
 		E79970261241FE4A00502015 /* CommandListView.m in Sources */ = {isa = PBXBuildFile; fileRef = E79970251241FE4A00502015 /* CommandListView.m */; };
-		E799702B12421D9F00502015 /* ModalViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E799702A12421D9F00502015 /* ModalViewController.m */; };
 		E799706412422D6800502015 /* FloatingView.m in Sources */ = {isa = PBXBuildFile; fileRef = E799706312422D6800502015 /* FloatingView.m */; };
 		E79C2E5711E131DB002FE898 /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = E79C2E5611E131DB002FE898 /* MainWindow.xib */; };
 		E79E448A11EC28DD00DEAA7B /* SDL_uikitopenglview.m in Sources */ = {isa = PBXBuildFile; fileRef = FD689F170E26E5D900F90B21 /* SDL_uikitopenglview.m */; };
@@ -595,7 +585,6 @@
 		E7BE12F8128BF31A0046990B /* KeyLockIndicator.m in Sources */ = {isa = PBXBuildFile; fileRef = E775412012403C3C009EC11A /* KeyLockIndicator.m */; };
 		E7BE12F9128BF31A0046990B /* TipView.m in Sources */ = {isa = PBXBuildFile; fileRef = E7996FAC1241C0A800502015 /* TipView.m */; };
 		E7BE12FA128BF31A0046990B /* CommandListView.m in Sources */ = {isa = PBXBuildFile; fileRef = E79970251241FE4A00502015 /* CommandListView.m */; };
-		E7BE12FB128BF31A0046990B /* ModalViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E799702A12421D9F00502015 /* ModalViewController.m */; };
 		E7BE12FC128BF31A0046990B /* FloatingView.m in Sources */ = {isa = PBXBuildFile; fileRef = E799706312422D6800502015 /* FloatingView.m */; };
 		E7BE12FD128BF31A0046990B /* SliderView.m in Sources */ = {isa = PBXBuildFile; fileRef = E70EA4111242F83200528C9D /* SliderView.m */; };
 		E7BE12FF128BF31A0046990B /* GamePadView.m in Sources */ = {isa = PBXBuildFile; fileRef = E7A94CDC127D68B7006509E1 /* GamePadView.m */; };
@@ -636,8 +625,6 @@
 		E7D78AC7129E98480020D4A7 /* firepressed.png in Resources */ = {isa = PBXBuildFile; fileRef = E7D78AC5129E98480020D4A7 /* firepressed.png */; };
 		E7D78AC8129E98480020D4A7 /* fire.png in Resources */ = {isa = PBXBuildFile; fileRef = E7D78AC4129E98480020D4A7 /* fire.png */; };
 		E7D78AC9129E98480020D4A7 /* firepressed.png in Resources */ = {isa = PBXBuildFile; fileRef = E7D78AC5129E98480020D4A7 /* firepressed.png */; };
-		E7D78AE5129E9E420020D4A7 /* GIFAnimation.m in Sources */ = {isa = PBXBuildFile; fileRef = E7D78AE4129E9E420020D4A7 /* GIFAnimation.m */; };
-		E7D78AE6129E9E420020D4A7 /* GIFAnimation.m in Sources */ = {isa = PBXBuildFile; fileRef = E7D78AE4129E9E420020D4A7 /* GIFAnimation.m */; };
 		E7D98C321CC9F6BB00A17CFC /* Icon-iPad-29.png in Resources */ = {isa = PBXBuildFile; fileRef = E7D98C1D1CC9F6BB00A17CFC /* Icon-iPad-29.png */; };
 		E7D98C331CC9F6BB00A17CFC /* Icon-iPad-29@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E7D98C1E1CC9F6BB00A17CFC /* Icon-iPad-29@2x.png */; };
 		E7D98C341CC9F6BB00A17CFC /* Icon-iPad-40.png in Resources */ = {isa = PBXBuildFile; fileRef = E7D98C1F1CC9F6BB00A17CFC /* Icon-iPad-40.png */; };
@@ -982,8 +969,8 @@
 		E7123FDA129D0D470021237F /* glass-southeast.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "glass-southeast.png"; sourceTree = "<group>"; };
 		E7123FDC129D0D470021237F /* glass-southwest.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "glass-southwest.png"; sourceTree = "<group>"; };
 		E7123FDE129D0D470021237F /* glass-west.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "glass-west.png"; sourceTree = "<group>"; };
-		E715B3591293B7740098D437 /* DOSPadBaseViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DOSPadBaseViewController.h; sourceTree = "<group>"; };
-		E715B35A1293B7750098D437 /* DOSPadBaseViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DOSPadBaseViewController.m; sourceTree = "<group>"; };
+		E715B3591293B7740098D437 /* DOSPadBaseViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DOSPadBaseViewController.h; path = Shared/DOSPadBaseViewController.h; sourceTree = "<group>"; };
+		E715B35A1293B7750098D437 /* DOSPadBaseViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DOSPadBaseViewController.m; path = Shared/DOSPadBaseViewController.m; sourceTree = "<group>"; };
 		E71A268C129A1B2D0013D51C /* landbariphon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = landbariphon.png; path = "dospad/misc-res/landbariphon.png"; sourceTree = "<group>"; };
 		E71A268D129A1B2D0013D51C /* landbariphon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "landbariphon@2x.png"; path = "dospad/misc-res/landbariphon@2x.png"; sourceTree = "<group>"; };
 		E71E60E011B5502700EC5A05 /* dospad.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = dospad.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -1245,20 +1232,14 @@
 		E72BE6C412911B5C009DC46A /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		E72BE6C512911B5C009DC46A /* DosEmuThread.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DosEmuThread.h; sourceTree = "<group>"; };
 		E72BE6C612911B5C009DC46A /* DosEmuThread.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DosEmuThread.m; sourceTree = "<group>"; };
-		E72BE6C712911B5C009DC46A /* FileSystemObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileSystemObject.h; sourceTree = "<group>"; };
-		E72BE6C812911B5C009DC46A /* FileSystemObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FileSystemObject.m; sourceTree = "<group>"; };
+		E72BE6C712911B5C009DC46A /* FileSystemObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FileSystemObject.h; path = Shared/FileSystemObject.h; sourceTree = "<group>"; };
+		E72BE6C812911B5C009DC46A /* FileSystemObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FileSystemObject.m; path = Shared/FileSystemObject.m; sourceTree = "<group>"; };
 		E72BE6C912911B5C009DC46A /* KeyboardView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KeyboardView.h; sourceTree = "<group>"; };
 		E72BE6CA12911B5C009DC46A /* KeyboardView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KeyboardView.m; sourceTree = "<group>"; };
 		E72BE6CB12911B5C009DC46A /* KeyView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KeyView.h; sourceTree = "<group>"; };
 		E72BE6CC12911B5C009DC46A /* KeyView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KeyView.m; sourceTree = "<group>"; };
-		E72BE6D012911B5C009DC46A /* TextViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TextViewController.h; sourceTree = "<group>"; };
-		E72BE6D112911B5C009DC46A /* TextViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TextViewController.m; sourceTree = "<group>"; };
-		E72BE6D212911B5C009DC46A /* TextViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TextViewController.xib; sourceTree = "<group>"; };
-		E72BE6D312911B5C009DC46A /* WebViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WebViewController.h; sourceTree = "<group>"; };
-		E72BE6D412911B5C009DC46A /* WebViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WebViewController.m; sourceTree = "<group>"; };
-		E72BE6D512911B5C009DC46A /* WebViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = WebViewController.xib; sourceTree = "<group>"; };
-		E72BE6D612911B5C009DC46A /* ZipArchive.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZipArchive.h; sourceTree = "<group>"; };
-		E72BE6D712911B5C009DC46A /* ZipArchive.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZipArchive.m; sourceTree = "<group>"; };
+		E72BE6D612911B5C009DC46A /* ZipArchive.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ZipArchive.h; path = Shared/ZipArchive.h; sourceTree = "<group>"; };
+		E72BE6D712911B5C009DC46A /* ZipArchive.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ZipArchive.m; path = Shared/ZipArchive.m; sourceTree = "<group>"; };
 		E72BE71612911E2B009DC46A /* bar-portrait-iphone.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "bar-portrait-iphone.png"; path = "dospad/misc-res/bar-portrait-iphone.png"; sourceTree = "<group>"; };
 		E72BE71712911E2B009DC46A /* bar-portrait-iphone@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "bar-portrait-iphone@2x.png"; path = "dospad/misc-res/bar-portrait-iphone@2x.png"; sourceTree = "<group>"; };
 		E72BE71812911E2B009DC46A /* bar.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = bar.png; path = "dospad/misc-res/bar.png"; sourceTree = "<group>"; };
@@ -1337,8 +1318,6 @@
 		E77DB05B11B5E17500B78E69 /* libstdc++.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libstdc++.dylib"; path = "usr/lib/gcc/arm-apple-darwin10/4.2.1/libstdc++.dylib"; sourceTree = SDKROOT; };
 		E78F5B2511EF615200E2A70F /* diskc */ = {isa = PBXFileReference; lastKnownFileType = folder; path = diskc; sourceTree = SOURCE_ROOT; };
 		E792A4BA11E36C9C00894C71 /* Common.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Common.h; sourceTree = "<group>"; };
-		E793720312A243C6008A2012 /* SplashViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SplashViewController.h; sourceTree = "<group>"; };
-		E793720412A243C6008A2012 /* SplashViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SplashViewController.m; sourceTree = "<group>"; };
 		E794F3DA12DB4B6D00427836 /* modepianopressed.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = modepianopressed.png; sourceTree = "<group>"; };
 		E794F3DB12DB4B6D00427836 /* modepianopressed@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "modepianopressed@2x.png"; sourceTree = "<group>"; };
 		E794F3DC12DB4B6D00427836 /* modepianopressed~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "modepianopressed~ipad.png"; sourceTree = "<group>"; };
@@ -1352,18 +1331,16 @@
 		E7996FAB1241C0A800502015 /* TipView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TipView.h; sourceTree = "<group>"; };
 		E7996FAC1241C0A800502015 /* TipView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TipView.m; sourceTree = "<group>"; };
 		E79970041241F09400502015 /* cmd_history.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cmd_history.h; sourceTree = "<group>"; };
-		E79970241241FE4A00502015 /* CommandListView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CommandListView.h; sourceTree = "<group>"; };
-		E79970251241FE4A00502015 /* CommandListView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CommandListView.m; sourceTree = "<group>"; };
-		E799702912421D9F00502015 /* ModalViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ModalViewController.h; sourceTree = "<group>"; };
-		E799702A12421D9F00502015 /* ModalViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ModalViewController.m; sourceTree = "<group>"; };
+		E79970241241FE4A00502015 /* CommandListView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CommandListView.h; path = ../iPad/CommandListView.h; sourceTree = "<group>"; };
+		E79970251241FE4A00502015 /* CommandListView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CommandListView.m; path = ../iPad/CommandListView.m; sourceTree = "<group>"; };
 		E799706212422D6800502015 /* FloatingView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FloatingView.h; sourceTree = "<group>"; };
 		E799706312422D6800502015 /* FloatingView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FloatingView.m; sourceTree = "<group>"; };
 		E79C2E5611E131DB002FE898 /* MainWindow.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = MainWindow.xib; path = ../MainWindow.xib; sourceTree = "<group>"; };
 		E79E4A0011EC6BF400DEAA7B /* libc.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libc.dylib; path = usr/lib/libc.dylib; sourceTree = SDKROOT; };
-		E7A01EDC1CC927370036A4CF /* ColorTheme.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ColorTheme.h; sourceTree = "<group>"; };
-		E7A01EDD1CC927370036A4CF /* ColorTheme.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ColorTheme.m; sourceTree = "<group>"; };
-		E7A01EDE1CC927370036A4CF /* ConfigManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ConfigManager.h; sourceTree = "<group>"; };
-		E7A01EDF1CC927370036A4CF /* ConfigManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ConfigManager.m; sourceTree = "<group>"; };
+		E7A01EDC1CC927370036A4CF /* ColorTheme.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ColorTheme.h; path = Shared/ColorTheme.h; sourceTree = "<group>"; };
+		E7A01EDD1CC927370036A4CF /* ColorTheme.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ColorTheme.m; path = Shared/ColorTheme.m; sourceTree = "<group>"; };
+		E7A01EDE1CC927370036A4CF /* ConfigManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ConfigManager.h; path = Shared/ConfigManager.h; sourceTree = "<group>"; };
+		E7A01EDF1CC927370036A4CF /* ConfigManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ConfigManager.m; path = Shared/ConfigManager.m; sourceTree = "<group>"; };
 		E7A01EE01CC927370036A4CF /* UIExtendedTextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UIExtendedTextField.h; sourceTree = "<group>"; };
 		E7A01EE11CC927370036A4CF /* UIExtendedTextField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UIExtendedTextField.m; sourceTree = "<group>"; };
 		E7A01EE81CC92F0C0036A4CF /* gift.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = gift.png; path = "dospad/misc-res/gift.png"; sourceTree = "<group>"; };
@@ -1395,8 +1372,6 @@
 		E7D78A63129E19380020D4A7 /* btnpressed.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = btnpressed.png; path = "dospad/gamepad-res/btnpressed.png"; sourceTree = "<group>"; };
 		E7D78AC4129E98480020D4A7 /* fire.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = fire.png; path = "dospad/gamepad-res/fire.png"; sourceTree = "<group>"; };
 		E7D78AC5129E98480020D4A7 /* firepressed.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = firepressed.png; path = "dospad/gamepad-res/firepressed.png"; sourceTree = "<group>"; };
-		E7D78AE3129E9E420020D4A7 /* GIFAnimation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GIFAnimation.h; sourceTree = "<group>"; };
-		E7D78AE4129E9E420020D4A7 /* GIFAnimation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GIFAnimation.m; sourceTree = "<group>"; };
 		E7D98C1D1CC9F6BB00A17CFC /* Icon-iPad-29.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-iPad-29.png"; sourceTree = "<group>"; };
 		E7D98C1E1CC9F6BB00A17CFC /* Icon-iPad-29@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-iPad-29@2x.png"; sourceTree = "<group>"; };
 		E7D98C1F1CC9F6BB00A17CFC /* Icon-iPad-40.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-iPad-40.png"; sourceTree = "<group>"; };
@@ -1714,22 +1689,10 @@
 		29B97314FDCFA39411CA2CEA /* CustomTemplate */ = {
 			isa = PBXGroup;
 			children = (
-				E7D98C491CC9F7F000A17CFC /* Sources */,
-				E73B77D7127ED67300184D3B /* configs */,
-				E78F5B2511EF615200E2A70F /* diskc */,
-				E79E44F411EC2D5200DEAA7B /* Resources */,
 				29B97323FDCFA39411CA2CEA /* Frameworks */,
 				19C28FACFE9D520D11CA2CBB /* Products */,
-				E77DB04111B5E10700B78E69 /* libstdc++.6.0.9.dylib */,
-				E77DB04311B5E11100B78E69 /* QuartzCore.framework */,
-				E77DB04711B5E11900B78E69 /* OpenGLES.framework */,
-				E77DB05111B5E12C00B78E69 /* GameKit.framework */,
-				E77DB05511B5E13600B78E69 /* MessageUI.framework */,
-				E77DB05B11B5E17500B78E69 /* libstdc++.dylib */,
-				E7D6B8CE11BF332400D34665 /* libz.dylib */,
-				E79E4A0011EC6BF400DEAA7B /* libc.dylib */,
-				E70C044012A4B43F00AC178F /* AVFoundation.framework */,
-				E7F2A9CD12CD99EC0091B859 /* CoreMIDI.framework */,
+				E79E44F411EC2D5200DEAA7B /* Resources */,
+				E7D98C491CC9F7F000A17CFC /* Sources */,
 			);
 			name = CustomTemplate;
 			sourceTree = "<group>";
@@ -1737,14 +1700,21 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				9222DD551CC44A9F00B321B9 /* GameController.framework */,
 				FDB9E4CC0DEB84540027A75A /* AudioToolbox.framework */,
-				FDB9E40C0DEB81970027A75A /* CoreAudio.framework */,
 				FDB9E4060DEB81870027A75A /* AudioUnit.framework */,
-				FD99BCEF0DD532AE00FB1D6B /* OpenGLES.framework */,
+				E70C044012A4B43F00AC178F /* AVFoundation.framework */,
+				FDB9E40C0DEB81970027A75A /* CoreAudio.framework */,
 				1D3623EB0D0F72F000981E51 /* CoreGraphics.framework */,
-				1DF5F4DF0D08C38300B7A737 /* UIKit.framework */,
+				E7F2A9CD12CD99EC0091B859 /* CoreMIDI.framework */,
 				1D30AB110D05D00D00671497 /* Foundation.framework */,
+				9222DD551CC44A9F00B321B9 /* GameController.framework */,
+				E77DB05111B5E12C00B78E69 /* GameKit.framework */,
+				E7D98C6F1CCB246500A17CFC /* Libs */,
+				E77DB05511B5E13600B78E69 /* MessageUI.framework */,
+				E77DB04711B5E11900B78E69 /* OpenGLES.framework */,
+				FD99BCEF0DD532AE00FB1D6B /* OpenGLES.framework */,
+				E77DB04311B5E11100B78E69 /* QuartzCore.framework */,
+				1DF5F4DF0D08C38300B7A737 /* UIKit.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -2302,8 +2272,9 @@
 		E77DAFAF11B5D83600B78E69 /* dospad */ = {
 			isa = PBXGroup;
 			children = (
-				E79C2E5511E131B8002FE898 /* iPhone */,
-				E77DAFB411B5D83600B78E69 /* iPad */,
+				E7D98C6C1CCB228200A17CFC /* Controllers */,
+				E7D98C6D1CCB235900A17CFC /* Util */,
+				E7D98C6B1CCB227A00A17CFC /* Views */,
 				E77DAFC311B5D83600B78E69 /* Shared */,
 			);
 			path = dospad;
@@ -2314,8 +2285,6 @@
 			children = (
 				E77DAFB711B5D83600B78E69 /* DosPadViewController.h */,
 				E77DAFB811B5D83600B78E69 /* DosPadViewController.m */,
-				E79970241241FE4A00502015 /* CommandListView.h */,
-				E79970251241FE4A00502015 /* CommandListView.m */,
 			);
 			path = iPad;
 			sourceTree = "<group>";
@@ -2323,79 +2292,31 @@
 		E77DAFC311B5D83600B78E69 /* Shared */ = {
 			isa = PBXGroup;
 			children = (
-				E73A211E128EC1F5001FA168 /* AlertPrompt.h */,
-				E73A211F128EC1F5001FA168 /* AlertPrompt.m */,
 				E72BE6C312911B5C009DC46A /* AppDelegate.h */,
 				E72BE6C412911B5C009DC46A /* AppDelegate.m */,
 				E79970041241F09400502015 /* cmd_history.h */,
-				E7A01EDC1CC927370036A4CF /* ColorTheme.h */,
-				E7A01EDD1CC927370036A4CF /* ColorTheme.m */,
 				E792A4BA11E36C9C00894C71 /* Common.h */,
-				E7A01EDE1CC927370036A4CF /* ConfigManager.h */,
-				E7A01EDF1CC927370036A4CF /* ConfigManager.m */,
 				E72BE6C512911B5C009DC46A /* DosEmuThread.h */,
 				E72BE6C612911B5C009DC46A /* DosEmuThread.m */,
 				E77DAFB311B5D83600B78E69 /* dospad_Prefix.pch */,
-				E715B3591293B7740098D437 /* DOSPadBaseViewController.h */,
-				E715B35A1293B7750098D437 /* DOSPadBaseViewController.m */,
 				E74BB2B415C93DBC005EC552 /* DosPadUIApplication.h */,
 				E74BB2B515C93DBC005EC552 /* DosPadUIApplication.m */,
-				E72BE6C712911B5C009DC46A /* FileSystemObject.h */,
-				E72BE6C812911B5C009DC46A /* FileSystemObject.m */,
-				E799706212422D6800502015 /* FloatingView.h */,
-				E799706312422D6800502015 /* FloatingView.m */,
-				E76C49361299490200901B69 /* FloatPanel.h */,
-				E76C49371299490200901B69 /* FloatPanel.m */,
-				E76DAEAD123EE08B00C2AEF7 /* FrameskipIndicator.h */,
-				E76DAEAE123EE08B00C2AEF7 /* FrameskipIndicator.m */,
-				E7A94CDB127D68B7006509E1 /* GamePadView.h */,
-				E7A94CDC127D68B7006509E1 /* GamePadView.m */,
-				E7D78AE3129E9E420020D4A7 /* GIFAnimation.h */,
-				E7D78AE4129E9E420020D4A7 /* GIFAnimation.m */,
-				E745CE3D11F5991F00F00F7F /* HoldIndicator.h */,
-				E745CE3E11F5991F00F00F7F /* HoldIndicator.m */,
-				E72BE6C912911B5C009DC46A /* KeyboardView.h */,
-				E72BE6CA12911B5C009DC46A /* KeyboardView.m */,
-				E775411F12403C3C009EC11A /* KeyLockIndicator.h */,
-				E775412012403C3C009EC11A /* KeyLockIndicator.m */,
 				9222DD4D1CC43B9200B321B9 /* KeyMapper.h */,
 				9222DD4E1CC43B9200B321B9 /* KeyMapper.m */,
 				E7D214C511E45BD000D9654E /* keys.h */,
 				E7D214C711E45BDE00D9654E /* keys.m */,
-				E72BE6CB12911B5C009DC46A /* KeyView.h */,
-				E72BE6CC12911B5C009DC46A /* KeyView.m */,
 				E77DAFC411B5D83600B78E69 /* main.m */,
 				E79C2E5611E131DB002FE898 /* MainWindow.xib */,
 				9222DD511CC449DF00B321B9 /* MfiControllerInputHandler.h */,
 				9222DD521CC449DF00B321B9 /* MfiControllerInputHandler.m */,
 				9222DD491CC43ADC00B321B9 /* MfiGameControllerHandler.h */,
 				9222DD4A1CC43ADC00B321B9 /* MfiGameControllerHandler.m */,
-				E799702912421D9F00502015 /* ModalViewController.h */,
-				E799702A12421D9F00502015 /* ModalViewController.m */,
-				E794F3FD12DB4F0E00427836 /* PianoKeyboard.h */,
-				E794F3FE12DB4F0E00427836 /* PianoKeyboard.m */,
 				FD689FCD0E26E9D400F90B21 /* SDL_uikitappdelegate.h */,
 				FD689FCC0E26E9D400F90B21 /* SDL_uikitappdelegate.m */,
 				FD689F160E26E5D900F90B21 /* SDL_uikitopenglview.h */,
 				FD689F170E26E5D900F90B21 /* SDL_uikitopenglview.m */,
-				E70EA4101242F83200528C9D /* SliderView.h */,
-				E70EA4111242F83200528C9D /* SliderView.m */,
-				E793720312A243C6008A2012 /* SplashViewController.h */,
-				E793720412A243C6008A2012 /* SplashViewController.m */,
-				E72BE6D012911B5C009DC46A /* TextViewController.h */,
-				E72BE6D112911B5C009DC46A /* TextViewController.m */,
-				E72BE6D212911B5C009DC46A /* TextViewController.xib */,
-				E7996FAB1241C0A800502015 /* TipView.h */,
-				E7996FAC1241C0A800502015 /* TipView.m */,
 				E7A01EE01CC927370036A4CF /* UIExtendedTextField.h */,
 				E7A01EE11CC927370036A4CF /* UIExtendedTextField.m */,
-				E723F0C41286A1680009E3DA /* VKView.h */,
-				E723F0C51286A1680009E3DA /* VKView.m */,
-				E72BE6D312911B5C009DC46A /* WebViewController.h */,
-				E72BE6D412911B5C009DC46A /* WebViewController.m */,
-				E72BE6D512911B5C009DC46A /* WebViewController.xib */,
-				E72BE6D612911B5C009DC46A /* ZipArchive.h */,
-				E72BE6D712911B5C009DC46A /* ZipArchive.m */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
@@ -2412,16 +2333,18 @@
 		E79E44F411EC2D5200DEAA7B /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				E7D98C1C1CC9F6BB00A17CFC /* AppIcons */,
-				E7734DDC128A71AF0009CBEA /* audio */,
+				E73B77D7127ED67300184D3B /* configs */,
+				E78F5B2511EF615200E2A70F /* diskc */,
+				E7A01EF51CC9A82E0036A4CF /* Settings.bundle */,
 				E73A766F12504B73000E1743 /* credits.html */,
 				E71E60E211B5502800EC5A05 /* dospad-Info.plist */,
+				E7BE1318128BF31A0046990B /* iDOS-Info.plist */,
+				E7D98C1C1CC9F6BB00A17CFC /* AppIcons */,
+				E7734DDC128A71AF0009CBEA /* audio */,
 				E7107146129A8E5A00B21291 /* floatpanel-res */,
 				E7734DDD128A720B0009CBEA /* gamepad */,
-				E7BE1318128BF31A0046990B /* iDOS-Info.plist */,
 				E7D98C481CC9F7D400A17CFC /* LaunchImages */,
 				E72BE6F412911DD1009DC46A /* misc-res */,
-				E7A01EF51CC9A82E0036A4CF /* Settings.bundle */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -2484,11 +2407,92 @@
 				E71E60F211B550FD00EC5A05 /* dosbox */,
 				E77DAFAF11B5D83600B78E69 /* dospad */,
 				E7D6B89C11BF325700D34665 /* minizip */,
-				FD99B8BC0DD52E5C00FB1D6B /* SDL Headers */,
-				FD99B8BD0DD52E6D00FB1D6B /* SDL Sources */,
+				E7D98C6E1CCB23EE00A17CFC /* SDL */,
 				E778B2BA12391963008AF49A /* SDL_net */,
 			);
 			name = Sources;
+			sourceTree = "<group>";
+		};
+		E7D98C6B1CCB227A00A17CFC /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				E73A211E128EC1F5001FA168 /* AlertPrompt.h */,
+				E73A211F128EC1F5001FA168 /* AlertPrompt.m */,
+				E79970241241FE4A00502015 /* CommandListView.h */,
+				E79970251241FE4A00502015 /* CommandListView.m */,
+				E799706212422D6800502015 /* FloatingView.h */,
+				E799706312422D6800502015 /* FloatingView.m */,
+				E76C49361299490200901B69 /* FloatPanel.h */,
+				E76C49371299490200901B69 /* FloatPanel.m */,
+				E76DAEAD123EE08B00C2AEF7 /* FrameskipIndicator.h */,
+				E76DAEAE123EE08B00C2AEF7 /* FrameskipIndicator.m */,
+				E7A94CDB127D68B7006509E1 /* GamePadView.h */,
+				E7A94CDC127D68B7006509E1 /* GamePadView.m */,
+				E745CE3D11F5991F00F00F7F /* HoldIndicator.h */,
+				E745CE3E11F5991F00F00F7F /* HoldIndicator.m */,
+				E72BE6C912911B5C009DC46A /* KeyboardView.h */,
+				E72BE6CA12911B5C009DC46A /* KeyboardView.m */,
+				E775411F12403C3C009EC11A /* KeyLockIndicator.h */,
+				E775412012403C3C009EC11A /* KeyLockIndicator.m */,
+				E72BE6CB12911B5C009DC46A /* KeyView.h */,
+				E72BE6CC12911B5C009DC46A /* KeyView.m */,
+				E794F3FD12DB4F0E00427836 /* PianoKeyboard.h */,
+				E794F3FE12DB4F0E00427836 /* PianoKeyboard.m */,
+				E70EA4101242F83200528C9D /* SliderView.h */,
+				E70EA4111242F83200528C9D /* SliderView.m */,
+				E7996FAB1241C0A800502015 /* TipView.h */,
+				E7996FAC1241C0A800502015 /* TipView.m */,
+				E723F0C41286A1680009E3DA /* VKView.h */,
+				E723F0C51286A1680009E3DA /* VKView.m */,
+			);
+			name = Views;
+			path = Shared;
+			sourceTree = "<group>";
+		};
+		E7D98C6C1CCB228200A17CFC /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				E715B3591293B7740098D437 /* DOSPadBaseViewController.h */,
+				E715B35A1293B7750098D437 /* DOSPadBaseViewController.m */,
+				E77DAFB411B5D83600B78E69 /* iPad */,
+				E79C2E5511E131B8002FE898 /* iPhone */,
+			);
+			name = Controllers;
+			sourceTree = "<group>";
+		};
+		E7D98C6D1CCB235900A17CFC /* Util */ = {
+			isa = PBXGroup;
+			children = (
+				E7A01EDC1CC927370036A4CF /* ColorTheme.h */,
+				E7A01EDD1CC927370036A4CF /* ColorTheme.m */,
+				E7A01EDE1CC927370036A4CF /* ConfigManager.h */,
+				E7A01EDF1CC927370036A4CF /* ConfigManager.m */,
+				E72BE6C712911B5C009DC46A /* FileSystemObject.h */,
+				E72BE6C812911B5C009DC46A /* FileSystemObject.m */,
+				E72BE6D612911B5C009DC46A /* ZipArchive.h */,
+				E72BE6D712911B5C009DC46A /* ZipArchive.m */,
+			);
+			name = Util;
+			sourceTree = "<group>";
+		};
+		E7D98C6E1CCB23EE00A17CFC /* SDL */ = {
+			isa = PBXGroup;
+			children = (
+				FD99B8BC0DD52E5C00FB1D6B /* SDL Headers */,
+				FD99B8BD0DD52E6D00FB1D6B /* SDL Sources */,
+			);
+			name = SDL;
+			sourceTree = "<group>";
+		};
+		E7D98C6F1CCB246500A17CFC /* Libs */ = {
+			isa = PBXGroup;
+			children = (
+				E79E4A0011EC6BF400DEAA7B /* libc.dylib */,
+				E7D6B8CE11BF332400D34665 /* libz.dylib */,
+				E77DB05B11B5E17500B78E69 /* libstdc++.dylib */,
+				E77DB04111B5E10700B78E69 /* libstdc++.6.0.9.dylib */,
+			);
+			name = Libs;
 			sourceTree = "<group>";
 		};
 		FD3F4A6F0DEA620800C5B771 /* stdlib */ = {
@@ -3214,9 +3218,9 @@
 				FD6526620DE8FCCB002AD96B /* SDLStaticLib */,
 				0064653F107E3D7400183915 /* SDL Generated Header Files */,
 				E778B2B1123918F6008AF49A /* SDL_net */,
-				E71E60DF11B5502700EC5A05 /* dospad */,
 				E71E60EA11B5506800EC5A05 /* dosbox */,
 				E7D6B89711BF322E00D34665 /* minizip */,
+				E71E60DF11B5502700EC5A05 /* dospad */,
 				E7BE1297128BF31A0046990B /* iDOS2 */,
 			);
 		};
@@ -3250,8 +3254,6 @@
 				E7735043128AD8BD0009CBEA /* dpad@2x.png in Resources */,
 				E7735044128AD8BD0009CBEA /* dpadpressed.png in Resources */,
 				E7D98C441CC9F6BB00A17CFC /* Icon-iPhone-60@3x.png in Resources */,
-				E72BE6E012911B5C009DC46A /* TextViewController.xib in Resources */,
-				E72BE6E212911B5C009DC46A /* WebViewController.xib in Resources */,
 				E7D98C321CC9F6BB00A17CFC /* Icon-iPad-29.png in Resources */,
 				E7D98C421CC9F6BB00A17CFC /* Icon-iPhone-57@2x.png in Resources */,
 				E72BE72C12911E2B009DC46A /* bar-portrait-iphone.png in Resources */,
@@ -3399,8 +3401,6 @@
 				E7BE12E2128BF31A0046990B /* dpad.png in Resources */,
 				E7BE12E3128BF31A0046990B /* dpad@2x.png in Resources */,
 				E7BE12E4128BF31A0046990B /* dpadpressed.png in Resources */,
-				E72BE6EC12911B5C009DC46A /* TextViewController.xib in Resources */,
-				E72BE6EE12911B5C009DC46A /* WebViewController.xib in Resources */,
 				E72BE74212911E2B009DC46A /* bar-portrait-iphone.png in Resources */,
 				E72BE74312911E2B009DC46A /* bar-portrait-iphone@2x.png in Resources */,
 				E72BE74412911E2B009DC46A /* bar.png in Resources */,
@@ -3588,7 +3588,6 @@
 				E775412112403C3C009EC11A /* KeyLockIndicator.m in Sources */,
 				E7996FAD1241C0A800502015 /* TipView.m in Sources */,
 				E79970261241FE4A00502015 /* CommandListView.m in Sources */,
-				E799702B12421D9F00502015 /* ModalViewController.m in Sources */,
 				E799706412422D6800502015 /* FloatingView.m in Sources */,
 				E70EA4121242F83200528C9D /* SliderView.m in Sources */,
 				9222DD4F1CC43B9200B321B9 /* KeyMapper.m in Sources */,
@@ -3603,12 +3602,9 @@
 				E72BE6DA12911B5C009DC46A /* FileSystemObject.m in Sources */,
 				E72BE6DB12911B5C009DC46A /* KeyboardView.m in Sources */,
 				E72BE6DC12911B5C009DC46A /* KeyView.m in Sources */,
-				E72BE6DF12911B5C009DC46A /* TextViewController.m in Sources */,
-				E72BE6E112911B5C009DC46A /* WebViewController.m in Sources */,
 				E72BE6E312911B5C009DC46A /* ZipArchive.m in Sources */,
 				E715B35C1293B7750098D437 /* DOSPadBaseViewController.m in Sources */,
 				E76C49391299490300901B69 /* FloatPanel.m in Sources */,
-				E7D78AE6129E9E420020D4A7 /* GIFAnimation.m in Sources */,
 				E794F3FF12DB4F0E00427836 /* PianoKeyboard.m in Sources */,
 				E7A01EE41CC927370036A4CF /* UIExtendedTextField.m in Sources */,
 				E74BB2B615C93DBC005EC552 /* DosPadUIApplication.m in Sources */,
@@ -3763,7 +3759,6 @@
 				E7BE12F8128BF31A0046990B /* KeyLockIndicator.m in Sources */,
 				E7BE12F9128BF31A0046990B /* TipView.m in Sources */,
 				E7BE12FA128BF31A0046990B /* CommandListView.m in Sources */,
-				E7BE12FB128BF31A0046990B /* ModalViewController.m in Sources */,
 				E7BE12FC128BF31A0046990B /* FloatingView.m in Sources */,
 				E7A01EE61CC9277C0036A4CF /* ConfigManager.m in Sources */,
 				E7BE12FD128BF31A0046990B /* SliderView.m in Sources */,
@@ -3778,14 +3773,10 @@
 				E72BE6E612911B5C009DC46A /* FileSystemObject.m in Sources */,
 				E72BE6E712911B5C009DC46A /* KeyboardView.m in Sources */,
 				E72BE6E812911B5C009DC46A /* KeyView.m in Sources */,
-				E72BE6EB12911B5C009DC46A /* TextViewController.m in Sources */,
-				E72BE6ED12911B5C009DC46A /* WebViewController.m in Sources */,
 				9222DD541CC449DF00B321B9 /* MfiControllerInputHandler.m in Sources */,
 				E72BE6EF12911B5C009DC46A /* ZipArchive.m in Sources */,
 				E715B35B1293B7750098D437 /* DOSPadBaseViewController.m in Sources */,
 				E76C49381299490200901B69 /* FloatPanel.m in Sources */,
-				E7D78AE5129E9E420020D4A7 /* GIFAnimation.m in Sources */,
-				E793720512A243C6008A2012 /* SplashViewController.m in Sources */,
 				E74BB2B715C93DBC005EC552 /* DosPadUIApplication.m in Sources */,
 				2A4546FA17D2812100D18563 /* PianoKeyboard.m in Sources */,
 			);
