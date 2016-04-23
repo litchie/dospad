@@ -37,8 +37,8 @@
 
 - (void)drawRect:(CGRect)rect
 {
-    UIImage *image = (ISIPAD() ? [UIImage imageNamed:@"landbarblank~iPad.png"] :
-                      [UIImage imageNamed:@"landbarblank.png"]);
+    UIImage *image = (ISIPAD() ? [UIImage imageNamed:@"landbarblank~iPad"] :
+                      [UIImage imageNamed:@"landbarblank"]);
     
     [image drawInRect:rect];
     /*
@@ -75,7 +75,7 @@
         if (ISIPAD())
         {
             btnAutoHide = [[UIButton alloc] initWithFrame:CGRectMake(0,0,48,24)];
-            [btnAutoHide setImage:[UIImage imageNamed:@"unsticky~ipad.png"] forState:UIControlStateNormal];
+            [btnAutoHide setImage:[UIImage imageNamed:@"unsticky~ipad"] forState:UIControlStateNormal];
             [btnAutoHide addTarget:self
                             action:@selector(toggleAutoHide) 
                   forControlEvents:UIControlEventTouchUpInside];
@@ -85,7 +85,7 @@
         else
         {
             btnAutoHide = [[UIButton alloc] initWithFrame:CGRectMake(0,0,48,24)];
-            [btnAutoHide setImage:[UIImage imageNamed:@"unsticky.png"] forState:UIControlStateNormal];
+            [btnAutoHide setImage:[UIImage imageNamed:@"unsticky"] forState:UIControlStateNormal];
             [btnAutoHide addTarget:self
                             action:@selector(toggleAutoHide) 
                   forControlEvents:UIControlEventTouchUpInside];

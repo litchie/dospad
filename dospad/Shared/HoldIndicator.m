@@ -56,7 +56,7 @@
     CGGradientRelease(myGradient);
     CGColorSpaceRelease(myColorspace);
     
-    UIImage *img=[UIImage imageNamed:@"holdfinger.png"];
+    UIImage *img=[UIImage imageNamed:@"holdfinger"];
     CGRect imgRect=CGRectMake( (rect.size.width-img.size.width)/2,
                             (rect.size.height-img.size.height)/2,
                               img.size.width,img.size.height);

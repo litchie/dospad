@@ -490,27 +490,29 @@ static struct {
 // and where to show it.
 - (void)updateUI
 {
-    if ([self isPortrait])
-    {
-        toolPanel.alpha=1;
-        [self removeInputSource:InputSource_PCKeyboard];
-        [self createGamepad];
-        [fullscreenPanel removeFromSuperview];
-    }
-    else
-    {
-        [self removeiOSKeyboard];
-        if (self.view != fullscreenPanel.superview)
-        {
-            [self.view addSubview:fullscreenPanel];
-            [fullscreenPanel showContent];
-        }
-        toolPanel.alpha=0;
-        [self refreshFullscreenPanel];
-    }
-    [self onResize:screenView.bounds.size];
-    [self updateBackground];        
-    [self updateAlpha];
+	if ([self isPortrait])
+	{
+		toolPanel.alpha=1;
+		[self removeInputSource:InputSource_PCKeyboard];
+		[self createGamepad];
+		[fullscreenPanel removeFromSuperview];
+	}
+	else
+	{
+		if (self.view != fullscreenPanel.superview)
+		{
+			CGRect rc = fullscreenPanel.frame;
+			rc.origin.x = (self.view.bounds.size.width-rc.size.width)/2;
+			fullscreenPanel.frame = rc;
+			[self.view addSubview:fullscreenPanel];
+			[fullscreenPanel showContent];
+		}
+		toolPanel.alpha=0;
+		[self refreshFullscreenPanel];
+	}
+	[self onResize:screenView.bounds.size];
+	[self updateBackground];
+	[self updateAlpha];
 }
 
 - (void)toggleScreenSize
@@ -619,18 +621,18 @@ static struct {
 
 - (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration
 {
-    // Do a clean rotate animation
-    if ([self isLandscape] && ISPORTRAIT(toInterfaceOrientation))
-    {
-        [fullscreenPanel hideContent];
-        [self removeInputSource:InputSource_PCKeyboard];
-        [self removeInputSource:InputSource_NumPad];
-        [self removeInputSource:InputSource_MouseButtons];
-        [self removeInputSource:InputSource_PianoKeyboard];
-    }
-    [self removeInputSource:InputSource_GamePad];
-    [self removeInputSource:InputSource_Joystick];
-    toolPanel.alpha=0;
+	// Do a clean rotate animation
+	if ([self isLandscape] && ISPORTRAIT(toInterfaceOrientation))
+	{
+		[fullscreenPanel hideContent];
+		[self removeInputSource:InputSource_NumPad];
+		[self removeInputSource:InputSource_MouseButtons];
+		[self removeInputSource:InputSource_PianoKeyboard];
+	}
+	[self removeInputSource:InputSource_PCKeyboard];
+	[self removeInputSource:InputSource_GamePad];
+	[self removeInputSource:InputSource_Joystick];
+	toolPanel.alpha=0;
 }
 
 - (void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration
@@ -662,56 +664,42 @@ static struct {
  */
 -(void)onResize:(CGSize)sizeNew
 {
-    screenView.bounds = CGRectMake(0, 0, sizeNew.width, sizeNew.height);
-    CGAffineTransform t = CGAffineTransformIdentity;
-    int maxWidth, maxHeight;
-    float scalex, scaley;
-    CGPoint ptCenter;
-    BOOL forceAspect = true; /* width:height = 4:3 */
-    if ([self isPortrait])
-    {
-            maxWidth = 320;
-            maxHeight = 240;
-            ptCenter = CGPointMake(160, 120);
-    }
-    else
-    {
-        if (useOriginalScreenSize)
-        {
-            maxWidth = 320;
-            maxHeight= 240;
-            ptCenter = CGPointMake(240, 120);
-        }
-        else
-        {
-            maxWidth = [[UIScreen mainScreen] applicationFrame].size.width;
-            maxHeight= 320;
-            ptCenter = CGPointMake(maxWidth / 2, 160);
-        }
-    }
-
-    if (forceAspect && (sizeNew.width * 0.75f != sizeNew.height))
-    {
-        if (maxWidth * 0.75f > maxHeight)
-        {
-            maxWidth = floor(maxHeight / 0.75f);
-        } else {
-            maxHeight = floor(maxWidth * 0.75f);
-        }
-        scalex = maxWidth / sizeNew.width;
-        scaley = maxHeight / sizeNew.height;
-    }
-    else
-    {
-        scalex = maxWidth / sizeNew.width;
-        scaley = maxHeight / sizeNew.height;
-        scalex = MIN(scalex, scaley);
-        scaley = scalex;
-    }
-
-    t = CGAffineTransformScale(t, scalex, scaley);
-    screenView.transform = t;
-    screenView.center=ptCenter;
+	CGRect viewRect = self.view.bounds;
+	
+	screenView.bounds = CGRectMake(0, 0, sizeNew.width, sizeNew.height);
+	int maxWidth, maxHeight;
+	float scalex, scaley;
+	CGPoint ptCenter;
+	
+	if ([self isPortrait])
+	{
+		maxWidth = 320;
+		maxHeight = 240;
+		ptCenter = CGPointMake(viewRect.size.width/2, 120);
+	}
+	else
+	{
+		if (useOriginalScreenSize)
+		{
+			maxWidth = 320;
+			maxHeight= 240;
+			ptCenter = CGPointMake(viewRect.size.width/2, 120);
+		}
+		else
+		{
+			maxWidth = viewRect.size.width;
+			maxHeight= viewRect.size.height;
+			ptCenter = CGPointMake(viewRect.size.width/2, viewRect.size.height/2);
+		}
+	}
+	
+	scalex = maxWidth / sizeNew.width;
+	scaley = maxHeight / sizeNew.height;
+	
+	CGAffineTransform t = CGAffineTransformIdentity;
+	t = CGAffineTransformScale(t, scalex, scaley);
+	screenView.transform = t;
+	screenView.center=ptCenter;
 }
 
 -(void) remapControlsButtonTapped:(id)sender {

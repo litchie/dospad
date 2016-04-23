@@ -112,9 +112,13 @@ extern int SDL_SendKeyboardKey(int index, Uint8 state, SDL_scancode scancode);
     holdIndicator.alpha = 0;
     holdIndicator.transform = CGAffineTransformMakeScale(1.5, 1.5);
     [self.view addSubview:holdIndicator];
-    
-    self.title = @"DOS";
-    
+
+#ifdef IDOS
+    self.title = @"iDOS";
+#else
+    self.title = @"DOSpad";
+#endif
+
     if (configPath == nil)
     {
         self.configPath = [ConfigManager dospadConfigFile];
@@ -160,6 +164,10 @@ extern int SDL_SendKeyboardKey(int index, Uint8 state, SDL_scancode scancode);
     // e.g. self.myOutlet = nil;
 }
 
+- (NSUInteger)supportedInterfaceOrientations
+{
+	return UIInterfaceOrientationMaskAll;
+}
 
 - (void)dealloc {
     [self removeAllInputSources];
@@ -218,6 +226,15 @@ extern int SDL_SendKeyboardKey(int index, Uint8 state, SDL_scancode scancode);
     [UIView setAnimationDuration:0.3];
     holdIndicator.alpha=0;
     [UIView commitAnimations];    
+}
+
+- (MouseRightClickMode)currentRightClickMode
+{
+	if (DEFS_GET_INT(kDoubleTapAsRightClick) == 1) {
+		return MouseRightClickWithDoubleTap;
+	} else {
+		return MouseRightClickDefault;
+	}
 }
 
 -(void)onResize:(CGSize)sizeNew

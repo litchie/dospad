@@ -21,7 +21,6 @@
 #include <assert.h>
 #include <string.h>
 #import "Common.h"
-#import "ModalViewController.h"
 #import "CommandListView.h"
 
 #include "SDL.h"
@@ -93,8 +92,8 @@ static struct {
     //---------------------------------------------------
     // 5. Create Mouse Buttons
     //---------------------------------------------------    
-    btnMouseLeftP=[UIButton buttonWithType:UIButtonTypeCustom];
-    btnMouseRightP=[UIButton buttonWithType:UIButtonTypeCustom];
+    btnMouseLeftP=[[UIButton alloc] initWithFrame:CGRectMake(735, 310, 23, 89)];
+    btnMouseRightP=[[UIButton alloc] initWithFrame:CGRectMake(735, 209, 23, 89)];
     [btnMouseLeftP addTarget:self action:@selector(onMouseLeftDown) forControlEvents:UIControlEventTouchDown];
     [btnMouseLeftP addTarget:self action:@selector(onMouseLeftUp) forControlEvents:UIControlEventTouchUpInside];
     [btnMouseRightP addTarget:self action:@selector(onMouseRightDown) forControlEvents:UIControlEventTouchDown];
@@ -134,8 +133,8 @@ static struct {
     //---------------------------------------------------
     // 10. Create light of input controls
     //---------------------------------------------------    
-    gamepadLight = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"light.png"]];
-    joystiqLight = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"light.png"]];
+    gamepadLight = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"light"]];
+    joystiqLight = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"light"]];
     gamepadLight.frame=CGRectMake(236,976,20,14);
     joystiqLight.frame=CGRectMake(328,976,20,14);
     gamepadLight.alpha=0;
@@ -166,7 +165,7 @@ static struct {
     fullscreenPanel = [[FloatPanel alloc] initWithFrame:CGRectMake(0,0,700,47)];
     UIButton *btnExitFS = [[UIButton alloc] initWithFrame:CGRectMake(0,0,72,36)];
     btnExitFS.center=CGPointMake(63, 18);
-    [btnExitFS setImage:[UIImage imageNamed:@"exitfull~ipad.png"] forState:UIControlStateNormal];
+    [btnExitFS setImage:[UIImage imageNamed:@"exitfull~ipad"] forState:UIControlStateNormal];
     [btnExitFS addTarget:self action:@selector(toggleScreenSize) forControlEvents:UIControlEventTouchUpInside];
     [fullscreenPanel.contentView addSubview:btnExitFS];
 }
@@ -186,7 +185,7 @@ static struct {
 - (void)toggleInputSource:(id)sender
 {
     UIButton *btn = (UIButton*)sender;
-    InputSourceType type = [btn tag];
+    InputSourceType type = (int)[btn tag];
     if ([self isInputSourceActive:type]) {
         [self removeInputSource:type];
     } else {
@@ -292,7 +291,7 @@ static struct {
 - (void)createPCKeyboard
 {
     kbd = [[KeyboardView alloc] initWithType:KeyboardTypeLandscape
-                                                   frame:CGRectMake(0,480,1024,288)];
+                                                   frame:CGRectMake(0,self.view.bounds.size.height-250,1024,250)];
     kbd.alpha = [self floatAlpha];
     [self.view addSubview:kbd];
     CGPoint ptOld = kbd.center;
@@ -308,7 +307,7 @@ static struct {
     btnMouseLeft = [[UIButton alloc] initWithFrame:CGRectMake(980,550,48,90)];
     [btnMouseLeft setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];
     [btnMouseLeft setTitle:@"L" forState:UIControlStateNormal];
-    [btnMouseLeft setBackgroundImage:[UIImage imageNamed:@"longbutton.png"] 
+    [btnMouseLeft setBackgroundImage:[UIImage imageNamed:@"longbutton"] 
                            forState:UIControlStateNormal];
     [btnMouseLeft addTarget:self
                     action:@selector(onMouseLeftDown)
@@ -319,7 +318,7 @@ static struct {
     [self.view addSubview:btnMouseLeft];
     [btnMouseRight setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];
     [btnMouseRight setTitle:@"R" forState:UIControlStateNormal];
-    [btnMouseRight setBackgroundImage:[UIImage imageNamed:@"longbutton.png"] 
+    [btnMouseRight setBackgroundImage:[UIImage imageNamed:@"longbutton"] 
                             forState:UIControlStateNormal];
     [btnMouseRight addTarget:self
                      action:@selector(onMouseRightDown)
@@ -342,14 +341,14 @@ static struct {
                          @"[gamepad.ipad.portrait]" : 
                          @"[gamepad.ipad.landscape]");
     
-    NSString *ui_cfg = 0;//get_temporary_merged_file(configPath, get_default_config());
+    NSString *ui_cfg = [ConfigManager uiConfigFile];
 
     gpad = [[GamePadView alloc] initWithConfig:ui_cfg section:section];
 
     if (![self isFullscreen])
     {
-        UIImageView *left = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"ipadleftside.png"]];
-        UIImageView *right = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"ipadrightside.png"]];
+        UIImageView *left = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"ipadleftside"]];
+        UIImageView *right = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"ipadrightside"]];
         left.frame = CGRectMake(1,19,280,378);
         right.frame = CGRectMake(441,30,327,315);
         gpad.backgroundColor=[UIColor clearColor];
@@ -423,6 +422,7 @@ static struct {
         labCycles.alpha=0;
         btnMouseLeftP.alpha = 0;
         btnMouseRightP.alpha = 0;
+		btnShowCommands.alpha = 0;
         if (useOriginalScreenSize)
         {
             float maxWidth = 640;
@@ -458,7 +458,7 @@ static struct {
         if (sw < 640) { scale = 640.0f/sw; }
         screenView.transform=CGAffineTransformMakeScale(scale,scale*additionalScaleY);
         screenView.center=CGPointMake(384, 314);
-            
+        btnShowCommands.alpha = 1;
         btnOption.alpha=1;
         labCycles.alpha=1;
         sliderInput.alpha=1;
