@@ -12,9 +12,9 @@
 	<string>dpicon.png</string>
 	<key>CFBundleIconFiles</key>
 	<array>
-		<string>dpicon.png</string>
-		<string>dpicon@2x.png</string>
-		<string>dpicon~ipad.png</string>
+		<string>Icon-iPhone57.png</string>
+		<string>Icon-iPhone-57@2x.png</string>
+		<string>Icon-iPad-76.png</string>
 	</array>
 	<key>CFBundleIdentifier</key>
 	<string>8HLDK844H7.net.litchie.dospad</string>
