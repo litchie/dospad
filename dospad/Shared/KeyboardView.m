@@ -639,6 +639,9 @@ const CGFloat kIPhoneLandscapeKeyboardHeight = 200.0;// : 288
             	[self createIphonePortraitKeys];
 			}
         }
+        if ( externKeyDelegate && [externKeyDelegate respondsToSelector:@selector(onKeyFunction:)]) {
+            [externKeyDelegate onKeyFunction:k];
+        }
     } 
     else if (externKeyDelegate) 
     {

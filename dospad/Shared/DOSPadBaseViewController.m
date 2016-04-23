@@ -614,6 +614,10 @@ extern int SDL_SendKeyboardKey(int index, Uint8 state, SDL_scancode scancode);
     
 }
 
+-(void) onKeyFunction:(KeyView *)k {
+    [self refreshKeyMappingsInViews];
+}
+
 #pragma mark - UIAlertViewDelegate
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
     if ( buttonIndex == 1 ) {

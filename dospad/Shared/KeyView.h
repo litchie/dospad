@@ -20,10 +20,13 @@
 
 @class KeyView;
 
-@protocol KeyDelegate
+@protocol KeyDelegate<NSObject>
 
 -(void)onKeyDown:(KeyView*)k;
 -(void)onKeyUp:(KeyView*)k;
+
+@optional
+-(void)onKeyFunction:(KeyView*)k;
 
 @end
 
