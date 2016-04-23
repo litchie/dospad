@@ -196,11 +196,13 @@ static struct {
 	[btnDPadSwitch addTarget:self action:@selector(onGamePadModeSwitch:)
 		forControlEvents:UIControlEventTouchUpInside];
 	[self.view addSubview:btnDPadSwitch];
+    btnDPadSwitch.hidden = YES;
     
 }
 
 - (void)toggleInputSource:(id)sender
 {
+    btnDPadSwitch.hidden = YES;
     UIButton *btn = (UIButton*)sender;
     InputSourceType type = [btn tag];
     if ([self isInputSourceActive:type]) {
@@ -458,6 +460,7 @@ static struct {
 		[gamepad removeFromSuperview];
 		gamepad = nil;
 	}
+    btnDPadSwitch.hidden = NO;
     gamepad = [self createGamepadHelper:GamePadDefault];
 }
 
