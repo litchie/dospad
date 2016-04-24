@@ -20,6 +20,7 @@
 #import "FileSystemObject.h"
 #import "Common.h"
 #import "AppDelegate.h"
+#import "MfiGameControllerHandler.h"
 #import "ColorTheme.h"
 
 
@@ -60,118 +61,133 @@ static struct {
 @end
 
 
+@interface DOSPadBaseViewController()
+
+-(void) remapControlsButtonTapped:(id)sender;
+-(void) refreshKeyMappingsInViews;
+-(void) resetMappingsButtonTapped:(id)sender;
+
+@end
+
+@interface DosPadViewController_iPhone()
+
+@property(nonatomic, strong) KeyMapper *keyMapper;
+@property(nonatomic, strong) UIAlertView *keyMapperAlertView;
+@property(nonatomic, strong) MfiGameControllerHandler *mfiHandler;
+@property(nonatomic, strong) MfiControllerInputHandler *mfiInputHandler;
+
+@end
 
 @implementation DosPadViewController_iPhone
 
 
 - (void)initUI
 {
-	//---------------------------------------------------
-	// 1. Root View
-	//---------------------------------------------------
-	//    UIImageView *baseView = [[[UIImageView alloc] initWithFrame:CGRectMake(0,0,320,480)] autorelease];
-	//    self.view.contentMode = UIViewContentModeCenter;
+    //---------------------------------------------------
+    // 1. Root View
+    //---------------------------------------------------
 	self.view.backgroundColor = HexColor(0x585458);
 	self.view.userInteractionEnabled = YES;
 	CGRect viewRect = self.view.bounds;
-	
-	//---------------------------------------------------
-	// 2. Create the toolbar in portrait mode
-	//---------------------------------------------------
-	
-	toolPanel = [[ToolPanelView alloc] initWithFrame:CGRectMake(0,240,320,25)];
-	
-	UIButton *btnOption = [[[UIButton alloc] initWithFrame:CGRectMake(0,0,32,25)] autorelease];
-	UIButton *btnLeft = [[[UIButton alloc] initWithFrame:CGRectMake(33,0,67,25)] autorelease];
-	UIButton *btnRight = [[[UIButton alloc] initWithFrame:CGRectMake(100,0,67,25)] autorelease];
-	[btnLeft setImage:[UIImage imageNamed:@"leftmouse"] forState:UIControlStateHighlighted];
-	[btnRight setImage:[UIImage imageNamed:@"rightmouse"] forState:UIControlStateHighlighted];
-	
-	
-	[btnOption addTarget:self action:@selector(showOption) forControlEvents:UIControlEventTouchUpInside];
-	[btnLeft addTarget:self action:@selector(onMouseLeftDown) forControlEvents:UIControlEventTouchDown];
-	[btnLeft addTarget:self action:@selector(onMouseLeftUp) forControlEvents:UIControlEventTouchUpInside];
-	[btnRight addTarget:self action:@selector(onMouseRightDown) forControlEvents:UIControlEventTouchDown];
-	[btnRight addTarget:self action:@selector(onMouseRightUp) forControlEvents:UIControlEventTouchUpInside];
-	
-	labCycles = [[UILabel alloc] initWithFrame:CGRectMake(272,6,43,12)];
-	labCycles.backgroundColor = [UIColor clearColor];
-	labCycles.textColor=[UIColor colorWithRed:74/255.0 green:1 blue:55/255.0 alpha:1];
-	labCycles.font=[UIFont fontWithName:@"DBLCDTempBlack" size:12];
-	labCycles.text=[self currentCycles];
-	labCycles.textAlignment=UITextAlignmentCenter;
-	labCycles.baselineAdjustment=UIBaselineAdjustmentAlignCenters;
-	fsIndicator = [FrameskipIndicator alloc];
-	fsIndicator = [fsIndicator initWithFrame:CGRectMake(labCycles.frame.size.width-8,2,4,labCycles.frame.size.height-4)
-									   style:FrameskipIndicatorStyleVertical];
-	fsIndicator.count = [self currentFrameskip];
-	[labCycles addSubview:fsIndicator];
-	
-	[toolPanel addSubview:btnOption];
-	[toolPanel addSubview:btnLeft];
-	[toolPanel addSubview:btnRight];
-	[toolPanel addSubview:labCycles];
-	[self.view addSubview:toolPanel];
-	
-	//---------------------------------------------------
-	// 3. <null>
-	//---------------------------------------------------
-	
-	//---------------------------------------------------
-	// 4. <null>
-	//---------------------------------------------------
-	
-	//---------------------------------------------------
-	// 6. Keyboard Show Button
-	//---------------------------------------------------
-	btnShowKeyboard = [[UIButton alloc] initWithFrame:CGRectMake(190,0,44,25)];
+    
+    //---------------------------------------------------
+    // 2. Create the toolbar in portrait mode
+    //---------------------------------------------------
+
+    toolPanel = [[ToolPanelView alloc] initWithFrame:CGRectMake(0,240,320,25)];
+
+    UIButton *btnOption = [[UIButton alloc] initWithFrame:CGRectMake(0,0,32,25)];
+    UIButton *btnLeft = [[UIButton alloc] initWithFrame:CGRectMake(33,0,67,25)];
+    UIButton *btnRight = [[UIButton alloc] initWithFrame:CGRectMake(100,0,67,25)];
+    [btnLeft setImage:[UIImage imageNamed:@"leftmouse"] forState:UIControlStateHighlighted];
+    [btnRight setImage:[UIImage imageNamed:@"rightmouse"] forState:UIControlStateHighlighted];
+    
+    [btnOption addTarget:self action:@selector(showOption) forControlEvents:UIControlEventTouchUpInside];
+    [btnLeft addTarget:self action:@selector(onMouseLeftDown) forControlEvents:UIControlEventTouchDown];
+    [btnLeft addTarget:self action:@selector(onMouseLeftUp) forControlEvents:UIControlEventTouchUpInside];
+    [btnRight addTarget:self action:@selector(onMouseRightDown) forControlEvents:UIControlEventTouchDown];
+    [btnRight addTarget:self action:@selector(onMouseRightUp) forControlEvents:UIControlEventTouchUpInside];    
+    [btnDPadSwitch addTarget:self action:@selector(onGamePadModeSwitch:) forControlEvents:UIControlEventTouchUpInside];
+
+	// ---------------------------------------
+    
+    labCycles = [[UILabel alloc] initWithFrame:CGRectMake(272,6,43,12)];
+    labCycles.backgroundColor = [UIColor clearColor];
+    labCycles.textColor=[UIColor colorWithRed:74/255.0 green:1 blue:55/255.0 alpha:1];
+    labCycles.font=[UIFont fontWithName:@"DBLCDTempBlack" size:12];
+    labCycles.text=[self currentCycles];
+    labCycles.textAlignment=UITextAlignmentCenter;
+    labCycles.baselineAdjustment=UIBaselineAdjustmentAlignCenters;
+    fsIndicator = [FrameskipIndicator alloc];
+    fsIndicator = [fsIndicator initWithFrame:CGRectMake(labCycles.frame.size.width-8,2,4,labCycles.frame.size.height-4)
+                                       style:FrameskipIndicatorStyleVertical];
+    fsIndicator.count = [self currentFrameskip];
+    [labCycles addSubview:fsIndicator];
+
+    [toolPanel addSubview:btnOption];
+    [toolPanel addSubview:btnLeft];
+    [toolPanel addSubview:btnRight];
+    [toolPanel addSubview:labCycles];
+    [self.view addSubview:toolPanel];     
+    
+    //---------------------------------------------------
+    // 3. <null>
+    //---------------------------------------------------
+    
+    //---------------------------------------------------
+    // 4. <null>
+    //---------------------------------------------------    
+    
+    //---------------------------------------------------
+    // 6. Keyboard Show Button
+    //---------------------------------------------------        
+    btnShowKeyboard = [[UIButton alloc] initWithFrame:CGRectMake(190,0,44,25)];
 	[btnShowKeyboard setImage:[UIImage imageNamed:@"kbd"] forState:UIControlStateNormal];
 	[btnShowKeyboard addTarget:self action:@selector(togglePCKeyboard)
 			  forControlEvents:UIControlEventTouchUpInside];
 	[toolPanel addSubview:btnShowKeyboard];
-	
-	//---------------------------------------------------
-	// 7. Banner at the top
-	//---------------------------------------------------
-	banner = [[UILabel alloc] initWithFrame:CGRectMake(0,0,320,44)];
-	banner.autoresizingMask = UIViewAutoresizingFlexibleWidth;
-	banner.backgroundColor = [UIColor clearColor];
-	banner.text = @"Quit Game First";
-	banner.textColor = [UIColor whiteColor];
-	banner.textAlignment = UITextAlignmentCenter;
-	banner.alpha = 0;
-	[self.view addSubview:banner];
-	
-	//---------------------------------------------------
-	// 8. Navigation Bar Show Button
-	//---------------------------------------------------
+
+    //---------------------------------------------------
+    // 7. Banner at the top
+    //---------------------------------------------------
+    banner = [[UILabel alloc] initWithFrame:CGRectMake(0,0,320,44)];
+    banner.autoresizingMask = UIViewAutoresizingFlexibleWidth;
+    banner.backgroundColor = [UIColor clearColor];
+    banner.text = @"Quit Game First";
+    banner.textColor = [UIColor whiteColor];
+    banner.textAlignment = UITextAlignmentCenter;
+    banner.alpha = 0;
+    [self.view addSubview:banner];
+    
+    //---------------------------------------------------
+    // 8. Navigation Bar Show Button
+    //---------------------------------------------------  
 #ifdef IDOS
-	if (!autoExit)
-	{
-		UIButton *btnTop = [[[UIButton alloc] initWithFrame:CGRectMake(0,0,320,30)] autorelease];
-		btnTop.backgroundColor=[UIColor clearColor];
-		btnTop.autoresizingMask = UIViewAutoresizingFlexibleWidth;
-		[btnTop addTarget:self action:@selector(showNavigationBar) forControlEvents:UIControlEventTouchUpInside];
-		[self.view addSubview:btnTop];
-	}
+    if (!autoExit)
+    {
+        UIButton *btnTop = [[UIButton alloc] initWithFrame:CGRectMake(0,0,320,30)];
+        btnTop.backgroundColor=[UIColor clearColor];
+        btnTop.autoresizingMask = UIViewAutoresizingFlexibleWidth;
+        [btnTop addTarget:self action:@selector(showNavigationBar) forControlEvents:UIControlEventTouchUpInside];
+        [self.view addSubview:btnTop];
+    }
 #endif
-	
-	//---------------------------------------------------
-	// 9. Fullscreen Panel
-	//---------------------------------------------------
-	fullscreenPanel = [[FloatPanel alloc] initWithFrame:CGRectMake(0,0,480,32)];
-	UIButton *btnExitFS = [[UIButton alloc] initWithFrame:CGRectMake(0,0,48,24)];
-	btnExitFS.center=CGPointMake(44, 13);
-	[btnExitFS setImage:[UIImage imageNamed:@"exitfull"] forState:UIControlStateNormal];
-	[btnExitFS addTarget:self action:@selector(toggleScreenSize) forControlEvents:UIControlEventTouchUpInside];
-	[fullscreenPanel.contentView addSubview:btnExitFS];
-	[btnExitFS release];
-	
-	
+    
+    //---------------------------------------------------
+    // 9. Fullscreen Panel
+    //---------------------------------------------------     
+    fullscreenPanel = [[FloatPanel alloc] initWithFrame:CGRectMake(0,0,480,32)];
+    UIButton *btnExitFS = [[UIButton alloc] initWithFrame:CGRectMake(0,0,48,24)];
+    btnExitFS.center=CGPointMake(44, 13);
+    [btnExitFS setImage:[UIImage imageNamed:@"exitfull.png"] forState:UIControlStateNormal];
+    [btnExitFS addTarget:self action:@selector(toggleScreenSize) forControlEvents:UIControlEventTouchUpInside];
+    [fullscreenPanel.contentView addSubview:btnExitFS];
+
+
 	// Create the button larger than the image, so we have a bigger clickable area,
 	// while visually takes smaller place
-	btnDPadSwitch = [[[UIButton alloc] initWithFrame:CGRectMake(viewRect.size.width/2-38,viewRect.size.height-25,76,25)] autorelease];
-	UIImageView *imgTmp = [[[UIImageView alloc] initWithFrame:CGRectMake(2, 2, 72, 16)] autorelease];
+	btnDPadSwitch = [[UIButton alloc] initWithFrame:CGRectMake(viewRect.size.width/2-38,viewRect.size.height-25,76,25)];
+	UIImageView *imgTmp = [[UIImageView alloc] initWithFrame:CGRectMake(2, 2, 72, 16)];
 	imgTmp.image = [UIImage imageNamed:@"switch"];
 	[btnDPadSwitch addSubview:imgTmp];
 	slider = [[UIImageView alloc] initWithFrame:CGRectMake(21,7,17,8)];
@@ -180,161 +196,172 @@ static struct {
 	[btnDPadSwitch addTarget:self action:@selector(onGamePadModeSwitch:)
 		forControlEvents:UIControlEventTouchUpInside];
 	[self.view addSubview:btnDPadSwitch];
+    btnDPadSwitch.hidden = YES;
+    
 }
 
 - (void)toggleInputSource:(id)sender
 {
-	UIButton *btn = (UIButton*)sender;
-	InputSourceType type = (InputSourceType)[btn tag];
-	if ([self isInputSourceActive:type]) {
-		[self removeInputSource:type];
-	} else {
-		[self addInputSourceExclusively:type];
-	}
-	[self refreshFullscreenPanel];
+    btnDPadSwitch.hidden = YES;
+    UIButton *btn = (UIButton*)sender;
+    InputSourceType type = [btn tag];
+    if ([self isInputSourceActive:type]) {
+        [self removeInputSource:type];
+    } else {
+        [self addInputSourceExclusively:type];
+    }
+    [self refreshFullscreenPanel];
 }
 
 - (void)refreshFullscreenPanel
 {
-	NSMutableArray *items = [NSMutableArray arrayWithCapacity:16];
-	
-	UIImageView *cpuWindow = [[[UIImageView alloc] initWithFrame:CGRectMake(0,0,48,24)] autorelease];
-	cpuWindow.image = [UIImage imageNamed:@"cpuwindow"];
-	
-	if (labCycles2 == nil)
-	{
-		labCycles2 = [[UILabel alloc] initWithFrame:CGRectMake(1,8,43,12)];
-		labCycles2.backgroundColor = [UIColor clearColor];
-		labCycles2.textColor=[UIColor colorWithRed:74/255.0 green:1 blue:55/255.0 alpha:1];
-		labCycles2.font=[UIFont fontWithName:@"DBLCDTempBlack" size:12];
-		labCycles2.text=[self currentCycles];
-		labCycles2.textAlignment=UITextAlignmentCenter;
-		labCycles2.baselineAdjustment=UIBaselineAdjustmentAlignCenters;
-		fsIndicator2 = [FrameskipIndicator alloc];
-		fsIndicator2 = [fsIndicator2 initWithFrame:CGRectMake(labCycles2.frame.size.width-8,2,4,labCycles2.frame.size.height-4)
-											 style:FrameskipIndicatorStyleVertical];
-		fsIndicator2.count = [self currentFrameskip];
-		[labCycles2 addSubview:fsIndicator2];
-	}
-	[cpuWindow addSubview:labCycles2];
-	[items addObject:cpuWindow];
-	
-	for (int i = 0; i < NUM_BUTTON_INFO; i++) {
+    NSMutableArray *items = [NSMutableArray arrayWithCapacity:16];
+    
+    UIImageView *cpuWindow = [[UIImageView alloc] initWithFrame:CGRectMake(0,0,48,24)];
+    cpuWindow.image = [UIImage imageNamed:@"cpuwindow.png"];
+    
+    if (labCycles2 == nil)
+    {
+        labCycles2 = [[UILabel alloc] initWithFrame:CGRectMake(1,8,43,12)];
+        labCycles2.backgroundColor = [UIColor clearColor];
+        labCycles2.textColor=[UIColor colorWithRed:74/255.0 green:1 blue:55/255.0 alpha:1];
+        labCycles2.font=[UIFont fontWithName:@"DBLCDTempBlack" size:12];
+        labCycles2.text=[self currentCycles];
+        labCycles2.textAlignment=UITextAlignmentCenter;
+        labCycles2.baselineAdjustment=UIBaselineAdjustmentAlignCenters;
+        fsIndicator2 = [FrameskipIndicator alloc];
+        fsIndicator2 = [fsIndicator2 initWithFrame:CGRectMake(labCycles2.frame.size.width-8,2,4,labCycles2.frame.size.height-4)
+                                             style:FrameskipIndicatorStyleVertical];
+        fsIndicator2.count = [self currentFrameskip];
+        [labCycles2 addSubview:fsIndicator2];
+    }
+    [cpuWindow addSubview:labCycles2];
+    [items addObject:cpuWindow];
+
+    for (int i = 0; i < NUM_BUTTON_INFO; i++) {
 		if ([self isInputSourceEnabled:toggleButtonInfo[i].type]) {
-			UIButton *btn = [[[UIButton alloc] initWithFrame:CGRectMake(0,0,48,24)] autorelease];
-			NSString *on = [NSString stringWithUTF8String:toggleButtonInfo[i].onImageName];
-			NSString *off = [NSString stringWithUTF8String:toggleButtonInfo[i].offImageName];
-			BOOL active = [self isInputSourceActive:toggleButtonInfo[i].type];
-			[btn setImage:[UIImage imageNamed:active?on:off] forState:UIControlStateNormal];
-			[btn setImage:[UIImage imageNamed:on] forState:UIControlStateHighlighted];
-			[btn setTag:toggleButtonInfo[i].type];
-			[btn addTarget:self action:@selector(toggleInputSource:) forControlEvents:UIControlEventTouchUpInside];
-			[items addObject:btn];
-		}
-	}
-	
-	UIButton *btnOption = [[[UIButton alloc] initWithFrame:CGRectMake(380,0,48,24)] autorelease];
-	[btnOption setImage:[UIImage imageNamed:@"options"] forState:UIControlStateNormal];
-	[btnOption addTarget:self action:@selector(showOption) forControlEvents:UIControlEventTouchUpInside];
-	[items addObject:btnOption];
-	
-	[fullscreenPanel setItems:items];
+            UIButton *btn = [[UIButton alloc] initWithFrame:CGRectMake(0,0,48,24)];
+            NSString *on = [NSString stringWithUTF8String:toggleButtonInfo[i].onImageName];
+            NSString *off = [NSString stringWithUTF8String:toggleButtonInfo[i].offImageName];
+            BOOL active = [self isInputSourceActive:toggleButtonInfo[i].type];
+            [btn setImage:[UIImage imageNamed:active?on:off] forState:UIControlStateNormal];
+            [btn setImage:[UIImage imageNamed:on] forState:UIControlStateHighlighted];
+            [btn setTag:toggleButtonInfo[i].type];
+            [btn addTarget:self action:@selector(toggleInputSource:) forControlEvents:UIControlEventTouchUpInside];
+            [items addObject:btn];
+        }
+    }
+        
+    UIButton *btnOption = [[UIButton alloc] initWithFrame:CGRectMake(380,0,48,24)];
+    [btnOption setImage:[UIImage imageNamed:@"options.png"] forState:UIControlStateNormal];
+    [btnOption addTarget:self action:@selector(showOption) forControlEvents:UIControlEventTouchUpInside];
+    [items addObject:btnOption];
+    
+    UIButton *btnRemap = [[UIButton alloc] initWithFrame:CGRectMake(340,0,20,24)];
+    [btnRemap setTitle:@"R" forState:UIControlStateNormal];
+    [btnRemap addTarget:self action:@selector(remapControlsButtonTapped:) forControlEvents:UIControlEventTouchUpInside];
+    [items addObject:btnRemap];
+    
+    [fullscreenPanel setItems:items];
 }
 
 - (void)hideNavigationBar
 {
-	[self.navigationController setNavigationBarHidden:YES animated:YES];
+    [self.navigationController setNavigationBarHidden:YES animated:YES];
 }
 
 - (void)showNavigationBar
 {
-	[NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(hideNavigationBar) object:nil];
-	[self.navigationController setNavigationBarHidden:NO animated:YES];
-	[self performSelector:@selector(hideNavigationBar) withObject:nil afterDelay:3];
+    [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(hideNavigationBar) object:nil];
+    [self.navigationController setNavigationBarHidden:NO animated:YES];
+    [self performSelector:@selector(hideNavigationBar) withObject:nil afterDelay:3];
 }
 
 -(void)updateFrameskip:(NSNumber*)skip
 {
-	fsIndicator.count=[skip intValue];
-	fsIndicator2.count=[skip intValue];
-	if (self.interfaceOrientation == UIInterfaceOrientationLandscapeLeft||
-		self.interfaceOrientation == UIInterfaceOrientationLandscapeRight)
-	{
-		[fullscreenPanel showContent];
-	}
+    fsIndicator.count=[skip intValue];
+    fsIndicator2.count=[skip intValue];
+    if (self.interfaceOrientation == UIInterfaceOrientationLandscapeLeft||
+        self.interfaceOrientation == UIInterfaceOrientationLandscapeRight)
+    {
+        [fullscreenPanel showContent];
+    }
 }
 
 -(void)updateCpuCycles:(NSString*)title
 {
-	labCycles.text=title;
-	labCycles2.text=title;
-	if (self.interfaceOrientation == UIInterfaceOrientationLandscapeLeft||
-		self.interfaceOrientation == UIInterfaceOrientationLandscapeRight)
-	{
-		[fullscreenPanel showContent];
-	}
+    labCycles.text=title;
+    labCycles2.text=title;
+    if (self.interfaceOrientation == UIInterfaceOrientationLandscapeLeft||
+        self.interfaceOrientation == UIInterfaceOrientationLandscapeRight)
+    {
+        [fullscreenPanel showContent];    
+    }
 }
 
 -(float)floatAlpha
 {
-	NSUserDefaults *defs=[NSUserDefaults standardUserDefaults];
-	return 1-[defs floatForKey:kTransparency];
+    NSUserDefaults *defs=[NSUserDefaults standardUserDefaults];
+    return 1-[defs floatForKey:kTransparency];    
 }
 
 
 -(void)updateAlpha
 {
-	float a = [self floatAlpha];
-	kbd.alpha = a;
-	if ([self isLandscape])
-	{
-		gamepad.alpha=a;
-		gamepad.dpadMovable = DEFS_GET_BOOL(kDPadMovable);
-	}
-	numpad.alpha=a;
-	btnMouseLeft.alpha=a;
-	btnMouseRight.alpha=a;
+    float a = [self floatAlpha];
+    kbd.alpha = a;
+    if ([self isLandscape])
+    {
+        gamepad.alpha=a;
+        gamepad.dpadMovable = DEFS_GET_INT(kDPadMovable);
+    }
+    numpad.alpha=a;
+    btnMouseLeft.alpha=a;
+    btnMouseRight.alpha=a;
 }
 
 - (void)createMouseButtons
-{
-	// Left Mouse Button
-	btnMouseLeft = [[UIButton alloc] initWithFrame:CGRectMake(self.view.bounds.size.width-48,160,48,80)];
-	[btnMouseLeft setTitle:@"L" forState:UIControlStateNormal];
-	[btnMouseLeft setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];
-	[btnMouseLeft setBackgroundImage:[UIImage imageNamed:@"longbutton"]
-							forState:UIControlStateNormal];
-	[btnMouseLeft addTarget:self
-					 action:@selector(onMouseLeftDown)
-		   forControlEvents:UIControlEventTouchDown];
-	[btnMouseLeft addTarget:self
-					 action:@selector(onMouseLeftUp)
-		   forControlEvents:UIControlEventTouchUpInside];
-	[self.view addSubview:btnMouseLeft];
-	
-	// Right Mouse Button
-	btnMouseRight = [[UIButton alloc] initWithFrame:CGRectMake(self.view.bounds.size.width-48,80,48,80)];
-	[btnMouseRight setTitle:@"R" forState:UIControlStateNormal];
-	[btnMouseRight setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];
-	[btnMouseRight setBackgroundImage:[UIImage imageNamed:@"longbutton"]
-							 forState:UIControlStateNormal];
-	[btnMouseRight addTarget:self
-					  action:@selector(onMouseRightDown)
-			forControlEvents:UIControlEventTouchDown];
-	[btnMouseRight addTarget:self
-					  action:@selector(onMouseRightUp)
-			forControlEvents:UIControlEventTouchUpInside];
-	[self.view addSubview:btnMouseRight];
-	
-	// Transparency
-	btnMouseLeft.alpha=[self floatAlpha];
-	btnMouseRight.alpha=[self floatAlpha];
+{    
+    // Left Mouse Button
+    btnMouseLeft = [[UIButton alloc] initWithFrame:CGRectMake(440,160,48,80)];
+    [btnMouseLeft setTitle:@"L" forState:UIControlStateNormal];
+    [btnMouseLeft setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];
+    [btnMouseLeft setBackgroundImage:[UIImage imageNamed:@"longbutton.png"] 
+                           forState:UIControlStateNormal];
+    [btnMouseLeft addTarget:self
+                    action:@selector(onMouseLeftDown)
+          forControlEvents:UIControlEventTouchDown];
+    [btnMouseLeft addTarget:self
+                    action:@selector(onMouseLeftUp)
+          forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:btnMouseLeft];
+    
+    // Right Mouse Button
+    btnMouseRight = [[UIButton alloc] initWithFrame:CGRectMake(440,80,48,80)];
+    [btnMouseRight setTitle:@"R" forState:UIControlStateNormal];
+    [btnMouseRight setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];
+    [btnMouseRight setBackgroundImage:[UIImage imageNamed:@"longbutton.png"] 
+                            forState:UIControlStateNormal];
+    [btnMouseRight addTarget:self
+                     action:@selector(onMouseRightDown)
+           forControlEvents:UIControlEventTouchDown];
+    [btnMouseRight addTarget:self
+                    action:@selector(onMouseRightUp)
+          forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:btnMouseRight];
+    
+    // Transparency
+    btnMouseLeft.alpha=[self floatAlpha];
+    btnMouseRight.alpha=[self floatAlpha];   
 }
 
 
 - (void)createNumpad
 {
-	
+	if (numpad != nil) {
+		[numpad removeFromSuperview];
+		numpad = nil;
+	}
 	numpad = [[KeyboardView alloc] initWithType:KeyboardTypeNumPad frame:CGRectMake(self.view.bounds.size.width-160,120,160,200)];
 	numpad.alpha = [self floatAlpha];
 	[self.view addSubview:numpad];
@@ -351,7 +378,6 @@ static struct {
 	if (kbd != nil)
 	{
 		[kbd removeFromSuperview];
-		[kbd release];
 		kbd = nil;
 	}
 	else
@@ -365,7 +391,6 @@ static struct {
 	if (kbd != nil)
 	{
 		[kbd removeFromSuperview];
-		[kbd release];
 		kbd = nil;
 	}
 	CGRect rect;
@@ -383,6 +408,8 @@ static struct {
 	}
 	
 	[self.view addSubview:kbd];
+    kbd.externKeyDelegate = remapControlsModeOn ? self : nil;
+    [self refreshKeyMappingsInViews];
 }
 
 - (GamePadView*)createGamepadHelper:(GamePadMode)mod
@@ -422,39 +449,28 @@ static struct {
 {
 	if (joystick != nil) {
 		[joystick removeFromSuperview];
-		[joystick release];
 		joystick = nil;
 	}
-	joystick = [self createGamepadHelper:GamePadJoystick];
+    joystick = [self createGamepadHelper:GamePadJoystick];
 }
 
 - (void)createGamepad
 {
 	if (gamepad != nil) {
 		[gamepad removeFromSuperview];
-		[gamepad release];
 		gamepad = nil;
 	}
-	gamepad = [self createGamepadHelper:GamePadDefault];
+    btnDPadSwitch.hidden = NO;
+    gamepad = [self createGamepadHelper:GamePadDefault];
 }
 
 - (void)updateBackground:(UIInterfaceOrientation)interfaceOrientation
 {
-	UIImage *img;
-	if (interfaceOrientation==UIInterfaceOrientationPortrait||
-		interfaceOrientation==UIInterfaceOrientationPortraitUpsideDown)
-	{
-		// img = [UIImage imageNamed:@"iphone-portrait.jpg"];
-		// [(UIImageView*)self.view setImage:img];
-	} else {
-		
-		// [(UIImageView*)self.view setImage:nil];
-	}
 }
 
 - (void)updateBackground
 {
-	[self updateBackground:self.interfaceOrientation];
+    [self updateBackground:self.interfaceOrientation];
 }
 
 // Here is where the UI is defined. We decide what should be shown
@@ -488,68 +504,105 @@ static struct {
 
 - (void)toggleScreenSize
 {
-	useOriginalScreenSize = !useOriginalScreenSize;
-	[self updateUI];
+    useOriginalScreenSize = !useOriginalScreenSize;
+    [self updateUI];
 }
 
 - (void)onGamePadModeSwitch:(id)btn
 {
-	mode = (mode == GamePadDefault ? GamePadJoystick : GamePadDefault);
-	gamepad.mode = mode;
-	
-	[UIView beginAnimations:nil context:nil];
-	
-	if (mode == GamePadDefault)
-	{
-		slider.frame = CGRectMake(21,7,17,8);
-	}
-	else
-	{
-		slider.frame = CGRectMake(40,7,17,8);
-	}
-	
-	[UIView commitAnimations];
+    mode = (mode == GamePadDefault ? GamePadJoystick : GamePadDefault);
+    gamepad.mode = mode;
+    
+    [UIView beginAnimations:nil context:nil];
+    
+    if (mode == GamePadDefault)
+    {
+        slider.frame = CGRectMake(21,7,17,8);
+    }
+    else
+    {
+        slider.frame = CGRectMake(40,7,17,8);
+    }
+
+    [UIView commitAnimations];
 }
 
-- (BOOL)prefersStatusBarHidden {
-	return YES;
-}
-
-- (void)viewDidLoad
+- (void)viewDidLoad 
 {
-	[super viewDidLoad];
-	mode = GamePadDefault;
+    [super viewDidLoad];
+    mode = GamePadDefault;
 	[self initUI];
+
+    self.keyMapper = [[KeyMapper alloc] init];
+    [self.keyMapper loadFromDefaults];
+    self.mfiHandler = [[MfiGameControllerHandler alloc] init];
+    self.mfiInputHandler = [[MfiControllerInputHandler alloc] init];
+    self.mfiInputHandler.keyMapper = self.keyMapper;
+    [self.mfiHandler discoverController:^(GCController *gameController) {
+        [self.mfiInputHandler setupControllerInputsForController:gameController];
+    } disconnectedCallback:^{
+        
+    }];
+}
+
+
+-(void) keyboardWillShow:(NSNotification *)note
+{
+
+}
+
+-(void) keyboardWillHide:(NSNotification *)note
+{
+    // Do nothing..
 }
 
 -(void)viewWillAppear:(BOOL)animated
-{
-	[super viewWillAppear:animated];
-	[self updateUI];
-	
+{    
+    [super viewWillAppear:animated];
+    [[NSNotificationCenter defaultCenter]
+     addObserver:self
+     selector:@selector(keyboardWillShow:)
+     name:UIKeyboardWillShowNotification
+     object:nil];
+    [[NSNotificationCenter defaultCenter]
+     addObserver:self
+     selector:@selector(keyboardWillHide:)
+     name:UIKeyboardWillHideNotification
+     object:nil];
+        
+    [self updateUI];
+    
 #ifdef IDOS
-	if (self.interfaceOrientation == UIInterfaceOrientationPortrait||
-		self.interfaceOrientation == UIInterfaceOrientationPortraitUpsideDown)
-	{
-		if (!autoExit)
-		{
-			[NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(hideNavigationBar) object:nil];
-			[self.navigationController setNavigationBarHidden:NO animated:YES];
-			[self performSelector:@selector(hideNavigationBar) withObject:nil afterDelay:1];
-		}
-	}
-#else
-	[self hideNavigationBar];
+    if (self.interfaceOrientation == UIInterfaceOrientationPortrait||
+        self.interfaceOrientation == UIInterfaceOrientationPortraitUpsideDown)
+    {
+        if (!autoExit)
+        {        
+            [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(hideNavigationBar) object:nil];
+            [self.navigationController setNavigationBarHidden:NO animated:YES];
+            [self performSelector:@selector(hideNavigationBar) withObject:nil afterDelay:1];
+        }
+    }
 #endif
 }
 
 -(void)viewWillDisappear:(BOOL)animated
-{
+{    
+    [super viewWillDisappear:animated];
+    [[NSNotificationCenter defaultCenter]
+     removeObserver:self
+     name:UIKeyboardWillShowNotification
+     object:nil];
+    [[NSNotificationCenter defaultCenter]
+     removeObserver:self
+     name:UIKeyboardWillHideNotification
+     object:nil];    
+
 #ifdef IDOS
-	if (!autoExit)
-	{
-		[NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(hideNavigationBar) object:nil];
-	}
+    if (!autoExit)
+    {
+        [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(hideNavigationBar) object:nil];
+    }
 #endif
 }
 
@@ -571,40 +624,26 @@ static struct {
 
 - (void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration
 {
-	[self updateUI];
+    [self updateUI];
 }
 
 // Override to allow orientations other than the default portrait orientation.
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
-	// Return YES for supported orientations
-	return YES;
+    // Return YES for supported orientations
+    return YES;
 }
 
 - (void)didReceiveMemoryWarning {
-	// Releases the view if it doesn't have a superview.
-	[super didReceiveMemoryWarning];
-	
-	// Release any cached data, images, etc that aren't in use.
+    // Releases the view if it doesn't have a superview.
+    [super didReceiveMemoryWarning];
+    
+    // Release any cached data, images, etc that aren't in use.
 }
 
 - (void)viewDidUnload {
-	[super viewDidUnload];
-	// Release any retained subviews of the main view.
-	// e.g. self.myOutlet = nil;
-}
-
-- (void)dealloc {
-	[banner release];
-	[labCycles release];
-	[labCycles2 release];
-	[fsIndicator release];
-	[fsIndicator2 release];
-	[toolPanel release];
-	[btnShowKeyboard release];
-	[slider release];
-	[fullscreenPanel release];
-	[btnDPadSwitch release];
-	[super dealloc];
+    [super viewDidUnload];
+    // Release any retained subviews of the main view.
+    // e.g. self.myOutlet = nil;
 }
 
 /*

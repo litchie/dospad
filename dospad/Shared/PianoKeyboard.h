@@ -24,8 +24,8 @@ typedef enum {
     int index;
 }
 
-@property (nonatomic, retain) NSString *title;
-@property (nonatomic, retain) UIColor *textColor;
+@property (nonatomic, strong) NSString *title;
+@property (nonatomic, strong) UIColor *textColor;
 @property (nonatomic, assign) BOOL pressed;
 @property (nonatomic, assign) PianoKeyType type;
 @property (nonatomic, assign) int keyCode;

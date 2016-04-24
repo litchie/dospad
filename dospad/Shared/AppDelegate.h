@@ -22,12 +22,12 @@
 
 @interface AppDelegate : SDLUIKitDelegate 
 {
-	UINavigationController *navController;
-	SDL_uikitopenglview *screenView;
-	DosEmuThread * emuThread;
-	int cycles;
-	int frameskip;
-	int maxPercent;
+    UINavigationController *navController;
+    SDL_uikitopenglview *screenView;
+    DosEmuThread * emuThread;
+    int cycles;
+    int frameskip;
+    int maxPercent;
 }
 
 @property (nonatomic, readonly) int cycles;

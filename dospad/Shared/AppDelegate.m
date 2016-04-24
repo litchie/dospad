@@ -41,9 +41,7 @@
 		ret = [ar UnzipFileTo:dir overWrite:YES];
 		[ar UnzipCloseFile];
 		[[FileSystemObject sharedObject] removeFileAtPath:filepath];
-	}
-	
-	[ar release];
+	}	
 }
 
 
@@ -130,7 +128,6 @@
 	NSString *path = [[NSBundle mainBundle].bundlePath stringByAppendingPathComponent:@"configs/colortheme.json"];
 	ColorTheme *theme = [[ColorTheme alloc] initWithPath:path];
 	[ColorTheme setDefaultTheme:theme];
-	[theme release];
 }
 
 - (void)registerDefaultSettings
@@ -186,7 +183,8 @@
 	}
 }
 
-- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
+
+- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions 
 {
 	[self registerDefaultSettings];
 	[ConfigManager init];
@@ -202,7 +200,6 @@
 	[[AVAudioSession sharedInstance]
 		setActive: YES
 		error: &activationErr];
-	
 
     screenView = [[SDL_uikitopenglview alloc] initWithFrame:CGRectMake(0,0,640,400)];
     DOSPadBaseViewController *dospad = [DOSPadBaseViewController dospadWithConfig:[ConfigManager dospadConfigFile]];
@@ -213,20 +210,17 @@
 	uiwindow.rootViewController = navController;
     [uiwindow makeKeyAndVisible];
 	[super applicationDidFinishLaunching:application];
-	
 #ifdef THREADED
-	// FIXME: Launch emulation thread two seconds later to avoid crash
-    [self performSelector:@selector(startDOS) withObject:nil afterDelay:2];
+	// TODO: On 64bit devices, it is a must to delay emulation thread by 2 seconds,
+	// otherwise it will crash on launch.
+	// However, rotating the screen still causes it to crash.
+	// Apparently we are not 64bit-ready yet.
+	// Let's just keep it 0.5s at present.
+    [self performSelector:@selector(startDOS) withObject:nil afterDelay:0.5];
 #endif
-
     return YES;
 }
 
-- (void)dealloc {
-    [navController release];
-    [screenView release];
-    [super dealloc];
-}
 
 -(void)setWindowTitle:(char *)title
 {
@@ -258,7 +252,6 @@
         }
         
     }
-    [t release];
 }
 
 -(void)onLaunchExit

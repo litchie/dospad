@@ -61,14 +61,9 @@ static ColorTheme* _defaultTheme;
 
 + (void)setDefaultTheme:(ColorTheme *)theme
 {
-	_defaultTheme = [theme retain];
+	_defaultTheme = theme;
 }
 
-- (void)dealloc
-{
-	[_colorDict release];
-	[super dealloc];
-}
 
 
 @end

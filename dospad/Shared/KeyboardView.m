@@ -243,7 +243,7 @@ const CGFloat kIPhoneLandscapeKeyboardHeight = 200.0;// : 288
 -(KeyView*)createKey:(const char*)title code:(int)scancode x:(int)x y:(int)y width:(int)w height:(int)h
 {
 
-    KeyView *btn = [[[KeyView alloc] initWithFrame:CGRectMake(x, y,w,h)] autorelease];
+    KeyView *btn = [[KeyView alloc] initWithFrame:CGRectMake(x, y,w,h)];
     btn.code = scancode;
     btn.title = [NSString stringWithFormat:@"%s",title];
     btn.delegate = self;
@@ -341,7 +341,7 @@ const CGFloat kIPhoneLandscapeKeyboardHeight = 200.0;// : 288
     rowY[3]=y;
 
     key=[self createKey:"CAPSLOCK" code:SDL_SCANCODE_CAPSLOCK x:x y:y width:kw*2 height:kh];
-    self.capsLock=[[[KeyLockIndicator alloc] initWithFrame:CGRectMake(8,8,LOCK_SIZE,LOCK_SIZE)] autorelease];
+    self.capsLock=[[KeyLockIndicator alloc] initWithFrame:CGRectMake(8,8,LOCK_SIZE,LOCK_SIZE)];
     [key addSubview:self.capsLock];
     
     x+=kw*2+marginx;
@@ -543,8 +543,8 @@ const CGFloat kIPhoneLandscapeKeyboardHeight = 200.0;// : 288
         transparentKeys = YES;
 		
         self.backgroundColor = [UIColor clearColor];
-    	self.numLock =[[[KeyLockIndicator alloc] initWithFrame:CGRectMake(8,8,LOCK_SIZE,LOCK_SIZE)] autorelease];
-    	self.capsLock =[[[KeyLockIndicator alloc] initWithFrame:CGRectMake(8,8,LOCK_SIZE,LOCK_SIZE)] autorelease];
+    	self.numLock =[[KeyLockIndicator alloc] initWithFrame:CGRectMake(8,8,LOCK_SIZE,LOCK_SIZE)];
+    	self.capsLock =[[KeyLockIndicator alloc] initWithFrame:CGRectMake(8,8,LOCK_SIZE,LOCK_SIZE)];
 		
         if (ISIPAD())
         {
@@ -639,6 +639,9 @@ const CGFloat kIPhoneLandscapeKeyboardHeight = 200.0;// : 288
             	[self createIphonePortraitKeys];
 			}
         }
+        if ( externKeyDelegate && [externKeyDelegate respondsToSelector:@selector(onKeyFunction:)]) {
+            [externKeyDelegate onKeyFunction:k];
+        }
     } 
     else if (externKeyDelegate) 
     {
@@ -671,15 +674,6 @@ const CGFloat kIPhoneLandscapeKeyboardHeight = 200.0;// : 288
             [self updateKeyLock];
         }
     }
-}
-
-- (void)dealloc 
-{
-    [backgroundImage release];
-    [keys release];
-    [capsLock release];
-    [numLock release];
-    [super dealloc];
 }
 
 

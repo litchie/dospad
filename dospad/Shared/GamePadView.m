@@ -46,7 +46,7 @@ static SystemSoundID sound_joystick_move=0;
         // Initialization code
         self.backgroundColor=[UIColor clearColor];
         minDistance=MAX(10, frame.size.width/2 * 0.4);
-        quiet = !DEFS_GET_BOOL(kGamePadSoundEnabled);
+        quiet = !DEFS_GET_INT(kGamePadSoundEnabled);
     }
     return self;
 }
@@ -180,15 +180,11 @@ static SystemSoundID sound_joystick_move=0;
 }
 
 - (void)dealloc {
-    [centerStickImage release];
-    [sidedStickImage release];
-    [backgroundImage release];
     
     if (joystick)
     {
         SDL_JoystickClose(joystick);
     }
-    [super dealloc];
 }
 
 - (float)distantFrom:(CGPoint)pt1 to:(CGPoint)pt2
@@ -252,8 +248,9 @@ static SystemSoundID sound_joystick_move=0;
                 case DPadDown:
                     SDL_SendKeyboardKey(0, SDL_RELEASED, SDL_SCANCODE_DOWN);
                     break;
-               default:;
-            }
+                default:
+                    break;
+            }            
             
             switch (dir)
             {
@@ -269,7 +266,8 @@ static SystemSoundID sound_joystick_move=0;
                 case DPadDown:
                     SDL_SendKeyboardKey(0, SDL_PRESSED, SDL_SCANCODE_DOWN);
                     break;
-               default:;
+                default:
+                    break;
             }
         }
         
@@ -283,7 +281,7 @@ static SystemSoundID sound_joystick_move=0;
     if (quiet) return;
     if (sound_joystick_move == 0) {
         NSString *path = [[NSBundle mainBundle] pathForResource:@"joystickmove" ofType:@"wav"];
-        AudioServicesCreateSystemSoundID((CFURLRef)[NSURL fileURLWithPath:path],&sound_joystick_move);
+        AudioServicesCreateSystemSoundID((__bridge CFURLRef)[NSURL fileURLWithPath:path],&sound_joystick_move);
     }
     if (sound_joystick_move != 0) AudioServicesPlaySystemSound(sound_joystick_move);
 }
@@ -425,9 +423,7 @@ static SystemSoundID sound_joystick_move=0;
 
 - (void)setTitle:(NSString *)s
 {
-    if (title) [title release];
     title = s;
-    [title retain];
     [self setNeedsDisplay];
 }
 
@@ -452,7 +448,7 @@ static SystemSoundID sound_joystick_move=0;
 - (id)initWithFrame:(CGRect)frame {
     if ((self = [super initWithFrame:frame])) {
         self.backgroundColor=[UIColor clearColor];
-        quiet = !DEFS_GET_BOOL(kGamePadSoundEnabled);
+        quiet = !DEFS_GET_INT(kGamePadSoundEnabled);
         self.textColor = [UIColor blackColor];
     }
     return self;
@@ -484,7 +480,7 @@ static SystemSoundID sound_joystick_move=0;
     {
         if (sound_joystick_button_click == 0) {
             NSString *path = [[NSBundle mainBundle] pathForResource:@"joystickbtn" ofType:@"wav"];
-            AudioServicesCreateSystemSoundID((CFURLRef)[NSURL fileURLWithPath:path],&sound_joystick_button_click);
+            AudioServicesCreateSystemSoundID((__bridge CFURLRef)[NSURL fileURLWithPath:path],&sound_joystick_button_click);
         }
         if (sound_joystick_button_click != 0) AudioServicesPlaySystemSound(sound_joystick_button_click);
     }
@@ -655,10 +651,6 @@ static SystemSoundID sound_joystick_move=0;
     {
         SDL_JoystickClose(joystick);
     }
-    [images release];
-    [title release];
-    [textColor release];
-    [super dealloc];
 }
 
 
@@ -965,16 +957,5 @@ static SystemSoundID sound_joystick_move=0;
     dpadMovable = (isOverlay && DEFS_GET_INT(kDPadMovable));
     return self;
 }
-
-- (void)dealloc
-{
-    for (int i = 0; i < MAX_GAMEPAD_BUTTON; i++)
-    {
-        [btn[i] release];
-    }
-    [dpad release];
-    [super dealloc];
-}
-
 
 @end

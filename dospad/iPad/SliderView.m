@@ -75,11 +75,6 @@
     [slider sizeToFit];
 }
 
-- (void)dealloc
-{
-    [slider release];
-    [super dealloc];
-}
 
 
 @end

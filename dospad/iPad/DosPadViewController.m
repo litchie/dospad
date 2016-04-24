@@ -22,6 +22,9 @@
 #include <string.h>
 #import "Common.h"
 #import "CommandListView.h"
+#import "KeyMapper.h"
+#import "MfiGameControllerHandler.h"
+#import "MfiControllerInputHandler.h"
 
 #include "SDL.h"
 
@@ -41,6 +44,23 @@ static struct {
 };
 #define NUM_BUTTON_INFO (sizeof(toggleButtonInfo)/sizeof(toggleButtonInfo[0]))
 
+@interface DOSPadBaseViewController()
+
+-(void) remapControlsButtonTapped:(id)sender;
+-(void) refreshKeyMappingsInViews;
+-(void) resetMappingsButtonTapped:(id)sender;
+
+@end
+
+@interface DosPadViewController()
+
+@property(nonatomic, strong) KeyMapper *keyMapper;
+@property(nonatomic, strong) UIAlertView *keyMapperAlertView;
+@property(nonatomic, strong) MfiGameControllerHandler *mfiHandler;
+@property(nonatomic, strong) MfiControllerInputHandler *mfiInputHandler;
+
+@end
+
 @implementation DosPadViewController
 
 - (BOOL)isFullscreen
@@ -53,7 +73,7 @@ static struct {
     //---------------------------------------------------
     // 1. Create View
     //---------------------------------------------------
-    UIImageView *baseView = [[[UIImageView alloc] initWithFrame:CGRectMake(0,0,768,1024)] autorelease];
+    UIImageView *baseView = [[UIImageView alloc] initWithFrame:CGRectMake(0,0,768,1024)];
     baseView.contentMode = UIViewContentModeCenter;
     self.view = baseView;
     self.view.backgroundColor = [UIColor blackColor];
@@ -112,7 +132,7 @@ static struct {
     //---------------------------------------------------
     // 8. Create Command List Button
     //---------------------------------------------------    
-    btnShowCommands = [[UIButton alloc] initWithFrame:CGRectMake(69, 581, 85, 70)];
+    UIButton *btnShowCommands = [[UIButton alloc] initWithFrame:CGRectMake(69, 581, 85, 70)];
     [btnShowCommands addTarget:self
                         action:@selector(showCommandList)
               forControlEvents:UIControlEventTouchUpInside];
@@ -151,7 +171,6 @@ static struct {
                      action:@selector(toggleGamePad)
            forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:btnToGamePad];
-    [btnToGamePad release];
     
     UIButton *btnToJoy = [[UIButton alloc] initWithFrame:CGRectMake(326,968,72,34)];
     [btnToJoy addTarget:self
@@ -159,13 +178,12 @@ static struct {
            forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:btnToJoy];
     
-    [btnToJoy release];
     
     //---------------------------------------------------
     // 12. Fullscreen Panel
     //---------------------------------------------------    
     fullscreenPanel = [[FloatPanel alloc] initWithFrame:CGRectMake(0,0,700,47)];
-    UIButton *btnExitFS = [[[UIButton alloc] initWithFrame:CGRectMake(0,0,72,36)] autorelease];
+    UIButton *btnExitFS = [[UIButton alloc] initWithFrame:CGRectMake(0,0,72,36)];
     btnExitFS.center=CGPointMake(63, 18);
     [btnExitFS setImage:[UIImage imageNamed:@"exitfull~ipad"] forState:UIControlStateNormal];
     [btnExitFS addTarget:self action:@selector(toggleScreenSize) forControlEvents:UIControlEventTouchUpInside];
@@ -200,8 +218,8 @@ static struct {
 {
     NSMutableArray *items = [NSMutableArray arrayWithCapacity:16];
     
-    UIImageView *cpuWindow = [[[UIImageView alloc] initWithFrame:CGRectMake(0,0,72,36)] autorelease];
-    cpuWindow.image = [UIImage imageNamed:@"cpuwindow"];
+    UIImageView *cpuWindow = [[UIImageView alloc] initWithFrame:CGRectMake(0,0,72,36)];
+    cpuWindow.image = [UIImage imageNamed:@"cpuwindow.png"];
     
     if (labCycles2 == nil)
     {
@@ -222,9 +240,8 @@ static struct {
     [items addObject:cpuWindow];
     
     for (int i = 0; i < NUM_BUTTON_INFO; i++) {
-		if ([self isInputSourceEnabled:toggleButtonInfo[i].type])
-        {
-            UIButton *btn = [[[UIButton alloc] initWithFrame:CGRectMake(0,0,72,36)] autorelease];
+		if ([self isInputSourceEnabled:toggleButtonInfo[i].type]) {
+            UIButton *btn = [[UIButton alloc] initWithFrame:CGRectMake(0,0,72,36)];
             NSString *on = [NSString stringWithUTF8String:toggleButtonInfo[i].onImageName];
             NSString *off = [NSString stringWithUTF8String:toggleButtonInfo[i].offImageName];
             BOOL active = [self isInputSourceActive:toggleButtonInfo[i].type];
@@ -236,10 +253,16 @@ static struct {
         }
     }
     
-    UIButton *btnOpt = [[[UIButton alloc] initWithFrame:CGRectMake(0,0,72,36)] autorelease];
-    [btnOpt setImage:[UIImage imageNamed:@"options"] forState:UIControlStateNormal];
+    UIButton *btnOpt = [[UIButton alloc] initWithFrame:CGRectMake(0,0,72,36)];
+    [btnOpt setImage:[UIImage imageNamed:@"options.png"] forState:UIControlStateNormal];
     [btnOpt addTarget:self action:@selector(showOption) forControlEvents:UIControlEventTouchUpInside];
     [items addObject:btnOpt];
+
+    // Remap controls button
+    UIButton *btnRemap = [[UIButton alloc] initWithFrame:CGRectMake(0,0,72,36)];
+    [btnRemap setTitle:@"R" forState:UIControlStateNormal];
+    [btnRemap addTarget:self action:@selector(remapControlsButtonTapped:) forControlEvents:UIControlEventTouchUpInside];
+    [items addObject:btnRemap];
     
     [fullscreenPanel setItems:items];
 }
@@ -297,6 +320,7 @@ static struct {
                                                    frame:CGRectMake(0,self.view.bounds.size.height-250,1024,250)];
     kbd.alpha = [self floatAlpha];
     [self.view addSubview:kbd];
+    [self refreshKeyMappingsInViews];
     CGPoint ptOld = kbd.center;
     kbd.center = CGPointMake(ptOld.x, ptOld.y+kbd.frame.size.height);
     [UIView beginAnimations:nil context:NULL];
@@ -357,8 +381,6 @@ static struct {
         gpad.backgroundColor=[UIColor clearColor];
         [gpad insertSubview:left atIndex:0];
         [gpad insertSubview:right atIndex:0];
-        [left release];
-        [right release];
     }
     
     gpad.mode = mod;    
@@ -414,7 +436,7 @@ static struct {
     float sh = self.screenView.bounds.size.height;
     float sw = self.screenView.bounds.size.width;
     float additionalScaleY = 1.0;
-    if (sh / sw != 0.75)
+    if (sh / sw != 0.75) 
     {
         additionalScaleY = 0.75 / (sh/sw);
     } 
@@ -491,7 +513,7 @@ static struct {
     [self updateAlpha];
     [self onResize:self.screenView.bounds.size];
     [self refreshFullscreenPanel];
-    //[vk becomeFirstResponder]; TODO Litchie commented out by tvd	
+    //[vk becomeFirstResponder]; TODO Litchie commented out by tvd
 }
 
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
@@ -571,23 +593,6 @@ static struct {
 }
 
 
-- (void)dealloc {
-	[btnShowCommands release];
-    [btnMouseLeftP release];
-    [btnMouseRightP release];
-    [labCycles2 release];
-    [fsIndicator2 release];
-    [fullscreenPanel release];
-    [gamepadLight release];
-    [joystiqLight release];
-    [btnBack release];
-    [btnOption release];
-    [keyboard release];
-    [labCycles release];
-    [fsIndicator release];
-    [sliderInput release];
-    [super dealloc];
-}
 
 -(void)onResize:(CGSize)sizeNew
 {
@@ -606,7 +611,6 @@ static struct {
     } else if ([fltView tag] == TAG_INPUT) {
         
     }
-    [fltView release];
 }
 
 - (void)showCommandList
@@ -615,6 +619,18 @@ static struct {
     [v setTag:TAG_CMD];
     [v setDelegate:self];
     [v show];     
+}
+
+-(void) remapControlsButtonTapped:(id)sender {
+    [super remapControlsButtonTapped:sender];
+}
+
+-(void) refreshKeyMappingsInViews {
+    [super refreshKeyMappingsInViews];
+}
+
+-(void) resetMappingsButtonTapped:(id)sender {
+    [super resetMappingsButtonTapped:sender];
 }
 
 

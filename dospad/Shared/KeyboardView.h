@@ -33,17 +33,17 @@ typedef enum
     BOOL fnSwitch;
     BOOL transparentKeys;
     UIEdgeInsets keyPadding;
-    id<KeyDelegate> externKeyDelegate;
+    id<KeyDelegate> __weak externKeyDelegate;
     KeyLockIndicator *capsLock;
     KeyLockIndicator *numLock;
     UIImage *backgroundImage;
 }
 
-@property (nonatomic, assign) id<KeyDelegate> externKeyDelegate;
-@property (nonatomic, retain) UIImage *backgroundImage;
-@property (nonatomic, retain) NSArray *keys;
-@property (nonatomic, retain) KeyLockIndicator *capsLock;
-@property (nonatomic, retain) KeyLockIndicator *numLock;
+@property (nonatomic, weak) id<KeyDelegate> externKeyDelegate;
+@property (nonatomic, strong) UIImage *backgroundImage;
+@property (nonatomic, strong) NSArray *keys;
+@property (nonatomic, strong) KeyLockIndicator *capsLock;
+@property (nonatomic, strong) KeyLockIndicator *numLock;
 
 -(id)initWithType:(KeyboardType)type frame:(CGRect)frame;
 - (void)updateKeyLock;

@@ -26,7 +26,6 @@
 {
     if (self = [super initWithParent:parent]) {
         cmdList=[NSMutableArray arrayWithCapacity:cmd_count];
-        [cmdList retain];
         cmd_entry*p;
         lineCount=17; /* Align with image file */
         int n = 0;
@@ -88,11 +87,6 @@
     }
 }
 
-- (void)dealloc {
-    self.selectedCommand=nil;
-    [cmdList release];
-    [super dealloc];
-}
 
 
 @end
