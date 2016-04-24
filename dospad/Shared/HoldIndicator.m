@@ -63,9 +63,6 @@
     [img drawInRect:imgRect];
 }
 
-- (void)dealloc {
-    [super dealloc];
-}
 
 
 @end

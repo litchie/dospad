@@ -31,7 +31,7 @@ typedef enum {
     CGPoint pointTo;
 }
 
-@property (nonatomic, retain) UILabel*label;
+@property (nonatomic, strong) UILabel*label;
 
 -(id)initWithFrame:(CGRect)rect style:(TipViewStyle)style pointTo:(CGPoint)pt;
 

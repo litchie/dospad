@@ -124,9 +124,8 @@
     {
         for (UIView *v in items) 
             [v removeFromSuperview];
-        [items release];
     }
-    items = [itemArray retain];
+    items = itemArray;
     
     for (int i = 0; i < [itemArray count]; i++)
     {
@@ -201,12 +200,6 @@
 }
 */
 
-- (void)dealloc {
-    [items release];
-    [contentView release];
-    [btnAutoHide release];
-    [super dealloc];
-}
 
 
 @end

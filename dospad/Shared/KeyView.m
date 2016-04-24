@@ -21,6 +21,7 @@
 #import <AudioToolbox/AudioServices.h>
 #import "Common.h"
 #include "SDL.h"
+static SystemSoundID keyPressSound=0;
 
 @implementation KeyView
 
@@ -36,7 +37,6 @@
     [self setNeedsDisplay];
 }
 
-
 -(void)setHighlight:(BOOL)b
 {
     highlight=b;
@@ -45,17 +45,12 @@
 
 -(void)setAltTitle:(NSString *)t
 {
-    if (altTitle != nil) [altTitle release];
     altTitle = t;
-    [altTitle retain];
     [self setNeedsDisplay];
 }
-
 -(void)setTitle:(NSString *)t
 {
-    if (title != nil) [title release];
     title = t;
-    [title retain];
     [self setNeedsDisplay];
 }
 
@@ -216,6 +211,15 @@
 		offsetY = (self.bounds.size.height/2 - size.height)/2;
 		[altTitle drawInRect:CGRectMake(offsetX,offsetY,size.width,size.height) withFont:font];
 	}
+    
+    if ( self.mappedKey != nil && [self.mappedKey length] > 0 ) {
+        UIFont *font = [UIFont systemFontOfSize:isIPad?12:10];
+        CGSize size = [self.mappedKey sizeWithFont:font];
+        float offsetX = self.bounds.size.width - size.width;
+        float offsetY = self.bounds.size.height - size.height;
+        [self.mappedKey drawInRect:CGRectMake(offsetX, offsetY, size.width, size.height) withFont:font];
+    }
+
 }
 
 - (void)drawRect:(CGRect)rect 
@@ -230,8 +234,6 @@
     
     UIColor *origTextColor = self.textColor;
     UIColor *origBkgColor = self.bkgColor;
-    [origBkgColor retain];
-    [origTextColor retain];
     
     //[self drawBorder:rect];
     
@@ -277,39 +279,31 @@
         float offsetY = (contentRect.size.height - size.height)/2 + contentRect.origin.y;
         [title drawInRect:CGRectMake(offsetX,offsetY,size.width,size.height) withFont:font];            
     }
-    
+	
+	if ( [self.mappedKey length] > 0 ) {
+        UIFont *font = [UIFont systemFontOfSize:isIPad?12:10];
+        CGSize size = [self.mappedKey sizeWithFont:font];
+        float offsetX = (contentRect.size.width - size.width) + contentRect.origin.x;
+        float offsetY = (contentRect.size.height - size.height) + contentRect.origin.y;
+        [self.mappedKey drawInRect:CGRectMake(offsetX, offsetY, size.width, size.height) withFont:font];
+    }
+
+	
     if (self.highlight) {
         self.textColor=origTextColor;
         self.bkgColor=origBkgColor;
     }
-    [origBkgColor release];
-    [origTextColor release];
 }
 
-- (void)dealloc {
-	self.highlightColor = nil;
-	self.bottomColor = nil;
-    self.textColor = nil;
-    self.bkgColor = nil;
-    self.title = nil;
-    self.edgeColor=nil;
-	self.altTitle = nil;
-    [super dealloc];
-}
 
 -(void)playKeyPressSound
 {
-	static SystemSoundID keyPressSound = 0;
-
-    if (DEFS_GET_BOOL(kKeySoundEnabled)) {
-		if (keyPressSound == 0) {
-			NSString *path = [[NSBundle mainBundle] pathForResource:@"keypress" ofType:@"wav"];
-			AudioServicesCreateSystemSoundID((CFURLRef)[NSURL fileURLWithPath:path],&keyPressSound);
-		}
-		if (keyPressSound != 0) {
-			AudioServicesPlaySystemSound(keyPressSound);
-		}
-	}
+    if (!DEFS_GET_INT(kKeySoundEnabled)) return;
+    if (keyPressSound == 0) {
+        NSString *path = [[NSBundle mainBundle] pathForResource:@"keypress" ofType:@"wav"];
+        AudioServicesCreateSystemSoundID((__bridge CFURLRef)[NSURL fileURLWithPath:path],&keyPressSound);
+    }
+    if (keyPressSound != 0) AudioServicesPlaySystemSound(keyPressSound);
 }
 
 -(void)showHighlight

@@ -29,7 +29,7 @@
 @property (nonatomic, assign) int column; // first char is 0, the end of line column.
                                           // a chinese char is counted as one column
                                           // although it is twice as wide
-@property (nonatomic, readonly) NSString *description;
+@property (weak, nonatomic, readonly) NSString *description;
 
 - (NSComparisonResult)compareTo:(TPos *)another;
 + (TPos*)positionWithLine:(int)line column:(int)column;
@@ -38,13 +38,13 @@
 
 @interface TRange : UITextRange
 {
-    TPos* start;
-    TPos* end;
+    TPos* __weak start;
+    TPos* __weak end;
 }
-@property (nonatomic, readonly) TPos* start;
-@property (nonatomic, readonly) TPos* end;
+@property (weak, nonatomic, readonly) TPos* start;
+@property (weak, nonatomic, readonly) TPos* end;
 @property (nonatomic, readonly, getter=isEmpty) BOOL empty;     //  Whether the range is zero-length.
-@property (nonatomic, readonly) NSString *description;
+@property (weak, nonatomic, readonly) NSString *description;
 
 + (TRange*)rangeWithStart:(TPos*)start end:(TPos*)end;
 @end

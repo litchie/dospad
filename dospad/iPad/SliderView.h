@@ -26,7 +26,7 @@
     SEL callbackSelector;
 }
 
-@property (nonatomic) float position;
+@property float position;
 
 - (void)setSliderImage:(UIImage *)image;
 

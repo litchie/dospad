@@ -35,9 +35,8 @@
     // Portrait Mode
     FrameskipIndicator *fsIndicator;
     KeyboardView *keyboard;
-    UIButton *btnOption,*btnBack;
+    UIButton *btnOption,*btnBack, *btnShowCommands;
     UIButton *btnMouseLeftP, *btnMouseRightP; /* portrait mode */
-	UIButton *btnShowCommands;
     UILabel *labCycles;
     SliderView *sliderInput;
     UIImageView *gamepadLight;

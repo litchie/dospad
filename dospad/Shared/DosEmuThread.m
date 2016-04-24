@@ -36,16 +36,12 @@ extern int SDL_main(int argc, char *argv[]);
 }
 
 - (void) run {
-    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-    char *argv[1] = {"dosbox"};
-    SDL_main(1, argv);
-    started = NO;
-    [pool release];
+    @autoreleasepool {
+        char *argv[1] = {"dosbox"};
+        SDL_main(1, argv);
+        started = NO;
+    }
 } 
 
--(void)dealloc
-{
-    [super dealloc];
-}
 
 @end

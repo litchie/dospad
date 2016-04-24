@@ -20,10 +20,13 @@
 
 @class KeyView;
 
-@protocol KeyDelegate
+@protocol KeyDelegate<NSObject>
 
 -(void)onKeyDown:(KeyView*)k;
 -(void)onKeyUp:(KeyView*)k;
+
+@optional
+-(void)onKeyFunction:(KeyView*)k;
 
 @end
 
@@ -35,18 +38,19 @@
     UIColor *edgeColor;
     NSString *title,*altTitle;
     BOOL highlight;
-    id<KeyDelegate> delegate;
+    id<KeyDelegate> __weak delegate;
     UIEdgeInsets padding;
 	BOOL newStyle;
 }
 
-@property (nonatomic) UIEdgeInsets padding;
-@property (nonatomic) BOOL highlight;
-@property (nonatomic,retain)NSString *title,*altTitle;
-@property (nonatomic) int code;
-@property (nonatomic, retain) UIColor *textColor;
-@property (nonatomic, retain) UIColor *bkgColor,*edgeColor,*bottomColor,*highlightColor;
-@property (nonatomic,assign) id<KeyDelegate> delegate;
-@property (nonatomic, assign) BOOL newStyle;
+@property UIEdgeInsets padding;
+@property BOOL highlight;
+@property (nonatomic,strong)NSString *title,*altTitle;
+@property int code;
+@property (nonatomic, strong) UIColor *textColor;
+@property (nonatomic, strong) UIColor *bkgColor,*edgeColor,*bottomColor,*highlightColor;
+@property (nonatomic,weak) id<KeyDelegate> delegate;
+@property  BOOL newStyle;
+@property (nonatomic, strong) NSString *mappedKey;
 
 @end

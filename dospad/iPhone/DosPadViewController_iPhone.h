@@ -28,12 +28,17 @@
 #import "SliderView.h"
 #import "DOSPadBaseViewController.h"
 #import "FloatPanel.h"
+#import "KeyMapper.h"
+#import "MfiGameControllerHandler.h"
+#import "MfiControllerInputHandler.h"
+
 
 @interface ToolPanelView : UIView {}
 @end
 
 
 @interface DosPadViewController_iPhone : DOSPadBaseViewController
+<KeyDelegate,UIAlertViewDelegate>
 {
     GamePadMode mode;
     UIButton *btnDPadSwitch;

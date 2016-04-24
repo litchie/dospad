@@ -22,5 +22,5 @@
 @interface KeyLockIndicator : UIView {
     BOOL locked;
 }
-@property (nonatomic) BOOL locked;
+@property BOOL locked;
 @end
