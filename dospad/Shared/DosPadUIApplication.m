@@ -19,8 +19,8 @@ extern int SDL_SendKeyboardKey(int index, Uint8 state, SDL_scancode scancode);
 #endif
 #define IS_64BIT (sizeof(NSUInteger)==8)
 
-#define GSEVENT_TYPE 2
-#define GSEVENT_FLAGS (IS_IOS9?10:12)
+#define GSEVENT_TYPE    2
+#define GSEVENT_FLAGS   (IS_64BIT?10:12)
 
 #define GSEVENTKEY_KEYCODE  (IS_64BIT?(IS_IOS9?13:19):(IS_IOS7?17:15))
 
@@ -94,8 +94,8 @@ extern int SDL_SendKeyboardKey(int index, Uint8 state, SDL_scancode scancode);
         lastEventFlags = eventModfier;
     }
     
-    //NSLog(@"event type[%ld] code[%ld] flags[%ld] lastFlags[%ld] state[%s]", eventType, eventScanCode, eventModfier, eventLastModifer, pressed?"PRESSED":"RELEASED");
-    // for(int i=0;i<20;i++) NSLog(@"%d [%ld]", i, eventMem[i]);
+    //NSLog(@"event type<%d>[%ld] code<%d>[%ld] flags<%d>[%ld|0x%08X] lastFlags[%ld|0x%08X] state[%s]", GSEVENT_TYPE, (long)eventType, GSEVENTKEY_KEYCODE, (long)eventScanCode, GSEVENT_FLAGS, (long)eventModfier, (unsigned int)eventModfier, (long)eventLastModifer, (unsigned int)eventLastModifer, pressed?"PRESSED":"RELEASED");
+    //for(int i=0;i<20;i++) NSLog(@"%d [%ld]", i, (long)eventMem[i]);
 }
 
 - (void)handleKeyUIEvent:(UIEvent *)event
