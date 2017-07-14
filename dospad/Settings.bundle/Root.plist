@@ -36,7 +36,7 @@
 			<key>Key</key>
 			<string>key_sound_enabled</string>
 			<key>Title</key>
-			<string>Key Sound enabled</string>
+			<string>Key Sound Enabled</string>
 			<key>Type</key>
 			<string>PSToggleSwitchSpecifier</string>
 		</dict>
@@ -59,6 +59,16 @@
 			<string>Double Tap As Right Click</string>
 			<key>Type</key>
 			<string>PSToggleSwitchSpecifier</string>
+		</dict>
+		<dict>
+			<key>Type</key>
+			<string>PSToggleSwitchSpecifier</string>
+			<key>Title</key>
+			<string>Smart Keyboard Mappings (iPad)</string>
+			<key>Key</key>
+			<string>smart_keyboard_mappings</string>
+			<key>DefaultValue</key>
+			<false/>
 		</dict>
 		<dict>
 			<key>Title</key>
