@@ -26,6 +26,9 @@
 #import "GamePadView.h"
 #import "PianoKeyboard.h"
 
+float screenX;
+float screenY;
+
 typedef enum {
     InputSource_PCKeyboard = 0,
     InputSource_MouseButtons,

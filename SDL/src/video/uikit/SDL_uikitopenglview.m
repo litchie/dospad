@@ -294,12 +294,14 @@
 
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
+    UITouch *touch = [touches anyObject];
+    CGPoint pt = [touch locationInView: self];
     if ([touches count]==1 && [[touches anyObject] tapCount]==2) {
-        UITouch *touch = [touches anyObject];
-        CGPoint pt = [touch locationInView: self];
         if ([delegate onDoubleTap:pt]) {
             return;
         }
+    } else {
+        [delegate onTap:pt]; 
     }
     [super touchesBegan:touches withEvent:event];
 }

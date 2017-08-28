@@ -257,6 +257,38 @@ extern int SDL_SendKeyboardKey(int index, Uint8 state, SDL_scancode scancode);
     [screenView sendMouseEvent:0 left:NO down:NO];            
 }
 
+-(BOOL)onTap:(CGPoint)pt
+{
+    // Do nothing
+    CGPoint pt2 = [self.screenView convertPoint:pt toView:self.view];
+
+    if ([self isPortrait]) {
+      //  ((EMULATED DISPLAY MAX X / CLICK FIELD MAX X) * CLICK X Coord) - FRAME LEFT OFFSET
+      //  ((EMULATED DISPLAY MAX Y / CLICK FIELD MAX Y) * CLICK Y Coord) - FRAME TOP OFFSET
+      if (ISIPAD()){
+        screenX = ((self.screenView.bounds.size.width / (float)640) * pt2.x) - (float)42;
+        screenY = ((self.screenView.bounds.size.height / (float)480) * pt2.y) - (float)30;
+      } else {
+        screenX = ((self.screenView.bounds.size.width / (float)320) * pt2.x) - (float)22;
+        screenY = ((self.screenView.bounds.size.height / (float)240) * pt2.y);
+      }
+    } else {
+      //  (EMULATED DISPLAY MAX X / CLICK FIELD MAX X) * CLICK X Coord
+      //  (EMULATED DISPLAY MAX Y / CLICK FIELD MAX Y) * CLICK Y Coord
+      screenX = (self.screenView.bounds.size.width / self.view.bounds.size.width) * pt2.x;
+      screenY = (self.screenView.bounds.size.height / self.view.bounds.size.height) * pt2.y;
+    }
+      
+    // printf("Finger X: %f\n", pt2.x);
+    // printf("Finger Y: %f\n", pt2.y);
+    // printf("ScreenX: %f\n", screenX);
+    // printf("ScreenY: %f\n", screenY);
+    // printf("Bound width: %f\n", self.view.bounds.size.width);
+    // printf("Bound height: %f\n", self.view.bounds.size.height);
+    // printf("Emu width: %f\n", self.screenView.bounds.size.width);
+    // printf("Emu height: %f\n", self.screenView.bounds.size.height);
+}
+
 -(BOOL)onDoubleTap:(CGPoint)pt
 {
     // Do nothing
