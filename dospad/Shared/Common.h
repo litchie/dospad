@@ -37,6 +37,8 @@
 
 #define kTransparency          @"transparency"
 #define kKeySoundEnabled       @"key_sound_enabled"
+#define kDirectTouchEnabled    @"direct_touch_enabled"
+#define kDirectTouchSVGAMode   @"direct_touch_svga_mode"
 #define kDoubleTapAsRightClick @"double_tap_as_right_click"
 #define kGamePadSoundEnabled   @"gamepad_sound_enabled"
 #define kDPadMovable           @"dpad_movable"

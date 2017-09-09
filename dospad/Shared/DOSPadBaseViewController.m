@@ -259,29 +259,29 @@ extern int SDL_SendKeyboardKey(int index, Uint8 state, SDL_scancode scancode);
 
 -(BOOL)onTap:(CGPoint)pt
 {
-    // Do nothing
-    CGPoint pt2 = [self.screenView convertPoint:pt toView:self.view];
+    if (!DEFS_GET_INT(kDirectTouchEnabled) || [self isPortrait]){
+       screenX = -1;
+       screenY = -1;
+       return NO;
+    } 
 
-    if ([self isPortrait]) {
-      //  ((EMULATED DISPLAY MAX X / CLICK FIELD MAX X) * CLICK X Coord) - FRAME LEFT OFFSET
-      //  ((EMULATED DISPLAY MAX Y / CLICK FIELD MAX Y) * CLICK Y Coord) - FRAME TOP OFFSET
-      if (ISIPAD()){
-        screenX = ((self.screenView.bounds.size.width / (float)640) * pt2.x) - (float)42;
-        screenY = ((self.screenView.bounds.size.height / (float)480) * pt2.y) - (float)30;
-      } else {
-        screenX = ((self.screenView.bounds.size.width / (float)320) * pt2.x) - (float)22;
-        screenY = ((self.screenView.bounds.size.height / (float)240) * pt2.y);
-      }
+    // SVGA Mode
+    if (DEFS_GET_INT(kDirectTouchSVGAMode)){
+        //  (EMULATED DISPLAY MAX X / CLICK FIELD MAX X) * CLICK X Coord
+        //  (EMULATED DISPLAY MAX Y / CLICK FIELD MAX Y) * CLICK Y Coord
+        CGPoint pt2 = [self.screenView convertPoint:pt toView:self.view];
+        screenX = ((self.screenView.bounds.size.width * (float) 2) / (self.view.bounds.size.width)) * pt2.x;
+        screenY = (self.screenView.bounds.size.height / (self.view.bounds.size.height)) * pt2.y;
+        //   printf("Finger X: %f\n", pt2.x);
+        //   printf("Finger Y: %f\n", pt2.y); 
     } else {
-      //  (EMULATED DISPLAY MAX X / CLICK FIELD MAX X) * CLICK X Coord
-      //  (EMULATED DISPLAY MAX Y / CLICK FIELD MAX Y) * CLICK Y Coord
-      screenX = (self.screenView.bounds.size.width / self.view.bounds.size.width) * pt2.x;
-      screenY = (self.screenView.bounds.size.height / self.view.bounds.size.height) * pt2.y;
+        screenX = pt.x;
+        screenY = pt.y;
     }
-      
-    // printf("Finger X: %f\n", pt2.x);
-    // printf("Finger Y: %f\n", pt2.y);
-    // printf("ScreenX: %f\n", screenX);
+
+    // printf("Pt X: %f\n", pt.x);
+    // printf("Pt Y: %f\n", pt.y);
+    // Printf("ScreenX: %f\n", screenX);
     // printf("ScreenY: %f\n", screenY);
     // printf("Bound width: %f\n", self.view.bounds.size.width);
     // printf("Bound height: %f\n", self.view.bounds.size.height);

@@ -70,6 +70,26 @@
 			<key>DefaultValue</key>
 			<false/>
 		</dict>
+        <dict>
+			<key>Type</key>
+			<string>PSToggleSwitchSpecifier</string>
+			<key>Title</key>
+			<string>Enable Direct Touch (Experimental)</string>
+			<key>Key</key>
+			<string>direct_touch_enabled</string>
+			<key>DefaultValue</key>
+			<false/>
+		</dict>
+        <dict>
+			<key>Type</key>
+			<string>PSToggleSwitchSpecifier</string>
+			<key>Title</key>
+			<string>Toggle Direct Touch Mode (VGA/SVGA)</string>
+			<key>Key</key>
+			<string>direct_touch_svga_mode</string>
+			<key>DefaultValue</key>
+			<false/>
+		</dict> 
 		<dict>
 			<key>Title</key>
 			<string>Overlay Control Transparency</string>
