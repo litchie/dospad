@@ -615,10 +615,12 @@ static struct {
 
 - (void)showCommandList
 {
-    CommandListView *v = [[CommandListView alloc] initWithParent:self.view];
-    [v setTag:TAG_CMD];
-    [v setDelegate:self];
-    [v show];     
+    if ([self isPortrait]){
+        CommandListView *v = [[CommandListView alloc] initWithParent:self.view];
+        [v setTag:TAG_CMD];
+        [v setDelegate:self];
+        [v show];
+    }
 }
 
 -(void) remapControlsButtonTapped:(id)sender {
