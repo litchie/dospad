@@ -266,12 +266,12 @@ extern int SDL_SendKeyboardKey(int index, Uint8 state, SDL_scancode scancode);
     } 
 
     // SVGA Mode
-    if (DEFS_GET_INT(kDirectTouchSVGAMode)){
+    if (DEFS_GET_INT(kDirectTouchCustomMode)){
         //  (EMULATED DISPLAY MAX X / CLICK FIELD MAX X) * CLICK X Coord
         //  (EMULATED DISPLAY MAX Y / CLICK FIELD MAX Y) * CLICK Y Coord
         CGPoint pt2 = [self.screenView convertPoint:pt toView:self.view];
-        screenX = ((self.screenView.bounds.size.width * (float) 2) / (self.view.bounds.size.width)) * pt2.x;
-        screenY = (self.screenView.bounds.size.height / (self.view.bounds.size.height)) * pt2.y;
+        screenX = ((self.screenView.bounds.size.width * (float) DEFS_GET_INT(kDirectTouchXAxis)) / (self.view.bounds.size.width)) * pt2.x;
+        screenY = ((self.screenView.bounds.size.height * (float) DEFS_GET_INT(kDirectTouchYAxis)) / (self.view.bounds.size.height)) * pt2.y;
         //   printf("Finger X: %f\n", pt2.x);
         //   printf("Finger Y: %f\n", pt2.y); 
     } else {
