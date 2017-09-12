@@ -101,15 +101,21 @@
             <string>Custom Clickfield Width Modifier</string>
             <key>Titles</key>
             <array>
+                <string>x0.5</string>
                 <string>x1</string>
                 <string>x2</string>
                 <string>x4</string>
+                <string>x6</string>
+                <string>x8</string>
             </array>
             <key>Values</key>
             <array>
+                <string>0.5</string>
                 <string>1</string>
                 <string>2</string>
                 <string>4</string>
+                <string>6</string>
+                <string>8</string>
             </array>
         </dict>
         <dict>
@@ -123,15 +129,21 @@
             <string>Custom Clickfield Height Modifier</string>
             <key>Titles</key>
             <array>
+                <string>x0.5</string>
                 <string>x1</string>
                 <string>x2</string>
                 <string>x4</string>
+                <string>x6</string>
+                <string>x8</string>
             </array>
             <key>Values</key>
             <array>
+                <string>0.5</string>
                 <string>1</string>
                 <string>2</string>
                 <string>4</string>
+                <string>6</string>
+                <string>8</string>
             </array>
         </dict> 
         <dict>
