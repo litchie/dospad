@@ -173,11 +173,11 @@
 - (void)showContent
 {
     [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(hideContent) object:nil];
-    if (autoHide)
+    if (autoHide && !DEFS_GET_INT(kLandbarMinimized))
     {
         [self performSelector:@selector(hideContent) withObject:nil afterDelay:autoHideInterval];
     }
-    if (!isContentShowing)
+    if (!isContentShowing && !DEFS_GET_INT(kLandbarMinimized))
     {
         isContentShowing = YES;
         [UIView beginAnimations:nil context:nil];
