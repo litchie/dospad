@@ -265,10 +265,8 @@ extern int SDL_SendKeyboardKey(int index, Uint8 state, SDL_scancode scancode);
        return NO;
     }
 
-    //  X Cord / Max X * Emulated Width
-    //  Y Cord / Max Y * Emulated Height 
-    screenX = pt.x / self.screenView.bounds.size.width;
-    screenY = pt.y / self.screenView.bounds.size.height;
+    screenX = pt.x / (self.screenView.bounds.size.width * DEFS_GET_FLOAT(kDirectTouchXAxis));
+    screenY = pt.y / (self.screenView.bounds.size.height * DEFS_GET_FLOAT(kDirectTouchYAxis)); 
 }
 
 -(BOOL)onDoubleTap:(CGPoint)pt

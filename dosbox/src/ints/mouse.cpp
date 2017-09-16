@@ -491,7 +491,7 @@ void Mouse_CursorMoved(float xrel,float yrel,float x,float y,bool emulate) {
 
 void Mouse_CursorSet(float x,float y) {
     mouse.x = x * mouse.max_x;
-	mouse.y = y * mouse.max_y;
+	mouse.y = y * mouse.max_y;  
     DrawCursor();
 }
 
