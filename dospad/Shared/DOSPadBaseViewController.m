@@ -263,36 +263,12 @@ extern int SDL_SendKeyboardKey(int index, Uint8 state, SDL_scancode scancode);
        screenX = -1;
        screenY = -1;
        return NO;
-    } 
-
-    // SVGA Mode
-    if (DEFS_GET_INT(kDirectTouchCustomMode)){
-        //  (EMULATED DISPLAY MAX X / CLICK FIELD MAX X) * CLICK X Coord
-        //  (EMULATED DISPLAY MAX Y / CLICK FIELD MAX Y) * CLICK Y Coord
-        CGPoint pt2 = [self.screenView convertPoint:pt toView:self.view];
-        screenX = ((self.screenView.bounds.size.width * DEFS_GET_FLOAT(kDirectTouchXAxis)) / (self.view.bounds.size.width)) * pt2.x;
-        screenY = ((self.screenView.bounds.size.height * DEFS_GET_FLOAT(kDirectTouchYAxis)) / (self.view.bounds.size.height)) * pt2.y;
-        // printf("test X: %f\n", DEFS_GET_FLOAT(kDirectTouchXAxis));
-        // printf("test X: %f\n", DEFS_GET_FLOAT(kDirectTouchYAxis));
-        // printf("Finger X: %f\n", pt2.x);
-        // printf("Finger Y: %f\n", pt2.y); 
-        // printf("Emu width: %f\n", self.screenView.bounds.size.width);
-        // printf("Emu Width Calc: %f\n", (self.screenView.bounds.size.width * (float) DEFS_GET_INT(kDirectTouchXAxis)));
-        // printf("Emu height: %f\n", self.screenView.bounds.size.height);
-        // printf("Emu Height Calc: %f\n", (self.screenView.bounds.size.height * (float) DEFS_GET_INT(kDirectTouchYAxis)));
-               
-    } else {
-        screenX = pt.x;
-        screenY = pt.y;
     }
 
-    // printf("Pt X: %f\n", pt.x);
-    // printf("Pt Y: %f\n", pt.y);
-    // printf("Bound width: %f\n", self.view.bounds.size.width);
-    // printf("Bound height: %f\n", self.view.bounds.size.height);
-
-    // printf("ScreenX: %f\n", screenX);
-    // printf("ScreenY: %f\n", screenY);
+    //  X Cord / Max X * Emulated Width
+    //  Y Cord / Max Y * Emulated Height 
+    screenX = pt.x / self.screenView.bounds.size.width;
+    screenY = pt.y / self.screenView.bounds.size.height;
 }
 
 -(BOOL)onDoubleTap:(CGPoint)pt
