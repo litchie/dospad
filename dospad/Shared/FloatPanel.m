@@ -114,9 +114,14 @@
 
 - (void)setItems:(NSArray*)itemArray
 {
-    float marginx = (ISIPAD()?95:66);
+    float marginx;
+    if (!DEFS_GET_INT(kLandbarMinimized)){
+        marginx = (ISIPAD()?95:66);
+    } else {
+        marginx = (ISIPAD()?23:16);
+    }
     float marginy_bot = (ISIPAD()?10:7);
- 
+  
     float w = (contentView.frame.size.width-marginx*2) / ([itemArray count]);
     float h = contentView.frame.size.height - marginy_bot;
  
@@ -173,11 +178,11 @@
 - (void)showContent
 {
     [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(hideContent) object:nil];
-    if (autoHide && !DEFS_GET_INT(kLandbarMinimized))
+    if (autoHide)
     {
         [self performSelector:@selector(hideContent) withObject:nil afterDelay:autoHideInterval];
     }
-    if (!isContentShowing && !DEFS_GET_INT(kLandbarMinimized))
+    if (!isContentShowing)
     {
         isContentShowing = YES;
         [UIView beginAnimations:nil context:nil];

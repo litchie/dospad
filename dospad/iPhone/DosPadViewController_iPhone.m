@@ -38,6 +38,17 @@ static struct {
 };
 #define NUM_BUTTON_INFO (sizeof(toggleButtonInfo)/sizeof(toggleButtonInfo[0]))
 
+static struct {
+	InputSourceType type;
+	const char *onImageName;
+	const char *offImageName;
+} toggleButtonMin [] = {
+	{InputSource_PCKeyboard,    "modekeyon.png",          "modekeyoff.png"    },
+	{InputSource_GamePad,       "modegamepadpressed.png", "modegamepad.png"   },
+	{InputSource_Joystick,      "modejoypressed.png",     "modejoy.png"       },
+};
+#define NUM_BUTTON_MIN (sizeof(toggleButtonMin)/sizeof(toggleButtonMin[0]))
+
 // TODO color with pattern image doesn't work well with transparency
 // so we need to invent a new View subclass.
 // Do we really need to do this?
@@ -176,13 +187,16 @@ static struct {
     //---------------------------------------------------
     // 9. Fullscreen Panel
     //---------------------------------------------------     
-    fullscreenPanel = [[FloatPanel alloc] initWithFrame:CGRectMake(0,0,480,32)];
-    UIButton *btnExitFS = [[UIButton alloc] initWithFrame:CGRectMake(0,0,48,24)];
-    btnExitFS.center=CGPointMake(44, 13);
-    [btnExitFS setImage:[UIImage imageNamed:@"exitfull.png"] forState:UIControlStateNormal];
-    [btnExitFS addTarget:self action:@selector(toggleScreenSize) forControlEvents:UIControlEventTouchUpInside];
-    [fullscreenPanel.contentView addSubview:btnExitFS];
-
+    if (!DEFS_GET_INT(kLandbarMinimized)) {
+        fullscreenPanel = [[FloatPanel alloc] initWithFrame:CGRectMake(0,0,480,32)];
+        UIButton *btnExitFS = [[UIButton alloc] initWithFrame:CGRectMake(0,0,48,24)];
+        btnExitFS.center=CGPointMake(44, 13);
+        [btnExitFS setImage:[UIImage imageNamed:@"exitfull.png"] forState:UIControlStateNormal];
+        [btnExitFS addTarget:self action:@selector(toggleScreenSize) forControlEvents:UIControlEventTouchUpInside];
+        [fullscreenPanel.contentView addSubview:btnExitFS]; 
+    } else {
+        fullscreenPanel = [[FloatPanel alloc] initWithFrame:CGRectMake(0,0,148,32)];
+    }
 
 	// Create the button larger than the image, so we have a bigger clickable area,
 	// while visually takes smaller place
@@ -236,31 +250,47 @@ static struct {
         [labCycles2 addSubview:fsIndicator2];
     }
     [cpuWindow addSubview:labCycles2];
-    [items addObject:cpuWindow];
+    if (!DEFS_GET_INT(kLandbarMinimized)) [items addObject:cpuWindow];
 
-    for (int i = 0; i < NUM_BUTTON_INFO; i++) {
-		if ([self isInputSourceEnabled:toggleButtonInfo[i].type]) {
-            UIButton *btn = [[UIButton alloc] initWithFrame:CGRectMake(0,0,48,24)];
-            NSString *on = [NSString stringWithUTF8String:toggleButtonInfo[i].onImageName];
-            NSString *off = [NSString stringWithUTF8String:toggleButtonInfo[i].offImageName];
-            BOOL active = [self isInputSourceActive:toggleButtonInfo[i].type];
-            [btn setImage:[UIImage imageNamed:active?on:off] forState:UIControlStateNormal];
-            [btn setImage:[UIImage imageNamed:on] forState:UIControlStateHighlighted];
-            [btn setTag:toggleButtonInfo[i].type];
-            [btn addTarget:self action:@selector(toggleInputSource:) forControlEvents:UIControlEventTouchUpInside];
-            [items addObject:btn];
+    if (!DEFS_GET_INT(kLandbarMinimized)){ 
+        for (int i = 0; i < NUM_BUTTON_INFO; i++) {
+            if ([self isInputSourceEnabled:toggleButtonInfo[i].type]) {
+                UIButton *btn = [[UIButton alloc] initWithFrame:CGRectMake(0,0,48,24)];
+                NSString *on = [NSString stringWithUTF8String:toggleButtonInfo[i].onImageName];
+                NSString *off = [NSString stringWithUTF8String:toggleButtonInfo[i].offImageName];
+                BOOL active = [self isInputSourceActive:toggleButtonInfo[i].type];
+                [btn setImage:[UIImage imageNamed:active?on:off] forState:UIControlStateNormal];
+                [btn setImage:[UIImage imageNamed:on] forState:UIControlStateHighlighted];
+                [btn setTag:toggleButtonInfo[i].type];
+                [btn addTarget:self action:@selector(toggleInputSource:) forControlEvents:UIControlEventTouchUpInside];
+                [items addObject:btn];
+            }
+        }
+    } else {
+        for (int i = 0; i < NUM_BUTTON_MIN; i++) {
+            if ([self isInputSourceEnabled:toggleButtonMin[i].type]) {
+                UIButton *btn = [[UIButton alloc] initWithFrame:CGRectMake(0,0,48,24)];
+                NSString *on = [NSString stringWithUTF8String:toggleButtonMin[i].onImageName];
+                NSString *off = [NSString stringWithUTF8String:toggleButtonMin[i].offImageName];
+                BOOL active = [self isInputSourceActive:toggleButtonMin[i].type];
+                [btn setImage:[UIImage imageNamed:active?on:off] forState:UIControlStateNormal];
+                [btn setImage:[UIImage imageNamed:on] forState:UIControlStateHighlighted];
+                [btn setTag:toggleButtonMin[i].type];
+                [btn addTarget:self action:@selector(toggleInputSource:) forControlEvents:UIControlEventTouchUpInside];
+                [items addObject:btn];
+            }
         }
     }
-        
+    
     UIButton *btnOption = [[UIButton alloc] initWithFrame:CGRectMake(380,0,48,24)];
     [btnOption setImage:[UIImage imageNamed:@"options.png"] forState:UIControlStateNormal];
     [btnOption addTarget:self action:@selector(showOption) forControlEvents:UIControlEventTouchUpInside];
-    [items addObject:btnOption];
+    if (!DEFS_GET_INT(kLandbarMinimized)) [items addObject:btnOption];
     
     UIButton *btnRemap = [[UIButton alloc] initWithFrame:CGRectMake(340,0,20,24)];
     [btnRemap setTitle:@"R" forState:UIControlStateNormal];
     [btnRemap addTarget:self action:@selector(remapControlsButtonTapped:) forControlEvents:UIControlEventTouchUpInside];
-    [items addObject:btnRemap];
+    if (!DEFS_GET_INT(kLandbarMinimized)) [items addObject:btnRemap];
     
     [fullscreenPanel setItems:items];
 }
@@ -489,7 +519,9 @@ static struct {
 		if (self.view != fullscreenPanel.superview)
 		{
 			CGRect rc = fullscreenPanel.frame;
-			rc.origin.x = (self.view.bounds.size.width-rc.size.width)/2;
+			rc.origin.x = (!DEFS_GET_INT(kLandbarMinimized)) 
+              ? (self.view.bounds.size.width-rc.size.width)/2
+              : (self.view.bounds.size.width-rc.size.width)/4 * 3;
 			fullscreenPanel.frame = rc;
 			[self.view addSubview:fullscreenPanel];
 			[fullscreenPanel showContent];
