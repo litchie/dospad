@@ -466,6 +466,7 @@
 		E73A2120128EC1F5001FA168 /* AlertPrompt.m in Sources */ = {isa = PBXBuildFile; fileRef = E73A211F128EC1F5001FA168 /* AlertPrompt.m */; };
 		E73A767012504B73000E1743 /* credits.html in Resources */ = {isa = PBXBuildFile; fileRef = E73A766F12504B73000E1743 /* credits.html */; };
 		E73B77DA127ED67300184D3B /* configs in Resources */ = {isa = PBXBuildFile; fileRef = E73B77D7127ED67300184D3B /* configs */; };
+		E742E6221F8FA86900BE429B /* GameController.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9222DD551CC44A9F00B321B9 /* GameController.framework */; };
 		E745CE3F11F5991F00F00F7F /* HoldIndicator.m in Sources */ = {isa = PBXBuildFile; fileRef = E745CE3E11F5991F00F00F7F /* HoldIndicator.m */; };
 		E746A30E12A8E70D00422236 /* installcomplete.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = E746A30D12A8E70D00422236 /* installcomplete.mp3 */; };
 		E74BB2B615C93DBC005EC552 /* DosPadUIApplication.m in Sources */ = {isa = PBXBuildFile; fileRef = E74BB2B515C93DBC005EC552 /* DosPadUIApplication.m */; };
@@ -482,8 +483,6 @@
 		E75276F012A0A77E00278BA1 /* modekeyon.png in Resources */ = {isa = PBXBuildFile; fileRef = E75276E412A0A77E00278BA1 /* modekeyon.png */; };
 		E75276F112A0A77E00278BA1 /* modekeyon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E75276E512A0A77E00278BA1 /* modekeyon@2x.png */; };
 		E75276F212A0A77E00278BA1 /* modekeyon~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = E75276E612A0A77E00278BA1 /* modekeyon~ipad.png */; };
-		E7685A8A1BB76C8200FAC866 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = E7685A891BB76C8200FAC866 /* Settings.bundle */; };
-		E7685A8B1BB76C8200FAC866 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = E7685A891BB76C8200FAC866 /* Settings.bundle */; };
 		E76C49381299490200901B69 /* FloatPanel.m in Sources */ = {isa = PBXBuildFile; fileRef = E76C49371299490200901B69 /* FloatPanel.m */; };
 		E76C49391299490300901B69 /* FloatPanel.m in Sources */ = {isa = PBXBuildFile; fileRef = E76C49371299490200901B69 /* FloatPanel.m */; };
 		E76DAEAF123EE08B00C2AEF7 /* FrameskipIndicator.m in Sources */ = {isa = PBXBuildFile; fileRef = E76DAEAE123EE08B00C2AEF7 /* FrameskipIndicator.m */; };
@@ -521,7 +520,6 @@
 		E77DB04811B5E11900B78E69 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E77DB04711B5E11900B78E69 /* OpenGLES.framework */; };
 		E77DB04B11B5E12000B78E69 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FDB9E4CC0DEB84540027A75A /* AudioToolbox.framework */; };
 		E77DB04E11B5E12600B78E69 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D30AB110D05D00D00671497 /* Foundation.framework */; };
-		E77DB05211B5E12C00B78E69 /* GameKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E77DB05111B5E12C00B78E69 /* GameKit.framework */; };
 		E77DB05611B5E13600B78E69 /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E77DB05511B5E13600B78E69 /* MessageUI.framework */; };
 		E77DB05C11B5E17500B78E69 /* libstdc++.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E77DB05B11B5E17500B78E69 /* libstdc++.dylib */; };
 		E78F5D0F11EF615300E2A70F /* diskc in Resources */ = {isa = PBXBuildFile; fileRef = E78F5B2511EF615200E2A70F /* diskc */; };
@@ -558,8 +556,11 @@
 		E7A01EFB1CC9C1C50036A4CF /* button.png in Resources */ = {isa = PBXBuildFile; fileRef = E7A01EF01CC92F450036A4CF /* button.png */; };
 		E7A01EFC1CC9C1C80036A4CF /* buttonpressed.png in Resources */ = {isa = PBXBuildFile; fileRef = E7A01EF11CC92F450036A4CF /* buttonpressed.png */; };
 		E7A01EFD1CC9C1F00036A4CF /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = E7A01EF51CC9A82E0036A4CF /* Settings.bundle */; };
+		E7A482421FF731C100AE7DB6 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E7A482411FF731C100AE7DB6 /* Images.xcassets */; };
+		E7A482461FF733E400AE7DB6 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E7A482451FF733DF00AE7DB6 /* LaunchScreen.storyboard */; };
 		E7A94CDD127D68B7006509E1 /* GamePadView.m in Sources */ = {isa = PBXBuildFile; fileRef = E7A94CDC127D68B7006509E1 /* GamePadView.m */; };
 		E7B59B3012A65E3F00D4DB01 /* installcomplete.wav in Resources */ = {isa = PBXBuildFile; fileRef = E7B59B2F12A65E3F00D4DB01 /* installcomplete.wav */; };
+		E7B7F8701DE1D70200590701 /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = E7B7F86F1DE1D70200590701 /* libc++.tbd */; };
 		E7BE12A5128BF31A0046990B /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = E79C2E5611E131DB002FE898 /* MainWindow.xib */; };
 		E7BE12A9128BF31A0046990B /* diskc in Resources */ = {isa = PBXBuildFile; fileRef = E78F5B2511EF615200E2A70F /* diskc */; };
 		E7BE12B6128BF31A0046990B /* credits.html in Resources */ = {isa = PBXBuildFile; fileRef = E73A766F12504B73000E1743 /* credits.html */; };
@@ -598,9 +599,7 @@
 		E7BE1309128BF31A0046990B /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E77DB04711B5E11900B78E69 /* OpenGLES.framework */; };
 		E7BE130A128BF31A0046990B /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FDB9E4CC0DEB84540027A75A /* AudioToolbox.framework */; };
 		E7BE130B128BF31A0046990B /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D30AB110D05D00D00671497 /* Foundation.framework */; };
-		E7BE130C128BF31A0046990B /* GameKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E77DB05111B5E12C00B78E69 /* GameKit.framework */; };
 		E7BE130D128BF31A0046990B /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E77DB05511B5E13600B78E69 /* MessageUI.framework */; };
-		E7BE130E128BF31A0046990B /* libstdc++.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E77DB05B11B5E17500B78E69 /* libstdc++.dylib */; };
 		E7BE130F128BF31A0046990B /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E7D6B8CE11BF332400D34665 /* libz.dylib */; };
 		E7BE1310128BF31A0046990B /* libminizip.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E7D6B89811BF322E00D34665 /* libminizip.a */; };
 		E7BE1311128BF31A0046990B /* libc.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E79E4A0011EC6BF400DEAA7B /* libc.dylib */; };
@@ -1315,7 +1314,6 @@
 		E77DB04111B5E10700B78E69 /* libstdc++.6.0.9.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libstdc++.6.0.9.dylib"; path = "usr/lib/libstdc++.6.0.9.dylib"; sourceTree = SDKROOT; };
 		E77DB04311B5E11100B78E69 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		E77DB04711B5E11900B78E69 /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
-		E77DB05111B5E12C00B78E69 /* GameKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GameKit.framework; path = System/Library/Frameworks/GameKit.framework; sourceTree = SDKROOT; };
 		E77DB05511B5E13600B78E69 /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
 		E77DB05B11B5E17500B78E69 /* libstdc++.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libstdc++.dylib"; path = "usr/lib/gcc/arm-apple-darwin10/4.2.1/libstdc++.dylib"; sourceTree = SDKROOT; };
 		E78F5B2511EF615200E2A70F /* diskc */ = {isa = PBXFileReference; lastKnownFileType = folder; path = diskc; sourceTree = SOURCE_ROOT; };
@@ -1350,9 +1348,12 @@
 		E7A01EF01CC92F450036A4CF /* button.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = button.png; path = "dospad/gamepad-res/button.png"; sourceTree = "<group>"; };
 		E7A01EF11CC92F450036A4CF /* buttonpressed.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = buttonpressed.png; path = "dospad/gamepad-res/buttonpressed.png"; sourceTree = "<group>"; };
 		E7A01EF51CC9A82E0036A4CF /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = Settings.bundle; path = dospad/Settings.bundle; sourceTree = "<group>"; };
+		E7A482411FF731C100AE7DB6 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = iDOS2/Images.xcassets; sourceTree = "<group>"; };
+		E7A482451FF733DF00AE7DB6 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
 		E7A94CDB127D68B7006509E1 /* GamePadView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GamePadView.h; sourceTree = "<group>"; };
 		E7A94CDC127D68B7006509E1 /* GamePadView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GamePadView.m; sourceTree = "<group>"; };
 		E7B59B2F12A65E3F00D4DB01 /* installcomplete.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; name = installcomplete.wav; path = "dospad/audio-res/installcomplete.wav"; sourceTree = "<group>"; };
+		E7B7F86F1DE1D70200590701 /* libc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.tbd"; path = "usr/lib/libc++.tbd"; sourceTree = SDKROOT; };
 		E7BE1316128BF31A0046990B /* iDOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iDOS.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E7BE1318128BF31A0046990B /* iDOS-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "iDOS-Info.plist"; sourceTree = "<group>"; };
 		E7D214C511E45BD000D9654E /* keys.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = keys.h; sourceTree = "<group>"; };
@@ -1563,6 +1564,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E742E6221F8FA86900BE429B /* GameController.framework in Frameworks */,
 				E71E60E611B5503500EC5A05 /* libSDLiPhoneOS.a in Frameworks */,
 				E71E636D11B5659F00EC5A05 /* libdosbox.a in Frameworks */,
 				E77DB03E11B5E0F600B78E69 /* CoreGraphics.framework in Frameworks */,
@@ -1570,7 +1572,6 @@
 				E77DB04811B5E11900B78E69 /* OpenGLES.framework in Frameworks */,
 				E77DB04B11B5E12000B78E69 /* AudioToolbox.framework in Frameworks */,
 				E77DB04E11B5E12600B78E69 /* Foundation.framework in Frameworks */,
-				E77DB05211B5E12C00B78E69 /* GameKit.framework in Frameworks */,
 				E77DB05611B5E13600B78E69 /* MessageUI.framework in Frameworks */,
 				E77DB05C11B5E17500B78E69 /* libstdc++.dylib in Frameworks */,
 				E7D6B8CF11BF332400D34665 /* libz.dylib in Frameworks */,
@@ -1600,6 +1601,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E7B7F8701DE1D70200590701 /* libc++.tbd in Frameworks */,
 				E7A01EF41CC9A5480036A4CF /* CoreAudio.framework in Frameworks */,
 				9222DD561CC44A9F00B321B9 /* GameController.framework in Frameworks */,
 				2A4546F917D2809F00D18563 /* CoreMIDI.framework in Frameworks */,
@@ -1610,9 +1612,7 @@
 				E7BE1309128BF31A0046990B /* OpenGLES.framework in Frameworks */,
 				E7BE130A128BF31A0046990B /* AudioToolbox.framework in Frameworks */,
 				E7BE130B128BF31A0046990B /* Foundation.framework in Frameworks */,
-				E7BE130C128BF31A0046990B /* GameKit.framework in Frameworks */,
 				E7BE130D128BF31A0046990B /* MessageUI.framework in Frameworks */,
-				E7BE130E128BF31A0046990B /* libstdc++.dylib in Frameworks */,
 				E7BE130F128BF31A0046990B /* libz.dylib in Frameworks */,
 				E7BE1310128BF31A0046990B /* libminizip.a in Frameworks */,
 				E7BE1311128BF31A0046990B /* libc.dylib in Frameworks */,
@@ -1702,6 +1702,7 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				E7B7F86F1DE1D70200590701 /* libc++.tbd */,
 				FDB9E4CC0DEB84540027A75A /* AudioToolbox.framework */,
 				FDB9E4060DEB81870027A75A /* AudioUnit.framework */,
 				E70C044012A4B43F00AC178F /* AVFoundation.framework */,
@@ -1710,7 +1711,6 @@
 				E7F2A9CD12CD99EC0091B859 /* CoreMIDI.framework */,
 				1D30AB110D05D00D00671497 /* Foundation.framework */,
 				9222DD551CC44A9F00B321B9 /* GameController.framework */,
-				E77DB05111B5E12C00B78E69 /* GameKit.framework */,
 				E7D98C6F1CCB246500A17CFC /* Libs */,
 				E77DB05511B5E13600B78E69 /* MessageUI.framework */,
 				E77DB04711B5E11900B78E69 /* OpenGLES.framework */,
@@ -2335,6 +2335,8 @@
 		E79E44F411EC2D5200DEAA7B /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				E7A482451FF733DF00AE7DB6 /* LaunchScreen.storyboard */,
+				E7A482411FF731C100AE7DB6 /* Images.xcassets */,
 				E73B77D7127ED67300184D3B /* configs */,
 				E78F5B2511EF615200E2A70F /* diskc */,
 				E7A01EF51CC9A82E0036A4CF /* Settings.bundle */,
@@ -3197,6 +3199,23 @@
 			isa = PBXProject;
 			attributes = {
 				LastUpgradeCheck = 0460;
+				TargetAttributes = {
+					E71E60DF11B5502700EC5A05 = {
+						DevelopmentTeam = 4C8YZND49H;
+					};
+					E7BE1297128BF31A0046990B = {
+						DevelopmentTeam = 4C8YZND49H;
+						ProvisioningStyle = Manual;
+						SystemCapabilities = {
+							com.apple.GameCenter = {
+								enabled = 0;
+							};
+							com.apple.InAppPurchase = {
+								enabled = 0;
+							};
+						};
+					};
+				};
 			};
 			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "dospad" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -3402,6 +3421,7 @@
 				E72BE74312911E2B009DC46A /* bar-portrait-iphone@2x.png in Resources */,
 				E72BE74412911E2B009DC46A /* bar.png in Resources */,
 				E72BE74712911E2B009DC46A /* dpnote.png in Resources */,
+				E7A482461FF733E400AE7DB6 /* LaunchScreen.storyboard in Resources */,
 				E7A01EFC1CC9C1C80036A4CF /* buttonpressed.png in Resources */,
 				E7D98C551CC9F9CF00A17CFC /* Icon-iPhone-29@2x.png in Resources */,
 				E72BE74812911E2B009DC46A /* gear.png in Resources */,
@@ -3447,6 +3467,7 @@
 				E7D98C5B1CC9F9CF00A17CFC /* Icon-iPhone-60@2x.png in Resources */,
 				E710715F129A8E5A00B21291 /* options.png in Resources */,
 				E7D98C671CCA067400A17CFC /* modepiano~ipad.png in Resources */,
+				E7A482421FF731C100AE7DB6 /* Images.xcassets in Resources */,
 				E7107160129A8E5A00B21291 /* sticky.png in Resources */,
 				E7D98C661CCA067400A17CFC /* modepiano@2x.png in Resources */,
 				E71071A7129AA00000B21291 /* modegamepad@2x.png in Resources */,
@@ -3949,9 +3970,11 @@
 		00646540107E3D7500183915 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD)";
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
+				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_NAME = "Generate Header Files";
 			};
 			name = Debug;
@@ -3959,6 +3982,7 @@
 		00646541107E3D7500183915 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD)";
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				PRODUCT_NAME = "Generate Header Files";
@@ -4002,11 +4026,12 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				ARCHS = "$(ARCHS_STANDARD)";
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
+				DEVELOPMENT_TEAM = 4C8YZND49H;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -4016,7 +4041,7 @@
 				HEADER_SEARCH_PATHS = ./include;
 				INFOPLIST_FILE = "dospad-Info.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
-				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = (
@@ -4030,7 +4055,7 @@
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				VALID_ARCHS = armv7;
+				VALID_ARCHS = "armv7 arm64";
 			};
 			name = Debug;
 		};
@@ -4038,21 +4063,22 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				ARCHS = "$(ARCHS_STANDARD)";
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = 4C8YZND49H;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/UIKit.framework/Headers/UIKit.h";
 				GCC_PREPROCESSOR_DEFINITIONS = IPHONEOS;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				INFOPLIST_FILE = "dospad-Info.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
-				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
-				ONLY_ACTIVE_ARCH = YES;
+				ONLY_ACTIVE_ARCH = NO;
 				OTHER_LDFLAGS = (
 					"-framework",
 					Foundation,
@@ -4065,7 +4091,7 @@
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = NO;
-				VALID_ARCHS = armv7;
+				VALID_ARCHS = "armv7 arm64";
 				ZERO_LINK = NO;
 			};
 			name = Release;
@@ -4074,22 +4100,22 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				ARCHS = "$(ARCHS_STANDARD)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Chaoji Li (WBU792696L)";
 				COPY_PHASE_STRIP = NO;
 				FRAMEWORK_SEARCH_PATHS = "";
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = IPHONEOS;
-				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_VERSION = "";
 				HEADER_SEARCH_PATHS = ./include;
-				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_NAME = dosbox;
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "44885CDD-F5A6-42C5-8612-65C1C31B7F19";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "d5f5deba-f8f7-44f6-afdc-d9450c99bb4d";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
-				VALID_ARCHS = "armv7 armv7s";
+				VALID_ARCHS = "armv7 armv7s arm64";
 			};
 			name = Debug;
 		};
@@ -4097,219 +4123,27 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				ARCHS = "$(ARCHS_STANDARD)";
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_PREPROCESSOR_DEFINITIONS = IPHONEOS;
-				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_VERSION = "";
 				HEADER_SEARCH_PATHS = ./include;
-				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
-				ONLY_ACTIVE_ARCH = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_NAME = dosbox;
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
-				VALID_ARCHS = "armv7 armv7s";
+				VALID_ARCHS = "armv7 armv7s arm64";
 				ZERO_LINK = NO;
 			};
 			name = Release;
-		};
-		E75C2A221BDF26C400CCC770 /* AppStoreBeta */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				CODE_SIGN_IDENTITY = "iPhone Distribution";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
-				GCC_C_LANGUAGE_STANDARD = c99;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES;
-				GCC_WARN_UNUSED_VARIABLE = NO;
-				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
-				PREBINDING = NO;
-				SDKROOT = iphoneos;
-			};
-			name = AppStoreBeta;
-		};
-		E75C2A231BDF26C400CCC770 /* AppStoreBeta */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
-				COPY_PHASE_STRIP = YES;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				DEPLOYMENT_LOCATION = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
-				GCC_PREPROCESSOR_DEFINITIONS = IPHONEOS;
-				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
-				IPHONEOS_DEPLOYMENT_TARGET = 3.2;
-				ONLY_ACTIVE_ARCH = NO;
-				PREBINDING = NO;
-				PRODUCT_NAME = SDLiPhoneOS;
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
-				VALID_ARCHS = "armv7 armv7s";
-				ZERO_LINK = NO;
-			};
-			name = AppStoreBeta;
-		};
-		E75C2A241BDF26C400CCC770 /* AppStoreBeta */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				COPY_PHASE_STRIP = YES;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
-				PRODUCT_NAME = "Generate Header Files";
-				ZERO_LINK = NO;
-			};
-			name = AppStoreBeta;
-		};
-		E75C2A251BDF26C400CCC770 /* AppStoreBeta */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
-				COPY_PHASE_STRIP = YES;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
-				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
-				ONLY_ACTIVE_ARCH = NO;
-				PREBINDING = NO;
-				PRODUCT_NAME = SDL_net;
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
-				USER_HEADER_SEARCH_PATHS = "./include/**";
-				VALID_ARCHS = "armv7 armv7s";
-				ZERO_LINK = NO;
-			};
-			name = AppStoreBeta;
-		};
-		E75C2A261BDF26C400CCC770 /* AppStoreBeta */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				COPY_PHASE_STRIP = YES;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				ENABLE_BITCODE = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/UIKit.framework/Headers/UIKit.h";
-				GCC_PREPROCESSOR_DEFINITIONS = IPHONEOS;
-				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
-				INFOPLIST_FILE = "dospad-Info.plist";
-				INSTALL_PATH = /Applications;
-				IPHONEOS_DEPLOYMENT_TARGET = 5.1.1;
-				LIBRARY_SEARCH_PATHS = "$(inherited)";
-				ONLY_ACTIVE_ARCH = NO;
-				OTHER_LDFLAGS = (
-					"-framework",
-					Foundation,
-					"-framework",
-					UIKit,
-				);
-				PREBINDING = NO;
-				PRODUCT_NAME = dospad;
-				PROVISIONING_PROFILE = "";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = NO;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				VALIDATE_PRODUCT = NO;
-				VALID_ARCHS = "armv7s armv7 arm64";
-				ZERO_LINK = NO;
-			};
-			name = AppStoreBeta;
-		};
-		E75C2A271BDF26C400CCC770 /* AppStoreBeta */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
-				COPY_PHASE_STRIP = YES;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
-				GCC_PREPROCESSOR_DEFINITIONS = IPHONEOS;
-				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
-				HEADER_SEARCH_PATHS = ./include;
-				IPHONEOS_DEPLOYMENT_TARGET = 3.2;
-				ONLY_ACTIVE_ARCH = NO;
-				PREBINDING = NO;
-				PRODUCT_NAME = dosbox;
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
-				VALID_ARCHS = "armv7 armv7s";
-				ZERO_LINK = NO;
-			};
-			name = AppStoreBeta;
-		};
-		E75C2A281BDF26C400CCC770 /* AppStoreBeta */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
-				COPY_PHASE_STRIP = YES;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
-				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
-				IPHONEOS_DEPLOYMENT_TARGET = 3.2;
-				ONLY_ACTIVE_ARCH = NO;
-				PREBINDING = NO;
-				PRODUCT_NAME = minizip;
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
-				VALID_ARCHS = "armv7 armv7s";
-				ZERO_LINK = NO;
-			};
-			name = AppStoreBeta;
-		};
-		E75C2A291BDF26C400CCC770 /* AppStoreBeta */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
-				CODE_SIGN_IDENTITY = "iPhone Distribution";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
-				COPY_PHASE_STRIP = YES;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				ENABLE_BITCODE = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/UIKit.framework/Headers/UIKit.h";
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					IDOS,
-					IPHONEOS,
-					APPSTORE,
-				);
-				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
-				INFOPLIST_FILE = "iDOS-Beta-Info.plist";
-				INSTALL_PATH = "$(HOME)/Applications";
-				IPHONEOS_DEPLOYMENT_TARGET = 5.1.1;
-				LIBRARY_SEARCH_PATHS = "$(inherited)";
-				ONLY_ACTIVE_ARCH = NO;
-				OTHER_LDFLAGS = (
-					"-framework",
-					Foundation,
-					"-framework",
-					UIKit,
-				);
-				PREBINDING = NO;
-				PRODUCT_NAME = iDOS;
-				PROVISIONING_PROFILE = "4d05e6a1-6405-4ff7-8f85-b177ba63ca4d";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "4d05e6a1-6405-4ff7-8f85-b177ba63ca4d";
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = NO;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				VALIDATE_PRODUCT = YES;
-				VALID_ARCHS = "armv7s armv7";
-				ZERO_LINK = NO;
-			};
-			name = AppStoreBeta;
 		};
 		E778B2B3123918F7008AF49A /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				ARCHS = "$(ARCHS_STANDARD)";
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -4319,7 +4153,7 @@
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
 				USER_HEADER_SEARCH_PATHS = "./include/**";
-				VALID_ARCHS = "armv7 armv7s";
+				VALID_ARCHS = "armv7 armv7s arm64";
 			};
 			name = Debug;
 		};
@@ -4327,16 +4161,16 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				ARCHS = "$(ARCHS_STANDARD)";
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
-				ONLY_ACTIVE_ARCH = YES;
+				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_NAME = SDL_net;
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
 				USER_HEADER_SEARCH_PATHS = "./include/**";
-				VALID_ARCHS = "armv7 armv7s";
+				VALID_ARCHS = "armv7 armv7s arm64";
 				ZERO_LINK = NO;
 			};
 			name = Release;
@@ -4345,11 +4179,14 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				ARCHS = "$(ARCHS_STANDARD)";
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_STYLE = Manual;
 				COPY_PHASE_STRIP = NO;
+				DEVELOPMENT_TEAM = 4C8YZND49H;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -4363,7 +4200,7 @@
 				HEADER_SEARCH_PATHS = ./include;
 				INFOPLIST_FILE = "iDOS-Info.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
-				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = (
@@ -4372,12 +4209,14 @@
 					"-framework",
 					UIKit,
 				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.litchie.idosgames;
 				PRODUCT_NAME = iDOS;
-				PROVISIONING_PROFILE = "";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
+				PROVISIONING_PROFILE = "62af9aed-0694-4b7b-98d5-97d9aaa31211";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "62af9aed-0694-4b7b-98d5-97d9aaa31211";
+				PROVISIONING_PROFILE_SPECIFIER = iDOS2Dev;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				VALID_ARCHS = "armv7s armv7";
+				VALID_ARCHS = "armv7s armv7 arm64";
 			};
 			name = Debug;
 		};
@@ -4385,12 +4224,15 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				ARCHS = "$(ARCHS_STANDARD)";
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_STYLE = Manual;
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = 4C8YZND49H;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/UIKit.framework/Headers/UIKit.h";
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -4400,7 +4242,7 @@
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				INFOPLIST_FILE = "iDOS-Info.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
-				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = (
@@ -4409,13 +4251,15 @@
 					"-framework",
 					UIKit,
 				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.litchie.idosgames;
 				PRODUCT_NAME = iDOS;
-				PROVISIONING_PROFILE = "";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
+				PROVISIONING_PROFILE = "62af9aed-0694-4b7b-98d5-97d9aaa31211";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "62af9aed-0694-4b7b-98d5-97d9aaa31211";
+				PROVISIONING_PROFILE_SPECIFIER = iDOS2Dev;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = NO;
-				VALID_ARCHS = "armv7s armv7";
+				VALID_ARCHS = "armv7s armv7 arm64";
 				ZERO_LINK = NO;
 			};
 			name = Release;
@@ -4424,16 +4268,18 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				ARCHS = "$(ARCHS_STANDARD)";
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
-				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 3.2;
 				ONLY_ACTIVE_ARCH = YES;
+				PREBINDING = NO;
 				PRODUCT_NAME = minizip;
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
+				VALID_ARCHS = "armv7 armv7s arm64";
 			};
 			name = Debug;
 		};
@@ -4441,15 +4287,18 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				ARCHS = "$(ARCHS_STANDARD)";
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
-				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
-				ONLY_ACTIVE_ARCH = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 3.2;
+				ONLY_ACTIVE_ARCH = NO;
+				PREBINDING = NO;
 				PRODUCT_NAME = minizip;
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
+				VALID_ARCHS = "armv7 armv7s arm64";
 				ZERO_LINK = NO;
 			};
 			name = Release;
@@ -4473,7 +4322,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				ARCHS = "$(ARCHS_STANDARD)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
@@ -4482,11 +4331,11 @@
 				GCC_PREPROCESSOR_DEFINITIONS = IPHONEOS;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
-				ONLY_ACTIVE_ARCH = YES;
+				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_NAME = SDLiPhoneOS;
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
-				VALID_ARCHS = "armv7 armv7s";
+				VALID_ARCHS = "armv7 armv7s arm64";
 				ZERO_LINK = NO;
 			};
 			name = AppStore;
@@ -4494,6 +4343,7 @@
 		E7D98C5F1CC9FA6E00A17CFC /* AppStore */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD)";
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				PRODUCT_NAME = "Generate Header Files";
@@ -4505,16 +4355,16 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				ARCHS = "$(ARCHS_STANDARD)";
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
-				ONLY_ACTIVE_ARCH = YES;
+				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_NAME = SDL_net;
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
 				USER_HEADER_SEARCH_PATHS = "./include/**";
-				VALID_ARCHS = "armv7 armv7s";
+				VALID_ARCHS = "armv7 armv7s arm64";
 				ZERO_LINK = NO;
 			};
 			name = AppStore;
@@ -4523,21 +4373,22 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				ARCHS = "$(ARCHS_STANDARD)";
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = 4C8YZND49H;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/UIKit.framework/Headers/UIKit.h";
 				GCC_PREPROCESSOR_DEFINITIONS = IPHONEOS;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				INFOPLIST_FILE = "dospad-Info.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
-				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
-				ONLY_ACTIVE_ARCH = YES;
+				ONLY_ACTIVE_ARCH = NO;
 				OTHER_LDFLAGS = (
 					"-framework",
 					Foundation,
@@ -4550,7 +4401,7 @@
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = NO;
-				VALID_ARCHS = armv7;
+				VALID_ARCHS = "armv7 arm64";
 				ZERO_LINK = NO;
 			};
 			name = AppStore;
@@ -4559,18 +4410,18 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				ARCHS = "$(ARCHS_STANDARD)";
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_PREPROCESSOR_DEFINITIONS = IPHONEOS;
-				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_VERSION = "";
 				HEADER_SEARCH_PATHS = ./include;
-				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
-				ONLY_ACTIVE_ARCH = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_NAME = dosbox;
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
-				VALID_ARCHS = "armv7 armv7s";
+				VALID_ARCHS = "armv7 armv7s arm64";
 				ZERO_LINK = NO;
 			};
 			name = AppStore;
@@ -4579,16 +4430,16 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				ARCHS = "$(ARCHS_STANDARD)";
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
-				ONLY_ACTIVE_ARCH = YES;
+				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_NAME = minizip;
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
-				VALID_ARCHS = "armv7 armv7s";
+				VALID_ARCHS = "armv7 armv7s arm64";
 				ZERO_LINK = NO;
 			};
 			name = AppStore;
@@ -4597,22 +4448,26 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				ARCHS = "$(ARCHS_STANDARD)";
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
+				CODE_SIGN_STYLE = Manual;
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = 4C8YZND49H;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/UIKit.framework/Headers/UIKit.h";
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					IDOS,
 					IPHONEOS,
+					APPSTORE,
 				);
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				INFOPLIST_FILE = "iDOS-Info.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
-				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = (
@@ -4621,61 +4476,24 @@
 					"-framework",
 					UIKit,
 				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.litchie.idosgames;
 				PRODUCT_NAME = iDOS;
-				PROVISIONING_PROFILE = "4d05e6a1-6405-4ff7-8f85-b177ba63ca4d";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "4d05e6a1-6405-4ff7-8f85-b177ba63ca4d";
+				PROVISIONING_PROFILE = "d3a9468a-88ee-4722-9965-fa5a21d851bc";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "d3a9468a-88ee-4722-9965-fa5a21d851bc";
+				PROVISIONING_PROFILE_SPECIFIER = iDOS2AppStore;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
-				VALID_ARCHS = "armv7s armv7";
+				VALID_ARCHS = "armv7s armv7 arm64";
 				ZERO_LINK = NO;
 			};
 			name = AppStore;
-		};
-		E7D6B89911BF323200D34665 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
-				COPY_PHASE_STRIP = NO;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
-				IPHONEOS_DEPLOYMENT_TARGET = 3.2;
-				ONLY_ACTIVE_ARCH = YES;
-				PREBINDING = NO;
-				PRODUCT_NAME = minizip;
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
-				VALID_ARCHS = "armv7 armv7s";
-			};
-			name = Debug;
-		};
-		E7D6B89A11BF323200D34665 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
-				COPY_PHASE_STRIP = YES;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
-				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
-				IPHONEOS_DEPLOYMENT_TARGET = 3.2;
-				ONLY_ACTIVE_ARCH = NO;
-				PREBINDING = NO;
-				PRODUCT_NAME = minizip;
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
-				VALID_ARCHS = "armv7 armv7s";
-				ZERO_LINK = NO;
-			};
-			name = Release;
 		};
 		FD6526640DE8FCCB002AD96B /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				ARCHS = "$(ARCHS_STANDARD)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				DEPLOYMENT_LOCATION = NO;
@@ -4691,7 +4509,7 @@
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
-				VALID_ARCHS = "armv7 armv7s";
+				VALID_ARCHS = "armv7 armv7s arm64";
 			};
 			name = Debug;
 		};
@@ -4699,7 +4517,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				ARCHS = "$(ARCHS_STANDARD)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
@@ -4708,11 +4526,11 @@
 				GCC_PREPROCESSOR_DEFINITIONS = IPHONEOS;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
-				ONLY_ACTIVE_ARCH = YES;
+				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_NAME = SDLiPhoneOS;
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
-				VALID_ARCHS = "armv7 armv7s";
+				VALID_ARCHS = "armv7 armv7s arm64";
 				ZERO_LINK = NO;
 			};
 			name = Release;
