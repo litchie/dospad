@@ -59,6 +59,7 @@ const char *dospad_config_dir()
 		NSString* dospadConfigFile = [defaultDir stringByAppendingPathComponent:@"dospad.cfg"];
 		NSString* oldDospadConfigFile = [docDir stringByAppendingPathComponent:@"dospad.cfg"];
 		srcpath = [bundleConfigs stringByAppendingPathComponent:(ISIPAD()?@"dospad-ipad.cfg":@"dospad-iphone.cfg")];
+        printf("config: %s\n", [srcpath UTF8String]);
 		if (![fileManager fileExistsAtPath:dospadConfigFile isDirectory:NULL]) {
 			if ([fileManager fileExistsAtPath:oldDospadConfigFile isDirectory:NULL]) {
 				[fileManager copyItemAtPath:oldDospadConfigFile toPath:dospadConfigFile error:nil];
