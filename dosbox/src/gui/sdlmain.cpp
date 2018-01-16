@@ -380,7 +380,6 @@ void GFX_SetTitle(Bit32s cycles,Bits frameskip,Bits timing,bool paused){
 	if(cycles != -1) internal_cycles = cycles;
 	if(frameskip != -1) internal_frameskip = frameskip;
 	if(timing != -1) internal_timing = timing;
-if (true) { sprintf(title,"DOSBox %s, CPU speed: %8d cycles, Frameskip %2d, %8s",VERSION,internal_cycles,internal_frameskip,RunningProgram); SDL_WM_SetCaption(title,VERSION); return; }
 #ifdef IPHONEOS
     if(CPU_CycleAutoAdjust) {
         sprintf(title,"Cpu speed: max %3d%% cycles, Frameskip %2d",internal_cycles,internal_frameskip);

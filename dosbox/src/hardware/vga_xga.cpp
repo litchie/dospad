@@ -348,7 +348,7 @@ void XGA_DrawLineBresenham(Bitu val) {
 
 #define SWAP(a,b) tmpswap = a; a = b; b = tmpswap;
 
-	Bits dx, sx, dy, sy, e, dmajor, dminor,destxtmp;
+	Bit32s dx, sx, dy, sy, e, dmajor, dminor,destxtmp;
 
 	// Probably a lot easier way to do this, but this works.
 
