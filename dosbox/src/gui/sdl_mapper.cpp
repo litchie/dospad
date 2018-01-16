@@ -433,7 +433,7 @@ SDLKey MapSDLCode(Bitu skey) {
 
 Bitu GetKeyCode(SDL_keysym keysym) {
 //	LOG_MSG("GetKeyCode %X %X %X",keysym.scancode,keysym.sym,keysym.mod);
-	if (usescancodes) {
+	if (usescancodes || keysym.sym & (1<<30)) {
 		Bitu key=(Bitu)keysym.scancode;
 		if (key==0
 #if defined (MACOSX) && !defined (IPHONEOS)
@@ -542,8 +542,8 @@ public:
 	bool CheckEvent(SDL_Event * event) {
 		if (event->type!=SDL_KEYDOWN && event->type!=SDL_KEYUP) return false;
 		Bitu key=GetKeyCode(event->key.keysym);
-//		LOG_MSG("key type %i is %x [%x %x]",event->type,key,event->key.keysym.sym,event->key.keysym.scancode);
-		assert(Bitu(event->key.keysym.sym)<keys);
+		//LOG_MSG("key type %i is %x [%x %x]",event->type,key,event->key.keysym.sym,event->key.keysym.scancode);
+		assert(Bitu(event->key.keysym.scancode)<keys);
 		if (event->type==SDL_KEYDOWN) ActivateBindList(&lists[key],0x7fff,true);
 		else DeactivateBindList(&lists[key],true);
 		return 0;
