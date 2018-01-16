@@ -382,7 +382,7 @@ void GFX_SetTitle(Bit32s cycles,Bits frameskip,Bits timing,bool paused){
 	if(timing != -1) internal_timing = timing;
 #ifdef IPHONEOS
     if(CPU_CycleAutoAdjust) {
-        sprintf(title,"Cpu speed: max %3d%% cycles, Frameskip %2d",internal_cycles,internal_frameskip);
+        sprintf(title,"Cpu speed: max %3d%% cycles, Frameskip %2d",CPU_CyclePercUsed,internal_frameskip);
     } else {
         sprintf(title,"Cpu speed: %8d cycles, Frameskip %2d",internal_cycles,internal_frameskip);
     }
