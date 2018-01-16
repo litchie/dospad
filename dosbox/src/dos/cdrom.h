@@ -41,6 +41,73 @@
 #define RAW_SECTOR_SIZE		2352
 #define COOKED_SECTOR_SIZE	2048
 
+#ifdef IPHONEOS
+
+/***** BEGIN COPY OF SDL_cdrom.h -- absent in SDL1.3 *****/
+
+/** The maximum number of CD-ROM tracks on a disk */
+#define SDL_MAX_TRACKS    99
+
+/** @name Track Types
+ *  The types of CD-ROM track possible
+ */
+/*@{*/
+#define SDL_AUDIO_TRACK    0x00
+#define SDL_DATA_TRACK    0x04
+/*@}*/
+
+/** The possible states which a CD-ROM drive can be in. */
+typedef enum {
+    CD_TRAYEMPTY,
+    CD_STOPPED,
+    CD_PLAYING,
+    CD_PAUSED,
+    CD_ERROR = -1
+} CDstatus;
+
+/** Given a status, returns true if there's a disk in the drive */
+#define CD_INDRIVE(status)    ((int)(status) > 0)
+
+typedef struct SDL_CDtrack {
+    Uint8 id;        /**< Track number */
+    Uint8 type;        /**< Data or audio track */
+    Uint16 unused;
+    Uint32 length;        /**< Length, in frames, of this track */
+    Uint32 offset;        /**< Offset, in frames, from start of disk */
+} SDL_CDtrack;
+
+/** This structure is only current as of the last call to SDL_CDStatus() */
+typedef struct SDL_CD {
+    int id;            /**< Private drive identifier */
+    CDstatus status;    /**< Current drive status */
+    
+    /** The rest of this structure is only valid if there's a CD in drive */
+    /*@{*/
+    int numtracks;        /**< Number of tracks on disk */
+    int cur_track;        /**< Current track position */
+    int cur_frame;        /**< Current frame offset within current track */
+    SDL_CDtrack track[SDL_MAX_TRACKS+1];
+    /*@}*/
+} SDL_CD;
+
+/** @name Frames / MSF Conversion Functions
+ *  Conversion functions from frames to Minute/Second/Frames and vice versa
+ */
+/*@{*/
+#define CD_FPS    75
+#define FRAMES_TO_MSF(f, M,S,F)    {                    \
+int value = f;                            \
+*(F) = value%CD_FPS;                        \
+value /= CD_FPS;                        \
+*(S) = value%60;                        \
+value /= 60;                            \
+*(M) = value;                            \
+}
+#define MSF_TO_FRAMES(M, S, F)    ((M)*60*CD_FPS+(S)*CD_FPS+(F))
+/***** END COPY OF SDL_cdrom.h *****/
+
+#endif
+
 enum { CDROM_USE_SDL, CDROM_USE_ASPI, CDROM_USE_IOCTL_DIO, CDROM_USE_IOCTL_DX, CDROM_USE_IOCTL_MCI };
 
 typedef struct SMSF {

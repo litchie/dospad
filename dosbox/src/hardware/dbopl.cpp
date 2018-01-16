@@ -1538,7 +1538,7 @@ void Handler::SaveState( std::ostream& stream )
 				}
 			}
 
-			wavebase_idx[lcv1][lcv2] = (Bit32u) chip.chan[lcv1].op[lcv2].waveBase - (Bit32u) &WaveTable;
+			wavebase_idx[lcv1][lcv2] = (Bit32u) (uintptr_t) chip.chan[lcv1].op[lcv2].waveBase - (Bit32u) (uintptr_t) &WaveTable;
 		}
 
 
@@ -1641,7 +1641,7 @@ void Handler::LoadState( std::istream& stream )
 		for( int lcv2=0; lcv2<2; lcv2++ ) {
 			chip.chan[lcv1].op[lcv2].volHandler = VolumeHandlerTable[ volhandler_idx[lcv1][lcv2] ];
 
-			chip.chan[lcv1].op[lcv2].waveBase = (Bit16s *) ((Bit32u) wavebase_idx[lcv1][lcv2] + (Bit32u) &WaveTable);
+			chip.chan[lcv1].op[lcv2].waveBase = (Bit16s *) ((Bit32u) (uintptr_t) wavebase_idx[lcv1][lcv2] + (Bit32u) (uintptr_t) &WaveTable);
 		}
 
 

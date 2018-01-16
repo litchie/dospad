@@ -377,9 +377,7 @@
 		8A5413C0200E362C002E1148 /* porttalk.h in Headers */ = {isa = PBXBuildFile; fileRef = 8A5413BD200E362C002E1148 /* porttalk.h */; };
 		8A5413C1200E362C002E1148 /* PortTalk_IOCTL.h in Headers */ = {isa = PBXBuildFile; fileRef = 8A5413BE200E362C002E1148 /* PortTalk_IOCTL.h */; };
 		8A5413C2200E362C002E1148 /* porttalk.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8A5413BF200E362C002E1148 /* porttalk.cpp */; };
-		8A5413CA200E3649002E1148 /* zmbv_vfw.h in Headers */ = {isa = PBXBuildFile; fileRef = 8A5413C4200E3648002E1148 /* zmbv_vfw.h */; };
 		8A5413CB200E3649002E1148 /* zmbv.h in Headers */ = {isa = PBXBuildFile; fileRef = 8A5413C5200E3648002E1148 /* zmbv.h */; };
-		8A5413CC200E3649002E1148 /* zmbv_vfw.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8A5413C6200E3648002E1148 /* zmbv_vfw.cpp */; };
 		8A5413CD200E3649002E1148 /* resource.h in Headers */ = {isa = PBXBuildFile; fileRef = 8A5413C7200E3648002E1148 /* resource.h */; };
 		8A5413CE200E3649002E1148 /* zmbv.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8A5413C8200E3648002E1148 /* zmbv.cpp */; };
 		8A5413CF200E3649002E1148 /* drvproc.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8A5413C9200E3648002E1148 /* drvproc.cpp */; };
@@ -1360,9 +1358,7 @@
 		8A5413BD200E362C002E1148 /* porttalk.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = porttalk.h; sourceTree = "<group>"; };
 		8A5413BE200E362C002E1148 /* PortTalk_IOCTL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PortTalk_IOCTL.h; sourceTree = "<group>"; };
 		8A5413BF200E362C002E1148 /* porttalk.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = porttalk.cpp; sourceTree = "<group>"; };
-		8A5413C4200E3648002E1148 /* zmbv_vfw.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = zmbv_vfw.h; sourceTree = "<group>"; };
 		8A5413C5200E3648002E1148 /* zmbv.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = zmbv.h; sourceTree = "<group>"; };
-		8A5413C6200E3648002E1148 /* zmbv_vfw.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = zmbv_vfw.cpp; sourceTree = "<group>"; };
 		8A5413C7200E3648002E1148 /* resource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = resource.h; sourceTree = "<group>"; };
 		8A5413C8200E3648002E1148 /* zmbv.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = zmbv.cpp; sourceTree = "<group>"; };
 		8A5413C9200E3648002E1148 /* drvproc.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = drvproc.cpp; sourceTree = "<group>"; };
@@ -2422,8 +2418,6 @@
 			children = (
 				8A5413C9200E3648002E1148 /* drvproc.cpp */,
 				8A5413C7200E3648002E1148 /* resource.h */,
-				8A5413C6200E3648002E1148 /* zmbv_vfw.cpp */,
-				8A5413C4200E3648002E1148 /* zmbv_vfw.h */,
 				8A5413C8200E3648002E1148 /* zmbv.cpp */,
 				8A5413C5200E3648002E1148 /* zmbv.h */,
 			);
@@ -3335,7 +3329,6 @@
 				8A541178200E327F002E1148 /* pci_bus.h in Headers */,
 				8A54116B200E327F002E1148 /* glide.h in Headers */,
 				8A541312200E3571002E1148 /* adlib.h in Headers */,
-				8A5413CA200E3649002E1148 /* zmbv_vfw.h in Headers */,
 				8A54138B200E35B5002E1148 /* directserial.h in Headers */,
 				8A5411DD200E337F002E1148 /* risc_x86.h in Headers */,
 				E71E61F811B550FD00EC5A05 /* config.h in Headers */,
@@ -4089,7 +4082,6 @@
 				8A541226200E33BE002E1148 /* debug.cpp in Sources */,
 				8A5413B2200E35CD002E1148 /* ems.cpp in Sources */,
 				8A54138F200E35B5002E1148 /* serialmouse.cpp in Sources */,
-				8A5413CC200E3649002E1148 /* zmbv_vfw.cpp in Sources */,
 				8A541303200E3571002E1148 /* ps1_sound.cpp in Sources */,
 				8A541369200E359C002E1148 /* wave6581_PST.cpp in Sources */,
 				8A541251200E33DF002E1148 /* dos_ioctl.cpp in Sources */,
@@ -4580,13 +4572,19 @@
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = IPHONEOS;
 				GCC_VERSION = "";
-				HEADER_SEARCH_PATHS = ./include;
+				HEADER_SEARCH_PATHS = (
+					./include,
+					"\"$(SRCROOT)/dosbox\"",
+					"\"$(SRCROOT)/dosbox/include\"",
+					"\"$(SRCROOT)/SDL/include\"",
+				);
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_NAME = dosbox;
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "d5f5deba-f8f7-44f6-afdc-d9450c99bb4d";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
+				USE_HEADERMAP = NO;
 				VALID_ARCHS = "armv7 armv7s arm64";
 			};
 			name = Debug;
@@ -4600,12 +4598,18 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_PREPROCESSOR_DEFINITIONS = IPHONEOS;
 				GCC_VERSION = "";
-				HEADER_SEARCH_PATHS = ./include;
+				HEADER_SEARCH_PATHS = (
+					./include,
+					"\"$(SRCROOT)/dosbox\"",
+					"\"$(SRCROOT)/dosbox/include\"",
+					"\"$(SRCROOT)/SDL/include\"",
+				);
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_NAME = dosbox;
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
+				USE_HEADERMAP = NO;
 				VALID_ARCHS = "armv7 armv7s arm64";
 				ZERO_LINK = NO;
 			};
@@ -4802,6 +4806,7 @@
 				ENABLE_BITCODE = NO;
 				GCC_PREPROCESSOR_DEFINITIONS = IPHONEOS;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				HEADER_SEARCH_PATHS = "\"$(SRCROOT)/\"";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_NAME = SDLiPhoneOS;
@@ -4887,12 +4892,18 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_PREPROCESSOR_DEFINITIONS = IPHONEOS;
 				GCC_VERSION = "";
-				HEADER_SEARCH_PATHS = ./include;
+				HEADER_SEARCH_PATHS = (
+					./include,
+					"\"$(SRCROOT)/dosbox\"",
+					"\"$(SRCROOT)/dosbox/include\"",
+					"\"$(SRCROOT)/SDL/include\"",
+				);
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_NAME = dosbox;
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
+				USE_HEADERMAP = NO;
 				VALID_ARCHS = "armv7 armv7s arm64";
 				ZERO_LINK = NO;
 			};
@@ -4974,7 +4985,7 @@
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = IPHONEOS;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
-				HEADER_SEARCH_PATHS = ./include;
+				HEADER_SEARCH_PATHS = "\"$(SRCROOT)/\"";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_NAME = SDLiPhoneOS;
@@ -4997,6 +5008,7 @@
 				ENABLE_BITCODE = NO;
 				GCC_PREPROCESSOR_DEFINITIONS = IPHONEOS;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				HEADER_SEARCH_PATHS = "\"$(SRCROOT)/\"";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_NAME = SDLiPhoneOS;

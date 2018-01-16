@@ -21,6 +21,13 @@
 #define _GNU_SOURCE
 #endif
 
+#ifdef IPHONEOS
+extern "C" {
+    extern void SDL_init_keyboard();
+    extern void dospad_should_pause();
+}
+#endif
+
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
@@ -44,7 +51,7 @@
 #include "support.h"
 #include "debug.h"
 #include "render.h"
-#if (xBRZ_w_TBB)
+#if 0 //(xBRZ_w_TBB)
 #include <tbb/task_scheduler_init.h>
 #include <tbb/parallel_for.h>
 #include <tbb/task_group.h>
@@ -1290,6 +1297,7 @@ void sticky_keys(bool restore){
 #define sticky_keys(a)
 #endif
 
+#ifndef IPHONEOS
 static void opengl_init(void) {
 	sdl.surface=SDL_SetVideoMode_Wrap(640,400,0,SDL_OPENGL);
 	sdl.opengl.buffer=0;
@@ -1320,6 +1328,7 @@ static void opengl_init(void) {
 	GFX_SetTitle(-1,-1,-1,false);
 	if(!sdl.desktop.fullscreen && GetMenu(GetHWND()) == NULL) DOSBox_RefreshMenu();
 }
+#endif
 
 #ifdef __WIN32__
 static void d3d_init(void) {
@@ -1390,6 +1399,7 @@ static void openglhq_init(void) {
 	sdl.desktop.want_type=SCREEN_OPENGLHQ;
 }
 
+#ifndef IPHONEOS
 void res_init(void) {
 	if(sdl.desktop.want_type==SCREEN_OPENGLHQ) return;
 	Section * sec = control->GetSection("sdl");
@@ -1581,6 +1591,7 @@ void change_output(int output) {
     }
 	GFX_SetTitle(CPU_CycleMax,-1,-1,false);
 }
+#endif
 
 
 void GFX_SwitchFullScreen(void) {
@@ -1741,7 +1752,7 @@ void GFX_EndUpdate( const Bit16u *changedLines ) {
 	sdl.updating=false;
 	switch (sdl.desktop.type) {
 	case SCREEN_SURFACE:
-#if (xBRZ_w_TBB)
+#if 0 //(xBRZ_w_TBB)
 		if (render.xbrz_using && sdl.desktop.fullscreen && supportsXBRZ(*sdl.surface->format))
 		{
 			const int srcWidth  = sdl.draw.width;
@@ -2290,14 +2301,20 @@ static void GUI_StartUp(Section * sec) {
 	}
 #endif
 
-	int width=1024; int height=768;
-	SDL_GetDesktopMode(&width, &height);
-	if (!sdl.desktop.full.width) {
-		sdl.desktop.full.width=width;
-	}
-	if (!sdl.desktop.full.height) {
-		sdl.desktop.full.height=width;
-	}
+    if (!sdl.desktop.full.width) {
+#ifdef WIN32
+        sdl.desktop.full.width=(Bit16u)GetSystemMetrics(SM_CXSCREEN);
+#else
+        sdl.desktop.full.width=1024;
+#endif
+    }
+    if (!sdl.desktop.full.height) {
+#ifdef WIN32
+        sdl.desktop.full.height=(Bit16u)GetSystemMetrics(SM_CYSCREEN);
+#else
+        sdl.desktop.full.height=768;
+#endif
+    }
 	sdl.mouse.autoenable=section->Get_bool("autolock");
 	if (!sdl.mouse.autoenable) SDL_ShowCursor(SDL_DISABLE);
 	sdl.mouse.autolock=false;

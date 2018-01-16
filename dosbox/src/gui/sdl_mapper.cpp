@@ -320,7 +320,7 @@ static Bit8u scancode_map[MAX_SDLKEYS];
 
 #define Z SDLK_UNKNOWN
 
-#if defined (MACOSX)
+#if 0 //defined (MACOSX)
 static SDLKey sdlkey_map[]={
 	/* Main block printables */
 	/*00-05*/ SDLK_a, SDLK_s, SDLK_d, SDLK_f, SDLK_h, SDLK_g,
@@ -437,7 +437,7 @@ Bitu GetKeyCode(SDL_keysym keysym) {
 	if (usescancodes) {
 		Bitu key=(Bitu)keysym.scancode;
 		if (key==0
-#if defined (MACOSX)
+#if 0 //defined (MACOSX)
 		    /* On Mac on US keyboards, scancode 0 is actually the 'a'
 		     * key.  For good measure exclude all printables from this
 		     * condition. */
@@ -505,6 +505,15 @@ public:
 
 class CKeyBindGroup : public  CBindGroup {
 public:
+#ifdef IPHONEOS
+    CKeyBindGroup() : CBindGroup () {
+        int _keys = 512;
+        lists=new CBindList[_keys];
+        for (Bitu i=0;i<_keys;i++) lists[i].clear();
+        keys=_keys;
+        configname="key";
+    }
+#endif
 	CKeyBindGroup(Bitu _keys) : CBindGroup (){
 		lists=new CBindList[_keys];
 		for (Bitu i=0;i<_keys;i++) lists[i].clear();
@@ -2174,7 +2183,7 @@ static struct {
 	{"rwindows",SDLK_RSUPER},
 	{"rwinmenu",SDLK_MENU},
 
-#if defined (MACOSX)
+#if 0 //defined (MACOSX)
 	/* Intl Mac keyboards in US layout actually put U+00A7 SECTION SIGN here */
 	{"lessthan",SDLK_WORLD_0},
 #else
@@ -2373,7 +2382,12 @@ static void InitializeJoysticks(void) {
 
 static void CreateBindGroups(void) {
 	bindgroups.clear();
-	new CKeyBindGroup(SDLK_LAST);
+#ifdef IPHONEOS
+    // SDL1.3 removes SDLK_LAST
+    new CKeyBindGroup();
+#else
+    new CKeyBindGroup(SDLK_LAST);
+#endif
 	if (joytype != JOY_NONE) {
 #if defined (REDUCE_JOYSTICK_POLLING)
 		// direct access to the SDL joystick, thus removed from the event handling
