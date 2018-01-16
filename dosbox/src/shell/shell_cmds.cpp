@@ -1678,7 +1678,28 @@ void DOS_Shell::CMD_VOL(char *args){
 	return;
 }
 
-void SetVal(const std::string secname, std::string preval, const std::string val);
+extern bool dos_kernel_disabled;
+void SetVal(const std::string secname, std::string preval, const std::string val) {
+    if (dos_kernel_disabled)
+        return;
+    
+    if(preval=="keyboardlayout") {
+        DOS_MCB mcb(dos.psp()-1);
+        static char name[9];
+        mcb.GetFileName(name);
+        if (strlen(name)) {
+            LOG_MSG("GUI: Exit %s running in DOSBox, and then try again.",name);
+            return;
+        }
+    }
+    Section* sec = control->GetSection(secname);
+    if(sec) {
+        sec->ExecuteDestroy(false);
+        std::string real_val=preval+"="+val;
+        sec->HandleInputline(real_val);
+        sec->ExecuteInit(false);
+    }
+}
 static void delayed_press(Bitu key) { KEYBOARD_AddKey((KBD_KEYS)key,true); }
 static void delayed_release(Bitu key) { KEYBOARD_AddKey((KBD_KEYS)key,false); }
 static void delayed_sdlpress(Bitu core) {

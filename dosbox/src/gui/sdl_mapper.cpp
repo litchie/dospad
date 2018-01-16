@@ -38,7 +38,6 @@
 #include "mapper.h"
 #include "setup.h"
 #include "pic.h"
-#include "menu.h"
 
 enum {
 	CLR_BLACK=0,
@@ -2517,11 +2516,8 @@ void MAPPER_RunInternal() {
 #ifdef __WIN32__
 	UI_Shortcut(0);
 #endif
-	DOSBox_RefreshMenu();
-	if(!menu_gui) {
 		SDL_FreeSurface(mapper.surface);
 		GFX_RestoreMode();
-	}
 #ifdef __WIN32__
 	if(GetAsyncKeyState(0x11)) {
 		INPUT ip;

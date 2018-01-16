@@ -42,7 +42,6 @@
 #include "inout.h"
 #include "dma.h"
 #include <time.h>
-#include "menu.h"
 bool Mouse_Drv=true;
 bool Mouse_Vertical = false;
 
@@ -229,6 +228,7 @@ public:
 			}
 			return;
 		}
+#ifndef IPHONEOS
 		/* Show list of cdroms */
 		if (cmd->FindExist("-cd",false)) {
 			int num = SDL_CDNumDrives();
@@ -238,6 +238,7 @@ public:
 			};
 			return;
 		}
+#endif
 
 		std::string type="dir";
 		cmd->FindString("-t",type,true);

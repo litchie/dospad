@@ -32,7 +32,6 @@
 # include <unistd.h>
 # include <stdio.h>
 #endif
-#include "glidedef.h"
 #include "../save_state.h"
 
 #include "voodoo.h"
@@ -204,9 +203,7 @@ PageHandler * MEM_GetPageHandler(Bitu phys_page) {
 	} else if ((phys_page>=memory.lfb.start_page+0x01000000/4096) &&
 				(phys_page<memory.lfb.start_page+0x01000000/4096+16)) {
 		return memory.lfb.mmiohandler;
-	} else if (glide.enabled && (phys_page>=(GLIDE_LFB>>12)) && (phys_page<(GLIDE_LFB>>12)+GLIDE_PAGES)) {
-		return (PageHandler*)glide.lfb_pagehandler;
-	} else if (!glide.enabled && VOODOO_PCI_CheckLFBPage(phys_page)) {
+	} else if (VOODOO_PCI_CheckLFBPage(phys_page)) {
 		return VOODOO_GetPageHandler();
 	}
 	return &illegal_page_handler;
@@ -1112,25 +1109,25 @@ extern void* VGA_PageHandler_Func[16];
 Bit32u Memory_PageHandler_table[] = 
 {
 	(Bit32u) NULL,
-	(Bit32u) &ram_page_handler,
-	(Bit32u) &rom_page_handler,
+	(Bit32u) (uintptr_t) &ram_page_handler,
+	(Bit32u) (uintptr_t) &rom_page_handler,
 
-	(Bit32u) VGA_PageHandler_Func[0],
-	(Bit32u) VGA_PageHandler_Func[1],
-	(Bit32u) VGA_PageHandler_Func[2],
-	(Bit32u) VGA_PageHandler_Func[3],
-	(Bit32u) VGA_PageHandler_Func[4],
-	(Bit32u) VGA_PageHandler_Func[5],
-	(Bit32u) VGA_PageHandler_Func[6],
-	(Bit32u) VGA_PageHandler_Func[7],
-	(Bit32u) VGA_PageHandler_Func[8],
-	(Bit32u) VGA_PageHandler_Func[9],
-	(Bit32u) VGA_PageHandler_Func[10],
-	(Bit32u) VGA_PageHandler_Func[11],
-	(Bit32u) VGA_PageHandler_Func[12],
-	(Bit32u) VGA_PageHandler_Func[13],
-	(Bit32u) VGA_PageHandler_Func[14],
-	(Bit32u) VGA_PageHandler_Func[15],
+	(Bit32u) (uintptr_t) VGA_PageHandler_Func[0],
+	(Bit32u) (uintptr_t) VGA_PageHandler_Func[1],
+	(Bit32u) (uintptr_t) VGA_PageHandler_Func[2],
+	(Bit32u) (uintptr_t) VGA_PageHandler_Func[3],
+	(Bit32u) (uintptr_t) VGA_PageHandler_Func[4],
+	(Bit32u) (uintptr_t) VGA_PageHandler_Func[5],
+	(Bit32u) (uintptr_t) VGA_PageHandler_Func[6],
+	(Bit32u) (uintptr_t) VGA_PageHandler_Func[7],
+	(Bit32u) (uintptr_t) VGA_PageHandler_Func[8],
+	(Bit32u) (uintptr_t) VGA_PageHandler_Func[9],
+	(Bit32u) (uintptr_t) VGA_PageHandler_Func[10],
+	(Bit32u) (uintptr_t) VGA_PageHandler_Func[11],
+	(Bit32u) (uintptr_t) VGA_PageHandler_Func[12],
+	(Bit32u) (uintptr_t) VGA_PageHandler_Func[13],
+	(Bit32u) (uintptr_t) VGA_PageHandler_Func[14],
+	(Bit32u) (uintptr_t) VGA_PageHandler_Func[15],
 };
 
 
@@ -1155,7 +1152,7 @@ private:
 			pagehandler_idx[lcv] = 0xff;
 
 			for( int lcv2=0; lcv2<size_table; lcv2++ ) {
-				if( (Bit32u) memory.phandlers[lcv] == Memory_PageHandler_table[lcv2] ) {
+				if( (Bit32u) (uintptr_t) memory.phandlers[lcv] == Memory_PageHandler_table[lcv2] ) {
 					pagehandler_idx[lcv] = lcv2;
 					break;
 				}

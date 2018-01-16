@@ -266,7 +266,6 @@ int dospad_get(const char *url, const char *path)
     return [data writeToFile:dataPath atomically:NO];
 }
 
-
 int main(int argc, char *argv[]) {
     @autoreleasepool {
         FileSystemObject *fso = [FileSystemObject alloc];

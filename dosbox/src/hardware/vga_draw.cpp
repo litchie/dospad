@@ -137,6 +137,7 @@ void VGA_VsyncUpdateMode(VGA_Vsync vsyncmode) {
 
 void VGA_TweakUserVsyncOffset(float val) { uservsyncjolt = val; }
 
+
 void VGA_VsyncInit(Section * sec) {
 	Section_prop * section=static_cast<Section_prop *>(sec);
 
@@ -151,7 +152,7 @@ void VGA_VsyncInit(Section * sec) {
 		vsyncmode=VS_Off;
 		LOG_MSG("Illegal vsync type %s, falling back to off.",vsyncmodestr);
 	}
-	void change_output(int output);
+    void change_output(int output);
 	change_output(8);
 	VGA_VsyncUpdateMode(vsyncmode);
 

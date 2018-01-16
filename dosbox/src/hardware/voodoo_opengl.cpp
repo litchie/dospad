@@ -1843,6 +1843,9 @@ bool voodoo_ogl_init(voodoo_state *v) {
 void voodoo_ogl_leave(void) {
 }
 
+void voodoo_ogl_leave(bool dummy) {
+}
+
 void voodoo_ogl_shutdown(voodoo_state *v) {
 }
 
@@ -1886,8 +1889,16 @@ void voodoo_ogl_draw_z(int x, int y, int z1, int z2) {
 	E_Exit("invalid call to voodoo_ogl_draw_z");
 }
 
+void voodoo_ogl_draw_z(int x, int y, int z) {
+    E_Exit("invalid call to voodoo_ogl_draw_z");
+}
+
 void voodoo_ogl_draw_pixel_pipeline(int x, int y, int r, int g, int b) {
 	E_Exit("invalid call to voodoo_ogl_draw_pixel_pipeline");
+}
+
+void voodoo_ogl_update_dimensions(void) {
+    E_Exit("invalid call to voodoo_ogl_update_dimensions");
 }
 
 UINT32 voodoo_ogl_read_pixel(int x, int y) {
@@ -1899,6 +1910,5 @@ UINT32 voodoo_ogl_read_pixel(int x, int y) {
 void voodoo_ogl_draw_triangle(poly_extra_data *extra) {
 	E_Exit("invalid call to voodoo_ogl_draw_triangle");
 }
-
 
 #endif

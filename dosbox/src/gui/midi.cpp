@@ -91,17 +91,17 @@ static struct {
 
 /* Include different midi drivers, lowest ones get checked first for default */
 
-#include "midi_mt32.h"
 
 #if C_FLUIDSYNTH
 #include "midi_synth.h"
 #endif
-#include "midi_timidity.h"
 
 #if defined(MACOSX)
 
 #include "midi_coremidi.h"
+#ifndef IPHONEOS
 #include "midi_coreaudio.h"
+#endif
 
 #elif defined (WIN32)
 
@@ -672,21 +672,8 @@ private:
 
 				SerializeGlobalPOD::getBytes(stream);
 
-				// Supports MT-32 MUNT only!!
-				if( strcmp( midi.handler->GetName(), "mt32" ) == 0 ) {
-					void *mt32ram;
-					const char pod_name[32] = "MUNT";
-					mt32ram = ((MidiHandler_mt32 *) midi.handler)->GetSynth()->dumpRam();
-
-					// header
-					WRITE_POD( &pod_name, pod_name );
-
-					// - pure data
-					WRITE_POD_SIZE( mt32ram, sizeof(MT32Emu::MemParams) );
-				}
-
 				// external MIDI
-				else if( midi.available ) {
+				if( midi.available ) {
 					const char pod_name[32] = "External";
 					// header
 					WRITE_POD( &pod_name, pod_name );
@@ -708,30 +695,8 @@ private:
 
 				SerializeGlobalPOD::setBytes(stream);
 
-				// Supports MT-32 MUNT only!!
-				if( strcmp( midi.handler->GetName(), "mt32" ) == 0 ) {
-					void *mt32ram;
-					char pod_name[32] = {0};
-
-
-					// error checking
-					READ_POD( &pod_name, pod_name );
-					if( strcmp( pod_name, "MUNT" ) ) {
-						stream.clear( std::istream::failbit | std::istream::badbit );
-						return;
-					}
-
-					mt32ram = (void *) alloca( sizeof(MT32Emu::MemParams) );
-					READ_POD_SIZE( mt32ram, sizeof(MT32Emu::MemParams) );
-
-
-					// restore mt-32 memory
-					((MidiHandler_mt32 *) midi.handler)->GetSynth()->loadRam( mt32ram );
-					midiHandler_mt32.Reset();
-				}
-
 				// external MIDI
-				else if( midi.available ) {
+				if( midi.available ) {
 					char pod_name[32] = {0};
 
 

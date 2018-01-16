@@ -22,7 +22,7 @@
 #include "bios_disk.h"
 #include "../src/dos/cdrom.h"
 
-#ifdef _MSC_VER
+#if 1 //def _MSC_VER
 # define MIN(a,b) ((a) < (b) ? (a) : (b))
 #else
 # define MIN(a,b) std::min(a,b)

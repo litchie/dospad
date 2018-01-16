@@ -57,7 +57,6 @@ extern "C" {
 #include <tbb/task_group.h>
 #include "./xBRZ/xbrz.h"
 #endif
-#include "menu.h"
 #include "SDL_video.h"
 
 #ifdef __WIN32__
@@ -81,7 +80,6 @@ extern "C" {
 #include "cpu.h"
 #include "cross.h"
 #include "control.h"
-#include "glidedef.h"
 #include "../save_state.h"
 
 #define MAPPERFILE "mapper-" VERSION ".map"
@@ -377,14 +375,7 @@ void GFX_SetTitle(Bit32s cycles,Bits frameskip,Bits timing,bool paused){
 	if(cycles != -1) internal_cycles = cycles;
 	if(frameskip != -1) internal_frameskip = frameskip;
 	if(timing != -1) internal_timing = timing;
-if (!menu_startup) { sprintf(title,"DOSBox %s, CPU speed: %8d cycles, Frameskip %2d, %8s",VERSION,internal_cycles,internal_frameskip,RunningProgram); SDL_WM_SetCaption(title,VERSION); return; }
-if (menu.hidecycles) {
-		if(CPU_CycleAutoAdjust) {
-			sprintf(title,"DOSBox %s, CPU speed: max %3d%% cycles, Frameskip %2d, %8s",VERSION,CPU_CyclePercUsed,internal_frameskip,RunningProgram);
-		} else {
-			sprintf(title,"DOSBox %s, CPU speed: %8d cycles, Frameskip %2d, %8s",VERSION,internal_cycles,internal_frameskip,RunningProgram);
-		}
-	} else
+if (true) { sprintf(title,"DOSBox %s, CPU speed: %8d cycles, Frameskip %2d, %8s",VERSION,internal_cycles,internal_frameskip,RunningProgram); SDL_WM_SetCaption(title,VERSION); return; }
 	if(CPU_CycleAutoAdjust) {
 		sprintf(title,"DOSBox %s, CPU : %s %8d%% = max %3d, %d FPS - %2d %8s %i.%i%%",VERSION,core_mode,CPU_CyclePercUsed,internal_cycles,frames,internal_frameskip,RunningProgram,internal_timing/100,internal_timing%100/10);
 	} else {
@@ -583,10 +574,8 @@ bool GFX_SDLUsingWinDIB(void) {
 static bool fullscreen_switch=true;
 static void SDLScreen_Reset(void) {
 	char* sdl_videodrv = getenv("SDL_VIDEODRIVER");
-	if ((sdl_videodrv && !strcmp(sdl_videodrv,"windib")) || sdl.desktop.fullscreen || fullscreen_switch || sdl.desktop.want_type==SCREEN_OPENGLHQ || glide.enabled || menu_compatible) return;
+	if ((sdl_videodrv && !strcmp(sdl_videodrv,"windib")) || sdl.desktop.fullscreen || fullscreen_switch || sdl.desktop.want_type==SCREEN_OPENGLHQ) return;
     int id, major, minor;
-    DOSBox_CheckOS(id, major, minor);
-    if((id==VER_PLATFORM_WIN32_NT) && (major<6) || sdl.desktop.want_type==SCREEN_DIRECT3D) return;
 
 	SDL_QuitSubSystem(SDL_INIT_VIDEO);	SDL_Delay(500);
 	SDL_InitSubSystem(SDL_INIT_VIDEO);
@@ -672,9 +661,7 @@ check_gotbpp:
 }
 
 void SDL_Prepare(void) {
-    if(menu_compatible) return;
     SDL_PumpEvents(); SDL_EventState(SDL_SYSWMEVENT, SDL_ENABLE);
-    DragAcceptFiles(GetHWND(), TRUE);
 }
 
 void GFX_ForceRedrawScreen(void) {
@@ -684,19 +671,13 @@ void GFX_ForceRedrawScreen(void) {
 	GFX_Start();
 }
 void GFX_ResetScreen(void) {
-	fullscreen_switch=false; 
-	if(glide.enabled) {
-		GLIDE_ResetScreen(true);
-		return;
-	}
+	fullscreen_switch=false;
 	GFX_Stop();
 	if (sdl.draw.callback)
 		(sdl.draw.callback)( GFX_CallBackReset );
 	GFX_Start();
 	CPU_Reset_AutoAdjust();
 	fullscreen_switch=true;
-    if (!sdl.desktop.want_type==SCREEN_OPENGLHQ && !sdl.desktop.fullscreen && GetMenu(GetHWND()) == NULL)
-	DOSBox_RefreshMenu(); // for menu
 }
 
 void GFX_ForceFullscreenExit(void) {
@@ -1394,7 +1375,7 @@ static void openglhq_init(void) {
 	putenv((char*)("SDL_VIDEODRIVER=openglhq"));
 	SDL_InitSubSystem(SDL_INIT_VIDEO);
 	DOSBox_SetOriginalIcon();
-	if(!menu_compatible) { SDL_PumpEvents(); SDL_EventState(SDL_SYSWMEVENT, SDL_ENABLE); }
+	SDL_PumpEvents(); SDL_EventState(SDL_SYSWMEVENT, SDL_ENABLE);
 	GFX_SetTitle(-1,-1,-1,false);
 	sdl.desktop.want_type=SCREEN_OPENGLHQ;
 }
@@ -1591,14 +1572,15 @@ void change_output(int output) {
     }
 	GFX_SetTitle(CPU_CycleMax,-1,-1,false);
 }
+#else
+void change_output(int output) {
+}
 #endif
 
 
 void GFX_SwitchFullScreen(void) {
-    menu.resizeusing=true;
 	sdl.desktop.fullscreen=!sdl.desktop.fullscreen;
 	if (sdl.desktop.fullscreen) {
-		if(sdl.desktop.want_type != SCREEN_OPENGLHQ) { if(!glide.enabled && menu.gui) SetMenu(GetHWND(),NULL); }
 		if (!sdl.mouse.locked) GFX_CaptureMouse();
 #if defined (WIN32)
 		sticky_keys(false); //disable sticky keys in fullscreen mode
@@ -1609,9 +1591,6 @@ void GFX_SwitchFullScreen(void) {
 		sticky_keys(true); //restore sticky keys to default state in windowed mode.
 #endif
 	}
-	if (glide.enabled)
-		GLIDE_ResetScreen();
-	else
 		GFX_ResetScreen();
 #ifdef WIN32
 	if(menu.startup) {
@@ -1880,12 +1859,12 @@ void GFX_EndUpdate( const Bit16u *changedLines ) {
 			}
 	if(changedLines && (changedLines[0] == sdl.draw.height)) 
 	return; 
-	if(!menu.hidecycles && !sdl.desktop.fullscreen) frames++;
+	if(!sdl.desktop.fullscreen) frames++;
 			SDL_Flip(sdl.surface);
 		} else if (changedLines) {
 	if(changedLines[0] == sdl.draw.height) 
 	return; 
-	if(!menu.hidecycles && !sdl.desktop.fullscreen) frames++;
+	if(!sdl.desktop.fullscreen) frames++;
 			Bitu y = 0, index = 0, rectCount = 0;
 			while (y < sdl.draw.height) {
 				if (!(index & 1)) {
@@ -1936,7 +1915,7 @@ void GFX_EndUpdate( const Bit16u *changedLines ) {
 		SDL_UnlockYUVOverlay(sdl.overlay);
 		if(changedLines && (changedLines[0] == sdl.draw.height)) 
 		return; 
-		if(!menu.hidecycles && !sdl.desktop.fullscreen) frames++; 
+		if(!sdl.desktop.fullscreen) frames++;
 		SDL_DisplayYUVOverlay(sdl.overlay,&sdl.clip);
 		break;
 #if C_OPENGL
@@ -2322,7 +2301,11 @@ static void GUI_StartUp(Section * sec) {
 	std::string output=section->Get_string("output");
 
 	/* Setup Mouse correctly if fullscreen */
-	if(sdl.desktop.fullscreen) GFX_CaptureMouse();
+#ifdef IPHONEOS
+    GFX_CaptureMouse(); // Always capture mouse because no cursor on iOS
+#else
+    if(sdl.desktop.fullscreen) GFX_CaptureMouse();
+#endif
 
 	if (output == "surface") {
 		sdl.desktop.want_type=SCREEN_SURFACE;
@@ -2410,7 +2393,11 @@ static void GUI_StartUp(Section * sec) {
 
 #endif	//OPENGL
 	/* Initialize screen for first time */
-	sdl.surface=SDL_SetVideoMode_Wrap(640,400,0,SDL_RESIZABLE);
+#ifdef IPHONEOS
+    sdl.surface=SDL_SetVideoMode_Wrap(640,400,16,SDL_RESIZABLE);
+#else
+    sdl.surface=SDL_SetVideoMode_Wrap(640,400,0,SDL_RESIZABLE);
+#endif
 	if (sdl.surface == NULL) E_Exit("Could not initialize video: %s",SDL_GetError());
 	sdl.desktop.bpp=sdl.surface->format->BitsPerPixel;
 	if (sdl.desktop.bpp==24) {
@@ -3076,6 +3063,9 @@ void* GetSetSDLValue(bool isget, int target, void* setval) {
 
 void GFX_Events() {
 	SDL_Event event;
+#ifdef IPHONEOS
+    dospad_should_pause();
+#endif
 #if defined (REDUCE_JOYSTICK_POLLING)
 	static int poll_delay=0;
 	int time=GetTicks();
@@ -3202,7 +3192,7 @@ void GFX_Events() {
 			throw(0);
 			break;
 		case SDL_VIDEOEXPOSE:
-			if ((sdl.draw.callback) && (!glide.enabled)) sdl.draw.callback( GFX_CallBackRedraw );
+			if (sdl.draw.callback) sdl.draw.callback( GFX_CallBackRedraw );
 			break;
 #ifdef WIN32
 		case SDL_KEYDOWN:
@@ -3365,7 +3355,12 @@ static void show_warning(char const * const message) {
 	if ( !sdl.inited && SDL_Init(SDL_INIT_VIDEO|SDL_INIT_NOPARACHUTE) < 0 ) textonly = true;
 	sdl.inited = true;
 #endif
-	fprintf(stderr, "Warning: %s", message);
+#ifdef IPHONEOS
+    // Clear warning
+    printf("%s", message);
+#else
+    fprintf(stderr, "Warning: %s", message);
+#endif
 	if(textonly) return;
 	if(!sdl.surface) sdl.surface = SDL_SetVideoMode_Wrap(640,400,0,SDL_RESIZABLE);
 	if(!sdl.surface) return;
@@ -3765,16 +3760,6 @@ int main(int argc, char* argv[]) {
 	/* Display Welcometext in the console */
 	LOG_MSG("DOSBox version %s",VERSION);
 	LOG_MSG("Copyright 2002-2015 DOSBox Team, published under GNU GPL.");
-	int id, major, minor;
-	DOSBox_CheckOS(id, major, minor);
-	if (id==1) menu.compatible=true;
-	if(!menu_compatible) {
-	    if(DOSBox_Kor()) {
-	        LOG_MSG("도스박스 다음 카페 http://cafe.daum.net/dosbox");
-	        LOG_MSG("─────────────────────────────");
-	} else
-	LOG_MSG("---");
-    }
 
 	/* Init SDL */
 #if SDL_VERSION_ATLEAST(1, 2, 14)
@@ -3791,30 +3776,24 @@ int main(int argc, char* argv[]) {
 		sdl.using_windib=true;
 	}
 #endif
-	if ( SDL_Init( SDL_INIT_AUDIO|SDL_INIT_VIDEO|SDL_INIT_TIMER|SDL_INIT_CDROM
-		|SDL_INIT_NOPARACHUTE
-		) < 0 ) E_Exit("Can't init SDL %s",SDL_GetError());
-	sdl.inited = true;
+#ifdef IPHONEOS
+        if ( SDL_Init( SDL_INIT_AUDIO|SDL_INIT_VIDEO|SDL_INIT_TIMER
+#else
+        if ( SDL_Init( SDL_INIT_AUDIO|SDL_INIT_VIDEO|SDL_INIT_TIMER|SDL_INIT_CDROM
+#endif
+             |SDL_INIT_NOPARACHUTE) < 0 ) E_Exit("Can't init SDL %s",SDL_GetError());
+                      sdl.inited = true;
 
-    if (control->cmdline->FindExist("-nogui") || menu.compatible) menu.gui=false;
-    if (menu_gui && !control->cmdline->FindExist("-nomenu")) DOSBox_SetMenu();
-    if (menu_gui) {
-        if(GetMenu(GetHWND())) {
-             if(!DOSBox_Kor())
-                LOG_MSG("GUI: Press Ctrl-F10 to capture/release mouse.\n     Save your configuration and restart DOSBox if your settings do not take effect.");
-            else {
-                LOG_MSG("GUI: 마우스를 나오게 하거나 들어가게 하려면 Ctrl-F10키를 누르십시오.\n지정한 설정이 적용되지 않으면 설정을 저장하고 DOSBox를 다시 시작하십시오.");
-            }
-       }
-    } else {
-	    LOG_MSG("GUI: Press Ctrl-F10 to capture/release mouse, Alt-F10 for configuration.");
-    }
     SDL_Prepare();
 
 #ifndef DISABLE_JOYSTICK
 	//Initialise Joystick separately. This way we can warn when it fails instead
 	//of exiting the application
 	if( SDL_InitSubSystem(SDL_INIT_JOYSTICK) < 0 ) LOG_MSG("Failed to init joystick support");
+#endif
+                      
+#ifdef IPHONEOS
+                      SDL_init_keyboard(); // We need to create a fake keyboard
 #endif
 
 	sdl.laltstate = SDL_KEYUP;
@@ -3846,7 +3825,6 @@ int main(int argc, char* argv[]) {
 			else if (strcmp(sdl_videodrv,"windib")==0) sdl.using_windib = true;
 		}
 #endif
-	glide.fullscreen = &sdl.desktop.fullscreen;
 	sdl.num_joysticks=SDL_NumJoysticks();
 
 	/* Parse configuration files */
@@ -3919,7 +3897,6 @@ int main(int argc, char* argv[]) {
 		Section_prop * sdl_sec=static_cast<Section_prop *>(control->GetSection("sdl"));
 
 		if (control->cmdline->FindExist("-fullscreen") || sdl_sec->Get_bool("fullscreen")) {
-		if(sdl.desktop.want_type != SCREEN_OPENGLHQ) SetMenu(GetHWND(),NULL);
 			if(!sdl.desktop.fullscreen) { //only switch if not already in fullscreen
 				GFX_SwitchFullScreen();
 			}
@@ -3929,14 +3906,6 @@ int main(int argc, char* argv[]) {
 		MAPPER_Init();
 		if (control->cmdline->FindExist("-startmapper")) MAPPER_RunInternal();
 		/* Start up main machine */
-
-		// Shows menu bar (window)
-		menu.startup=true;
-		menu.hidecycles = ((control->cmdline->FindExist("-showcycles")) ? false : true);
-		if(sdl.desktop.want_type==SCREEN_OPENGLHQ) {
-			menu.gui=false; DOSBox_SetOriginalIcon();
-			if(!render.scale.hardware) SetVal("render","scaler",!render.scale.forced?"hardware2x":"hardware2x forced");
-		}
 
 #ifdef WIN32
 		if(sdl.desktop.want_type==SCREEN_OPENGL && sdl.using_windib) {

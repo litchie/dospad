@@ -18,7 +18,6 @@
 
 
 #include "SDL.h"
-#include "menu.h"
 #include "../libs/gui_tk/gui_tk.h"
 
 #include "dosbox.h"

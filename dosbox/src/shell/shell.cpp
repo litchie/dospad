@@ -272,7 +272,15 @@ void DOS_Shell::ParseLine(char * line) {
 }
 
 
-
+#ifdef IPHONEOS
+char automount_path[1000];
+extern "C" void dospad_add_history(const char*);
+extern "C" void dospad_launch_done();
+extern int dospad_should_launch_game;
+extern int dospad_command_line_ready;
+extern char dospad_launch_config[256];
+extern char dospad_launch_section[256];
+#endif
 void DOS_Shell::RunInternal(void) {
 	char input_line[CMD_MAXLINE] = {0};
 	while (bf) {
@@ -311,6 +319,34 @@ void DOS_Shell::Run(void) {
 	if (machine == MCH_CGA || machine == MCH_AMSTRAD) WriteOut(MSG_Get("SHELL_STARTUP_CGA"));
 	if (machine == MCH_HERC) WriteOut(MSG_Get("SHELL_STARTUP_HERC"));
 	WriteOut(MSG_Get("SHELL_STARTUP_END"));
+    
+#ifdef IPHONEOS
+    if (automount_path[0]) {
+        char *p = (char*)automount_path;
+        char *endp = p;
+        char disk = 'c';
+        LOG_MSG("DOS_Shell::Run Auto Mount");
+        
+        while (endp) {
+            for (p = endp; *endp && *endp != ';'; endp++)
+                ;
+            if (*endp == ';') {
+                *endp = 0;
+                endp++;
+            } else {
+                endp=0;
+            }
+            if (strlen(p) <= 0) break;
+            sprintf(input_line, "mount %c \"%s\"",disk, p);
+            ParseLine(input_line);
+            disk++;
+        }
+        if (disk > 'c') {
+            sprintf(input_line, "c:");
+            ParseLine(input_line);
+        }
+    }
+#endif
 
 	if (cmd->FindString("/INIT",line,true)) {
 		strcpy(input_line,line.c_str());
@@ -329,9 +365,53 @@ void DOS_Shell::Run(void) {
 					};
 				};
 			} else input_line[0]='\0';
+#ifdef IPHONEOS
+        } else if (automount_path[0]) {
+            automount_path[0] = 0;
+            if (echo && !bf) WriteOut_NoParsing("\n");
+            sprintf(input_line, "cls");
+            ParseLine(input_line);
+#endif
 		} else {
 			if (echo) ShowPrompt();
+#ifdef IPHONEOS
+            dospad_command_line_ready=1;
+#endif
 			InputCommand(input_line);
+#ifdef IPHONEOS
+            dospad_add_history(input_line);
+            dospad_command_line_ready=0;
+            if (dospad_should_launch_game)
+            {
+                // Make sure we can access the new installed files
+                Bit8u drive = DOS_GetDefaultDrive();
+                if (Drives[drive]) {
+                    Drives[drive]->EmptyCache();
+                }
+                FILE *fp=fopen(dospad_launch_config, "r");
+                if (fp != NULL)
+                {
+                    char buf[256];
+                    size_t sectionLength = strlen(dospad_launch_section);
+                    while (fgets(buf, 256, fp))
+                    {
+                        if (strncmp(buf, dospad_launch_section, sectionLength) == 0)
+                        {
+                            while (fgets(buf, 256, fp))
+                            {
+                                if (buf[0] == '[') break;
+                                if (buf[0] == '#') continue;
+                                ParseLine(buf);
+                            }
+                        }
+                    }
+                    fclose(fp);
+                }
+                dospad_should_launch_game = 0;
+                sprintf(input_line,"cls");
+                dospad_launch_done();
+            }
+#endif
 			if (echo) WriteOut("\n");
 		}
 
@@ -721,6 +801,9 @@ void SHELL_Init() {
 		   "  major minor   Set the reported DOS version. (e.g. VER SET 5 1)\n\n" 
 		   "Type VER without parameters to display the current DOS version.\n");
 	MSG_Add("SHELL_CMD_VER_VER","DOSBox version %s. Reported DOS version %d.%02d.\n");
+#ifdef IPHONEOS
+    MSG_Add("SHELL_CMD_UNZIP_HELP","Extract zip file to current directory.\n");
+#endif
 	MSG_Add("SHELL_CMD_ADDKEY_HELP","Generates artificial keypresses.\n");
 	MSG_Add("SHELL_CMD_VOL_HELP","Displays the disk volume label and serial number, if they exist.\n");
 	MSG_Add("SHELL_CMD_VOL_HELP_LONG","VOL [drive]\n");
