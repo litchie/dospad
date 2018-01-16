@@ -948,7 +948,7 @@ public:
 			/* create appearance of floppy drive DMA usage (Demon's Forge) */
 			if (!IS_TANDY_ARCH && floppysize!=0) GetDMAChannel(2)->tcount=true;
 
-			for(i=0;i<512;i++) real_writeb(0, (load_seg<<4) + i, bootarea.rawdata[i]);
+            for(i=0;i<512;i++) real_writeb(0, (load_seg<<4) + i, bootarea.rawdata[i]);
 
 			/* debug */
 			LOG_MSG("Booting guest OS stack_seg=0x%04x load_seg=0x%04x\n",stack_seg,load_seg);
@@ -976,7 +976,7 @@ public:
 #endif
 
 			/* forcibly exit the shell, the DOS kernel, and anything else by throwing an exception */
-			throw int(2);
+			//throw int(2);
 		}
 	}
 };

@@ -2406,7 +2406,8 @@ static void GUI_StartUp(Section * sec) {
 #endif	//OPENGL
 	/* Initialize screen for first time */
 #ifdef IPHONEOS
-    sdl.surface=SDL_SetVideoMode(640,400,16,0);
+    sdl.surface=SDL_SetVideoMode(640,400,24,0);
+    //sdl.surface=SDL_SetVideoMode_Wrap(640,400,0,SDL_RESIZABLE);
 #else
     sdl.surface=SDL_SetVideoMode(640,400,0,0);
 #endif
