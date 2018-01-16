@@ -319,7 +319,7 @@ static Bit8u scancode_map[MAX_SDLKEYS];
 
 #define Z SDLK_UNKNOWN
 
-#if 0 //defined (MACOSX)
+#if defined (MACOSX) && !defined (IPHONEOS)
 static SDLKey sdlkey_map[]={
 	/* Main block printables */
 	/*00-05*/ SDLK_a, SDLK_s, SDLK_d, SDLK_f, SDLK_h, SDLK_g,
@@ -436,7 +436,7 @@ Bitu GetKeyCode(SDL_keysym keysym) {
 	if (usescancodes) {
 		Bitu key=(Bitu)keysym.scancode;
 		if (key==0
-#if 0 //defined (MACOSX)
+#if defined (MACOSX) && !defined (IPHONEOS)
 		    /* On Mac on US keyboards, scancode 0 is actually the 'a'
 		     * key.  For good measure exclude all printables from this
 		     * condition. */
@@ -524,9 +524,13 @@ public:
 		if (strncasecmp(buf,configname,strlen(configname))) return 0;
 		StripWord(buf);char * num=StripWord(buf);
 		Bitu code=ConvDecWord(num);
-		if (usescancodes) {
-			if (code<MAX_SDLKEYS) code=scancode_map[code];
-			else code=0;
+		if (usescancodes || code & (1<<30)) {
+#ifndef IPHONEOS
+            if (code<MAX_SDLKEYS) code=scancode_map[code];
+            else code=0;
+#else
+            code = SDL_GetScancodeFromKey(code);
+#endif
 		}
 		CBind * bind=CreateKeyBind((SDLKey)code);
 		return bind;
@@ -2182,7 +2186,7 @@ static struct {
 	{"rwindows",SDLK_RSUPER},
 	{"rwinmenu",SDLK_MENU},
 
-#if 0 //defined (MACOSX)
+#if defined (MACOSX) && !defined (IPHONEOS)
 	/* Intl Mac keyboards in US layout actually put U+00A7 SECTION SIGN here */
 	{"lessthan",SDLK_WORLD_0},
 #else
@@ -2700,7 +2704,11 @@ void MAPPER_StartUp(Section * sec) {
 		Bitu i;
 		for (i=0; i<MAX_SDLKEYS; i++) scancode_map[i]=0;
 		for (i=0; i<MAX_SCANCODES; i++) {
-			SDLKey key=sdlkey_map[i];
+#ifdef IPHONEOS
+            SDLKey key=SDL_GetKeyFromScancode((SDL_scancode)i);
+#else
+            SDLKey key=sdlkey_map[i];
+#endif
 			if (key<MAX_SDLKEYS) scancode_map[key]=(Bit8u)i;
 		}
 	}
