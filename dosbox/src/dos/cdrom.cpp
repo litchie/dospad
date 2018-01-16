@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2002-2010  The DOSBox Team
+ *  Copyright (C) 2002-2015  The DOSBox Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -16,7 +16,6 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-/* $Id: cdrom.cpp,v 1.27 2009-04-26 18:24:36 qbix79 Exp $ */
 
 // ******************************************************
 // SDL CDROM 
@@ -30,10 +29,6 @@
 #include "SDL.h"
 #include "support.h"
 #include "cdrom.h"
-
-#ifdef IPHONEOS
-void SDL_CDClose(SDL_CD* a){}
-#endif
 
 CDROM_Interface_SDL::CDROM_Interface_SDL(void) {
 	driveID		= 0;
@@ -51,7 +46,7 @@ bool CDROM_Interface_SDL::SetDevice(char* path, int forceCD) {
 	char buffer[512];
 	strcpy(buffer,path);
 	upcase(buffer);
-#ifndef IPHONEOS
+
 	int num = SDL_CDNumDrives();
 	if ((forceCD>=0) && (forceCD<num)) {
 		driveID = forceCD;
@@ -70,37 +65,33 @@ bool CDROM_Interface_SDL::SetDevice(char* path, int forceCD) {
 			return true;
 		};
 	};
-#endif
 	return false; 
 }
 
+bool CDROM_Interface_SDL::ReadSectorsHost(void *buffer, bool raw, unsigned long sector, unsigned long num)
+{
+	return false;/*TODO*/
+};
+
 bool CDROM_Interface_SDL::GetAudioTracks(int& stTrack, int& end, TMSF& leadOut) {
-#ifndef IPHONEOS
+
 	if (CD_INDRIVE(SDL_CDStatus(cd))) {
 		stTrack		= 1;
 		end			= cd->numtracks;
 		FRAMES_TO_MSF(cd->track[cd->numtracks].offset,&leadOut.min,&leadOut.sec,&leadOut.fr);
 	}
 	return CD_INDRIVE(SDL_CDStatus(cd));
-#else
-    return false;
-#endif
 }
 
 bool CDROM_Interface_SDL::GetAudioTrackInfo(int track, TMSF& start, unsigned char& attr) {
-#ifndef IPHONEOS
 	if (CD_INDRIVE(SDL_CDStatus(cd))) {
 		FRAMES_TO_MSF(cd->track[track-1].offset,&start.min,&start.sec,&start.fr);
 		attr	= cd->track[track-1].type<<4;//sdl uses 0 for audio and 4 for data. instead of 0x00 and 0x40
 	}
 	return CD_INDRIVE(SDL_CDStatus(cd));	
-#else
-    return false;
-#endif
 }
 
 bool CDROM_Interface_SDL::GetAudioSub(unsigned char& attr, unsigned char& track, unsigned char& index, TMSF& relPos, TMSF& absPos) {
-#ifndef IPHONEOS
 	if (CD_INDRIVE(SDL_CDStatus(cd))) {
 		track	= cd->cur_track;
 		index	= cd->cur_track;
@@ -108,26 +99,18 @@ bool CDROM_Interface_SDL::GetAudioSub(unsigned char& attr, unsigned char& track,
 		FRAMES_TO_MSF(cd->cur_frame,&relPos.min,&relPos.sec,&relPos.fr);
 		FRAMES_TO_MSF(cd->cur_frame+cd->track[track].offset,&absPos.min,&absPos.sec,&absPos.fr);
 	}
-	return CD_INDRIVE(SDL_CDStatus(cd));
-#else
-    return false;
-#endif
+	return CD_INDRIVE(SDL_CDStatus(cd));		
 }
 
 bool CDROM_Interface_SDL::GetAudioStatus(bool& playing, bool& pause){
-#ifndef IPHONEOS
 	if (CD_INDRIVE(SDL_CDStatus(cd))) {
 		playing = (cd->status==CD_PLAYING);
 		pause	= (cd->status==CD_PAUSED);
 	}
 	return CD_INDRIVE(SDL_CDStatus(cd));
-#else
-    return false;
-#endif
 }
 	
 bool CDROM_Interface_SDL::GetMediaTrayStatus(bool& mediaPresent, bool& mediaChanged, bool& trayOpen) {
-#ifndef IPHONEOS
 	SDL_CDStatus(cd);
 	mediaPresent = (cd->status!=CD_TRAYEMPTY) && (cd->status!=CD_ERROR);
 	mediaChanged = (oldLeadOut!=cd->track[cd->numtracks].offset);
@@ -135,51 +118,34 @@ bool CDROM_Interface_SDL::GetMediaTrayStatus(bool& mediaPresent, bool& mediaChan
 	oldLeadOut	 = cd->track[cd->numtracks].offset;
 	if (mediaChanged) SDL_CDStatus(cd);
 	return true;
-#else
-    return false;
-#endif
 }
 
 bool CDROM_Interface_SDL::PlayAudioSector(unsigned long start,unsigned long len) { 
-#ifndef IPHONEOS
 	// Has to be there, otherwise wrong cd status report (dunno why, sdl bug ?)
 	SDL_CDClose(cd);
 	cd = SDL_CDOpen(driveID);
 	bool success = (SDL_CDPlay(cd,start+150,len)==0);
 	return success;
-#else
-    return false;
-#endif
 }
 
 bool CDROM_Interface_SDL::PauseAudio(bool resume) { 
 	bool success;
-#ifndef IPHONEOS
 	if (resume) success = (SDL_CDResume(cd)==0);
 	else		success = (SDL_CDPause (cd)==0);
-#endif
 	return success;
 }
 
 bool CDROM_Interface_SDL::StopAudio(void) {
 	// Has to be there, otherwise wrong cd status report (dunno why, sdl bug ?)
-#ifndef IPHONEOS    
 	SDL_CDClose(cd);
 	cd = SDL_CDOpen(driveID);
 	bool success = (SDL_CDStop(cd)==0);
 	return success;
-#else
-    return false;
-#endif
 }
 
 bool CDROM_Interface_SDL::LoadUnloadMedia(bool unload) {
-#ifndef IPHONEOS
 	bool success = (SDL_CDEject(cd)==0);
 	return success;
-#else
-    return false;
-#endif
 }
 
 int CDROM_GetMountType(char* path, int forceCD) {
@@ -195,23 +161,20 @@ int CDROM_GetMountType(char* path, int forceCD) {
 #if defined (WIN32) || defined(OS2)
 	upcase(buffer);
 #endif
-#ifndef IPHONEOS
+
 	int num = SDL_CDNumDrives();
-#else
-    int num = 0;
-#endif
 	// If cd drive is forced then check if its in range and return 0
 	if ((forceCD>=0) && (forceCD<num)) {
 		LOG(LOG_ALL,LOG_ERROR)("CDROM: Using drive %d",forceCD);
 		return 0;
 	}
-#ifndef IPHONEOS
+
 	// compare names
 	for (int i=0; i<num; i++) {
 		cdName = SDL_CDName(i);
 		if (strcmp(buffer,cdName)==0) return 0;
 	};
-#endif	
+	
 	// Detect ISO
 	struct stat file_stat;
 	if ((stat(path, &file_stat) == 0) && (file_stat.st_mode & S_IFREG)) return 1; 
@@ -256,5 +219,10 @@ bool CDROM_Interface_Fake :: GetMediaTrayStatus(bool& mediaPresent, bool& mediaC
 	trayOpen     = false;
 	return true;
 }
+
+bool CDROM_Interface_Fake::ReadSectorsHost(void *buffer, bool raw, unsigned long sector, unsigned long num)
+{
+	return false;/*TODO*/
+};
 
 

@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2002-2010  The DOSBox Team
+ *  Copyright (C) 2002-2015  The DOSBox Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -350,7 +350,6 @@ int VideoCodec::FinishCompressFrame( void ) {
 		case ZMBV_FORMAT_32BPP:
 			AddXorFrame<long>();
 			break;
-      default:;
 		}
 	}
 	/* Create the actual frame with compression */
@@ -472,7 +471,6 @@ bool VideoCodec::DecompressFrame(void * framedata, int size) {
 		case ZMBV_FORMAT_32BPP:
 			UnXorFrame<long>();
 			break;
-      default:;
 		}
 	}
 	return true;
@@ -518,7 +516,6 @@ void VideoCodec::Output_UpsideDown_24(void *output) {
 				*w++ = r[j*4+2];
 			}
 			break;
-      default:;
 		}
 
 		// Maintain 32-bit alignment for scanlines.

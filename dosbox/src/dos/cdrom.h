@@ -1,3 +1,21 @@
+/*
+ *  Copyright (C) 2002-2015  The DOSBox Team
+ *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ */
+
 
 #ifndef __CDROM_INTERFACE__
 #define __CDROM_INTERFACE__
@@ -20,73 +38,6 @@
 #include "SDL_sound.h"
 #endif
 
-#ifdef IPHONEOS
-
-/***** BEGIN COPY OF SDL_cdrom.h -- absent in SDL1.3 *****/
-
-/** The maximum number of CD-ROM tracks on a disk */
-#define SDL_MAX_TRACKS	99
-
-/** @name Track Types
- *  The types of CD-ROM track possible
- */
-/*@{*/
-#define SDL_AUDIO_TRACK	0x00
-#define SDL_DATA_TRACK	0x04
-/*@}*/
-
-/** The possible states which a CD-ROM drive can be in. */
-typedef enum {
-	CD_TRAYEMPTY,
-	CD_STOPPED,
-	CD_PLAYING,
-	CD_PAUSED,
-	CD_ERROR = -1
-} CDstatus;
-
-/** Given a status, returns true if there's a disk in the drive */
-#define CD_INDRIVE(status)	((int)(status) > 0)
-
-typedef struct SDL_CDtrack {
-	Uint8 id;		/**< Track number */
-	Uint8 type;		/**< Data or audio track */
-	Uint16 unused;
-	Uint32 length;		/**< Length, in frames, of this track */
-	Uint32 offset;		/**< Offset, in frames, from start of disk */
-} SDL_CDtrack;
-
-/** This structure is only current as of the last call to SDL_CDStatus() */
-typedef struct SDL_CD {
-	int id;			/**< Private drive identifier */
-	CDstatus status;	/**< Current drive status */
-
-	/** The rest of this structure is only valid if there's a CD in drive */
-        /*@{*/
-	int numtracks;		/**< Number of tracks on disk */
-	int cur_track;		/**< Current track position */
-	int cur_frame;		/**< Current frame offset within current track */
-	SDL_CDtrack track[SDL_MAX_TRACKS+1];
-        /*@}*/
-} SDL_CD;
-
-/** @name Frames / MSF Conversion Functions
- *  Conversion functions from frames to Minute/Second/Frames and vice versa
- */
-/*@{*/
-#define CD_FPS	75
-#define FRAMES_TO_MSF(f, M,S,F)	{					\
-	int value = f;							\
-	*(F) = value%CD_FPS;						\
-	value /= CD_FPS;						\
-	*(S) = value%60;						\
-	value /= 60;							\
-	*(M) = value;							\
-}
-#define MSF_TO_FRAMES(M, S, F)	((M)*60*CD_FPS+(S)*CD_FPS+(F))
-/***** END COPY OF SDL_cdrom.h *****/
-
-#endif
-
 #define RAW_SECTOR_SIZE		2352
 #define COOKED_SECTOR_SIZE	2048
 
@@ -97,6 +48,11 @@ typedef struct SMSF {
 	unsigned char sec;
 	unsigned char fr;
 } TMSF;
+
+typedef struct SCtrl {
+	Bit8u	out[4];			// output channel
+	Bit8u	vol[4];			// channel volume
+} TCtrl;
 
 extern int CDROM_GetMountType(char* path, int force);
 
@@ -119,8 +75,11 @@ public:
 	virtual bool	PlayAudioSector		(unsigned long start,unsigned long len) = 0;
 	virtual bool	PauseAudio			(bool resume) = 0;
 	virtual bool	StopAudio			(void) = 0;
+	virtual void	ChannelControl		(TCtrl ctrl) = 0;
 	
 	virtual bool	ReadSectors			(PhysPt buffer, bool raw, unsigned long sector, unsigned long num) = 0;
+	/* This is needed for IDE hack, who's buffer does not exist in DOS physical memory */
+	virtual bool	ReadSectorsHost			(void* buffer, bool raw, unsigned long sector, unsigned long num) = 0;
 
 	virtual bool	LoadUnloadMedia		(bool unload) = 0;
 	
@@ -143,7 +102,11 @@ public:
 	virtual bool	PlayAudioSector		(unsigned long start,unsigned long len);
 	virtual bool	PauseAudio			(bool resume);
 	virtual bool	StopAudio			(void);
+	virtual void	ChannelControl		(TCtrl ctrl) { return; };
 	virtual bool	ReadSectors			(PhysPt /*buffer*/, bool /*raw*/, unsigned long /*sector*/, unsigned long /*num*/) { return false; };
+	/* This is needed for IDE hack, who's buffer does not exist in DOS physical memory */
+	virtual bool	ReadSectorsHost			(void* buffer, bool raw, unsigned long sector, unsigned long num);
+
 	virtual bool	LoadUnloadMedia		(bool unload);
 
 private:
@@ -168,7 +131,11 @@ public:
 	bool	PlayAudioSector		(unsigned long /*start*/,unsigned long /*len*/) { return true; };
 	bool	PauseAudio			(bool /*resume*/) { return true; };
 	bool	StopAudio			(void) { return true; };
+	void	ChannelControl		(TCtrl ctrl) { return; };
 	bool	ReadSectors			(PhysPt /*buffer*/, bool /*raw*/, unsigned long /*sector*/, unsigned long /*num*/) { return true; };
+	/* This is needed for IDE hack, who's buffer does not exist in DOS physical memory */
+	bool	ReadSectorsHost			(void* buffer, bool raw, unsigned long sector, unsigned long num);
+
 	bool	LoadUnloadMedia		(bool /*unload*/) { return true; };
 };	
 
@@ -233,7 +200,10 @@ public:
 	bool	PlayAudioSector		(unsigned long start,unsigned long len);
 	bool	PauseAudio		(bool resume);
 	bool	StopAudio		(void);
+	void	ChannelControl		(TCtrl ctrl);
 	bool	ReadSectors		(PhysPt buffer, bool raw, unsigned long sector, unsigned long num);
+	/* This is needed for IDE hack, who's buffer does not exist in DOS physical memory */
+	bool	ReadSectorsHost			(void* buffer, bool raw, unsigned long sector, unsigned long num);
 	bool	LoadUnloadMedia		(bool unload);
 	bool	ReadSector		(Bit8u *buffer, bool raw, unsigned long sector);
 	bool	HasDataTrack		(void);
@@ -255,6 +225,8 @@ static  struct imagePlayer {
 		int     targetFrame;
 		bool    isPlaying;
 		bool    isPaused;
+		bool    ctrlUsed;
+		TCtrl   ctrlData;
 	} player;
 	
 	void 	ClearTracks();
@@ -301,8 +273,11 @@ public:
 	bool	PlayAudioSector		(unsigned long start,unsigned long len);
 	bool	PauseAudio			(bool resume);
 	bool	StopAudio			(void);
+	void	ChannelControl		(TCtrl ctrl) { return; };
 	
 	bool	ReadSectors			(PhysPt buffer, bool raw, unsigned long sector, unsigned long num);
+	/* This is needed for IDE hack, who's buffer does not exist in DOS physical memory */
+	bool	ReadSectorsHost			(void* buffer, bool raw, unsigned long sector, unsigned long num);
 
 	bool	LoadUnloadMedia		(bool unload);
 	
@@ -351,9 +326,12 @@ public:
 	bool	PlayAudioSector		(unsigned long start,unsigned long len);
 	bool	PauseAudio			(bool resume);
 	bool	StopAudio			(void);
+	void	ChannelControl		(TCtrl ctrl);
 	
 	bool	ReadSector			(Bit8u *buffer, bool raw, unsigned long sector);
 	bool	ReadSectors			(PhysPt buffer, bool raw, unsigned long sector, unsigned long num);
+	/* This is needed for IDE hack, who's buffer does not exist in DOS physical memory */
+	bool	ReadSectorsHost			(void* buffer, bool raw, unsigned long sector, unsigned long num);
 
 	bool	LoadUnloadMedia		(bool unload);
 
@@ -405,6 +383,8 @@ private:
 		int     targetFrame;
 		bool    isPlaying;
 		bool    isPaused;
+		bool    ctrlUsed;
+		TCtrl   ctrlData;
 	} player;
 
 };
@@ -421,6 +401,8 @@ public:
 	bool	SetDevice		(char* path, int forceCD);
 	bool	GetUPC			(unsigned char& attr, char* upc);
 	bool	ReadSectors		(PhysPt buffer, bool raw, unsigned long sector, unsigned long num);
+	/* This is needed for IDE hack, who's buffer does not exist in DOS physical memory */
+	bool	ReadSectorsHost			(void* buffer, bool raw, unsigned long sector, unsigned long num);
 
 private:
 	char	device_name[512];

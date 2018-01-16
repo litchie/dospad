@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2002-2010  The DOSBox Team
+ *  Copyright (C) 2002-2015  The DOSBox Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -16,7 +16,6 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-/* $Id: risc_armv4le-common.h,v 1.3 2009-05-16 21:52:47 c2woody Exp $ */
 
 
 /* ARMv4 (little endian) backend by M-HT (common data/functions) */
@@ -87,15 +86,7 @@ typedef Bit8u HostReg;
 #define HOST_lr HOST_r14
 #define HOST_pc HOST_r15
 
-#ifdef IPHONEOS
-/* This is implemented in libc, but no prototype */
-extern "C" void sys_icache_invalidate(const void* Addr, size_t len); 
 
-static void cache_block_closing(Bit8u* block_start,Bitu block_size) {
-    sys_icache_invalidate(block_start, block_size);
-}
-
-#else
 static void cache_block_closing(Bit8u* block_start,Bitu block_size) {
 #if (__ARM_EABI__)
 	//flush cache - eabi
@@ -120,5 +111,3 @@ static void cache_block_closing(Bit8u* block_start,Bitu block_size) {
 // GP2X END
 #endif
 }
-#endif
-

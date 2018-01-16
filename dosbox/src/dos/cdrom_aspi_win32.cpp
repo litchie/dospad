@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2002-2010  The DOSBox Team
+ *  Copyright (C) 2002-2015  The DOSBox Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -16,7 +16,6 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-/* $Id: cdrom_aspi_win32.cpp,v 1.21 2009-05-27 09:15:41 qbix79 Exp $ */
 
 #if defined (WIN32)
 
@@ -34,6 +33,9 @@
 #include <ntddscsi.h>
 #include <winioctl.h>			// Ioctl stuff
 #else 
+#ifdef __MINGW64_VERSION_MAJOR
+#include <winioctl.h>
+#endif
 #include "ddk/ntddcdrm.h"		// Ioctl stuff
 #include "ddk/ntddscsi.h"
 #endif
@@ -760,6 +762,11 @@ bool CDROM_Interface_Aspi::ReadSectors(PhysPt buffer, bool raw, unsigned long se
 	delete[] bufdata;
 
 	return (s.execscsicmd.SRB_Status==SS_COMP);
+};
+
+bool CDROM_Interface_Aspi::ReadSectorsHost(void *buffer, bool raw, unsigned long sector, unsigned long num)
+{
+	return false;/*TODO*/
 };
 
 #endif
