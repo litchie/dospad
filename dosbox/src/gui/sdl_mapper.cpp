@@ -376,7 +376,11 @@ typedef char assert_right_size [MAX_SCANCODES == (sizeof(sdlkey_map)/sizeof(sdlk
 
 #else // !MACOSX
 
-#define MAX_SCANCODES 0xdf
+#ifdef IPHONEOS
+#define MAX_SCANCODES 512
+static SDLKey sdlkey_map[MAX_SCANCODES];
+#else
+#define MAX_SCANCODES 212
 static SDLKey sdlkey_map[MAX_SCANCODES]={SDLK_UNKNOWN,SDLK_ESCAPE,
 	SDLK_1,SDLK_2,SDLK_3,SDLK_4,SDLK_5,SDLK_6,SDLK_7,SDLK_8,SDLK_9,SDLK_0,
 	/* 0x0c: */
@@ -397,29 +401,17 @@ static SDLKey sdlkey_map[MAX_SCANCODES]={SDLK_UNKNOWN,SDLK_ESCAPE,
 	SDLK_UNKNOWN,SDLK_UNKNOWN,
 	SDLK_LESS,SDLK_F11,SDLK_F12, Z, Z, Z, Z, Z, Z, Z,
 	/* 0x60: */
-	Z,Z,Z,Z, Z,Z,Z,Z, Z,Z,Z,Z, Z,Z,Z,Z,
-	/* 0x70: */
-	Z,Z,Z,Z, Z,Z,Z,Z, Z,Z,Z,Z, Z,Z,Z,Z,
-	/* 0x80: */
-	Z,Z,Z,Z, Z,Z,Z,Z, Z,Z,Z,Z, Z,Z,Z,Z,
-	/* 0x90: */
-	Z,Z,Z,Z, Z,Z,Z,Z, Z,Z,Z,Z, Z,Z,Z,Z,
-	/* 0xA0: */
-	Z,Z,Z,Z, Z,Z,Z,Z, Z,Z,Z,Z, Z,Z,Z,Z,
-	/* 0xB0: */
-	Z,Z,Z,Z, Z,Z,Z,Z, Z,Z,Z,Z, Z,Z,Z,Z,
-	/* 0xC0: */
-	Z,Z,Z,Z, Z,Z,Z,Z, Z,Z,Z,Z, Z,Z,Z,Z,
-	/* 0xD0: */
-	Z,Z,Z,Z, Z,Z,Z,Z, Z,Z,Z,Z, Z,Z//,Z,Z,
-	/* 0xE0: */
-	//Z,Z,Z,Z, Z,Z,Z,Z, Z,Z,Z,Z, Z,Z,Z,Z,
-	/* 0xF0: */
-//	Z,Z,Z,Z, Z,Z,Z,Z, Z,Z,Z,Z, Z,Z//,Z,Z
+    Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,
+    Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,
+    Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,
+    /* 0xb7: */
+    Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z
+    /* 0xd4: ... */
 
 };
-#endif
+#endif // IPHONEOS
 
+#endif
 #undef Z
 
 
@@ -433,19 +425,19 @@ SDLKey MapSDLCode(Bitu skey) {
 
 Bitu GetKeyCode(SDL_keysym keysym) {
 //	LOG_MSG("GetKeyCode %X %X %X",keysym.scancode,keysym.sym,keysym.mod);
-	if (usescancodes || keysym.sym & (1<<30)) {
+	if (usescancodes) {
 		Bitu key=(Bitu)keysym.scancode;
 		if (key==0
 #if defined (MACOSX) && !defined (IPHONEOS)
-		    /* On Mac on US keyboards, scancode 0 is actually the 'a'
-		     * key.  For good measure exclude all printables from this
-		     * condition. */
-		    && (keysym.sym < SDLK_SPACE || keysym.sym > SDLK_WORLD_95)
+            /* On Mac on US keyboards, scancode 0 is actually the 'a'
+             * key.  For good measure exclude all printables from this
+             * condition. */
+            && (keysym.sym < SDLK_SPACE)
 #endif
-			) {
-			/* try to retrieve key from symbolic key as scancode is zero */
-			if (keysym.sym<MAX_SDLKEYS) key=scancode_map[(Bitu)keysym.sym];
-		} 
+            ) {
+            /* try to retrieve key from symbolic key as scancode is zero */
+            if (keysym.sym<MAX_SDLKEYS) key=scancode_map[(Bitu)keysym.sym];
+        }
 #if !defined (WIN32) && !defined (MACOSX) && !defined(OS2)
 		/* Linux adds 8 to all scancodes */
 		else key-=8;
@@ -524,7 +516,7 @@ public:
 		if (strncasecmp(buf,configname,strlen(configname))) return 0;
 		StripWord(buf);char * num=StripWord(buf);
 		Bitu code=ConvDecWord(num);
-		if (usescancodes || code & (1<<30)) {
+		if (usescancodes) {
 #ifndef IPHONEOS
             if (code<MAX_SDLKEYS) code=scancode_map[code];
             else code=0;
@@ -2654,10 +2646,6 @@ void MAPPER_StartUp(Section * sec) {
 			sdlkey_map[0x63]=SDLK_PRINT;
 			sdlkey_map[0x64]=SDLK_RALT;
 
-			//Win-keys
-			sdlkey_map[0x7d]=SDLK_LSUPER;
-			sdlkey_map[0x7e]=SDLK_RSUPER;
-			sdlkey_map[0x7f]=SDLK_MENU;
 		} else {
 			sdlkey_map[0x5a]=SDLK_UP;
 			sdlkey_map[0x60]=SDLK_DOWN;

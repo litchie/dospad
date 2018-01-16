@@ -591,7 +591,16 @@ static void cache_init(bool enable) {
 			if (!cache_code_start_ptr)
 				cache_code_start_ptr=(Bit8u*)malloc(CACHE_TOTAL+CACHE_MAXSIZE+PAGESIZE_TEMP-1+PAGESIZE_TEMP);
 #else
-			cache_code_start_ptr=(Bit8u*)malloc(CACHE_TOTAL+CACHE_MAXSIZE+PAGESIZE_TEMP-1+PAGESIZE_TEMP);
+#ifndef IPHONEOS
+            cache_code_start_ptr=(Bit8u*)malloc(CACHE_TOTAL+CACHE_MAXSIZE+PAGESIZE_TEMP-1+PAGESIZE_TEMP);
+#else
+            cache_code_start_ptr=(Bit8u*)mmap(0,CACHE_TOTAL+CACHE_MAXSIZE+PAGESIZE_TEMP-1+PAGESIZE_TEMP,
+                                              PROT_WRITE|PROT_READ|PROT_EXEC,
+                                              MAP_PRIVATE|MAP_ANON, 0, 0);
+            if (cache_code_start_ptr==(Bit8u*)-1) {
+                E_Exit("Allocating dynamic cache failed");
+            }
+#endif
 #endif
 			if(!cache_code_start_ptr) E_Exit("Allocating dynamic cache failed");
 
@@ -601,9 +610,11 @@ static void cache_init(bool enable) {
 			cache_code_link_blocks=cache_code;
 			cache_code=cache_code+PAGESIZE_TEMP;
 
+#ifndef IPHONEOS
 #if (C_HAVE_MPROTECT)
-			if(mprotect(cache_code_link_blocks,CACHE_TOTAL+CACHE_MAXSIZE+PAGESIZE_TEMP,PROT_WRITE|PROT_READ|PROT_EXEC))
-				LOG_MSG("Setting excute permission on the code cache has failed");
+            if(mprotect(cache_code_link_blocks,CACHE_TOTAL+CACHE_MAXSIZE+PAGESIZE_TEMP,PROT_WRITE|PROT_READ|PROT_EXEC))
+            LOG_MSG("Setting excute permission on the code cache has failed");
+#endif
 #endif
 			CacheBlockDynRec * block=cache_getblock();
 			cache.block.first=block;

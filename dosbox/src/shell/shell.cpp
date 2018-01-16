@@ -388,6 +388,7 @@ void DOS_Shell::Run(void) {
                 if (Drives[drive]) {
                     Drives[drive]->EmptyCache();
                 }
+                printf("config: %s\n", dospad_launch_config);
                 FILE *fp=fopen(dospad_launch_config, "r");
                 if (fp != NULL)
                 {

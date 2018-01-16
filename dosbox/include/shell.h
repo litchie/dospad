@@ -117,6 +117,10 @@ public:
 	void CMD_PATH(char * args);
 	void CMD_SHIFT(char * args);
 	void CMD_VER(char * args);
+#ifdef IPHONEOS
+    void CMD_GET(char* args);
+    void CMD_UNZIP(char* args);
+#endif
 	void CMD_ADDKEY(char * args);
 	void CMD_VOL(char * args);
 	void CMD_PROMPT(char * args);

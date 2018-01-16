@@ -77,6 +77,9 @@ static SHELL_Cmd cmd_list[]={
 {	"VOL",	0,			&DOS_Shell::CMD_VOL,		"SHELL_CMD_VOL_HELP"},
 {	"PROMPT",	0,			&DOS_Shell::CMD_PROMPT,		"SHELL_CMD_PROMPT_HELP"},
 {	"LABEL",	0,			&DOS_Shell::CMD_LABEL,		"SHELL_CMD_LABEL_HELP"},
+#ifdef IPHONEOS
+    {       "UNZIP",        0,                      &DOS_Shell::CMD_UNZIP,          "SHELL_CMD_UNZIP_HELP"},
+#endif
 //{	"MORE",	1,			&DOS_Shell::CMD_MORE,		"SHELL_CMD_MORE_HELP"},
 {	"FOR",	1,			&DOS_Shell::CMD_FOR,		"SHELL_CMD_FOR_HELP"},
 {	"INT2FDBG",	1,			&DOS_Shell::CMD_INT2FDBG,	"Hook INT 2Fh for debugging purposes"},
@@ -812,6 +815,16 @@ void DOS_Shell::CMD_COPY(char * args) {
 		Execute(cmd,args);
 		return;
 	}
+#ifdef IPHONEOS
+    while (*args == ' ' || *args == '\t')
+    args++;
+    if (strncmp(args, "http://", 7)==0 || strncmp(args, "ftp://", 6) == 0
+        || strncmp(args, "www.",4) == 0)
+    {
+        CMD_GET(args);
+        return;
+    }
+#endif
 
 	HELP("COPY");
 	static char defaulttarget[] = ".";
@@ -1640,8 +1653,106 @@ void DOS_Shell::CMD_VER(char *args) {
 		word = StripWord(args);
 		dos.version.major = (Bit8u)(atoi(word));
 		dos.version.minor = (Bit8u)(atoi(args));
+#ifdef IPHONEOS
+    } else {
+        WriteOut("DOSPAD 1.0, based on ");
+        WriteOut(MSG_Get("SHELL_CMD_VER_VER"),VERSION,dos.version.major,dos.version.minor);
+    }
+#else
 	} else WriteOut(MSG_Get("SHELL_CMD_VER_VER"),VERSION,dos.version.major,dos.version.minor);
+#endif
 }
+
+#ifdef IPHONEOS
+extern "C" {
+    extern int dospad_get(const char*,const char*);
+    extern int dospad_unzip(const char*,const char*);
+}
+extern char dospad_error_msg[1000];
+
+void DOS_Shell::CMD_UNZIP(char *args) {
+    HELP("UNZIP");
+    if(args && *args) {
+        char *end;
+        char *p = args;
+        while (*p == ' ' || *p == '\t') p++;
+        if (*p == 0) {
+            WriteOut("No file provided");
+            return;
+        } else {
+            if (*p == '\"') {
+                p++;
+                end = p;
+                while (*end != 0 && *end != '\"')
+                end++;
+                if (*end != '\"') {
+                    WriteOut("Invalid file");
+                    return;
+                } else {
+                    *end = 0;
+                }
+            } else {
+                end = p+1;
+                while (*end != ' ' && *end != '\t' && *end != 0)
+                end++;
+            }
+            char dir_current[DOS_PATHLENGTH + 1];
+            DOS_GetCurrentDir(0,dir_current);
+            if (!dospad_unzip(p, dir_current)) {
+                WriteOut("%s", dospad_error_msg);
+            } else {
+                // Get current drive
+                Bit8u drive = DOS_GetDefaultDrive();
+                if (Drives[drive]) {
+                    Drives[drive]->EmptyCache();
+                }
+            }
+        }
+    }
+}
+
+
+void DOS_Shell::CMD_GET(char *args) {
+    if(args && *args) {
+        char *end;
+        char *p = args;
+        while (*p == ' ' || *p == '\t') p++;
+        if (*p == 0) {
+            WriteOut("No url provided");
+            return;
+        } else {
+            if (*p == '\"') {
+                p++;
+                end = p;
+                while (*end != 0 && *end != '\"')
+                end++;
+                if (*end != '\"') {
+                    WriteOut("Invalid url");
+                    return;
+                } else {
+                    *end = 0;
+                }
+            } else {
+                end = p+1;
+                while (*end != ' ' && *end != '\t' && *end != 0)
+                end++;
+                *end = 0;
+            }
+            char dir_current[DOS_PATHLENGTH + 1];
+            DOS_GetCurrentDir(0,dir_current);
+            if (!dospad_get(p, dir_current)) {
+                WriteOut("%s", dospad_error_msg);
+            } else {
+                // Get current drive
+                Bit8u drive = DOS_GetDefaultDrive();
+                if (Drives[drive]) {
+                    Drives[drive]->EmptyCache();
+                }
+            }
+        }
+    }
+}
+#endif
 
 void DOS_Shell::CMD_VOL(char *args){
 	HELP("VOL");

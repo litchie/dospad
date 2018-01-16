@@ -259,9 +259,14 @@ struct SDL_Block {
 #if defined (WIN32)
 	bool using_windib;
 #endif
-	// state of alt-keys for certain special handlings
-	Bit8u laltstate;
-	Bit8u raltstate;
+    // state of alt-keys for certain special handlings
+#ifdef IPHONEOS
+    Bit32u laltstate;
+    Bit32u raltstate;
+#else
+    Bit8u laltstate;
+    Bit8u raltstate;
+#endif
 };
 
 static SDL_Block sdl;
@@ -376,11 +381,19 @@ void GFX_SetTitle(Bit32s cycles,Bits frameskip,Bits timing,bool paused){
 	if(frameskip != -1) internal_frameskip = frameskip;
 	if(timing != -1) internal_timing = timing;
 if (true) { sprintf(title,"DOSBox %s, CPU speed: %8d cycles, Frameskip %2d, %8s",VERSION,internal_cycles,internal_frameskip,RunningProgram); SDL_WM_SetCaption(title,VERSION); return; }
-	if(CPU_CycleAutoAdjust) {
-		sprintf(title,"DOSBox %s, CPU : %s %8d%% = max %3d, %d FPS - %2d %8s %i.%i%%",VERSION,core_mode,CPU_CyclePercUsed,internal_cycles,frames,internal_frameskip,RunningProgram,internal_timing/100,internal_timing%100/10);
-	} else {
-		sprintf(title,"DOSBox %s, CPU : %s %8d = %8d, %d FPS - %2d %8s %i.%i%%",VERSION,core_mode,CPU_CyclesCur,internal_cycles,frames,internal_frameskip,RunningProgram,internal_timing/100,internal_timing%100/10);
-	}
+#ifdef IPHONEOS
+    if(CPU_CycleAutoAdjust) {
+        sprintf(title,"Cpu speed: max %3d%% cycles, Frameskip %2d",internal_cycles,internal_frameskip);
+    } else {
+        sprintf(title,"Cpu speed: %8d cycles, Frameskip %2d",internal_cycles,internal_frameskip);
+    }
+#else
+    if(CPU_CycleAutoAdjust) {
+        sprintf(title,"DOSBox %s, Cpu speed: max %3d%% cycles, Frameskip %2d, Program: %8s",VERSION,internal_cycles,internal_frameskip,RunningProgram);
+    } else {
+        sprintf(title,"DOSBox %s, Cpu speed: %8d cycles, Frameskip %2d, Program: %8s",VERSION,internal_cycles,internal_frameskip,RunningProgram);
+    }
+#endif
 
 	if(paused) strcat(title," PAUSED");
 	SDL_WM_SetCaption(title,VERSION);
@@ -2394,9 +2407,9 @@ static void GUI_StartUp(Section * sec) {
 #endif	//OPENGL
 	/* Initialize screen for first time */
 #ifdef IPHONEOS
-    sdl.surface=SDL_SetVideoMode_Wrap(640,400,16,SDL_RESIZABLE);
+    sdl.surface=SDL_SetVideoMode(640,400,16,0);
 #else
-    sdl.surface=SDL_SetVideoMode_Wrap(640,400,0,SDL_RESIZABLE);
+    sdl.surface=SDL_SetVideoMode(640,400,0,0);
 #endif
 	if (sdl.surface == NULL) E_Exit("Could not initialize video: %s",SDL_GetError());
 	sdl.desktop.bpp=sdl.surface->format->BitsPerPixel;
@@ -3238,7 +3251,11 @@ static BOOL WINAPI ConsoleEventHandler(DWORD event) {
 
 /* static variable to show wether there is not a valid stdout.
  * Fixes some bugs when -noconsole is used in a read only directory */
-bool no_stdout = false;
+#ifdef IPHONEOS
+static bool no_stdout = false;
+#else
+static bool no_stdout = false;
+#endif
 void GFX_ShowMsg(char const* format,...) {
 	char buf[512];
 	va_list msg;

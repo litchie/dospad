@@ -23,6 +23,12 @@
 #include <string>
 #include <stdlib.h>
 
+#ifdef IPHONEOS
+
+extern "C" const char *dospad_config_dir();
+
+#endif
+
 #ifdef WIN32
 #ifndef _WIN32_IE
 #define _WIN32_IE 0x0400
@@ -58,6 +64,8 @@ void Cross::GetPlatformConfigDir(std::string& in) {
 #ifdef WIN32
 	W32_ConfDir(in,false);
 	in += "\\DOSBox";
+#elif defined(IPHONEOS)
+    in = dospad_config_dir();
 #elif defined(MACOSX)
 	in = "~/Library/Preferences";
 	ResolveHomedir(in);
@@ -71,6 +79,8 @@ void Cross::GetPlatformConfigDir(std::string& in) {
 void Cross::GetPlatformConfigName(std::string& in) {
 #ifdef WIN32
 #define DEFAULT_CONFIG_FILE "dosbox-" VERSION ".conf"
+#elif defined(IPHONEOS)
+#define DEFAULT_CONFIG_FILE "dospad.cfg"
 #elif defined(MACOSX)
 #define DEFAULT_CONFIG_FILE "DOSBox " VERSION " Preferences"
 #else /*linux freebsd*/
@@ -84,6 +94,9 @@ void Cross::CreatePlatformConfigDir(std::string& in) {
 	W32_ConfDir(in,true);
 	in += "\\DOSBox";
 	_mkdir(in.c_str());
+#elif defined(IPHONEOS)
+    in = dospad_config_dir();
+    // Don't create it.
 #elif defined(MACOSX)
 	in = "~/Library/Preferences/";
 	ResolveHomedir(in);
