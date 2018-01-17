@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2002-2010  The DOSBox Team
+ *  Copyright (C) 2002-2015  The DOSBox Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -16,7 +16,6 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-/* $Id: sdl_mapper.cpp,v 1.60 2009-06-01 10:25:51 qbix79 Exp $ */
 
 #include <vector>
 #include <list>
@@ -33,17 +32,20 @@
 #include "dosbox.h"
 #include "video.h"
 #include "keyboard.h"
+#include "pic.h"
 #include "joystick.h"
 #include "support.h"
 #include "mapper.h"
 #include "setup.h"
+#include "pic.h"
 
 enum {
 	CLR_BLACK=0,
-	CLR_WHITE=1,
-	CLR_RED=2,
-	CLR_BLUE=3,
-	CLR_GREEN=4
+	CLR_GREY=1,
+	CLR_WHITE=2,
+	CLR_RED=3,
+	CLR_BLUE=4,
+	CLR_GREEN=5
 };
 
 enum BB_Types {
@@ -68,6 +70,8 @@ enum BC_Types {
 #define MAXACTIVE 16
 #define MAXBUTTON 32
 #define MAXBUTTON_CAP 16
+#define MAXAXIS 8
+#define MAXHAT 2
 
 class CEvent;
 class CHandlerEvent;
@@ -104,7 +108,7 @@ public:
 		current_value=0;
 	}
 	void AddBind(CBind * bind);
-	virtual ~CEvent() {}
+	virtual ~CEvent();
 	virtual void Active(bool yesno)=0;
 	virtual void ActivateEvent(bool ev_trigger,bool skip_action)=0;
 	virtual void DeActivateEvent(bool ev_trigger)=0;
@@ -128,6 +132,7 @@ protected:
 class CTriggeredEvent : public CEvent {
 public:
 	CTriggeredEvent(char const * const _entry) : CEvent(_entry) {}
+	virtual ~CTriggeredEvent() {}
 	virtual bool IsTrigger(void) {
 		return true;
 	}
@@ -154,6 +159,7 @@ public:
 class CContinuousEvent : public CEvent {
 public:
 	CContinuousEvent(char const * const _entry) : CEvent(_entry) {}
+	virtual ~CContinuousEvent() {}
 	virtual bool IsTrigger(void) {
 		return false;
 	}
@@ -265,6 +271,14 @@ public:
 	bool active,holding;
 };
 
+CEvent::~CEvent() {
+	CBindList_it it;
+
+	while ((it=bindlist.begin()) != bindlist.end()) {
+		delete (*it);
+		bindlist.erase(it);
+	}
+}
 
 void CEvent::AddBind(CBind * bind) {
 	bindlist.push_front(bind);
@@ -283,6 +297,7 @@ public:
 	CBindGroup() {
 		bindgroups.push_back(this);
 	}
+	virtual ~CBindGroup (void) { }
 	void ActivateBindList(CBindList * list,Bits value,bool ev_trigger);
 	void DeactivateBindList(CBindList * list,bool ev_trigger);
 	virtual CBind * CreateConfigBind(char *&buf)=0;
@@ -291,7 +306,6 @@ public:
 	virtual bool CheckEvent(SDL_Event * event)=0;
 	virtual const char * ConfigStart(void)=0;
 	virtual const char * BindStart(void)=0;
-	virtual ~CBindGroup (void) { }
 
 protected:
 
@@ -358,8 +372,7 @@ static SDLKey sdlkey_map[]={
 #define MAX_SCANCODES (0x80+4)
 /* Make sure that the table above has the expected size.  This
    expression will raise a compiler error if the condition is false.  */
-
-typedef char assert_right_size [MAX_SCANCODES == (sizeof(sdlkey_map)/sizeof(sdlkey_map[0]))? 1 : -1];
+typedef char assert_right_size [MAX_SCANCODES == (sizeof(sdlkey_map)/sizeof(sdlkey_map[0]))	? 1 : -1];
 
 #else // !MACOSX
 
@@ -386,13 +399,15 @@ static SDLKey sdlkey_map[MAX_SCANCODES]={SDLK_UNKNOWN,SDLK_ESCAPE,
 	SDLK_KP7,SDLK_KP8,SDLK_KP9,SDLK_KP_MINUS,SDLK_KP4,SDLK_KP5,SDLK_KP6,SDLK_KP_PLUS,
 	SDLK_KP1,SDLK_KP2,SDLK_KP3,SDLK_KP0,SDLK_KP_PERIOD,
 	SDLK_UNKNOWN,SDLK_UNKNOWN,
-	SDLK_LESS,SDLK_F11,SDLK_F12,
-	Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,
-	Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,
-	Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,
-	/* 0xb7: */
-	Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z
-	/* 0xd4: ... */
+	SDLK_LESS,SDLK_F11,SDLK_F12, Z, Z, Z, Z, Z, Z, Z,
+	/* 0x60: */
+    Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,
+    Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,
+    Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,
+    /* 0xb7: */
+    Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z
+    /* 0xd4: ... */
+
 };
 #endif // IPHONEOS
 
@@ -401,6 +416,7 @@ static SDLKey sdlkey_map[MAX_SCANCODES]={SDLK_UNKNOWN,SDLK_ESCAPE,
 
 
 SDLKey MapSDLCode(Bitu skey) {
+//	LOG_MSG("MapSDLCode %d %X",skey,skey);
 	if (usescancodes) {
 		if (skey<MAX_SCANCODES) return sdlkey_map[skey];
 		else return SDLK_UNKNOWN;
@@ -408,19 +424,20 @@ SDLKey MapSDLCode(Bitu skey) {
 }
 
 Bitu GetKeyCode(SDL_keysym keysym) {
+//	LOG_MSG("GetKeyCode %X %X %X",keysym.scancode,keysym.sym,keysym.mod);
 	if (usescancodes) {
 		Bitu key=(Bitu)keysym.scancode;
 		if (key==0
 #if defined (MACOSX) && !defined (IPHONEOS)
-		    /* On Mac on US keyboards, scancode 0 is actually the 'a'
-		     * key.  For good measure exclude all printables from this
-		     * condition. */
-		    && (keysym.sym < SDLK_SPACE)
+            /* On Mac on US keyboards, scancode 0 is actually the 'a'
+             * key.  For good measure exclude all printables from this
+             * condition. */
+            && (keysym.sym < SDLK_SPACE)
 #endif
-			) {
-			/* try to retrieve key from symbolic key as scancode is zero */
-			if (keysym.sym<MAX_SDLKEYS) key=scancode_map[(Bitu)keysym.sym];
-		} 
+            ) {
+            /* try to retrieve key from symbolic key as scancode is zero */
+            if (keysym.sym<MAX_SDLKEYS) key=scancode_map[(Bitu)keysym.sym];
+        }
 #if !defined (WIN32) && !defined (MACOSX) && !defined(OS2)
 		/* Linux adds 8 to all scancodes */
 		else key-=8;
@@ -466,6 +483,7 @@ public:
 	CKeyBind(CBindList * _list,SDLKey _key) : CBind(_list) {
 		key = _key;
 	}
+	virtual ~CKeyBind() {}
 	void BindName(char * buf) {
 		sprintf(buf,"Key %s",SDL_GetKeyName(MapSDLCode((Bitu)key)));
 	}
@@ -479,13 +497,13 @@ public:
 class CKeyBindGroup : public  CBindGroup {
 public:
 #ifdef IPHONEOS
-	CKeyBindGroup() : CBindGroup () {
-            int _keys = 512;
-            lists=new CBindList[_keys];
-            for (Bitu i=0;i<_keys;i++) lists[i].clear();
-            keys=_keys;
-            configname="key";
-	}
+    CKeyBindGroup() : CBindGroup () {
+        int _keys = 512;
+        lists=new CBindList[_keys];
+        for (Bitu i=0;i<_keys;i++) lists[i].clear();
+        keys=_keys;
+        configname="key";
+    }
 #endif
 	CKeyBindGroup(Bitu _keys) : CBindGroup (){
 		lists=new CBindList[_keys];
@@ -493,15 +511,15 @@ public:
 		keys=_keys;
 		configname="key";
 	}
-	~CKeyBindGroup() { delete[] lists; }
+	virtual ~CKeyBindGroup() { delete[] lists; }
 	CBind * CreateConfigBind(char *& buf) {
 		if (strncasecmp(buf,configname,strlen(configname))) return 0;
 		StripWord(buf);char * num=StripWord(buf);
 		Bitu code=ConvDecWord(num);
 		if (usescancodes) {
 #ifndef IPHONEOS
-			if (code<MAX_SDLKEYS) code=scancode_map[code];
-			else code=0;
+            if (code<MAX_SDLKEYS) code=scancode_map[code];
+            else code=0;
 #else
             code = SDL_GetScancodeFromKey(code);
 #endif
@@ -517,7 +535,7 @@ public:
 		if (event->type!=SDL_KEYDOWN && event->type!=SDL_KEYUP) return false;
 		Bitu key=GetKeyCode(event->key.keysym);
 		//LOG_MSG("key type %i is %x [%x %x]",event->type,key,event->key.keysym.sym,event->key.keysym.scancode);
-		//assert(Bitu(event->key.keysym.sym)<keys);
+		assert(Bitu(event->key.keysym.scancode)<keys);
 		if (event->type==SDL_KEYDOWN) ActivateBindList(&lists[key],0x7fff,true);
 		else DeactivateBindList(&lists[key],true);
 		return 0;
@@ -540,11 +558,12 @@ protected:
 };
 
 #define MAX_VJOY_BUTTONS 8
-
+#define MAX_VJOY_HAT 16
+#define MAX_VJOY_AXIS 8
 static struct {
 	bool button_pressed[MAX_VJOY_BUTTONS];
-	Bit16s axis_pos[8];
-	bool hat_pressed[16];
+	Bit16s axis_pos[MAX_VJOY_AXIS];
+	bool hat_pressed[MAX_VJOY_HAT];
 } virtual_joysticks[2];
 
 
@@ -559,6 +578,7 @@ public:
 		axis = _axis;
 		positive = _positive;
 	}
+	virtual ~CJAxisBind() {}
 	void ConfigName(char * buf) {
 		sprintf(buf,"%s axis %d %d",group->ConfigStart(),axis,positive ? 1 : 0);
 	}
@@ -577,6 +597,7 @@ public:
 		group = _group;
 		button=_button;
 	}
+	virtual ~CJButtonBind() {}
 	void ConfigName(char * buf) {
 		sprintf(buf,"%s button %d",group->ConfigStart(),button);
 	}
@@ -601,6 +622,7 @@ public:
 		else if (dir&SDL_HAT_LEFT) dir=SDL_HAT_LEFT;
 		else E_Exit("MAPPER:JOYSTICK:Invalid hat position");
 	}
+	virtual ~CJHatBind() {}
 	void ConfigName(char * buf) {
 		sprintf(buf,"%s hat %d %d",group->ConfigStart(),hat,dir);
 	}
@@ -629,13 +651,15 @@ public:
 		button_wrap=0;
 		button_cap=0; axes_cap=0; hats_cap=0;
 		emulated_buttons=0; emulated_axes=0; emulated_hats=0;
+		pos_axis_lists = neg_axis_lists = NULL; /* <- Initialize the pointers to NULL. The C++ compiler won't do it for us. */
+		button_lists = hat_lists = NULL;
 
 		is_dummy=_dummy;
 		if (_dummy) return;
 
 		// initialize binding lists and position data
-		pos_axis_lists=new CBindList[4];
-		neg_axis_lists=new CBindList[4];
+		pos_axis_lists=new CBindList[MAXAXIS];
+		neg_axis_lists=new CBindList[MAXAXIS];
 		button_lists=new CBindList[MAXBUTTON];
 		hat_lists=new CBindList[4];
 		Bitu i;
@@ -644,7 +668,7 @@ public:
 			old_button_state[i]=0;
 		}
 		for(i=0;i<16;i++) old_hat_state[i]=0;
-		for (i=0; i<4; i++) {
+		for (i=0; i<MAXAXIS; i++) {
 			old_pos_axis_state[i]=false;
 			old_neg_axis_state[i]=false;
 		}
@@ -662,8 +686,16 @@ public:
 		}
 
 		axes=SDL_JoystickNumAxes(sdl_joystick);
-		buttons=SDL_JoystickNumButtons(sdl_joystick);
+		if (axes > MAXAXIS) axes = MAXAXIS;
+		axes_cap=emulated_axes;
+		if (axes_cap>axes) axes_cap=axes;
+
 		hats=SDL_JoystickNumHats(sdl_joystick);
+		if (hats > MAXHAT) hats = MAXHAT;
+		hats_cap=emulated_hats;
+		if (hats_cap>hats) hats_cap=hats;
+
+		buttons=SDL_JoystickNumButtons(sdl_joystick);
 		button_wrap=buttons;
 		button_cap=buttons;
 		if (button_wrapping_enabled) {
@@ -671,18 +703,15 @@ public:
 			if (buttons>MAXBUTTON_CAP) button_cap = MAXBUTTON_CAP;
 		}
 		if (button_wrap > MAXBUTTON) button_wrap = MAXBUTTON;
-		axes_cap=emulated_axes;
-		if (axes_cap>axes) axes_cap=axes;
-		hats_cap=emulated_hats;
-		if (hats_cap>hats) hats_cap=hats;
+
 		LOG_MSG("Using joystick %s with %d axes, %d buttons and %d hat(s)",SDL_JoystickName(stick),axes,buttons,hats);
 	}
-	~CStickBindGroup() {
+	virtual ~CStickBindGroup() {
 		SDL_JoystickClose(sdl_joystick);
-		delete[] pos_axis_lists;
-		delete[] neg_axis_lists;
-		delete[] button_lists;
-		delete[] hat_lists;
+		if (pos_axis_lists != NULL) delete[] pos_axis_lists;
+		if (neg_axis_lists != NULL) delete[] neg_axis_lists;
+		if (button_lists != NULL) delete[] button_lists;
+		if (hat_lists != NULL) delete[] hat_lists;
 	}
 
 	CBind * CreateConfigBind(char *& buf) {
@@ -707,7 +736,7 @@ public:
 		if (event->type==SDL_JOYAXISMOTION) {
 			if (event->jaxis.which!=stick) return 0;
 #if defined (REDUCE_JOYSTICK_POLLING)
-			if (event->jaxis.axis>=emulated_axes) return 0;
+			if (event->jaxis.axis>=axes) return 0;
 #endif
 			if (abs(event->jaxis.value)<25000) return 0;
 			return CreateAxisBind(event->jaxis.axis,event->jaxis.value>0);
@@ -799,7 +828,7 @@ public:
 			}
 		}
 
-		for (i=0; i<axes_cap; i++) {
+		for (i=0; i<axes; i++) {
 			Sint16 caxis_pos=SDL_JoystickGetAxis(sdl_joystick,i);
 			/* activate bindings for joystick position */
 			if (caxis_pos>1) {
@@ -831,7 +860,7 @@ public:
 			}
 		}
 
-		for (i=0; i<hats_cap; i++) {
+		for (i=0; i<hats; i++) {
 			Uint8 chat_state=SDL_JoystickGetHat(sdl_joystick,i);
 
 			/* activate binding if hat state has changed */
@@ -857,7 +886,7 @@ public:
 
 private:
 	CBind * CreateAxisBind(Bitu axis,bool positive) {
-		if (axis<emulated_axes) {
+		if (axis<axes) {
 			if (positive) return new CJAxisBind(&pos_axis_lists[axis],this,axis,positive);
 			else return new CJAxisBind(&neg_axis_lists[axis],this,axis,positive);
 		}
@@ -896,8 +925,8 @@ protected:
 	char configname[10];
 	Bitu button_autofire[MAXBUTTON];
 	bool old_button_state[MAXBUTTON];
-	bool old_pos_axis_state[16];
-	bool old_neg_axis_state[16];
+	bool old_pos_axis_state[MAXAXIS];
+	bool old_neg_axis_state[MAXAXIS];
 	Uint8 old_hat_state[16];
 	bool is_dummy;
 };
@@ -916,6 +945,7 @@ public:
 
 		JOYSTICK_Enable(1,true);
 	}
+	virtual ~C4AxisBindGroup() {}
 
 	bool CheckEvent(SDL_Event * event) {
 		SDL_JoyAxisEvent * jaxis = NULL;
@@ -989,6 +1019,7 @@ public:
 		JOYSTICK_Enable(1,true);
 		JOYSTICK_Move_Y(1,1.0);
 	}
+	virtual ~CFCSBindGroup() {}
 
 	bool CheckEvent(SDL_Event * event) {
 		SDL_JoyAxisEvent * jaxis = NULL;
@@ -1125,6 +1156,7 @@ public:
 		JOYSTICK_Enable(1,true);
 		button_state=0;
 	}
+	virtual ~CCHBindGroup() {}
 
 	bool CheckEvent(SDL_Event * event) {
 		SDL_JoyAxisEvent * jaxis = NULL;
@@ -1265,7 +1297,6 @@ void CBindGroup::ActivateBindList(CBindList * list,Bits value,bool ev_trigger) {
 		}
 	}
 	for (it=list->begin();it!=list->end();it++) {
-	/*BUG:CRASH if keymapper key is removed*/
 		if (validmod==(*it)->mods) (*it)->ActivateBind(value,ev_trigger);
 	}
 }
@@ -1319,6 +1350,7 @@ public:
 	virtual bool OnTop(Bitu _x,Bitu _y) {
 		return ( enabled && (_x>=x) && (_x<x+dx) && (_y>=y) && (_y<y+dy));
 	}
+	virtual void BindColor(void) {}
 	virtual void Click(void) {}
 	void Enable(bool yes) { 
 		enabled=yes; 
@@ -1334,6 +1366,7 @@ protected:
 class CTextButton : public CButton {
 public:
 	CTextButton(Bitu _x,Bitu _y,Bitu _dx,Bitu _dy,const char * _text) : CButton(_x,_y,_dx,_dy) { text=_text;}
+	virtual ~CTextButton() {}
 	void Draw(void) {
 		if (!enabled) return;
 		CButton::Draw();
@@ -1352,8 +1385,12 @@ public:
 	: CTextButton(_x,_y,_dx,_dy,_text) 	{ 
 		event=_event;	
 	}
+	void BindColor(void) {
+		this->SetColor(event->bindlist.begin()==event->bindlist.end() ? CLR_GREY : CLR_WHITE);
+	}
+	virtual ~CEventButton() {}
 	void Click(void) {
-		if (last_clicked) last_clicked->SetColor(CLR_WHITE);
+		if (last_clicked) last_clicked->BindColor();
 		this->SetColor(CLR_GREEN);
 		SetActiveEvent(event);
 		last_clicked=this;
@@ -1367,6 +1404,7 @@ public:
 	CCaptionButton(Bitu _x,Bitu _y,Bitu _dx,Bitu _dy) : CButton(_x,_y,_dx,_dy){
 		caption[0]=0;
 	}
+	virtual ~CCaptionButton() {}
 	void Change(const char * format,...) GCC_ATTRIBUTE(__format__(__printf__,2,3));
 
 	void Draw(void) {
@@ -1394,6 +1432,7 @@ public:
 	: CTextButton(_x,_y,_dx,_dy,_text) 	{ 
 		type=_type;
 	}
+	virtual ~CBindButton() {}
 	void Click(void) {
 		switch (type) {
 		case BB_Add: 
@@ -1436,6 +1475,7 @@ public:
 	: CTextButton(_x,_y,_dx,_dy,_text) 	{ 
 		type=_type;
 	}
+	virtual ~CCheckButton() {}
 	void Draw(void) {
 		if (!enabled) return;
 		bool checked=false;
@@ -1488,6 +1528,7 @@ public:
 	CKeyEvent(char const * const _entry,KBD_KEYS _key) : CTriggeredEvent(_entry) {
 		key=_key;
 	}
+	virtual ~CKeyEvent() {}
 	void Active(bool yesno) {
 		KEYBOARD_AddKey(key,yesno);
 	};
@@ -1505,6 +1546,7 @@ public:
 			_opposite_axis->SetOppositeAxis(this);
 		}
 	}
+	virtual ~CJAxisEvent() {}
 	void Active(bool /*moved*/) {
 		virtual_joysticks[stick].axis_pos[axis]=(Bit16s)(GetValue()*(positive?1:-1));
 	}
@@ -1530,6 +1572,7 @@ public:
 		stick=_stick;
 		button=_button;
 	}
+	virtual ~CJButtonEvent() {}
 	void Active(bool pressed) {
 		virtual_joysticks[stick].button_pressed[button]=pressed;
 	}
@@ -1544,6 +1587,7 @@ public:
 		hat=_hat;
 		dir=_dir;
 	}
+	virtual ~CJHatEvent() {}
 	void Active(bool pressed) {
 		virtual_joysticks[stick].hat_pressed[(hat<<2)+dir]=pressed;
 	}
@@ -1557,6 +1601,7 @@ public:
 	CModEvent(char const * const _entry,Bitu _wmod) : CTriggeredEvent(_entry) {
 		wmod=_wmod;
 	}
+	virtual ~CModEvent() {}
 	void Active(bool yesno) {
 		if (yesno) mapper.mods|=(1 << (wmod-1));
 		else mapper.mods&=~(1 << (wmod-1));
@@ -1574,6 +1619,7 @@ public:
 		buttonname=_buttonname;
 		handlergroup.push_back(this);
 	}
+	virtual ~CHandlerEvent() {}
 	void Active(bool yesno) {
 		(*handler)(yesno);
 	};
@@ -1594,6 +1640,9 @@ public:
 		case MK_kpminus:
 			key=SDLK_KP_MINUS;
 			break;
+		case MK_equals:
+			key=SDLK_EQUALS;
+			break;
 		case MK_scrolllock:
 			key=SDLK_SCROLLOCK;
 			break;
@@ -1602,6 +1651,21 @@ public:
 			break;
 		case MK_printscreen:
 			key=SDLK_PRINT;
+			break;
+		case MK_home: 
+			key=SDLK_HOME; 
+			break;
+		case MK_1:
+			key=SDLK_1;
+			break;
+		case MK_2:
+			key=SDLK_2;
+			break;
+		case MK_3:
+			key=SDLK_3;
+			break;
+		case MK_4:
+			key=SDLK_4;
 			break;
 		}
 		sprintf(buf,"%s \"key %d%s%s%s\"",
@@ -1747,7 +1811,7 @@ struct KeyBlock {
 	KBD_KEYS key;
 };
 static KeyBlock combo_f[12]={
-	{"F1","f1",KBD_f1},		{"F2","f2",KBD_f2},		{"F3","f3",KBD_f3},		
+	{"F1","f1",KBD_f1},		{"F2","f2",KBD_f2},		{"F3","f3",KBD_f3},
 	{"F4","f4",KBD_f4},		{"F5","f5",KBD_f5},		{"F6","f6",KBD_f6},
 	{"F7","f7",KBD_f7},		{"F8","f8",KBD_f8},		{"F9","f9",KBD_f9},
 	{"F10","f10",KBD_f10},	{"F11","f11",KBD_f11},	{"F12","f12",KBD_f12},
@@ -1757,32 +1821,32 @@ static KeyBlock combo_1[14]={
 	{"`~","grave",KBD_grave},	{"1!","1",KBD_1},	{"2@","2",KBD_2},
 	{"3#","3",KBD_3},			{"4$","4",KBD_4},	{"5%","5",KBD_5},
 	{"6^","6",KBD_6},			{"7&","7",KBD_7},	{"8*","8",KBD_8},
-	{"9(","9",KBD_9},			{"0)","0",KBD_0},	{"-_","minus",KBD_minus},	
+	{"9(","9",KBD_9},			{"0)","0",KBD_0},	{"-_","minus",KBD_minus},
 	{"=+","equals",KBD_equals},	{"\x1B","bspace",KBD_backspace},
 };
 
 static KeyBlock combo_2[12]={
-	{"q","q",KBD_q},			{"w","w",KBD_w},	{"e","e",KBD_e},
-	{"r","r",KBD_r},			{"t","t",KBD_t},	{"y","y",KBD_y},
-	{"u","u",KBD_u},			{"i","i",KBD_i},	{"o","o",KBD_o},	
-	{"p","p",KBD_p},			{"[","lbracket",KBD_leftbracket},	
-	{"]","rbracket",KBD_rightbracket},	
+	{"Q","q",KBD_q},			{"W","w",KBD_w},	{"E","e",KBD_e},
+	{"R","r",KBD_r},			{"T","t",KBD_t},	{"Y","y",KBD_y},
+	{"U","u",KBD_u},			{"I","i",KBD_i},	{"O","o",KBD_o},
+	{"P","p",KBD_p},			{"[{","lbracket",KBD_leftbracket},
+	{"]}","rbracket",KBD_rightbracket},	
 };
 
 static KeyBlock combo_3[12]={
-	{"a","a",KBD_a},			{"s","s",KBD_s},	{"d","d",KBD_d},
-	{"f","f",KBD_f},			{"g","g",KBD_g},	{"h","h",KBD_h},
-	{"j","j",KBD_j},			{"k","k",KBD_k},	{"l","l",KBD_l},
-	{";","semicolon",KBD_semicolon},				{"'","quote",KBD_quote},
-	{"\\","backslash",KBD_backslash},	
+	{"A","a",KBD_a},			{"S","s",KBD_s},	{"D","d",KBD_d},
+	{"F","f",KBD_f},			{"G","g",KBD_g},	{"H","h",KBD_h},
+	{"J","j",KBD_j},			{"K","k",KBD_k},	{"L","l",KBD_l},
+	{";:","semicolon",KBD_semicolon},				{"'\"","quote",KBD_quote},
+	{"\\|","backslash",KBD_backslash},
 };
 
 static KeyBlock combo_4[11]={
-	{"<","lessthan",KBD_extra_lt_gt},
-	{"z","z",KBD_z},			{"x","x",KBD_x},	{"c","c",KBD_c},
-	{"v","v",KBD_v},			{"b","b",KBD_b},	{"n","n",KBD_n},
-	{"m","m",KBD_m},			{",","comma",KBD_comma},
-	{".","period",KBD_period},						{"/","slash",KBD_slash},		
+	{"<>","lessthan",KBD_extra_lt_gt},
+	{"Z","z",KBD_z},			{"X","x",KBD_x},	{"C","c",KBD_c},
+	{"V","v",KBD_v},			{"B","b",KBD_b},	{"N","n",KBD_n},
+	{"M","m",KBD_m},			{",<","comma",KBD_comma},
+	{".>","period",KBD_period},						{"/?","slash",KBD_slash},
 };
 
 static CKeyEvent * caps_lock_event=NULL;
@@ -1792,7 +1856,7 @@ static void CreateLayout(void) {
 	Bitu i;
 	/* Create the buttons for the Keyboard */
 #define BW 28
-#define BH 20
+#define BH 18
 #define DX 5
 #define PX(_X_) ((_X_)*BW + DX)
 #define PY(_Y_) (10+(_Y_)*BH)
@@ -1814,9 +1878,12 @@ static void CreateLayout(void) {
 
 	/* Last Row */
 	AddKeyButtonEvent(PX(0) ,PY(5),BW*2,BH,"CTRL","lctrl",KBD_leftctrl);
-	AddKeyButtonEvent(PX(3) ,PY(5),BW*2,BH,"ALT","lalt",KBD_leftalt);
-	AddKeyButtonEvent(PX(5) ,PY(5),BW*6,BH,"SPACE","space",KBD_space);
-	AddKeyButtonEvent(PX(11),PY(5),BW*2,BH,"ALT","ralt",KBD_rightalt);
+	AddKeyButtonEvent(PX(2) ,PY(5),BW*1,BH,"WIN","lwindows",KBD_lwindows);
+	AddKeyButtonEvent(PX(3) ,PY(5),BW*1,BH,"ALT","lalt",KBD_leftalt);
+	AddKeyButtonEvent(PX(4) ,PY(5),BW*7,BH,"SPACE","space",KBD_space);
+	AddKeyButtonEvent(PX(11),PY(5),BW*1,BH,"ALT","ralt",KBD_rightalt);
+	AddKeyButtonEvent(PX(12),PY(5),BW*1,BH,"WIN","rwindows",KBD_rwindows);
+	AddKeyButtonEvent(PX(13),PY(5),BW*1,BH,"WMN","rwinmenu",KBD_rwinmenu);
 	AddKeyButtonEvent(PX(14),PY(5),BW*2,BH,"CTRL","rctrl",KBD_rightctrl);
 
 	/* Arrow Keys */
@@ -1826,6 +1893,7 @@ static void CreateLayout(void) {
 	AddKeyButtonEvent(PX(XO+0),PY(YO),BW,BH,"PRT","printscreen",KBD_printscreen);
 	AddKeyButtonEvent(PX(XO+1),PY(YO),BW,BH,"SCL","scrolllock",KBD_scrolllock);
 	AddKeyButtonEvent(PX(XO+2),PY(YO),BW,BH,"PAU","pause",KBD_pause);
+	AddKeyButtonEvent(PX(XO+3),PY(YO),BW,BH,"NEQ","kp_equals",KBD_kpequals);
 	AddKeyButtonEvent(PX(XO+0),PY(YO+1),BW,BH,"INS","insert",KBD_insert);
 	AddKeyButtonEvent(PX(XO+1),PY(YO+1),BW,BH,"HOM","home",KBD_home);
 	AddKeyButtonEvent(PX(XO+2),PY(YO+1),BW,BH,"PUP","pageup",KBD_pageup);
@@ -1858,6 +1926,35 @@ static void CreateLayout(void) {
 	AddKeyButtonEvent(PX(XO+3),PY(YO+3),BW,BH*2,"ENT","kp_enter",KBD_kpenter);
 	AddKeyButtonEvent(PX(XO),PY(YO+4),BW*2,BH,"0","kp_0",KBD_kp0);
 	AddKeyButtonEvent(PX(XO+2),PY(YO+4),BW,BH,".","kp_period",KBD_kpperiod);
+#undef XO
+#undef YO
+#define XO 5
+#define YO 7
+	/* F13-F24 block */
+	AddKeyButtonEvent(PX(XO+0),PY(YO+0),BW,BH,"F13","f13",KBD_f13);
+	AddKeyButtonEvent(PX(XO+1),PY(YO+0),BW,BH,"F14","f14",KBD_f14);
+	AddKeyButtonEvent(PX(XO+2),PY(YO+0),BW,BH,"F15","f15",KBD_f15);
+	AddKeyButtonEvent(PX(XO+3),PY(YO+0),BW,BH,"F16","f16",KBD_f16);
+	AddKeyButtonEvent(PX(XO+0),PY(YO+1),BW,BH,"F17","f17",KBD_f17);
+	AddKeyButtonEvent(PX(XO+1),PY(YO+1),BW,BH,"F18","f18",KBD_f18);
+	AddKeyButtonEvent(PX(XO+2),PY(YO+1),BW,BH,"F19","f19",KBD_f19);
+	AddKeyButtonEvent(PX(XO+3),PY(YO+1),BW,BH,"F20","f20",KBD_f20);
+	AddKeyButtonEvent(PX(XO+0),PY(YO+2),BW,BH,"F21","f21",KBD_f21);
+	AddKeyButtonEvent(PX(XO+1),PY(YO+2),BW,BH,"F22","f22",KBD_f22);
+	AddKeyButtonEvent(PX(XO+2),PY(YO+2),BW,BH,"F23","f23",KBD_f23);
+	AddKeyButtonEvent(PX(XO+3),PY(YO+2),BW,BH,"F24","f24",KBD_f24);
+#undef XO
+#undef YO
+#define XO 0
+#define YO 13
+	/* Japanese keys */
+	AddKeyButtonEvent(PX(XO+0),PY(YO+0),BW*3,BH,"HANKAKU", "jp_hankaku", KBD_jp_hankaku);
+	AddKeyButtonEvent(PX(XO+0),PY(YO+1),BW*3,BH,"MUHENKAN","jp_muhenkan",KBD_jp_muhenkan);
+	AddKeyButtonEvent(PX(XO+0),PY(YO+2),BW*3,BH,"HENKAN",  "jp_henkan",  KBD_jp_henkan);
+	AddKeyButtonEvent(PX(XO+3),PY(YO+0),BW*3,BH,"HIRAGANA","jp_hiragana",KBD_jp_hiragana);
+	/* Korean */
+	AddKeyButtonEvent(PX(XO+3),PY(YO+1),BW*3,BH,"HANCHA",  "kor_hancha", KBD_kor_hancha);
+	AddKeyButtonEvent(PX(XO+3),PY(YO+2),BW*3,BH,"HANYONG", "kor_hanyong",KBD_kor_hanyong);
 #undef XO
 #undef YO
 #define XO 10
@@ -1927,14 +2024,17 @@ static void CreateLayout(void) {
 	AddJHatButton(PX(XO+8+2),PY(YO+1),BW,BH,"RGT",0,0,1);
 
 	/* Labels for the joystick */
+	CTextButton * btn;
 	if (joytype ==JOY_2AXIS) {
 		new CTextButton(PX(XO+0),PY(YO-1),3*BW,20,"Joystick 1");
 		new CTextButton(PX(XO+4),PY(YO-1),3*BW,20,"Joystick 2");
-		new CTextButton(PX(XO+8),PY(YO-1),3*BW,20,"Disabled");
+		btn=new CTextButton(PX(XO+8),PY(YO-1),3*BW,20,"Disabled");
+		btn->SetColor(CLR_GREY);
 	} else if(joytype ==JOY_4AXIS || joytype == JOY_4AXIS_2) {
 		new CTextButton(PX(XO+0),PY(YO-1),3*BW,20,"Axis 1/2");
 		new CTextButton(PX(XO+4),PY(YO-1),3*BW,20,"Axis 3/4");
-		new CTextButton(PX(XO+8),PY(YO-1),3*BW,20,"Disabled");
+		btn=new CTextButton(PX(XO+8),PY(YO-1),3*BW,20,"Disabled");
+		btn->SetColor(CLR_GREY);
 	} else if(joytype == JOY_CH) {
 		new CTextButton(PX(XO+0),PY(YO-1),3*BW,20,"Axis 1/2");
 		new CTextButton(PX(XO+4),PY(YO-1),3*BW,20,"Axis 3/4");
@@ -1944,17 +2044,20 @@ static void CreateLayout(void) {
 		new CTextButton(PX(XO+4),PY(YO-1),3*BW,20,"Axis 3");
 		new CTextButton(PX(XO+8),PY(YO-1),3*BW,20,"Hat/D-pad");
 	} else if(joytype == JOY_NONE) {
-		new CTextButton(PX(XO+0),PY(YO-1),3*BW,20,"Disabled");
-		new CTextButton(PX(XO+4),PY(YO-1),3*BW,20,"Disabled");
-		new CTextButton(PX(XO+8),PY(YO-1),3*BW,20,"Disabled");
+		btn=new CTextButton(PX(XO+0),PY(YO-1),3*BW,20,"Disabled");
+		btn->SetColor(CLR_GREY);
+		btn=new CTextButton(PX(XO+4),PY(YO-1),3*BW,20,"Disabled");
+		btn->SetColor(CLR_GREY);
+		btn=new CTextButton(PX(XO+8),PY(YO-1),3*BW,20,"Disabled");
+		btn->SetColor(CLR_GREY);
 	}
    
    
    
 	/* The modifier buttons */
-	AddModButton(PX(0),PY(14),50,20,"Mod1",1);
-	AddModButton(PX(2),PY(14),50,20,"Mod2",2);
-	AddModButton(PX(4),PY(14),50,20,"Mod3",3);
+	AddModButton(PX(0),PY(17),50,20,"Mod1",1);
+	AddModButton(PX(2),PY(17),50,20,"Mod2",2);
+	AddModButton(PX(4),PY(17),50,20,"Mod3",3);
 	/* Create Handler buttons */
 	Bitu xpos=3;Bitu ypos=11;
 	for (CHandlerEventVector_it hit=handlergroup.begin();hit!=handlergroup.end();hit++) {
@@ -1968,7 +2071,7 @@ static void CreateLayout(void) {
 //	new CTextButton(PX(6),0,124,20,"Keyboard Layout");
 //	new CTextButton(PX(17),0,124,20,"Joystick Layout");
 
-	bind_but.action=new CCaptionButton(180,330,0,0);
+	bind_but.action=new CCaptionButton(180,420,0,0);
 
 	bind_but.event_title=new CCaptionButton(0,350,0,0);
 	bind_but.bind_title=new CCaptionButton(0,365,0,0);
@@ -1991,12 +2094,13 @@ static void CreateLayout(void) {
 	bind_but.bind_title->Change("Bind Title");
 }
 
-static SDL_Color map_pal[5]={
+static SDL_Color map_pal[6]={
 	{0x00,0x00,0x00,0x00},			//0=black
-	{0xff,0xff,0xff,0x00},			//1=white
-	{0xff,0x00,0x00,0x00},			//2=red
-	{0x10,0x30,0xff,0x00},			//3=blue
-	{0x00,0xff,0x20,0x00}			//4=green
+	{0x7f,0x7f,0x7f,0x00},			//1=grey
+	{0xff,0xff,0xff,0x00},			//2=white
+	{0xff,0x00,0x00,0x00},			//3=red
+	{0x10,0x30,0xff,0x00},			//4=blue
+	{0x00,0xff,0x20,0x00}			//5=green
 };
 
 static void CreateStringBind(char * line) {
@@ -2032,6 +2136,7 @@ static struct {
 	{"f1",SDLK_F1},		{"f2",SDLK_F2},		{"f3",SDLK_F3},		{"f4",SDLK_F4},
 	{"f5",SDLK_F5},		{"f6",SDLK_F6},		{"f7",SDLK_F7},		{"f8",SDLK_F8},
 	{"f9",SDLK_F9},		{"f10",SDLK_F10},	{"f11",SDLK_F11},	{"f12",SDLK_F12},
+	{"f13",SDLK_F13},	{"f14",SDLK_F14},	{"f15",SDLK_F15},
 
 	{"1",SDLK_1},		{"2",SDLK_2},		{"3",SDLK_3},		{"4",SDLK_4},
 	{"5",SDLK_5},		{"6",SDLK_6},		{"7",SDLK_7},		{"8",SDLK_8},
@@ -2062,6 +2167,16 @@ static struct {
 	{"kp_divide",SDLK_KP_DIVIDE},	{"kp_multiply",SDLK_KP_MULTIPLY},
 	{"kp_minus",SDLK_KP_MINUS},		{"kp_plus",SDLK_KP_PLUS},
 	{"kp_period",SDLK_KP_PERIOD},	{"kp_enter",SDLK_KP_ENTER},
+
+	/* NTS: IBM PC keyboards as far as I know do not have numeric keypad equals sign.
+	 *      This default assignment should allow Apple Mac users (who's keyboards DO have one)
+	 *      to use theirs as a normal equals sign. */
+	{"kp_equals",SDLK_KP_EQUALS},
+
+	/* Windows 95 keyboard stuff */
+	{"lwindows",SDLK_LSUPER},
+	{"rwindows",SDLK_RSUPER},
+	{"rwinmenu",SDLK_MENU},
 
 #if defined (MACOSX) && !defined (IPHONEOS)
 	/* Intl Mac keyboards in US layout actually put U+00A7 SECTION SIGN here */
@@ -2124,11 +2239,11 @@ static void CreateDefaultBinds(void) {
 }
 
 void MAPPER_AddHandler(MAPPER_Handler * handler,MapKeys key,Bitu mods,char const * const eventname,char const * const buttonname) {
-	//Check if it allready exists=> if so return.
+	//Check if it already exists=> if so return.
 	for(CHandlerEventVector_it it=handlergroup.begin();it!=handlergroup.end();it++)
 		if(strcmp((*it)->buttonname,buttonname) == 0) return;
 
-	char tempname[17];
+	char tempname[27];
 	strcpy(tempname,"hand_");
 	strcat(tempname,eventname);
 	new CHandlerEvent(tempname,handler,key,mods,buttonname);
@@ -2263,13 +2378,12 @@ static void InitializeJoysticks(void) {
 static void CreateBindGroups(void) {
 	bindgroups.clear();
 #ifdef IPHONEOS
-        // SDL1.3 removes SDLK_LAST
-        new CKeyBindGroup();
-#else        
-	new CKeyBindGroup(SDLK_LAST);
-#endif        
+    // SDL1.3 removes SDLK_LAST
+    new CKeyBindGroup();
+#else
+    new CKeyBindGroup(SDLK_LAST);
+#endif
 	if (joytype != JOY_NONE) {
-
 #if defined (REDUCE_JOYSTICK_POLLING)
 		// direct access to the SDL joystick, thus removed from the event handling
 		if (mapper.sticks.num) SDL_JoystickEventState(SDL_DISABLE);
@@ -2326,15 +2440,36 @@ void MAPPER_LosingFocus(void) {
 	}
 }
 
-void MAPPER_Run(bool pressed) {
-	if (pressed)
-		return;
+void MAPPER_RunEvent(Bitu /*val*/) {
 	KEYBOARD_ClrBuffer();	//Clear buffer
 	GFX_LosingFocus();		//Release any keys pressed (buffer gets filled again).
 	MAPPER_RunInternal();
 }
 
+static void RedrawScreen(bool pressed) {
+	if (!pressed)
+		return;
+	// Next two functions will clear keyboard buffer
+	KEYBOARD_ClrBuffer();
+	GFX_LosingFocus();
+	int cursor = SDL_ShowCursor(SDL_QUERY);
+	SDL_SetPalette(mapper.surface, SDL_LOGPAL|SDL_PHYSPAL, map_pal, 0, 5);
+	SDL_ShowCursor(cursor);
+	GFX_ResetScreen();
+}
+
+void MAPPER_Run(bool pressed) {
+	if (pressed)
+		return;
+	PIC_AddEvent(MAPPER_RunEvent,0);	//In case mapper deletes the key object that ran it
+}
+
+SDL_Surface* SDL_SetVideoMode_Wrap(int width,int height,int bpp,Bit32u flags);
+
 void MAPPER_RunInternal() {
+#ifdef __WIN32__
+	if(menu.maxwindow) ShowWindow(GetHWND(), SW_RESTORE);
+#endif
 	int cursor = SDL_ShowCursor(SDL_QUERY);
 	SDL_ShowCursor(SDL_ENABLE);
 	bool mousetoggle=false;
@@ -2345,13 +2480,13 @@ void MAPPER_RunInternal() {
 
 	/* Be sure that there is no update in progress */
 	GFX_EndUpdate( 0 );
-	mapper.surface=SDL_SetVideoMode(640,480,8,0);
+	mapper.surface=SDL_SetVideoMode_Wrap(640,480,8,SDL_RESIZABLE);
 	if (mapper.surface == NULL) E_Exit("Could not initialize video mode for mapper: %s",SDL_GetError());
 
 	/* Set some palette entries */
-	SDL_SetPalette(mapper.surface, SDL_LOGPAL|SDL_PHYSPAL, map_pal, 0, 5);
+	SDL_SetPalette(mapper.surface, SDL_LOGPAL|SDL_PHYSPAL, map_pal, 0, 6);
 	if (last_clicked) {
-		last_clicked->SetColor(CLR_WHITE);
+		last_clicked->BindColor();
 		last_clicked=NULL;
 	}
 	/* Go in the event loop */
@@ -2374,7 +2509,35 @@ void MAPPER_RunInternal() {
 #endif
 	if(mousetoggle) GFX_CaptureMouse();
 	SDL_ShowCursor(cursor);
-	GFX_ResetScreen();
+#ifdef __WIN32__
+	UI_Shortcut(0);
+#endif
+		SDL_FreeSurface(mapper.surface);
+		GFX_RestoreMode();
+#ifdef __WIN32__
+	if(GetAsyncKeyState(0x11)) {
+		INPUT ip;
+
+		// Set up a generic keyboard event.
+		ip.type = INPUT_KEYBOARD;
+		ip.ki.wScan = 0; // hardware scan code for key
+		ip.ki.time = 0;
+		ip.ki.dwExtraInfo = 0;
+
+		ip.ki.wVk = 0x11;
+		ip.ki.dwFlags = 0; // 0 for key press
+		SendInput(1, &ip, sizeof(INPUT));
+
+		// Release the "ctrl" key
+		ip.ki.dwFlags = KEYEVENTF_KEYUP; // KEYEVENTF_KEYUP for key release
+	    SendInput(1, &ip, sizeof(INPUT));
+	}
+#endif
+	KEYBOARD_ClrBuffer();
+	GFX_LosingFocus();
+
+	void GFX_ForceRedrawScreen(void);
+	GFX_ForceRedrawScreen();
 }
 
 void MAPPER_Init(void) {
@@ -2382,19 +2545,26 @@ void MAPPER_Init(void) {
 	CreateLayout();
 	CreateBindGroups();
 	if (!MAPPER_LoadBinds()) CreateDefaultBinds();
+	for (CButton_it but_it = buttons.begin();but_it!=buttons.end();but_it++) {
+		(*but_it)->BindColor();
+	}
 	if (SDL_GetModState()&KMOD_CAPS) {
 		for (CBindList_it bit=caps_lock_event->bindlist.begin();bit!=caps_lock_event->bindlist.end();bit++) {
-			(*bit)->ActivateBind(32767,true,true);
 #if SDL_VERSION_ATLEAST(1, 2, 14)
+			(*bit)->ActivateBind(32767,true,false);
 			(*bit)->DeActivateBind(false);
+#else
+			(*bit)->ActivateBind(32767,true,true); //Skip the action itself as bios_keyboard.cpp handles the startup state.
 #endif
 		}
 	}
 	if (SDL_GetModState()&KMOD_NUM) {
 		for (CBindList_it bit=num_lock_event->bindlist.begin();bit!=num_lock_event->bindlist.end();bit++) {
-			(*bit)->ActivateBind(32767,true,true);
 #if SDL_VERSION_ATLEAST(1, 2, 14)
+			(*bit)->ActivateBind(32767,true,false);
 			(*bit)->DeActivateBind(false);
+#else
+			(*bit)->ActivateBind(32767,true,true);
 #endif
 		}
 	}
@@ -2408,17 +2578,7 @@ void MAPPER_StartUp(Section * sec) {
 	Section_prop * section=static_cast<Section_prop *>(sec);
 	mapper.sticks.num=0;
 	mapper.sticks.num_groups=0;
-	Bitu i;
-	for (i=0; i<16; i++) {
-		virtual_joysticks[0].button_pressed[i]=false;
-		virtual_joysticks[1].button_pressed[i]=false;
-		virtual_joysticks[0].hat_pressed[i]=false;
-		virtual_joysticks[1].hat_pressed[i]=false;
-	}
-	for (i=0; i<8; i++) {
-		virtual_joysticks[0].axis_pos[i]=0;
-		virtual_joysticks[0].axis_pos[i]=0;
-	}
+	memset(&virtual_joysticks,0,sizeof(virtual_joysticks));
 
 	usescancodes = false;
 
@@ -2485,6 +2645,7 @@ void MAPPER_StartUp(Section * sec) {
 			sdlkey_map[0x77]=SDLK_PAUSE;
 			sdlkey_map[0x63]=SDLK_PRINT;
 			sdlkey_map[0x64]=SDLK_RALT;
+
 		} else {
 			sdlkey_map[0x5a]=SDLK_UP;
 			sdlkey_map[0x60]=SDLK_DOWN;
@@ -2520,22 +2681,67 @@ void MAPPER_StartUp(Section * sec) {
 		sdlkey_map[0xc5]=SDLK_PAUSE;
 		sdlkey_map[0xb7]=SDLK_PRINT;
 		sdlkey_map[0xb8]=SDLK_RALT;
+
+		//Win-keys
+		sdlkey_map[0xdb]=SDLK_LMETA;
+		sdlkey_map[0xdc]=SDLK_RMETA;
+		sdlkey_map[0xdd]=SDLK_MENU;
+
 #endif
 
 		Bitu i;
 		for (i=0; i<MAX_SDLKEYS; i++) scancode_map[i]=0;
 		for (i=0; i<MAX_SCANCODES; i++) {
-#ifdef IPHONEOS                    
-                    SDLKey key=SDL_GetKeyFromScancode((SDL_scancode)i);
+#ifdef IPHONEOS
+            SDLKey key=SDL_GetKeyFromScancode((SDL_scancode)i);
 #else
-                    SDLKey key=sdlkey_map[i];
-#endif                        
-                    if (key<MAX_SDLKEYS) scancode_map[key]=(Bit8u)i;
+            SDLKey key=sdlkey_map[i];
+#endif
+			if (key<MAX_SDLKEYS) scancode_map[key]=(Bit8u)i;
 		}
 	}
 
 	Prop_path* pp = section->Get_path("mapperfile");
 	mapper.filename = pp->realpath;
 	MAPPER_AddHandler(&MAPPER_Run,MK_f1,MMOD1,"mapper","Mapper");
+	MAPPER_AddHandler(&RedrawScreen,MK_f3,MMOD1,"redraw","Redraw Screen");
 }
 
+void MAPPER_Shutdown() {
+	for (size_t i=0;i < events.size();i++) {
+		if (events[i] != NULL) {
+			delete events[i];
+			events[i] = NULL;
+		}
+	}
+	events.clear();
+
+	for (size_t i=0;i < buttons.size();i++) {
+		if (buttons[i] != NULL) {
+			delete buttons[i];
+			buttons[i] = NULL;
+		}
+	}
+	buttons.clear();
+
+	for (size_t i=0;i < bindgroups.size();i++) {
+		if (bindgroups[i] != NULL) {
+			delete bindgroups[i];
+			bindgroups[i] = NULL;
+		}
+	}
+	bindgroups.clear();
+
+	for (size_t i=0;i < handlergroup.size();i++) {
+		if (handlergroup[i] != NULL) {
+#if 0 /* FIXME: Is this list simply another copy of other pointers? Allowing this delete[] to commence triggers double-free warnings */
+			delete handlergroup[i];
+#endif
+			handlergroup[i] = NULL;
+		}
+	}
+	handlergroup.clear();
+}
+
+// save state support
+void *MAPPER_RunEvent_PIC_Event = (void*)MAPPER_RunEvent;

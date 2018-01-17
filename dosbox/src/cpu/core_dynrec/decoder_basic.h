@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2002-2010  The DOSBox Team
+ *  Copyright (C) 2002-2015  The DOSBox Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -16,7 +16,6 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-/* $Id: decoder_basic.h,v 1.16 2009-10-08 20:01:31 c2woody Exp $ */
 
 
 /*
@@ -141,18 +140,9 @@ static bool MakeCodePage(Bitu lin_addr,CodePageHandlerDynRec * &cph) {
 		return false;
 	}
 	if (handler->flags & PFLAG_NOCODE) {
-		if (PAGING_ForcePageInit(lin_addr)) {
-			handler=get_tlb_readhandler(lin_addr);
-			if (handler->flags & PFLAG_HASCODE) {
-				cph=(CodePageHandlerDynRec *)handler;
-				return false;
-			}
-		}
-		if (handler->flags & PFLAG_NOCODE) {
 			LOG_MSG("DYNREC:Can't run code in this page");
 			cph=0;
 			return false;
-		}
 	} 
 	Bitu lin_page=lin_addr>>12;
 	Bitu phys_page=lin_page;
@@ -491,7 +481,8 @@ static INLINE void dyn_set_eip_end(void) {
 
 // set reg_eip to the start of the next instruction plus an offset (imm)
 static INLINE void dyn_set_eip_end(HostReg reg,Bit32u imm=0) {
-	gen_mov_word_to_reg(reg,&reg_eip,decode.big_op);
+	gen_mov_word_to_reg(reg,&reg_eip,true); //get_extend_word will mask off the upper bits
+	//gen_mov_word_to_reg(reg,&reg_eip,decode.big_op);
 	gen_add_imm(reg,(Bit32u)(decode.code-decode.code_start+imm));
 	if (!decode.big_op) gen_extend_word(false,reg);
 }

@@ -221,6 +221,8 @@
     return YES;
 }
 
+bool maxmode = true;
+bool showtitle = true;
 
 -(void)setWindowTitle:(char *)title
 {
@@ -238,6 +240,9 @@
         sprintf(buf, "%4d", cycles);
         maxPercent = 0;
     }
+    if((strstr(title, "max") > 0) ^ maxmode) {
+        showtitle = true;
+    }
     NSString * t = [[NSString alloc] initWithUTF8String:buf];
     NSArray *controllers=[navController viewControllers];
     for (int i = 0; i < [controllers count]; i++) {
@@ -246,11 +251,18 @@
             [ctrl performSelectorOnMainThread:@selector(updateCpuCycles:) withObject:t waitUntilDone:YES];
         }
         if ([ctrl respondsToSelector:@selector(updateFrameskip:)]) {
-            [ctrl performSelectorOnMainThread:@selector(updateFrameskip:) 
+            [ctrl performSelectorOnMainThread:@selector(updateFrameskip:)
                                    withObject:[NSNumber numberWithInt:frameskip]
                                 waitUntilDone:YES];
         }
         
+    }
+    
+    if (strstr(title, "max"))
+    {
+        maxmode = true;
+    } else {
+        maxmode = false;
     }
 }
 

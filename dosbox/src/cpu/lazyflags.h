@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2002-2010  The DOSBox Team
+ *  Copyright (C) 2002-2015  The DOSBox Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -17,7 +17,7 @@
  */
 
 #if !defined __LAZYFLAGS_H
-#define __LAZYFLAGS_H
+#define __LAZYFLAG_H
 
 //Flag Handling
 Bit32u get_CF(void);

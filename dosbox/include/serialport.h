@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2002-2010  The DOSBox Team
+ *  Copyright (C) 2002-2015  The DOSBox Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -16,7 +16,6 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-/* $Id: serialport.h,v 1.18 2009-09-25 23:40:48 h-a-l-9000 Exp $ */
 
 #ifndef DOSBOX_SERIALPORT_H
 #define DOSBOX_SERIALPORT_H
@@ -38,7 +37,7 @@
 #endif
 
 // set this to 1 for serial debugging in release mode
-#define SERIAL_DBG_FORCED 0
+#define SERIAL_DBG_FORCED 1
 
 #if (C_DEBUG || SERIAL_DBG_FORCED)
 #define SERIAL_DEBUG 1
@@ -58,7 +57,10 @@ public:
 		data=new Bit8u[size];
 	}
 	~MyFifo() {
-		delete[] data;
+		if (data != NULL) {
+			delete[] data;
+			data = NULL;
+		}
 	}
 	INLINE Bitu getFree(void) {
 		return size-used;
@@ -249,10 +251,9 @@ public:
 	bool Putchar(Bit8u data, bool wait_dtr, bool wait_rts, Bitu timeout);
 	bool Getchar(Bit8u* data, Bit8u* lsr, bool wait_dsr, Bitu timeout);
 
+	DOS_Device* mydosdevice;
 
 private:
-
-	DOS_Device* mydosdevice;
 
 	// I used this spec: st16c450v420.pdf
 
@@ -435,7 +436,7 @@ class device_COM : public DOS_Device {
 public:
 	// Creates a COM device that communicates with the num-th parallel port, i.e. is LPTnum
 	device_COM(class CSerial* sc);
-	~device_COM();
+	virtual ~device_COM();
 	bool Read(Bit8u * data,Bit16u * size);
 	bool Write(Bit8u * data,Bit16u * size);
 	bool Seek(Bit32u * pos,Bit32u type);

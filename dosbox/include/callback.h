@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2002-2010  The DOSBox Team
+ *  Copyright (C) 2002-2015  The DOSBox Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -16,7 +16,6 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-/* $Id: callback.h,v 1.26 2009-08-23 17:24:54 c2woody Exp $ */
 
 #ifndef DOSBOX_CALLBACK_H
 #define DOSBOX_CALLBACK_H
@@ -29,14 +28,18 @@ typedef Bitu (*CallBack_Handler)(void);
 extern CallBack_Handler CallBack_Handlers[];
 
 enum { CB_RETN,CB_RETF,CB_RETF8,CB_IRET,CB_IRETD,CB_IRET_STI,CB_IRET_EOI_PIC1,
-		CB_IRQ0,CB_IRQ1,CB_IRQ9,CB_IRQ12,CB_IRQ12_RET,CB_IRQ6_PCJR,CB_MOUSE,
-		CB_INT29,CB_INT16,CB_HOOKABLE,CB_TDE_IRET,CB_IPXESR,CB_IPXESR_RET,
-		CB_INT21 };
+		CB_IRQ0,CB_IRQ1,CB_IRQ1_BREAK,CB_IRQ9,CB_IRQ12,CB_IRQ12_RET,CB_IRQ6_PCJR,CB_MOUSE,
+		/*CB_INT28,*/CB_INT29,CB_INT16,CB_HOOKABLE,CB_TDE_IRET,CB_IPXESR,CB_IPXESR_RET,
+		CB_INT21,CB_INT13,CB_VESA_START };
 
+/* NTS: Cannot make runtime configurable, because CB_MAX is used to define an array */
 #define CB_MAX		128
 #define CB_SIZE		32
-#define CB_SEG		0xF000
-#define CB_SOFFSET	0x1000
+
+/* we can make THESE configurable though! */
+//#define CB_SEG	0xF000
+//#define CB_SOFFSET	0x1000
+extern Bit16u CB_SEG,CB_SOFFSET;
 
 enum {	
 	CBRET_NONE=0,CBRET_STOP=1
@@ -66,6 +69,7 @@ void CALLBACK_RunRealFar(Bit16u seg,Bit16u off);
 bool CALLBACK_Setup(Bitu callback,CallBack_Handler handler,Bitu type,const char* descr);
 Bitu CALLBACK_Setup(Bitu callback,CallBack_Handler handler,Bitu type,PhysPt addr,const char* descr);
 
+void CALLBACK_SetDescription(Bitu nr, const char* descr);
 const char* CALLBACK_GetDescription(Bitu callback);
 bool CALLBACK_Free(Bitu callback);
 
@@ -95,6 +99,8 @@ public:
 	//Install and allocate a callback.
 	void Install(CallBack_Handler handler,Bitu type,const char* description);
 	void Install(CallBack_Handler handler,Bitu type,PhysPt addr,const char* description);
+
+	void Uninstall();
 
 	//Only allocate a callback number
 	void Allocate(CallBack_Handler handler,const char* description=0);

@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2002-2010  The DOSBox Team
+ *  Copyright (C) 2002-2015  The DOSBox Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -16,7 +16,6 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-/* $Id: cross.cpp,v 1.7 2009-05-26 17:43:39 qbix79 Exp $ */
 
 #include "dosbox.h"
 #include "cross.h"
@@ -29,7 +28,6 @@
 extern "C" const char *dospad_config_dir();
 
 #endif
-
 
 #ifdef WIN32
 #ifndef _WIN32_IE
@@ -56,7 +54,7 @@ static void W32_ConfDir(std::string& in,bool create) {
 		char const* appdata = "\\Application Data";
 		size_t len = strlen(result);
 		if(len + strlen(appdata) < MAX_PATH) strcat(result,appdata);
-		if(create) mkdir(result);
+		if(create) _mkdir(result);
 	}
 	in = result;
 }
@@ -67,7 +65,7 @@ void Cross::GetPlatformConfigDir(std::string& in) {
 	W32_ConfDir(in,false);
 	in += "\\DOSBox";
 #elif defined(IPHONEOS)
-        in = dospad_config_dir();
+    in = dospad_config_dir();
 #elif defined(MACOSX)
 	in = "~/Library/Preferences";
 	ResolveHomedir(in);
@@ -95,10 +93,10 @@ void Cross::CreatePlatformConfigDir(std::string& in) {
 #ifdef WIN32
 	W32_ConfDir(in,true);
 	in += "\\DOSBox";
-	mkdir(in.c_str());
+	_mkdir(in.c_str());
 #elif defined(IPHONEOS)
-        in = dospad_config_dir();
-        // Don't create it.
+    in = dospad_config_dir();
+    // Don't create it.
 #elif defined(MACOSX)
 	in = "~/Library/Preferences/";
 	ResolveHomedir(in);
@@ -130,10 +128,23 @@ void Cross::ResolveHomedir(std::string & temp_line) {
 
 void Cross::CreateDir(std::string const& in) {
 #ifdef WIN32
-	mkdir(in.c_str());
+	_mkdir(in.c_str());
 #else
 	mkdir(in.c_str(),0700);
 #endif
+}
+
+bool Cross::IsPathAbsolute(std::string const& in) {
+	// Absolute paths
+#if defined (WIN32) || defined(OS2)
+	// drive letter
+	if (in.size() > 2 && in[1] == ':' ) return true;
+	// UNC path
+	else if (in.size() > 2 && in[0]=='\\' && in[1]=='\\') return true;
+#else
+	if (in.size() > 1 && in[0] == '/' ) return true;
+#endif
+	return false;
 }
 
 #if defined (WIN32)
@@ -153,7 +164,7 @@ dir_information* open_directory(const char* dirname) {
 
 	dir.handle = INVALID_HANDLE_VALUE;
 
-	return (access(dirname,0) ? NULL : &dir);
+	return (_access(dirname,0) ? NULL : &dir);
 }
 
 bool read_directory_first(dir_information* dirp, char* entry_name, bool& is_directory) {

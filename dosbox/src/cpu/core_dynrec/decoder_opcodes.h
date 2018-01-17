@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2002-2010  The DOSBox Team
+ *  Copyright (C) 2002-2015  The DOSBox Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -16,7 +16,6 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-/* $Id: decoder_opcodes.h,v 1.10 2009-10-18 17:52:10 c2woody Exp $ */
 
 
 /*
@@ -1141,7 +1140,6 @@ static void dyn_loop(LoopTypes type) {
 		dyn_branchflag_to_reg(BR_Z);
 		branch1=gen_create_branch_on_nonzero(FC_RETOP,true);
 		break;
-   default:;
 	}
 	switch (type) {
 	case LOOP_E:
@@ -1156,7 +1154,6 @@ static void dyn_loop(LoopTypes type) {
 		MOV_REG_WORD_TO_HOST_REG(FC_OP1,DRC_REG_ECX,decode.big_addr);
 		branch2=gen_create_branch_on_nonzero(FC_OP1,decode.big_addr);
 		break;
-   default:;
 	}
 	gen_add_direct_word(&reg_eip,eip_base+eip_add,true);
 	gen_jmp_ptr(&decode.block->link[0].to,offsetof(CacheBlockDynRec,cache.start));
