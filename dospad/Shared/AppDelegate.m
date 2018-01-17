@@ -222,6 +222,7 @@
 }
 
 bool maxmode = true;
+bool showtitle = true;
 
 -(void)setWindowTitle:(char *)title
 {
@@ -240,20 +241,21 @@ bool maxmode = true;
         maxPercent = 0;
     }
     if((strstr(title, "max") > 0) ^ maxmode) {
-        NSString * t = [[NSString alloc] initWithUTF8String:buf];
-        NSArray *controllers=[navController viewControllers];
-        for (int i = 0; i < [controllers count]; i++) {
-            UIViewController *ctrl=[controllers objectAtIndex:i];
-            if ([ctrl respondsToSelector:@selector(updateCpuCycles:)]) {
-                [ctrl performSelectorOnMainThread:@selector(updateCpuCycles:) withObject:t waitUntilDone:YES];
-            }
-            if ([ctrl respondsToSelector:@selector(updateFrameskip:)]) {
-                [ctrl performSelectorOnMainThread:@selector(updateFrameskip:)
-                                       withObject:[NSNumber numberWithInt:frameskip]
-                                    waitUntilDone:YES];
-            }
-            
+        showtitle = true;
+    }
+    NSString * t = [[NSString alloc] initWithUTF8String:buf];
+    NSArray *controllers=[navController viewControllers];
+    for (int i = 0; i < [controllers count]; i++) {
+        UIViewController *ctrl=[controllers objectAtIndex:i];
+        if ([ctrl respondsToSelector:@selector(updateCpuCycles:)]) {
+            [ctrl performSelectorOnMainThread:@selector(updateCpuCycles:) withObject:t waitUntilDone:YES];
         }
+        if ([ctrl respondsToSelector:@selector(updateFrameskip:)]) {
+            [ctrl performSelectorOnMainThread:@selector(updateFrameskip:)
+                                   withObject:[NSNumber numberWithInt:frameskip]
+                                waitUntilDone:YES];
+        }
+        
     }
     
     if (strstr(title, "max"))

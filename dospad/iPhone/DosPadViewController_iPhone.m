@@ -277,13 +277,16 @@ static struct {
     [self performSelector:@selector(hideNavigationBar) withObject:nil afterDelay:3];
 }
 
+extern bool showtitle;
+
 -(void)updateFrameskip:(NSNumber*)skip
 {
     fsIndicator.count=[skip intValue];
     fsIndicator2.count=[skip intValue];
-    if (self.interfaceOrientation == UIInterfaceOrientationLandscapeLeft||
-        self.interfaceOrientation == UIInterfaceOrientationLandscapeRight)
+    if ((self.interfaceOrientation == UIInterfaceOrientationLandscapeLeft||
+        self.interfaceOrientation == UIInterfaceOrientationLandscapeRight) && showtitle)
     {
+        showtitle = false;
         [fullscreenPanel showContent];
     }
 }
@@ -292,10 +295,11 @@ static struct {
 {
     labCycles.text=title;
     labCycles2.text=title;
-    if (self.interfaceOrientation == UIInterfaceOrientationLandscapeLeft||
-        self.interfaceOrientation == UIInterfaceOrientationLandscapeRight)
+    if ((self.interfaceOrientation == UIInterfaceOrientationLandscapeLeft||
+         self.interfaceOrientation == UIInterfaceOrientationLandscapeRight) && showtitle)
     {
-        [fullscreenPanel showContent];    
+        showtitle = false;
+        [fullscreenPanel showContent];
     }
 }
 

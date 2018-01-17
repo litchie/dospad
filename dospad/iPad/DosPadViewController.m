@@ -273,12 +273,15 @@ static struct {
     [self.navigationController popViewControllerAnimated:YES];
 }
 
+extern bool showtitle;
+
 - (void)updateFrameskip:(NSNumber*)skip
 {
     fsIndicator.count=[skip intValue];
     fsIndicator2.count=[skip intValue];
-    if ([self isFullscreen])
+    if ([self isFullscreen] && showtitle)
     {
+        showtitle = false;
         [fullscreenPanel showContent];
     }
 }
@@ -287,8 +290,9 @@ static struct {
 {
     labCycles.text=title;
     labCycles2.text=title;
-    if ([self isFullscreen])
+    if ([self isFullscreen] && showtitle)
     {
+        showtitle = false;
         [fullscreenPanel showContent];
     }    
 }
