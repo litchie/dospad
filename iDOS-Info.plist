@@ -18,45 +18,11 @@
 		<string>Icon-iPad-72@2x.png</string>
 	</array>
 	<key>CFBundleIcons</key>
-	<dict>
-		<key>CFBundlePrimaryIcon</key>
-		<dict>
-			<key>CFBundleIconFiles</key>
-			<array>
-				<string>Icon-iPhone-29</string>
-				<string>Icon-iPhone-29@2x</string>
-				<string>Icon-iPhone-40@2x</string>
-				<string>Icon-iPhone-60@2x</string>
-				<string>Icon-iPhone-57</string>
-				<string>Icon-iPhone-57@2x</string>
-			</array>
-			<key>UIPrerenderedIcon</key>
-			<true/>
-		</dict>
-	</dict>
+	<dict/>
 	<key>CFBundleIcons~ipad</key>
-	<dict>
-		<key>CFBundlePrimaryIcon</key>
-		<dict>
-			<key>CFBundleIconFiles</key>
-			<array>
-				<string>Icon-iPad-29</string>
-				<string>Icon-iPad-29@2x</string>
-				<string>Icon-iPad-40</string>
-				<string>Icon-iPad-40@2x</string>
-				<string>Icon-iPad-50</string>
-				<string>Icon-iPad-50@2x</string>
-				<string>Icon-iPad-72</string>
-				<string>Icon-iPad-72@2x</string>
-				<string>Icon-iPad-76</string>
-				<string>Icon-iPad-76@2x</string>
-			</array>
-			<key>UIPrerenderedIcon</key>
-			<true/>
-		</dict>
-	</dict>
+	<dict/>
 	<key>CFBundleIdentifier</key>
-	<string>com.litchie.idosgames</string>
+	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
@@ -68,7 +34,7 @@
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>20160424.1507</string>
+	<string>20171230.1132</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSMainNibFile</key>
@@ -76,11 +42,9 @@
 	<key>NSMainNibFile~ipad</key>
 	<string>MainWindow</string>
 	<key>UIFileSharingEnabled</key>
-	<false/>
-	<key>UIRequiredDeviceCapabilities</key>
-	<array>
-		<string>gamekit</string>
-	</array>
+	<true/>
+	<key>UILaunchStoryboardName</key>
+	<string>LaunchScreen</string>
 	<key>UIRequiresFullScreen</key>
 	<true/>
 	<key>UIStatusBarHidden</key>
