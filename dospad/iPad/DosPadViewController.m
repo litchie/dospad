@@ -70,10 +70,6 @@ static struct {
     return [self isLandscape];
 }
 
-
-#define ISIPADPRO() ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad && \
-([UIScreen mainScreen].bounds.size.height == 1366 || [UIScreen mainScreen].bounds.size.width == 1366))
-
 - (void)initView
 {
     //---------------------------------------------------
@@ -96,7 +92,7 @@ static struct {
     labCycles.backgroundColor = [UIColor clearColor];
     labCycles.textColor=[UIColor colorWithRed:74/255.0 green:1 blue:55/255.0 alpha:1];
     labCycles.text = [self currentCycles];
-    labCycles.textAlignment=UITextAlignmentCenter;
+    labCycles.textAlignment = NSTextAlignmentCenter;
     labCycles.baselineAdjustment=UIBaselineAdjustmentAlignCenters;
     labCycles.font=[UIFont fontWithName:@"DBLCDTempBlack" size:30];
     fsIndicator = [[FrameskipIndicator alloc] initWithFrame:CGRectMake(0,labCycles.frame.size.height-4,labCycles.frame.size.width, 4)
@@ -238,7 +234,7 @@ static struct {
         labCycles2.textColor=[UIColor colorWithRed:74/255.0 green:1 blue:55/255.0 alpha:1];
         labCycles2.font=[UIFont fontWithName:@"DBLCDTempBlack" size:17];
         labCycles2.text=[self currentCycles];
-        labCycles2.textAlignment=UITextAlignmentCenter;
+        labCycles2.textAlignment = NSTextAlignmentCenter;
         labCycles2.baselineAdjustment=UIBaselineAdjustmentAlignCenters;
         fsIndicator2 = [FrameskipIndicator alloc];
         fsIndicator2 = [fsIndicator2 initWithFrame:CGRectMake(labCycles2.frame.size.width-8,0,8,labCycles2.frame.size.height-4)
@@ -377,52 +373,52 @@ static struct {
     
     if (configPath == nil) return nil;
 
-    NSString *section;
-    
-    if (ISIPADPRO())
-    {
-        section = ([self isPortrait] ?
-                         @"[gamepad.ipadpro.portrait]" :
-                         @"[gamepad.ipadpro.landscape]");
-    }
-    else
-    {
-        section = ([self isPortrait] ?
-                         @"[gamepad.ipad.portrait]" :
-                         @"[gamepad.ipad.landscape]");
-    }
+	BOOL isPortrait = [self isPortrait];
+    NSString *section = (isPortrait ? @"[gamepad.ipad.portrait]" : @"[gamepad.ipad.landscape]");
     NSString *ui_cfg = [ConfigManager uiConfigFile];
 
     gpad = [[GamePadView alloc] initWithConfig:ui_cfg section:section];
-    if (![self isFullscreen])
+	
+    // In portrait mode, we need to insert two background images
+    if (isPortrait)
     {
         UIImageView *left = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"ipadleftside"]];
         UIImageView *right = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"ipadrightside"]];
-        if (ISIPADPRO()) {
-			left.frame = CGRectMake(1,19,280,378);
-			right.frame = CGRectMake(441+256,30,327,315);
-			gpad.backgroundColor = [UIColor clearColor];
-			[gpad insertSubview:left atIndex:0];
-			[gpad insertSubview:right atIndex:0];
-		} else {
-			left.frame = CGRectMake(1,19,280,378);
-			right.frame = CGRectMake(441,30,327,315);
-			gpad.backgroundColor=[UIColor clearColor];
-			[gpad insertSubview:left atIndex:0];
-			[gpad insertSubview:right atIndex:0];
-        }
+		left.frame = CGRectMake(1,19,280,378);
+		right.frame = CGRectMake(441,30,327,315);
+		gpad.backgroundColor=[UIColor clearColor];
+		[gpad insertSubview:left atIndex:0];
+		[gpad insertSubview:right atIndex:0];
     }
-    
+	
+	// Make adjustment for screen sizes that are not 768x1024 or 1024x768
+	// Shift all down towards the bottom,
+	// and pull right part towards the right edge.
+    CGPoint leftPartOffset = CGPointMake(0, self.view.bounds.size.height - 1024);
+    CGPoint rightPartOffset = CGPointMake(self.view.bounds.size.width - 768,
+    	self.view.bounds.size.height - 1024);
+	for (UIView *v in gpad.subviews)
+	{
+		if (v.center.x < (isPortrait?768:1024)/2) // left
+		{
+			v.frame = CGRectOffset(v.frame, leftPartOffset.x, leftPartOffset.y);
+		}
+		else
+		{
+			v.frame = CGRectOffset(v.frame, rightPartOffset.x, rightPartOffset.y);
+		}
+	}
+
     gpad.mode = mod;    
-    if ([self isFullscreen]) 
+    if (isPortrait)
+    {
+        [self.view addSubview:gpad];
+    }
+    else
     {
         gpad.dpadMovable = DEFS_GET_INT(kDPadMovable);
         gpad.alpha = [self floatAlpha];
         [self.view insertSubview:gpad belowSubview:fullscreenPanel];
-    }
-    else
-    {
-        [self.view addSubview:gpad];
     }
     return gpad;
 }
@@ -511,9 +507,19 @@ static struct {
     else 
     {
         [baseView insertSubview:self.screenView atIndex:0];
-
-        float vh = self.view.bounds.size.height;
-        float kh = keyboard.bounds.size.height;
+		
+		// Scaling baseView to fill self.view as much as possible
+		if (baseView.bounds.size.width != self.view.bounds.size.width ||
+			baseView.bounds.size.height != self.view.bounds.size.height)
+		{
+			float scaleX = self.view.bounds.size.width/baseView.frame.size.width;
+			float scaleY = self.view.bounds.size.height/baseView.frame.size.height;
+			float scale = MIN(scaleX, scaleY);
+			baseView.transform = CGAffineTransformMakeScale(scaleX, scaleY);
+			baseView.center = CGPointMake(self.view.bounds.size.width/2,
+				self.view.bounds.size.height/2);
+		}
+		
         float scale=1;
         if (sw < 640) { scale = 640.0f/sw; }
         screenView.transform=CGAffineTransformMakeScale(scale,scale*additionalScaleY);
