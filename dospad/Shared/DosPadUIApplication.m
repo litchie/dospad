@@ -86,12 +86,28 @@ extern int SDL_SendKeyboardKey(int index, Uint8 state, SDL_scancode scancode);
                 eventModifier &= ~GSEVENT_FLAG_LCMD;
         }
     
-            // Map CMD-1->0 to FN1->F10
+            // Map CMD-1->0 to F1->F10
         if(eventModifier & GSEVENT_FLAG_LCMD &&
             eventScanCode >= SDL_SCANCODE_1 &&
             eventScanCode <= SDL_SCANCODE_0) {
         
             eventScanCode = SDL_SCANCODE_F1 + (eventScanCode-SDL_SCANCODE_1);
+            eventModifier &= ~GSEVENT_FLAG_LCMD;
+        }
+
+            // Map CMD-Minus to F11
+        if(eventModifier & GSEVENT_FLAG_LCMD &&
+           eventScanCode == SDL_SCANCODE_MINUS) {
+
+            eventScanCode = SDL_SCANCODE_F11;
+            eventModifier &= ~GSEVENT_FLAG_LCMD;
+        }
+
+            // Map CMD-Plus to F12
+        if(eventModifier & GSEVENT_FLAG_LCMD &&
+           eventScanCode == SDL_SCANCODE_EQUALS) {
+
+            eventScanCode = SDL_SCANCODE_F12;
             eventModifier &= ~GSEVENT_FLAG_LCMD;
         }
     }
