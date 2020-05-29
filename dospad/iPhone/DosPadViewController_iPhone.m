@@ -471,6 +471,16 @@ static struct {
 		}
 		else
 		{
+            // On landscape mode, adjust buttons on the right half of gamepad
+            // as if the blank space in between expands.
+            CGRect r = gpad.frame;
+            float offset = rect.size.width - r.size.width;
+            for (UIView *v in gpad.subviews) {
+                if (v.center.x > r.size.width/2)
+                    v.center = CGPointMake(v.center.x+offset, v.center.y);
+            }
+            r.size.width = rect.size.width;
+            gpad.frame = r;
 			gpad.dpadMovable = DEFS_GET_INT(kDPadMovable);
 			[self.view insertSubview:gpad belowSubview:fullscreenPanel];
 		}
@@ -497,6 +507,15 @@ static struct {
     gamepad = [self createGamepadHelper:GamePadDefault];
 }
 
+- (void)removeGamepad
+{
+	if (gamepad != nil) {
+		[gamepad removeFromSuperview];
+		gamepad = nil;
+	}
+	btnDPadSwitch.hidden = YES;
+}
+
 - (void)updateBackground:(UIInterfaceOrientation)interfaceOrientation
 {
 }
@@ -514,6 +533,7 @@ static struct {
 	{
 		_rootContainer.frame = [self safeRootRect];
 		toolPanel.alpha=1;
+        
 		[self removeInputSource:InputSource_PCKeyboard];
 		[self createGamepad];
 		[fullscreenPanel removeFromSuperview];
@@ -530,6 +550,7 @@ static struct {
 		}
 		toolPanel.alpha=0;
 		[self refreshFullscreenPanel];
+        [self removeGamepad];
 	}
 	[self onResize:screenView.bounds.size];
 	[self updateBackground];
@@ -731,9 +752,13 @@ static struct {
 	
 	if ([self isPortrait])
 	{
-		maxWidth = 320;
-		maxHeight = 240;
-		ptCenter = CGPointMake(viewRect.size.width/2, viewRect.origin.y+120);
+        maxWidth = viewRect.size.width;
+        maxHeight = maxWidth * 3 / 4;
+		ptCenter = CGPointMake(viewRect.size.width/2, viewRect.origin.y+maxHeight/2);
+        CGRect rect = toolPanel.frame ;
+        rect.origin.x = viewRect.origin.x + (viewRect.size.width-rect.size.width)/2;
+        rect.origin.y = viewRect.origin.y + maxHeight;
+        toolPanel.frame = rect;
 	}
 	else
 	{
