@@ -82,59 +82,66 @@ static int SetupWindowData(_THIS, SDL_Window *window, UIWindow *uiwindow, SDL_bo
     
 }
 
-int UIKit_CreateWindow(_THIS, SDL_Window *window) {
-        
-    /* We currently only handle single window applications on iPhone */
-#ifndef IPHONEOS
-    if (nil != [SDLUIKitDelegate sharedAppDelegate].window) {
-        SDL_SetError("Window already exists, no multi-window support.");
-        return -1;
-    }
+int UIKit_CreateWindow(_THIS, SDL_Window *window)
+{
+    __block volatile int done = 0;
+    __block volatile int ret = 1;
     
-    /* ignore the size user requested, and make a fullscreen window */
+    dispatch_async(dispatch_get_main_queue(), ^{
+        UIWindow *uiwindow = (UIWindow*)[SDLUIKitDelegate sharedAppDelegate].uiwindow;
 
-    UIWindow *uiwindow = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-#else
-    UIWindow *uiwindow = (UIWindow*)[SDLUIKitDelegate sharedAppDelegate].uiwindow;
-#endif
-    if (SetupWindowData(_this, window, uiwindow, SDL_TRUE) < 0) {
-        [uiwindow release];
-        return -1;
-    }    
-    
-    // This saves the main window in the app delegate so event callbacks can do stuff on the window.
-    // This assumes a single window application design and needs to be fixed for multiple windows.
-    [SDLUIKitDelegate sharedAppDelegate].window = window;
-#ifndef IPHONEOS
-    [SDLUIKitDelegate sharedAppDelegate].uiwindow = uiwindow;
-    [uiwindow release]; /* release the window (the app delegate has retained it) */
-#endif
-    return 1;
-    
+        if (SetupWindowData(_this, window, uiwindow, SDL_TRUE) < 0) {
+            assert(0);
+            ret = -1;
+        }
+        
+        // This saves the main window in the app delegate so event callbacks can do stuff on the window.
+        // This assumes a single window application design and needs to be fixed for multiple windows.
+        [SDLUIKitDelegate sharedAppDelegate].sdl_window = window;
+        done = 1;
+    });
+    while (!done)
+        usleep(100);
+    return ret;
 }
 
 void UIKit_DestroyWindow(_THIS, SDL_Window * window) {
     /* don't worry, the delegate will automatically release the window */
-    
-    SDL_WindowData *data = (SDL_WindowData *)window->driverdata;
-    if (data) {
-        SDL_free( window->driverdata );
-    }
+    __block volatile int done = 0;
+    dispatch_async(dispatch_get_main_queue(), ^{
+        SDL_WindowData *data = (SDL_WindowData *)window->driverdata;
+        if (data) {
+            SDL_free( window->driverdata );
+        }
 
-    /* this will also destroy the window */
-    [SDLUIKitDelegate sharedAppDelegate].window = NULL;
-    [SDLUIKitDelegate sharedAppDelegate].uiwindow = nil;
+        /* this will also destroy the window */
+        [SDLUIKitDelegate sharedAppDelegate].sdl_window = NULL;
+        [SDLUIKitDelegate sharedAppDelegate].uiwindow = nil;
+        done = 1;
+    });
+    while (!done) usleep(100);
 }
 
 #ifdef IPHONEOS
 void UIKit_SetWindowSize(_THIS, SDL_Window * window) {
     SDL_WindowData *data = (SDL_WindowData *)window->driverdata;
-    if (data && data->view) {
-        [data->view resize:CGSizeMake(window->w, window->h)];
-    }
+    __block volatile int done = 0;
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if (data && data->view) {
+            [data->view resize:CGSizeMake(window->w, window->h)];
+        }
+        done = 1;
+    });
+    while (!done) usleep(10);
 }
+
 void UIKit_SetWindowTitle(_THIS, SDL_Window * window) {
-    [[SDLUIKitDelegate sharedAppDelegate] setWindowTitle:window->title];
+    __block volatile int done = 0;
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [[SDLUIKitDelegate sharedAppDelegate] setWindowTitle:window->title];
+        done = 1;
+    });
+    while (!done) usleep(10);
 }
 #endif
 

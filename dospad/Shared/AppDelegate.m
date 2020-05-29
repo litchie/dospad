@@ -211,12 +211,8 @@
     [uiwindow makeKeyAndVisible];
 	[super applicationDidFinishLaunching:application];
 #ifdef THREADED
-	// TODO: On 64bit devices, it is a must to delay emulation thread by 2 seconds,
-	// otherwise it will crash on launch.
-	// However, rotating the screen still causes it to crash.
-	// Apparently we are not 64bit-ready yet.
-	// Let's just keep it 0.5s at present.
-    [self performSelector:@selector(startDOS) withObject:nil afterDelay:0.5];
+	// FIXME at present it is a must to delay emulation thread
+    [self performSelector:@selector(startDOS) withObject:nil afterDelay:1];
 #endif
     return YES;
 }
@@ -225,7 +221,7 @@
 -(void)setWindowTitle:(char *)title
 {
     char buf[8];
-    
+    NSAssert([NSThread isMainThread], @"Should work in main thread");
     if (strstr(title, "max"))
     {
         sscanf(title, "Cpu speed: max %d%% cycles, Frameskip %d", &maxPercent, &frameskip);
@@ -238,19 +234,16 @@
         sprintf(buf, "%4d", cycles);
         maxPercent = 0;
     }
-    NSString * t = [[NSString alloc] initWithUTF8String:buf];
     NSArray *controllers=[navController viewControllers];
     for (int i = 0; i < [controllers count]; i++) {
         UIViewController *ctrl=[controllers objectAtIndex:i];
         if ([ctrl respondsToSelector:@selector(updateCpuCycles:)]) {
-            [ctrl performSelectorOnMainThread:@selector(updateCpuCycles:) withObject:t waitUntilDone:YES];
+            [ctrl performSelector:@selector(updateCpuCycles:) withObject:@(buf)];
         }
         if ([ctrl respondsToSelector:@selector(updateFrameskip:)]) {
-            [ctrl performSelectorOnMainThread:@selector(updateFrameskip:) 
-                                   withObject:[NSNumber numberWithInt:frameskip]
-                                waitUntilDone:YES];
+            [ctrl performSelector:@selector(updateFrameskip:)
+                                   withObject:[NSNumber numberWithInt:frameskip]];
         }
-        
     }
 }
 

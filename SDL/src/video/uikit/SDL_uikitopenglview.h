@@ -46,7 +46,6 @@
 #ifdef IPHONEOS
     id<SDL_uikitopenglview_delegate> __weak delegate;
     CGSize newSize;
-    BOOL resizeDone;
 #endif
 @private
 	/* The pixel dimensions of the backbuffer */

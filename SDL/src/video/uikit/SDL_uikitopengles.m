@@ -94,40 +94,20 @@ void UIKit_GL_SwapWindow(_THIS, SDL_Window * window)
 
 SDL_GLContext UIKit_GL_CreateContext(_THIS, SDL_Window * window)
 {
-	
-	SDL_uikitopenglview *view;
-
-	SDL_WindowData *data = (SDL_WindowData *)window->driverdata;
-#ifndef IPHONEOS
-	/* construct our view, passing in SDL's OpenGL configuration data */
-	view = [[SDL_uikitopenglview alloc] initWithFrame: [[UIScreen mainScreen] applicationFrame] \
-									retainBacking: _this->gl_config.retained_backing \
-									rBits: _this->gl_config.red_size \
-									gBits: _this->gl_config.green_size \
-									bBits: _this->gl_config.blue_size \
-									aBits: _this->gl_config.alpha_size \
-									depthBits: _this->gl_config.depth_size];
-#else
-    view = [[SDLUIKitDelegate sharedAppDelegate] screen];
-    [view resize:CGSizeMake(window->w, window->h)];
-#endif
-    
-    
-	data->view = view;
-#ifndef IPHONEOS
-	/* add the view to our window */
-	[data->uiwindow addSubview: view ];
-	
-	/* Don't worry, the window retained the view */
-	///FIXME [view release];
-#endif
-    
-	if ( UIKit_GL_MakeCurrent(_this, window, view) < 0 ) {
-        UIKit_GL_DeleteContext(_this, view);
-        return NULL;
-    }
-		
-	return view;
+    __block SDL_uikitopenglview *view = NULL;
+    __block volatile int done = 0;
+    dispatch_async(dispatch_get_main_queue(), ^{
+        SDL_WindowData *data = (SDL_WindowData *)window->driverdata;
+        view = [[SDLUIKitDelegate sharedAppDelegate] screen];
+        [view resize:CGSizeMake(window->w, window->h)];
+        data->view = view;
+        if ( UIKit_GL_MakeCurrent(_this, window, view) < 0 ) {
+            UIKit_GL_DeleteContext(_this, view);
+        }
+        done = 1;
+    });
+    while (!done) usleep(100);
+    return view;
 }
 
 void UIKit_GL_DeleteContext(_THIS, SDL_GLContext context)

@@ -255,9 +255,9 @@
 }
 
 
-// Be careful, this can be called outside mainthread
 - (BOOL)resize:(CGSize)sizeNew
 {
+    NSAssert([NSThread isMainThread], @"Resize must happen in main thread");
     if (self.bounds.size.width == sizeNew.width && 
         self.bounds.size.height == sizeNew.height )
     {
@@ -269,11 +269,7 @@
     }
     
     newSize = sizeNew;
-    resizeDone = FALSE;
-    [self performSelectorOnMainThread:@selector(resizeMain) withObject:nil waitUntilDone:YES];
-    while (!resizeDone) {
-        [NSThread sleepForTimeInterval:0.1];
-    }
+    [self resizeMain];
     return YES;
 }
 
@@ -308,7 +304,6 @@
 
 - (void)layoutSubviews {
     [EAGLContext setCurrentContext:context];
-#ifdef IPHONEOS
     CGRect brect = self.bounds;
     if (backingWidth == brect.size.width &&
         backingHeight == brect.size.height) {
@@ -317,19 +312,6 @@
 
     [self destroyFramebuffer];
 	[self createFramebuffer];
-    
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-    glViewport(0, 0, brect.size.width, brect.size.height);
-    glOrthof(0.0, (GLfloat) brect.size.width, (GLfloat) brect.size.height, 0.0,
-                   0.0, 1.0);
-    
-    
-    [self erase];
-    resizeDone = YES;
-#endif
 }
 
 - (void)destroyFramebuffer {

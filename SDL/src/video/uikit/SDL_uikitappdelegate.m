@@ -61,11 +61,12 @@ int main(int argc, char **argv) {
 
 @implementation SDLUIKitDelegate
 
-@synthesize window;
+@synthesize sdl_window;
 @synthesize uiwindow;
 
 /* convenience method */
 +(SDLUIKitDelegate *)sharedAppDelegate {
+    NSAssert([NSThread isMainThread], @"Should in main thread");
 	/* the delegate is set in UIApplicationMain(), which is garaunteed to be called before this method */
 	return (SDLUIKitDelegate *)[[UIApplication sharedApplication] delegate];
 }
@@ -121,13 +122,13 @@ int main(int argc, char **argv) {
 - (void) applicationWillResignActive:(UIApplication*)application
 {
 //	NSLog(@"%@", NSStringFromSelector(_cmd));
-	SDL_SendWindowEvent(self.window, SDL_WINDOWEVENT_MINIMIZED, 0, 0);
+	SDL_SendWindowEvent(self.sdl_window, SDL_WINDOWEVENT_MINIMIZED, 0, 0);
 }
 
 - (void) applicationDidBecomeActive:(UIApplication*)application
 {
 //	NSLog(@"%@", NSStringFromSelector(_cmd));
-	SDL_SendWindowEvent(self.window, SDL_WINDOWEVENT_RESTORED, 0, 0);
+	SDL_SendWindowEvent(self.sdl_window, SDL_WINDOWEVENT_RESTORED, 0, 0);
 }
 
 -(void)setWindowTitle:(char*)title

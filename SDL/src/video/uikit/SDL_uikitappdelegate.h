@@ -29,7 +29,7 @@
     IBOutlet UIWindow *uiwindow;
 }
 
-@property (readwrite, assign) SDL_Window *window;
+@property (readwrite, assign) SDL_Window *sdl_window;
 @property (readwrite, strong) UIWindow *uiwindow;
 
 +(SDLUIKitDelegate *)sharedAppDelegate;
