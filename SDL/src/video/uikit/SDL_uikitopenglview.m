@@ -312,6 +312,16 @@
 
     [self destroyFramebuffer];
 	[self createFramebuffer];
+    
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+    glViewport(0, 0, brect.size.width, brect.size.height);
+    glOrthof(0.0, (GLfloat) brect.size.width, (GLfloat) brect.size.height, 0.0,
+                   0.0, 1.0);
+    
+    [self erase];
 }
 
 - (void)destroyFramebuffer {
