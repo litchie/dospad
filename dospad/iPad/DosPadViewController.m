@@ -471,6 +471,7 @@ static struct {
     {
         baseView.userInteractionEnabled = NO;
         [self.view insertSubview:self.screenView atIndex:0];
+        baseView.alpha = 0;
         keyboard.alpha=0;
         sliderInput.alpha=0;
         btnOption.alpha=0;
@@ -510,7 +511,7 @@ static struct {
         baseView.userInteractionEnabled = YES;
         [self.screenView removeFromSuperview];
         [baseView insertSubview:self.screenView atIndex:0];
-		
+		baseView.alpha = 1;
 		// Scaling baseView to fill self.view as much as possible
 		if (baseView.bounds.size.width != self.view.bounds.size.width ||
 			baseView.bounds.size.height != self.view.bounds.size.height)

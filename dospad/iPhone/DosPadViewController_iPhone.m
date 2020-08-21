@@ -537,6 +537,7 @@ static struct {
 		[self removeInputSource:InputSource_PCKeyboard];
 		[self createGamepad];
 		[fullscreenPanel removeFromSuperview];
+		[self.view bringSubviewToFront:self.screenView];
 	}
 	else
 	{
