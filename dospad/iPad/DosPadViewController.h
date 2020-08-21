@@ -30,7 +30,7 @@
 #import "FloatPanel.h"
 
 @interface DosPadViewController : DOSPadBaseViewController
-<FloatingViewDelegate>
+<UIPointerInteractionDelegate, FloatingViewDelegate>
 {
     // Portrait Mode
     FrameskipIndicator *fsIndicator;

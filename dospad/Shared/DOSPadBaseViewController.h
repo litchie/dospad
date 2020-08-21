@@ -38,12 +38,13 @@ typedef enum {
 } InputSourceType;
 
 @interface DOSPadBaseViewController : UIViewController
-<SDL_uikitopenglview_delegate,MouseHoldDelegate,KeyDelegate,UIAlertViewDelegate>
+<SDL_uikitopenglview_delegate,MouseHoldDelegate,KeyDelegate,UIPointerInteractionDelegate,UIAlertViewDelegate>
 {
     NSString *configPath;
     BOOL autoExit;
     SDL_uikitopenglview *screenView;
     HoldIndicator *holdIndicator;
+    UIPointerInteraction* interaction;
     
     // Input Devices
     //VKView *vk; // Background, conflicts with iOS keyboard
@@ -91,4 +92,8 @@ typedef enum {
 - (void)createJoystick;
 - (void)createMouseButtons;
 - (void)createPianoKeyboard;
+
+- (UIPointerRegion *)pointerInteraction:(UIPointerInteraction *)interaction regionForRequest:(UIPointerRegionRequest *)request defaultRegion:(UIPointerRegion *)defaultRegion  API_AVAILABLE(ios(13.4));
+
+extern const int POINTER_INTERACTION_SDL_MOUSE_ID;
 @end

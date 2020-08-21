@@ -164,12 +164,25 @@ void SDL_init_keyboard()
 #endif
 	NSEnumerator *enumerator = [touches objectEnumerator];
 	UITouch *touch =(UITouch*)[enumerator nextObject];
-	
+
+    // check for special case of hardware pointers
+    if(touch.type == UITouchTypeIndirectPointer) {
+        if(event.buttonMask == 1) {
+            NSLog(@"Primary button pressed");
+            SDL_SendMouseButton(0, SDL_PRESSED, SDL_BUTTON_LEFT);
+        }
+        if(event.buttonMask == 2) {
+            NSLog(@"Secondary button pressed");
+            SDL_SendMouseButton(0, SDL_PRESSED, SDL_BUTTON_RIGHT);
+        }
+        // pointer device event comes by itself, safe to finish
+        return;
+    }
+
 	/* associate touches with mice, so long as we have slots */
 	int i;
 	int found = 0;
 	for(i=0; touch && i < MAX_SIMULTANEOUS_TOUCHES; i++) {
-        
 		/* check if this mouse is already tracking a touch */
 		if (mice[i].driverdata != NULL) {
 			continue;
@@ -235,8 +248,24 @@ void SDL_init_keyboard()
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
 	NSEnumerator *enumerator = [touches objectEnumerator];
 	UITouch *touch=nil;
-	
+	    
 	while(touch = (UITouch *)[enumerator nextObject]) {
+        // check for special case of h/w pointers (e.g. bluetooth)
+        if (@available(iOS 13.4, *)) {
+            if(touch.type == UITouchTypeIndirectPointer) {
+                Uint8 buttonState = SDL_GetMouse(0)->buttonstate;
+                if (buttonState & SDL_BUTTON(SDL_BUTTON_LEFT)) {
+                    NSLog(@"Primary button released");
+                    SDL_SendMouseButton(0, SDL_RELEASED, SDL_BUTTON_LEFT);
+                }
+                if (buttonState & SDL_BUTTON(SDL_BUTTON_RIGHT)) {
+                    NSLog(@"Secondary button released");
+                    SDL_SendMouseButton(0, SDL_RELEASED, SDL_BUTTON_RIGHT);
+                }
+                continue;
+            }
+        }
+
 		/* search for the mouse slot associated with this touch */
 		int i, found = NO;
 		for (i=0; i<MAX_SIMULTANEOUS_TOUCHES && !found; i++) {
