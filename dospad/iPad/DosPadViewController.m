@@ -469,7 +469,6 @@ static struct {
     [self updateBackground];    
     if ([self isFullscreen]) 
     {
-        baseView.userInteractionEnabled = NO;
         [self.view insertSubview:self.screenView atIndex:0];
         baseView.alpha = 0;
         keyboard.alpha=0;
@@ -508,7 +507,6 @@ static struct {
     }
     else 
     {
-        baseView.userInteractionEnabled = YES;
         [self.screenView removeFromSuperview];
         [baseView insertSubview:self.screenView atIndex:0];
 		baseView.alpha = 1;
