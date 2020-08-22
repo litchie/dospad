@@ -545,6 +545,8 @@ static struct {
     {
         [self addInputSource:InputSource_Joystick];
     }
+    
+    [self.screenView calibratePointer];
 }
 
 -(void)viewWillAppear:(BOOL)animated

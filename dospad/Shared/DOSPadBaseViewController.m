@@ -193,9 +193,9 @@ extern int SDL_SendKeyboardKey(int index, Uint8 state, SDL_scancode scancode);
         
     }];
     
-    // adding pointer interaction delegate
+    // setup pointer interaction
     interaction = [[UIPointerInteraction alloc] initWithDelegate: self];
-    [self.view addInteraction:interaction];
+    [self.screenView addInteraction:interaction];
 }
 
 
@@ -261,55 +261,11 @@ extern int SDL_SendKeyboardKey(int index, Uint8 state, SDL_scancode scancode);
 }
 
 - (UIPointerRegion *)pointerInteraction:(UIPointerInteraction *)interaction regionForRequest:(UIPointerRegionRequest *)request defaultRegion:(UIPointerRegion *)defaultRegion  API_AVAILABLE(ios(13.4)){
-        
-    // ensure a SDL_mouse for physical pointerInteraction
-    // TODO: if mouse created here before screenView creates, screenview don't create its own mice. Need to improve (there)
-    Boolean mouseReady = false;
-    for(int i=0; i < SDL_GetNumMice(); i++) {
-        if (SDL_GetMouse(i)->id == POINTER_INTERACTION_SDL_MOUSE_ID) {
-            mouseReady = true;
-            break;
+        if (request != nil) {
+            CGPoint loc = request.location;
+            [self.screenView sendPointerLocation:loc];
         }
-    }
-    
-    if(!mouseReady) {
-        SDL_Mouse * mouse = (SDL_Mouse*) calloc(1, sizeof(SDL_Mouse));
-        mouse->id= POINTER_INTERACTION_SDL_MOUSE_ID;
-        SDL_AddMouse(mouse, "physical pointer", 0, 0, 1);
-    }
-    
-    if (request != nil) {
-        CGPoint loc = request.location;
-        NSLog(@"Interaction: x: %f, y: %f", loc.x, loc.y);
-        float inscreenX = loc.x - screenView.frame.origin.x;
-        float inscreenY = loc.y - screenView.frame.origin.y;
-        NSLog(@"inScreen: x: %f, y: %f", inscreenX, inscreenY);
-        
-        float boundWidth = screenView.bounds.size.width;
-        float boundHeight = screenView.bounds.size.height;
-        NSLog(@"bound: w: %f, h: %f", boundWidth, boundHeight);
-        
-        float frameWidth = screenView.frame.size.width;
-        float frameHeight = screenView.frame.size.height;
-        NSLog(@"frame: w: %f, h: %f", frameWidth, frameHeight);
-
-        float ratioPosX = inscreenX / frameWidth;
-        float ratioPosY = inscreenY / frameHeight;
-        NSLog(@"ratioPos: x: %f, y: %f", ratioPosX, ratioPosY);
-
-        
-        float convertedX = boundWidth * ratioPosX;
-        float convertedY = boundHeight * ratioPosY;
-        NSLog(@"Converted: x: %f, y: %f", convertedX, convertedY);
-        // send mouse motion with calculated absolute mouse position
-        // note multiplication by 2, which seems to be required for SDL Screen size
-        // use mouse 0
-//        SDL_SetRelativeMouseMode(0, SDL_FALSE);
-//        SDL_SendMouseMotion(0, 0, convertedX*2, convertedY*2, 0);
-//        SDL_SetRelativeMouseMode(0, SDL_TRUE);
-        SDL_SendMouseMotion(POINTER_INTERACTION_SDL_MOUSE_ID, 0, convertedX*2, convertedY*2, 0);
-    }
-    return nil;
+        return nil;
 }
 
 -(BOOL)onDoubleTap:(CGPoint)pt

@@ -69,12 +69,7 @@ void SDL_init_keyboard()
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
 #endif
     
-	int i;
-	for (i=0; i<MAX_SIMULTANEOUS_TOUCHES; i++) {
-        mice[i].id = i;
-		mice[i].driverdata = NULL;
-		SDL_AddMouse(&mice[i], "Mouse", 0, 0, 1);
-	}
+    [self initializeMice];
 	self.multipleTouchEnabled = YES;
     
 	return self;
@@ -148,35 +143,72 @@ void SDL_init_keyboard()
     }
 }
 
+- (void)sendPointerLocation:(CGPoint)point
+{
+    // make sure SDL_mouse instances are ready
+    if (SDL_GetNumMice() == 0) {
+        [self initializeMice];
+    }
+    
+    // do calibration if required
+    if(pointerNeedsCalibration) {
+        // calibratee the SDL mouse by moving from min-max full range, here from point (0,0) to point (width, height)
+        SDL_SendMouseMotion(pointerMouse->id, 0, 0, 0, 0);
+        SDL_SendMouseMotion(pointerMouse->id, 0, self.bounds.size.width * 2.0, self.bounds.size.height * 2.0, 0);
+        pointerNeedsCalibration = NO;
+    }
+    
+    // send the event via dedicated, non-relative mode mouse
+    // it is required to pass doubled value (* 2.0) to SDL, to match ipadOS pointer to in-DOS pointer
+    SDL_SendMouseMotion(self->pointerMouse->id, 0, 0, 0, 0);
+    SDL_SendMouseMotion(self->pointerMouse->id, 0, self.bounds.size.width * 2.0, self.bounds.size.height * 2.0, 0);
+    SDL_SendMouseMotion(self->pointerMouse->id, 0, point.x * 2.0, point.y * 2.0, 0);
+}
+
+- (void)calibratePointer
+{
+    pointerNeedsCalibration = YES;
+}
 #endif
+
+- (void)initializeMice
+{
+    // touch-based mouse, relative mode, one per each simultaneous touch
+    int i;
+    for (i=0; i<MAX_SIMULTANEOUS_TOUCHES; i++) {
+        mice[i].id = i;
+        mice[i].driverdata = NULL;
+        SDL_AddMouse(&mice[i], "Mouse", 0, 0, 1);
+        SDL_SetRelativeMouseMode(i, SDL_TRUE);
+    }
+    
+    // mouse for pointerInteraction, non-relative mode
+    self->pointerMouse = (SDL_Mouse*) calloc(1, sizeof(SDL_Mouse));
+    self->pointerMouse->id=i;
+    SDL_AddMouse(self->pointerMouse, "Pointer Interaction", 0, 0, 1);
+}
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
 #ifdef IPHONEOS
     if (SDL_GetNumMice() == 0) {
-        int i;
-        for (i=0; i<MAX_SIMULTANEOUS_TOUCHES; i++) {
-            mice[i].id = i;
-            mice[i].driverdata = NULL;
-            SDL_AddMouse(&mice[i], "Mouse", 0, 0, 1);
-            SDL_SetRelativeMouseMode(i, SDL_TRUE);
-        }
+        [self initializeMice];
     }
 #endif
 	NSEnumerator *enumerator = [touches objectEnumerator];
 	UITouch *touch =(UITouch*)[enumerator nextObject];
 
-    // check for special case of hardware pointers
-    if(touch.type == UITouchTypeIndirectPointer) {
-        if(event.buttonMask == 1) {
-            NSLog(@"Primary button pressed");
-            SDL_SendMouseButton(0, SDL_PRESSED, SDL_BUTTON_LEFT);
+    // case for pointer device (e.g. bluetooth mouse)
+    if (@available(iOS 13.4, *)) {
+        if(touch.type == UITouchTypeIndirectPointer) {
+            if(event.buttonMask == UIEventButtonMaskPrimary) {
+                SDL_SendMouseButton(self->pointerMouse->id, SDL_PRESSED, SDL_BUTTON_LEFT);
+            }
+            if(event.buttonMask == UIEventButtonMaskSecondary) {
+                SDL_SendMouseButton(self->pointerMouse->id, SDL_PRESSED, SDL_BUTTON_RIGHT);
+            }
+            // pointer device event comes as single touch, safe to finish
+            return;
         }
-        if(event.buttonMask == 2) {
-            NSLog(@"Secondary button pressed");
-            SDL_SendMouseButton(0, SDL_PRESSED, SDL_BUTTON_RIGHT);
-        }
-        // pointer device event comes by itself, safe to finish
-        return;
     }
 
 	/* associate touches with mice, so long as we have slots */
@@ -250,17 +282,17 @@ void SDL_init_keyboard()
 	UITouch *touch=nil;
 	    
 	while(touch = (UITouch *)[enumerator nextObject]) {
-        // check for special case of h/w pointers (e.g. bluetooth)
+        // case for pointer device (e.g. bluetooth mouse)
         if (@available(iOS 13.4, *)) {
             if(touch.type == UITouchTypeIndirectPointer) {
-                Uint8 buttonState = SDL_GetMouse(0)->buttonstate;
+                // event.buttonmask does not have info at release time
+                // check SDL_Mouse buttonstate to find what to release
+                Uint8 buttonState = SDL_GetMouse(self->pointerMouse->id)->buttonstate;
                 if (buttonState & SDL_BUTTON(SDL_BUTTON_LEFT)) {
-                    NSLog(@"Primary button released");
-                    SDL_SendMouseButton(0, SDL_RELEASED, SDL_BUTTON_LEFT);
+                    SDL_SendMouseButton(self->pointerMouse->id, SDL_RELEASED, SDL_BUTTON_LEFT);
                 }
                 if (buttonState & SDL_BUTTON(SDL_BUTTON_RIGHT)) {
-                    NSLog(@"Secondary button released");
-                    SDL_SendMouseButton(0, SDL_RELEASED, SDL_BUTTON_RIGHT);
+                    SDL_SendMouseButton(self->pointerMouse->id, SDL_RELEASED, SDL_BUTTON_RIGHT);
                 }
                 continue;
             }

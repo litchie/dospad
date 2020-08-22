@@ -85,7 +85,8 @@ typedef struct {
 	UITextField *textField;
 	BOOL keyboardVisible;
 #endif	
-    
+    SDL_Mouse * pointerMouse; /* mouse for ipadOS pointer interaction */
+    BOOL pointerNeedsCalibration;
 }
 #ifdef IPHONEOS
 @property (nonatomic,assign)  id<MouseHoldDelegate> mouseHoldDelegate;
@@ -106,5 +107,11 @@ typedef struct {
 @property (readonly) BOOL keyboardVisible;
 #endif 
 
+- (void)initializeMice;
+
+#ifdef IPHONEOS
+- (void)sendPointerLocation:(CGPoint)point;
+- (void)calibratePointer;
+#endif
 @end
 /* *INDENT-ON* */
