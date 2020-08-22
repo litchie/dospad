@@ -22,6 +22,17 @@
 
 #import "SDL_uikitview.h"
 
+#define POSITION_CHANGE_THRESHOLD 20 /* Cancel hold If finger pos move beyond this */
+#define MOUSE_HOLD_INTERVAL 1.0f /* mouse hold happens after this interval */
+#define TAP_THRESHOLD 0.3f /* Tap interval should be less than 0.3s */
+
+/* Mouse hold status */
+#define MOUSE_HOLD_NO   0
+#define MOUSE_HOLD_WAIT 1
+#define MOUSE_HOLD_YES  2
+
+#define MAX_PENDING_CLICKS 10
+
 #if SDL_IPHONE_KEYBOARD
 #import "SDL_keyboard_c.h"
 #import "keyinfotable.h"
@@ -45,12 +56,35 @@ void SDL_init_keyboard()
 }
 #endif
 
-@implementation SDL_uikitview
-#ifdef IPHONEOS
-@synthesize mouseHoldDelegate;
-#endif
+@interface SDL_uikitview ()
+<UIPointerInteractionDelegate>
+{
+	double _pointerActiveTime;
+	CGPoint _lastPointerLocation;
+	BOOL _pointerActive;
+	UITouch *_primaryTouch;
+	CGPoint _primaryOrigin;
+	int _primaryHold;
+	UITouch *_secondaryTouch;
+	CGPoint _secondaryOrigin;
+	CFAbsoluteTime _secondaryStartTime;
 
-- (void)dealloc {
+	struct {
+		unsigned rightClick: 1;
+		unsigned down: 1;
+	} _pendingClicks [MAX_PENDING_CLICKS];
+	int _pendingClickIndex;
+	int _pendingClickCount;
+}
+
+@end
+
+
+@implementation SDL_uikitview
+@synthesize mouseHoldDelegate;
+
+- (void)dealloc
+{
 #if SDL_IPHONE_KEYBOARD
 	SDL_DelKeyboard(0);
 	[textField release];
@@ -58,308 +92,304 @@ void SDL_init_keyboard()
 	[super dealloc];
 }
 
-- (id)initWithFrame:(CGRect)frame {
-    
+- (id)initWithFrame:(CGRect)frame
+{
 	self = [super initWithFrame: frame];
 	
+	if (@available(iOS 13.4, *)) {
+		UIPointerInteraction *pi = [[[UIPointerInteraction alloc] initWithDelegate:self] autorelease];
+		[self addInteraction:pi];
+	} else {
+		// Fallback on earlier versions
+	}
+
+
 #if SDL_IPHONE_KEYBOARD
 	[self initializeKeyboard];
     
     // register for keyboard notifications
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
 #endif
-    
-	int i;
-	for (i=0; i<MAX_SIMULTANEOUS_TOUCHES; i++) {
-        mice[i].id = i;
-		mice[i].driverdata = NULL;
-		SDL_AddMouse(&mice[i], "Mouse", 0, 0, 1);
-	}
 	self.multipleTouchEnabled = YES;
-    
 	return self;
     
 }
 
-#ifdef IPHONEOS
+// MARK: Touch Events
 
-- (void)sendMouseEvent:(int)index left:(BOOL)isLeft down:(BOOL)isDown
+static CGFloat CGPointDistanceToPoint(CGPoint a, CGPoint b)
 {
-    if (index >= 0 && index < SDL_GetNumMice()) {
-        SDL_SendMouseButton(index,
-                            isDown?SDL_PRESSED:SDL_RELEASED,
-                            isLeft?SDL_BUTTON_LEFT:SDL_BUTTON_RIGHT);
-    }
+    CGFloat dx = a.x - b.x;
+    CGFloat dy = a.y - b.y;
+    return sqrt(dx*dx+dy*dy);
 }
 
-- (void)keyboardWillShow:(id)sender
+- (void)beginHold
 {
-    // we never want this keyboard to show
-    // the uitextfield is our proxy for receiving external keyboard input
-    [self hideKeyboard];
-}
-
--(id)initWithCoder:(NSCoder *)aDecoder
-{
-    self = [super initWithCoder:aDecoder];
+	if (_primaryHold != MOUSE_HOLD_WAIT)
+		return;
+	//NSLog(@"hold down");
+	_primaryHold = MOUSE_HOLD_YES;
 	
-	self.multipleTouchEnabled = YES;
-    
-	return self;
+	if (self.mouseHoldDelegate) {
+		[self.mouseHoldDelegate onHold:_primaryOrigin];
+	}
+	[self sendMouseEvent:0 left:YES down:YES];
 }
--(CGFloat) distanceBetween: (CGPoint) point1 and: (CGPoint)point2
+
+- (void)endHold
 {
-    CGFloat dx = point2.x - point1.x;
-    CGFloat dy = point2.y - point1.y;
-    return sqrt(dx*dx + dy*dy );
+	if (_primaryHold == MOUSE_HOLD_NO)
+		return;
+	if (_primaryHold == MOUSE_HOLD_WAIT)
+	{
+		//NSLog(@"cancel hold");
+		[NSThread cancelPreviousPerformRequestsWithTarget:self selector:@selector(beginHold) object:self];
+	} else {
+		//NSLog(@"hold up");
+		[self sendMouseEvent:0 left:YES down:NO];
+	}
+	if (self.mouseHoldDelegate) {
+		[self.mouseHoldDelegate cancelHold:CGPointZero];
+	}
+	_primaryHold = MOUSE_HOLD_NO;
 }
 
--(void)holdButton:(NSNumber*)mouseIndex
+
+- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
 {
-    int i = [mouseIndex intValue];
-    // We make sure the mouse is not detached
-    // In fact, it should not be NULL according to our logic
-    // Play safer here.
-    if (mice[i].driverdata!=NULL) {
-        if (extmice[i].mouseHold==MOUSE_HOLD_WAIT) {
-            SDL_SendMouseButton(i, SDL_PRESSED,
-                                extmice[i].leftHold?SDL_BUTTON_LEFT:SDL_BUTTON_RIGHT);
-            extmice[i].mouseHold = MOUSE_HOLD_YES;
-            if (mouseHoldDelegate) {
-                [mouseHoldDelegate onHold:extmice[i].ptOrig];
-            }
-        }
-    }
-}
-
--(void)cancelHold
-{
-    // We could use cancelPreviousPerformRequestsWithTarget,
-    //
-    //  [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(holdButton:) object:(index)];
-    //
-    // but here for simplicity
-    for (int i = 0; i < MAX_SIMULTANEOUS_TOUCHES; i++) {
-        if (mice[i].driverdata !=NULL) {
-            if (extmice[i].mouseHold==MOUSE_HOLD_WAIT) {
-                extmice[i].mouseHold=MOUSE_HOLD_NO;
-            }
-        }
-    }
-}
-
-#endif
-
-- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
-#ifdef IPHONEOS
-    if (SDL_GetNumMice() == 0) {
-        int i;
-        for (i=0; i<MAX_SIMULTANEOUS_TOUCHES; i++) {
-            mice[i].id = i;
-            mice[i].driverdata = NULL;
-            SDL_AddMouse(&mice[i], "Mouse", 0, 0, 1);
-            SDL_SetRelativeMouseMode(i, SDL_TRUE);
-        }
-    }
-#endif
-	NSEnumerator *enumerator = [touches objectEnumerator];
-	UITouch *touch =(UITouch*)[enumerator nextObject];
-	
-	/* associate touches with mice, so long as we have slots */
-	int i;
-	int found = 0;
-	for(i=0; touch && i < MAX_SIMULTANEOUS_TOUCHES; i++) {
-        
-		/* check if this mouse is already tracking a touch */
-		if (mice[i].driverdata != NULL) {
-			continue;
-		}
-		/*
-         mouse not associated with anything right now,
-         associate the touch with this mouse
-         */
-		found = 1;
-		
-		/* save old mouse so we can switch back */
-		int oldMouse = SDL_SelectMouse(-1);
-		
-		/* select this slot's mouse */
-		SDL_SelectMouse(i);
-		CGPoint locationInView = [touch locationInView: self];
-		
-		/* set driver data to touch object, we'll use touch object later */
-		mice[i].driverdata = [touch retain];
-		
-#ifdef IPHONEOS
-        extmice[i].ptOrig = locationInView;
-        extmice[i].timestamp = touch.timestamp;
-        extmice[i].mouseHold=MOUSE_HOLD_NO;
-        
-        int leftHold = 1; // By default it is a left button hold
-        int canHold = 1;  // By default send a hold request
-        for (int j = 0; j < MAX_SIMULTANEOUS_TOUCHES; j++) {
-            if (j!=i && mice[j].driverdata !=NULL) {
-                leftHold=0;
-                if (extmice[j].mouseHold==MOUSE_HOLD_YES) // No hold if there is already another onhold
-                    canHold=0;
-                break;
-            }
-        }
-        
-        if (canHold) {
-            [self cancelHold]; // Should come first because it will clear hold data
-            extmice[i].mouseHold=MOUSE_HOLD_WAIT;
-            extmice[i].leftHold = leftHold;
-            [self performSelector:@selector(holdButton:)
-                       withObject:[NSNumber numberWithInt:i]
-                       afterDelay:MOUSE_HOLD_INTERVAL];
-        }
-#else
-        /* send moved event */
-		SDL_SendMouseMotion(i, 0, locationInView.x, locationInView.y, 0);
-		/* send mouse down event */
-		SDL_SendMouseButton(i, SDL_PRESSED, SDL_BUTTON_LEFT);
-#endif
-		/* re-calibrate relative mouse motion */
-		SDL_GetRelativeMouseState(i, NULL, NULL);
-		
-		/* grab next touch */
-		touch = (UITouch*)[enumerator nextObject];
-		
-		/* switch back to our old mouse */
-		SDL_SelectMouse(oldMouse);
-		
+	if (!_primaryTouch) {
+		//NSLog(@"primary began");
+		_primaryTouch = [touches anyObject];
+		_primaryOrigin=[_primaryTouch locationInView:self];
+		_primaryHold = MOUSE_HOLD_WAIT;
+		[self performSelector:@selector(beginHold) withObject:nil afterDelay:MOUSE_HOLD_INTERVAL];
+	} else if (!_secondaryTouch) {
+		//NSLog(@"secondary began");
+		_secondaryTouch = [touches anyObject];
+		_secondaryOrigin = [_secondaryTouch locationInView:self];
 	}
 }
 
-- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
-	NSEnumerator *enumerator = [touches objectEnumerator];
-	UITouch *touch=nil;
-	
-	while(touch = (UITouch *)[enumerator nextObject]) {
-		/* search for the mouse slot associated with this touch */
-		int i, found = NO;
-		for (i=0; i<MAX_SIMULTANEOUS_TOUCHES && !found; i++) {
-			if (mice[i].driverdata == touch) {
-				/* found the mouse associate with the touch */
-				[(UITouch*)(mice[i].driverdata) release];
-				mice[i].driverdata = NULL;
-				/* send mouse up */
-#ifdef IPHONEOS
-                double interval = touch.timestamp - extmice[i].timestamp;
-                
-                /* If there is another touch, then this should be a right click*/
-                int rightClick=0;
-                for (int j = 0; j < MAX_SIMULTANEOUS_TOUCHES; j++) {
-                    if (j!=i && mice[j].driverdata!=NULL) {
-                        rightClick=1;
-                        break;
-                    }
-                }
-                
-                if ([touch tapCount] == 2) {
-                    if (rightClick) {
-                        [self cancelHold];
-                    } else if ([mouseHoldDelegate currentRightClickMode] == MouseRightClickWithDoubleTap) {
-						rightClick = 1;
-					}
-                    SDL_SendMouseButton(i, SDL_PRESSED,  !rightClick?SDL_BUTTON_LEFT:SDL_BUTTON_RIGHT);
-                    // Must have or won't work
-                    [NSThread sleepForTimeInterval:0.01];
-                    SDL_SendMouseButton(i, SDL_RELEASED, !rightClick?SDL_BUTTON_LEFT:SDL_BUTTON_RIGHT);
-                } else if (interval < TAP_THRESHOLD) {
-                    if (rightClick) {
-                        [self cancelHold];
-                    }
-                    SDL_SendMouseButton(i, SDL_PRESSED,  !rightClick?SDL_BUTTON_LEFT:SDL_BUTTON_RIGHT);
-                    // Must have or won't work
-                    [NSThread sleepForTimeInterval:0.01];
-                    SDL_SendMouseButton(i, SDL_RELEASED, !rightClick?SDL_BUTTON_LEFT:SDL_BUTTON_RIGHT);
-                } else if (extmice[i].mouseHold==MOUSE_HOLD_YES) {
-                    SDL_SendMouseButton(i, SDL_RELEASED, SDL_BUTTON_LEFT);
-                }
-                
-                if (extmice[i].mouseHold == MOUSE_HOLD_WAIT) {
-                    [self cancelHold];
-                }
-                
-                if (extmice[i].mouseHold == MOUSE_HOLD_YES) {
-                    if (mouseHoldDelegate) {
-                        [mouseHoldDelegate cancelHold:extmice[i].ptOrig];
-                    }
-                }
-                
-#else
-				SDL_SendMouseButton(i, SDL_RELEASED, SDL_BUTTON_LEFT);
-#endif
-				/* discontinue search for this touch */
-				found = YES;
-			}
-		}
-	}
-}
-
+// Get called if there is a mouse and you try to use finger
 - (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event {
 	/*
      this can happen if the user puts more than 5 touches on the screen
      at once, or perhaps in other circumstances.  Usually (it seems)
      all active touches are canceled.
      */
-	[self touchesEnded: touches withEvent: event];
-}
-
-- (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
-	
-	NSEnumerator *enumerator = [touches objectEnumerator];
-	UITouch *touch=nil;
-	
-	while(touch = (UITouch *)[enumerator nextObject]) {
-		/* try to find the mouse associated with this touch */
-		int i, found = NO;
-		for (i=0; i<MAX_SIMULTANEOUS_TOUCHES && !found; i++) {
-			if (mice[i].driverdata == touch) {
-				/* found proper mouse */
-#ifdef IPHONEOS
-                CGPoint locationInView = [touch locationInView: [self superview]];
-                CGPoint prevLocation = [touch previousLocationInView: [self superview]];
-                float dx = locationInView.x-prevLocation.x;
-                float dy = locationInView.y-prevLocation.y;
-                float mouseSpeed = [[NSUserDefaults standardUserDefaults] floatForKey:@"mouse_speed"];
-                if (mouseSpeed == 0) mouseSpeed=0.5;
-                float scale = 1+2*mouseSpeed;
-                CGPoint ptOrig = [self convertPoint:extmice[i].ptOrig toView:[self superview]];
-                if (MOUSE_HOLD_NO!=extmice[i].mouseHold
-                    && [self distanceBetween:ptOrig and:locationInView] > POSITION_CHANGE_THRESHOLD)
-                {
-                    if (extmice[i].mouseHold == MOUSE_HOLD_WAIT) {
-                        [self cancelHold];
-                    } else if (extmice[i].mouseHold == MOUSE_HOLD_YES) {
-                        SDL_SendMouseButton(i, SDL_RELEASED, SDL_BUTTON_LEFT);
-                        if (mouseHoldDelegate) {
-                            [mouseHoldDelegate cancelHold:extmice[i].ptOrig];
-                        }
-                    }
-                    extmice[i].mouseHold=MOUSE_HOLD_NO;
-                }
-                if (extmice[i].mouseHold==MOUSE_HOLD_NO) {
-                    SDL_SendMouseMotion(i, 1, dx*scale, dy*scale, 0);
-                }
-#else
-                CGPoint locationInView = [touch locationInView: self];
-				/* send moved event */
-				SDL_SendMouseMotion(i, 0, locationInView.x, locationInView.y, 0);
-#endif
-				/* discontinue search */
-				found = YES;
-			}
+	for (UITouch *touch in touches)
+	{
+		if (touch == _primaryTouch) {
+			// clear all buton states
+			NSLog(@"primary cancel");
+			_primaryTouch = nil;
+			_secondaryTouch = nil;
+			[self endHold];
+		} else if (touch == _secondaryTouch) {
+			NSLog(@"secondary cancel");
+			// If right down, we should release it as well
+			// clear right button states
+			_secondaryTouch = nil;
 		}
 	}
 }
 
+// should not use tap count to decide for double tap
+// doesn't work well. because it will have two sessions
+- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
+{
+	for (UITouch *touch in touches)
+	{
+		if (touch == _primaryTouch) {
+			
+			//NSLog(@"primary ended tap count %d", (int)[_primaryTouch tapCount]);
+			if (self.mouseHoldDelegate
+				&& [self.mouseHoldDelegate currentRightClickMode] == MouseRightClickWithDoubleTap
+				&& [_primaryTouch tapCount] == 2)
+			{
+				[self addClick:YES];
+			}
+			else if ([_primaryTouch tapCount] > 0)
+			{
+				[self addClick:NO];
+			}
+			// clear all buton states
+			_primaryTouch = nil;
+			_secondaryTouch = nil;
+			[self endHold];
+		} else if (touch == _secondaryTouch) {
+			NSLog(@"secondary ended tap count %d", (int)[touch tapCount]);
+			
+			if ([_secondaryTouch tapCount] > 0)
+			{
+				[self addClick:YES];
+			}
+
+			// If right down, we should release it as well
+			// clear right button states
+			_secondaryTouch = nil;
+		}
+	}
+}
+
+- (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event
+{
+	for (UITouch *touch in touches)
+	{
+		if (touch == _primaryTouch)
+		{
+			CGPoint a = [touch previousLocationInView:self];
+			CGPoint b = [touch locationInView:self];
+			//NSLog(@"primary move: %f %f",b.x-a.x, b.y-a.y);
+			if (_primaryHold == MOUSE_HOLD_WAIT)
+			{
+				if (CGPointDistanceToPoint(b, _primaryOrigin) > POSITION_CHANGE_THRESHOLD)
+				{
+					[self endHold];
+				}
+			}
+			if (_primaryHold == MOUSE_HOLD_YES)
+			{
+				if (self.mouseHoldDelegate)
+				{
+					[self.mouseHoldDelegate onHoldMoved:b];
+				}
+			}
+			[self sendMouseMotion:0 x:b.x-a.x y:b.y-a.y];
+		}
+		else if (touch == _secondaryTouch)
+		{
+			// Don't process secondary touch movements
+		}
+	}
+}
+
+
+
+// MARK: SDL Mouse Messages
+
+- (void)ensureSDLMouse
+{
+    if (SDL_GetNumMice() == 0)
+    {
+		mice.id = 0;
+		mice.driverdata = NULL;
+		SDL_AddMouse(&mice, "Mouse", 0, 0, 1);
+		SDL_SetRelativeMouseMode(0, SDL_TRUE);
+        NSAssert(SDL_GetNumMice()==1, @"Can not create mouse");
+		SDL_SelectMouse(0);
+    }
+}
+
+- (void)sendMouseMotion:(int)index x:(CGFloat)x y:(CGFloat)y
+{
+	[self ensureSDLMouse];
+	float mouseSpeed = [[NSUserDefaults standardUserDefaults] floatForKey:@"mouse_speed"];
+	if (mouseSpeed == 0) mouseSpeed=0.5;
+	float scale = 1+2*mouseSpeed;
+	NSAssert(index==0 && SDL_GetNumMice()==1, @"Bad mouse");
+	SDL_SendMouseMotion(index, 1, x*scale, y*scale, 0);
+}
+
+- (void)sendMouseEvent:(int)index left:(BOOL)isLeft down:(BOOL)isDown
+{
+	[self ensureSDLMouse];
+	NSAssert(index==0 && SDL_GetNumMice()==1, @"Bad mouse");
+	NSLog(@"mouse button %@ %@", isLeft?@"Left":@"Right", isDown?@"Down":@"Up");
+	SDL_SendMouseButton(index,
+						isDown?SDL_PRESSED:SDL_RELEASED,
+						isLeft?SDL_BUTTON_LEFT:SDL_BUTTON_RIGHT);
+}
+
+// MARK: Scheduled Mouse Click Events
+
+- (void)sendPendingClicks
+{
+	if (_pendingClickCount == 0)
+		return;
+	
+	[self sendMouseEvent:0 left:!_pendingClicks[_pendingClickIndex].rightClick
+		down:_pendingClicks[_pendingClickIndex].down];
+		
+	if (!_pendingClicks[_pendingClickIndex].down)
+	{
+		_pendingClickCount--;
+		_pendingClickIndex++;
+		if (_pendingClickIndex >= MAX_PENDING_CLICKS)
+			_pendingClickIndex = 0;
+	}
+	else
+	{
+		_pendingClicks[_pendingClickIndex].down = 0;
+	}
+	
+	if (_pendingClickCount > 0) {
+		[self performSelector:@selector(sendPendingClicks) withObject:nil afterDelay:0.1];
+	}
+}
+
+- (void)addClick:(BOOL)rightClick
+{
+	if (_pendingClickCount >= MAX_PENDING_CLICKS)
+		return;
+	int i = _pendingClickIndex + _pendingClickCount;
+	if (i >= MAX_PENDING_CLICKS)
+		i -= MAX_PENDING_CLICKS;
+	_pendingClicks[i].rightClick = rightClick;
+	_pendingClicks[i].down = 1;
+	_pendingClickCount++;
+	[NSThread cancelPreviousPerformRequestsWithTarget:self
+		selector:@selector(sendPendingClicks)
+		object:nil];
+	[self sendPendingClicks];
+}
+
+// MARK: Pointer Interaction Delegate
+
+- (UIPointerRegion *)pointerInteraction:(UIPointerInteraction *)interaction
+	regionForRequest:(UIPointerRegionRequest *)request
+	defaultRegion:(UIPointerRegion *)defaultRegion
+	API_AVAILABLE(ios(13.4))
+{
+	CFAbsoluteTime currentTime = CFAbsoluteTimeGetCurrent();
+
+	if (!_primaryTouch)
+	{
+		if (currentTime - _pointerActiveTime < 2.0)
+		{
+			CGFloat dx = request.location.x - _lastPointerLocation.x;
+			CGFloat dy = request.location.y - _lastPointerLocation.y;
+			//NSLog(@"pointer location: %f %f,  %f %f",request.location.x, request.location.y, dx, dy);
+			[self sendMouseMotion:0 x:dx y:dy];
+		}
+	}
+	
+	_lastPointerLocation = request.location;
+	_pointerActiveTime = currentTime;
+	return defaultRegion;
+}
+
+- (UIPointerStyle *)pointerInteraction:(UIPointerInteraction *)interaction
+	styleForRegion:(UIPointerRegion *)region
+	API_AVAILABLE(ios(13.4))
+{
+	return [UIPointerStyle hiddenPointerStyle];
+}
+
+
+
 /*
- ---- Keyboard related functionality below this line ----
+ MARK: Keyboard related functionality
  */
 #if SDL_IPHONE_KEYBOARD
+
+- (void)keyboardWillShow:(id)sender
+{
+    // we never want this keyboard to show
+    // the uitextfield is our proxy for receiving external keyboard input
+    //[self hideKeyboard];
+}
 
 /* Is the iPhone virtual keyboard visible onscreen? */
 - (BOOL)keyboardVisible {
@@ -467,6 +497,8 @@ void SDL_init_keyboard()
 }
 
 #endif
+
+
 
 @end
 

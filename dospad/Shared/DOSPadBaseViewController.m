@@ -118,11 +118,11 @@ extern int SDL_SendKeyboardKey(int index, Uint8 state, SDL_scancode scancode);
     screenView.delegate=self;
     screenView.mouseHoldDelegate=self;
     [self.view insertSubview:screenView atIndex:0];
-    holdIndicator = [[HoldIndicator alloc] initWithFrame:CGRectMake(0,0,128,128)];
+    holdIndicator = [[HoldIndicator alloc] initWithFrame:CGRectMake(0,0,100,100)];
     holdIndicator.alpha = 0;
-    holdIndicator.transform = CGAffineTransformMakeScale(1.5, 1.5);
+    //holdIndicator.transform = CGAffineTransformMakeScale(1.5, 1.5);
     [self.view addSubview:holdIndicator];
-
+	
 #ifdef IDOS
     self.title = @"iDOS";
 #else
@@ -263,22 +263,26 @@ extern int SDL_SendKeyboardKey(int index, Uint8 state, SDL_scancode scancode);
     return NO;
 }
 
+// MARK: Mouse Hold
 -(void)onHold:(CGPoint)pt
 {
     CGPoint pt2 = [self.screenView convertPoint:pt toView:self.view];
     holdIndicator.center=pt2;
-    [UIView beginAnimations:@"" context:nil];
-    [UIView setAnimationDuration:0.3];
-    holdIndicator.alpha=1;
-    [UIView commitAnimations];
+    [self.view bringSubviewToFront:holdIndicator];
+    [UIView animateWithDuration:0.3 animations:^{
+		holdIndicator.alpha = 1;
+	}];
 }
 
 -(void)cancelHold:(CGPoint)pt
 {
-    [UIView beginAnimations:@"" context:nil];
-    [UIView setAnimationDuration:0.3];
     holdIndicator.alpha=0;
-    [UIView commitAnimations];    
+}
+
+-(void)onHoldMoved:(CGPoint)pt
+{
+    CGPoint pt2 = [self.screenView convertPoint:pt toView:self.view];
+    holdIndicator.center=pt2;
 }
 
 - (MouseRightClickMode)currentRightClickMode

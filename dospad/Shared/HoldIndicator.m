@@ -24,12 +24,16 @@
 
 - (id)initWithFrame:(CGRect)frame {
     if ((self = [super initWithFrame:frame])) {
-        self.backgroundColor = [UIColor clearColor];
+        self.layer.cornerRadius = frame.size.width/2;
+		self.layer.masksToBounds = YES;
+		self.layer.borderWidth = 8;
+		self.layer.borderColor = [UIColor colorWithRed:0 green:0.5 blue:0 alpha:1.0].CGColor;
+		self.backgroundColor = [UIColor greenColor];
     }
     return self;
 }
 
-
+#if 0
 // Only override drawRect: if you perform custom drawing.
 // An empty implementation adversely affects performance during animation.
 - (void)drawRect:(CGRect)rect {
@@ -62,7 +66,7 @@
                               img.size.width,img.size.height);
     [img drawInRect:imgRect];
 }
-
+#endif
 
 
 @end

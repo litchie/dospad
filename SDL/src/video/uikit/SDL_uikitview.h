@@ -20,52 +20,41 @@
     slouken@libsdl.org
 */
 
+//
+// This is a total rewrite of original implementation.
+//
+// We only support 1 mouse.
+//
+// The trackpad behavior:
+//  - pan around is translated to mouse move
+//  - tap is left click
+//  - tap while another finger is down is right click
+//
+// Also: convert pointer move events (bluetooth mouse) to mouse events.
+//
+// By Chaoji Li, Aug 22, 2020
+//
 #import <UIKit/UIKit.h>
 #include "SDL_stdinc.h"
 #include "SDL_mouse.h"
 #include "SDL_mouse_c.h"
 #include "SDL_events.h"
 
-#ifdef IPHONEOS
-#define MAX_SIMULTANEOUS_TOUCHES 2 /* Two fingers are enough */
-
-/* Mouse hold status */
-#define MOUSE_HOLD_NO   0
-#define MOUSE_HOLD_WAIT 1
-#define MOUSE_HOLD_YES  2
-
-#define POSITION_CHANGE_THRESHOLD 15 /* Cancel hold If finger pos move beyond this */
-#define MOUSE_HOLD_INTERVAL 1.5f /* mouse hold happens after 1s */
-#define TAP_THRESHOLD 0.3f /* Tap interval should be less than 0.3s */
 
 typedef enum {
 	MouseRightClickDefault,
 	MouseRightClickWithDoubleTap
 } MouseRightClickMode;
 
-typedef struct {
-    CGPoint ptOrig;
-    int leftHold;
-    int mouseHold;
-    NSTimeInterval timestamp;
-} ExtMice;
 
 @protocol MouseHoldDelegate
 
 -(void)onHold:(CGPoint)pt;
 -(void)cancelHold:(CGPoint)pt;
+-(void)onHoldMoved:(CGPoint)pt;
 - (MouseRightClickMode)currentRightClickMode;
 
 @end
-
-
-#else
-#if SDL_IPHONE_MULTIPLE_MICE
-#define MAX_SIMULTANEOUS_TOUCHES 5
-#else
-#define MAX_SIMULTANEOUS_TOUCHES 1
-#endif
-#endif
 
 /* *INDENT-OFF* */
 #if SDL_IPHONE_KEYBOARD
@@ -74,12 +63,9 @@ typedef struct {
 @interface SDL_uikitview : UIView {
 #endif
 		
-	SDL_Mouse mice[MAX_SIMULTANEOUS_TOUCHES];
+	SDL_Mouse mice;
 
-#ifdef IPHONEOS
-    ExtMice extmice[MAX_SIMULTANEOUS_TOUCHES];
     id<MouseHoldDelegate> mouseHoldDelegate;
-#endif
     
 #if SDL_IPHONE_KEYBOARD
 	UITextField *textField;
@@ -87,14 +73,11 @@ typedef struct {
 #endif	
     
 }
-#ifdef IPHONEOS
 @property (nonatomic,assign)  id<MouseHoldDelegate> mouseHoldDelegate;
     
 - (void)sendMouseEvent:(int)index left:(BOOL)isLeft down:(BOOL)isDown;
-    
-#endif
-    
-    
+- (void)sendMouseMotion:(int)index x:(CGFloat)x y:(CGFloat)y;
+  
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event;
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event;
 - (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event;
