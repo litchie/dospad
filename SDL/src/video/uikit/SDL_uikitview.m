@@ -158,15 +158,29 @@ static CGFloat CGPointDistanceToPoint(CGPoint a, CGPoint b)
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
 {
+    UITouch* touch = [touches anyObject];
+    if (@available(iOS 13.4, *)) {
+        // check touch event from hw pointer
+        // directly send it as down event (e.g. drag and drop possible)
+        if (touch.type == UITouchTypeIndirectPointer) {
+            if(event.buttonMask == UIEventButtonMaskPrimary) {
+                [self sendMouseEvent:0 left:YES down:YES];
+            }
+            if(event.buttonMask == UIEventButtonMaskSecondary) {
+                [self sendMouseEvent:0 left:NO down:YES];
+            }
+            return;
+        }
+    }
 	if (!_primaryTouch) {
 		//NSLog(@"primary began");
-		_primaryTouch = [touches anyObject];
+		_primaryTouch = touch;
 		_primaryOrigin=[_primaryTouch locationInView:self];
 		_primaryHold = MOUSE_HOLD_WAIT;
 		[self performSelector:@selector(beginHold) withObject:nil afterDelay:MOUSE_HOLD_INTERVAL];
 	} else if (!_secondaryTouch) {
 		//NSLog(@"secondary began");
-		_secondaryTouch = [touches anyObject];
+		_secondaryTouch = touch;
 		_secondaryOrigin = [_secondaryTouch locationInView:self];
 	}
 }
@@ -201,6 +215,21 @@ static CGFloat CGPointDistanceToPoint(CGPoint a, CGPoint b)
 {
 	for (UITouch *touch in touches)
 	{
+        if (@available(iOS 13.4, *)) {
+            // check for hw pointer button release
+            if(touch.type == UITouchTypeIndirectPointer) {
+                // unlike touch start, we don't have button info
+                // check SDL mouse to determine button to release
+                Uint8 buttonState = SDL_GetMouse(0)->buttonstate;
+                if (buttonState & SDL_BUTTON(SDL_BUTTON_LEFT)) {
+                    [self sendMouseEvent:0 left:YES down:NO];
+                }
+                if (buttonState & SDL_BUTTON(SDL_BUTTON_RIGHT)) {
+                    [self sendMouseEvent:0 left:NO down:NO];
+                }
+                continue;
+            }
+        }
 		if (touch == _primaryTouch) {
 			
 			//NSLog(@"primary ended tap count %d", (int)[_primaryTouch tapCount]);
