@@ -162,6 +162,9 @@ static CGFloat CGPointDistanceToPoint(CGPoint a, CGPoint b)
     if (@available(iOS 13.4, *)) {
         // check touch event from hw pointer
         // directly send it as down event (e.g. drag and drop possible)
+        // Note: For right click to work, you must go to
+        // system settings -> General -> Trackpad&Mouse,
+        // and enable secondary click.
         if (touch.type == UITouchTypeIndirectPointer) {
             if(event.buttonMask == UIEventButtonMaskPrimary) {
                 [self sendMouseEvent:0 left:YES down:YES];
