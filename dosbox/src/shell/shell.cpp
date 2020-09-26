@@ -28,6 +28,7 @@
 #include "callback.h"
 #include "support.h"
 
+
 Bitu call_shellstop;
 /* Larger scope so shell_del autoexec can use it to
  * remove things from the environment */
@@ -651,9 +652,7 @@ void SHELL_Init() {
 	MSG_Add("SHELL_CMD_PATH_HELP","Provided for compatibility.\n");
 	MSG_Add("SHELL_CMD_VER_HELP","View and set the reported DOS version.\n");
 	MSG_Add("SHELL_CMD_VER_VER","DOSBox version %s. Reported DOS version %d.%02d.\n");
-#ifdef IPHONEOS
-        MSG_Add("SHELL_CMD_UNZIP_HELP","Extract zip file to current directory.\n");
-#endif
+
 	/* Regular startup */
 	call_shellstop=CALLBACK_Allocate();
 	/* Setup the startup CS:IP to kill the last running machine when exitted */

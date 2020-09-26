@@ -49,27 +49,92 @@ Bitu DEBUG_EnableDebugger(void);
 #endif
 
 void MSCDEX_SetCDInterface(int intNr, int forceCD);
+static Bitu ZDRIVE_NUM = 25;
 
+static const char* UnmountHelper(char umount) {
+	int i_drive;
+	if (umount < '0' || umount > 3+'0')
+		i_drive = toupper(umount) - 'A';
+	else
+		i_drive = umount - '0';
+
+	if (i_drive >= DOS_DRIVES || i_drive < 0)
+		return MSG_Get("PROGRAM_MOUNT_UMOUNT_NOT_MOUNTED");
+
+	if (i_drive < MAX_DISK_IMAGES && Drives[i_drive] == NULL && imageDiskList[i_drive] == NULL)
+		return MSG_Get("PROGRAM_MOUNT_UMOUNT_NOT_MOUNTED");
+
+	if (i_drive >= MAX_DISK_IMAGES && Drives[i_drive] == NULL)
+		return MSG_Get("PROGRAM_MOUNT_UMOUNT_NOT_MOUNTED");
+
+	if (Drives[i_drive]) {
+		switch (DriveManager::UnmountDrive(i_drive)) {
+			case 1: return MSG_Get("PROGRAM_MOUNT_UMOUNT_NO_VIRTUAL");
+			case 2: return MSG_Get("MSCDEX_ERROR_MULTIPLE_CDROMS");
+		}
+		Drives[i_drive] = 0;
+//		mem_writeb(Real2Phys(dos.tables.mediaid)+i_drive*2,0); //0_74_3 0_74 series doesn't do this.
+		if (i_drive == DOS_GetDefaultDrive()) {
+			DOS_SetDrive(ZDRIVE_NUM);
+		}
+
+	}
+
+	if (i_drive < MAX_DISK_IMAGES && imageDiskList[i_drive]) {
+		delete imageDiskList[i_drive];
+		imageDiskList[i_drive] = NULL;
+	}
+
+	return MSG_Get("PROGRAM_MOUNT_UMOUNT_SUCCESS");
+}
 
 class MOUNT : public Program {
 public:
-	void Run(void)
-	{
+	void ListMounts(void) {
+		char name[DOS_NAMELENGTH_ASCII];Bit32u size;Bit16u date;Bit16u time;Bit8u attr;
+		/* Command uses dta so set it to our internal dta */
+		RealPt save_dta = dos.dta();
+		dos.dta(dos.tables.tempdta);
+		DOS_DTA dta(dos.dta());
+
+		WriteOut(MSG_Get("PROGRAM_MOUNT_STATUS_1"));
+		WriteOut(MSG_Get("PROGRAM_MOUNT_STATUS_FORMAT"),"Drive","Type","Label");
+		for(int p = 0;p < 8;p++) WriteOut("----------");
+
+		for (int d = 0;d < DOS_DRIVES;d++) {
+			if (!Drives[d]) continue;
+
+			char root[7] = {static_cast<char>('A'+d),':','\\','*','.','*',0};
+			bool ret = DOS_FindFirst(root,DOS_ATTR_VOLUME);
+			if (ret) {
+				dta.GetResult(name,size,date,time,attr);
+				DOS_FindNext(); //Mark entry as invalid
+			} else name[0] = 0;
+
+			/* Change 8.3 to 11.0 */
+			char* dot = strchr(name,'.');
+			if(dot && (dot - name == 8) ) { 
+				name[8] = name[9];name[9] = name[10];name[10] = name[11];name[11] = 0;
+			}
+
+			root[1] = 0; //This way, the format string can be reused.
+			WriteOut(MSG_Get("PROGRAM_MOUNT_STATUS_FORMAT"),root, Drives[d]->GetInfo(),name);		
+		}
+		dos.dta(save_dta);
+	}
+
+	void Run(void) {
 		DOS_Drive * newdrive;char drive;
 		std::string label;
 		std::string umount;
+		std::string newz;
 
 		//Hack To allow long commandlines
 		ChangeToLongCmd();
 		/* Parse the command line */
 		/* if the command line is empty show current mounts */
 		if (!cmd->GetCount()) {
-			WriteOut(MSG_Get("PROGRAM_MOUNT_STATUS_1"));
-			for (int d=0;d<DOS_DRIVES;d++) {
-				if (Drives[d]) {
-					WriteOut(MSG_Get("PROGRAM_MOUNT_STATUS_2"),d+'A',Drives[d]->GetInfo());
-				}
-			}
+			ListMounts();
 			return;
 		}
 
@@ -82,36 +147,56 @@ public:
 
 		/* Check for unmounting */
 		if (cmd->FindString("-u",umount,false)) {
-			umount[0] = toupper(umount[0]);
-			int i_drive = umount[0]-'A';
-				if(i_drive < DOS_DRIVES && i_drive >= 0 && Drives[i_drive]) {
-					switch (DriveManager::UnmountDrive(i_drive)) {
-					case 0:
-						Drives[i_drive] = 0;
-						if(i_drive == DOS_GetDefaultDrive()) 
-							DOS_SetDrive(toupper('Z') - 'A');
-						WriteOut(MSG_Get("PROGRAM_MOUNT_UMOUNT_SUCCESS"),umount[0]);
-						break;
-					case 1:
-						WriteOut(MSG_Get("PROGRAM_MOUNT_UMOUNT_NO_VIRTUAL"));
-						break;
-					case 2:
-						WriteOut(MSG_Get("MSCDEX_ERROR_MULTIPLE_CDROMS"));
-						break;
-					}
-				} else {
-					WriteOut(MSG_Get("PROGRAM_MOUNT_UMOUNT_NOT_MOUNTED"),umount[0]);
-				}
+			WriteOut(UnmountHelper(umount[0]), toupper(umount[0]));
 			return;
 		}
-	   
-		// Show list of cdroms
+		
+		/* Check for moving Z: */
+		/* Only allowing moving it once. It is merely a convenience added for the wine team */
+		if (ZDRIVE_NUM == 25 && cmd->FindString("-z", newz,false)) {
+			newz[0] = toupper(newz[0]);
+			int i_newz = newz[0] - 'A';
+			if (i_newz >= 0 && i_newz < DOS_DRIVES-1 && !Drives[i_newz]) {
+				ZDRIVE_NUM = i_newz;
+				/* remap drives */
+				Drives[i_newz] = Drives[25];
+				Drives[25] = 0;
+				DOS_Shell *fs = static_cast<DOS_Shell *>(first_shell); //dynamic ?				
+				/* Update environment */
+				std::string line = "";
+				char ppp[2] = {newz[0],0};
+				std::string tempenv = ppp; tempenv += ":\\";
+				if (fs->GetEnvStr("PATH",line)){
+					std::string::size_type idx = line.find('=');
+					std::string value = line.substr(idx +1 , std::string::npos);
+					while ( (idx = value.find("Z:\\")) != std::string::npos ||
+					        (idx = value.find("z:\\")) != std::string::npos  )
+						value.replace(idx,3,tempenv);
+					line = value;
+				}
+				if (!line.size()) line = tempenv;
+				fs->SetEnv("PATH",line.c_str());
+				tempenv += "COMMAND.COM";
+				fs->SetEnv("COMSPEC",tempenv.c_str());
+
+				/* Update batch file if running from Z: (very likely: autoexec) */
+				if(fs->bf) {
+					std::string &name = fs->bf->filename;
+					if(name.length() >2 &&  name[0] == 'Z' && name[1] == ':') name[0] = newz[0];
+				}
+				/* Change the active drive */
+				if (DOS_GetDefaultDrive() == 25) DOS_SetDrive(i_newz);
+			}
+			return;
+		}
+		
+		/* Show list of cdroms */
 		if (cmd->FindExist("-cd",false)) {
-#ifndef IPHONEOS                    
+#ifndef IPHONEOS
 			int num = SDL_CDNumDrives();
 #else
-                        int num = 0;
-#endif                        
+			int num = 0;
+#endif
    			WriteOut(MSG_Get("PROGRAM_MOUNT_CDROMS_FOUND"),num);
 #ifndef IPHONEOS
 			for (int i=0; i<num; i++) {
@@ -157,23 +242,29 @@ public:
 			}
 		   
 			cmd->FindString("-size",str_size,true);
-			char number[20];const char * scan=str_size.c_str();
-			Bitu index=0;Bitu count=0;
+			char number[21] = { 0 };const char * scan = str_size.c_str();
+			Bitu index = 0;Bitu count = 0;
 			/* Parse the str_size string */
-			while (*scan) {
+			while (*scan && index < 20 && count < 4) {
 				if (*scan==',') {
-					number[index]=0;sizes[count++]=atoi(number);
-					index=0;
-				} else number[index++]=*scan;
+					number[index] = 0;
+					sizes[count++] = atoi(number);
+					index = 0;
+				} else number[index++] = *scan;
 				scan++;
 			}
-			number[index]=0;sizes[count++]=atoi(number);
+			if (count < 4) {
+				number[index] = 0; //always goes correct as index is max 20 at this point.
+				sizes[count] = atoi(number);
+			}
 		
 			// get the drive letter
 			cmd->FindCommand(1,temp_line);
 			if ((temp_line.size() > 2) || ((temp_line.size()>1) && (temp_line[1]!=':'))) goto showusage;
-			drive=toupper(temp_line[0]);
-			if (!isalpha(drive)) goto showusage;
+			int i_drive = toupper(temp_line[0]);
+			if (!isalpha(i_drive)) goto showusage;
+			if ((i_drive - 'A') >= DOS_DRIVES || (i_drive-'A') < 0 ) goto showusage;
+			drive = static_cast<char>(i_drive);
 
 			if (!cmd->FindCommand(2,temp_line)) goto showusage;
 			if (!temp_line.size()) goto showusage;
@@ -294,12 +385,7 @@ public:
 				if( (temp_line == "c:\\") || (temp_line == "C:\\") || 
 				    (temp_line == "c:/") || (temp_line == "C:/")    )	
 					WriteOut(MSG_Get("PROGRAM_MOUNT_WARNING_WIN"));
-#elif defined IPHONEOS
-                                if (temp_line == "/") {
-                                    WriteOut("Mount root is harmful.\n");
-                                    return;
-                                }
-#else                             
+#else
 				if(temp_line == "/") WriteOut(MSG_Get("PROGRAM_MOUNT_WARNING_OTHER"));
 #endif
 				newdrive=new localDrive(temp_line.c_str(),sizes[0],bit8size,sizes[2],sizes[3],mediaid);
@@ -473,9 +559,9 @@ private:
 		//File not found on mounted filesystem. Try regular filesystem
 		std::string filename_s(filename);
 		Cross::ResolveHomedir(filename_s);
-		tmpfile = fopen(filename_s.c_str(),"rb+");
+		tmpfile = fopen_wrap(filename_s.c_str(),"rb+");
 		if(!tmpfile) {
-			if( (tmpfile = fopen(filename_s.c_str(),"rb")) ) {
+			if( (tmpfile = fopen_wrap(filename_s.c_str(),"rb")) ) {
 				//File exists; So can't be opened in correct mode => error 2
 //				fclose(tmpfile);
 //				if(tryload) error = 2;
@@ -571,7 +657,10 @@ public:
 					i++;
 					continue;
 				}
-
+				
+				if ( i >= MAX_SWAPPABLE_DISKS ) {
+					return; //TODO give a warning.
+				}
 				WriteOut(MSG_Get("PROGRAM_BOOT_IMAGE_OPEN"), temp_line.c_str());
 				Bit32u rombytesize;
 				FILE *usefile = getFSFile(temp_line.c_str(), &floppysize, &rombytesize);
@@ -997,26 +1086,7 @@ public:
 		std::string umount;
 		/* Check for unmounting */
 		if (cmd->FindString("-u",umount,false)) {
-			umount[0] = toupper(umount[0]);
-			int i_drive = umount[0]-'A';
-				if (i_drive < DOS_DRIVES && i_drive >= 0 && Drives[i_drive]) {
-					switch (DriveManager::UnmountDrive(i_drive)) {
-					case 0:
-						Drives[i_drive] = 0;
-						if (i_drive == DOS_GetDefaultDrive()) 
-							DOS_SetDrive(toupper('Z') - 'A');
-						WriteOut(MSG_Get("PROGRAM_MOUNT_UMOUNT_SUCCESS"),umount[0]);
-						break;
-					case 1:
-						WriteOut(MSG_Get("PROGRAM_MOUNT_UMOUNT_NO_VIRTUAL"));
-						break;
-					case 2:
-						WriteOut(MSG_Get("MSCDEX_ERROR_MULTIPLE_CDROMS"));
-						break;
-					}
-				} else {
-					WriteOut(MSG_Get("PROGRAM_MOUNT_UMOUNT_NOT_MOUNTED"),umount[0]);
-				}
+			WriteOut(UnmountHelper(umount[0]), toupper(umount[0]));
 			return;
 		}
 
@@ -1045,18 +1115,21 @@ public:
 			if ((type=="hdd") && (str_size.size()==0)) {
 				imgsizedetect=true;
 			} else {
-				char number[20];
-				const char * scan=str_size.c_str();
-				Bitu index=0;Bitu count=0;
-				
-				while (*scan) {
+				char number[21] = { 0 };const char * scan = str_size.c_str();
+				Bitu index = 0;Bitu count = 0;
+				/* Parse the str_size string */
+				while (*scan && index < 20 && count < 4) {
 					if (*scan==',') {
-						number[index]=0;sizes[count++]=atoi(number);
-						index=0;
-					} else number[index++]=*scan;
+						number[index] = 0;
+						sizes[count++] = atoi(number);
+						index = 0;
+					} else number[index++] = *scan;
 					scan++;
 				}
-				number[index]=0;sizes[count++]=atoi(number);
+				if (count < 4) {
+					number[index] = 0; //always goes correct as index is max 20 at this point.
+					sizes[count] = atoi(number);
+				}
 			}
 		
 			if(fstype=="fat" || fstype=="iso") {
@@ -1065,11 +1138,12 @@ public:
 					WriteOut_NoParsing(MSG_Get("PROGRAM_IMGMOUNT_SPECIFY_DRIVE"));
 					return;
 				}
-				drive=toupper(temp_line[0]);
-				if (!isalpha(drive)) {
+				int i_drive = toupper(temp_line[0]);
+				if (!isalpha(i_drive) || (i_drive - 'A') >= DOS_DRIVES || (i_drive - 'A') <0) {
 					WriteOut_NoParsing(MSG_Get("PROGRAM_IMGMOUNT_SPECIFY_DRIVE"));
 					return;
 				}
+				drive = static_cast<char>(i_drive);
 			} else if (fstype=="none") {
 				cmd->FindCommand(1,temp_line);
 				if ((temp_line.size() > 1) || (!isdigit(temp_line[0]))) {
@@ -1077,7 +1151,7 @@ public:
 					return;
 				}
 				drive=temp_line[0];
-				if ((drive<'0') || (drive>3+'0')) {
+				if ((drive<'0') || (drive>=(MAX_DISK_IMAGES+'0'))) {
 					WriteOut_NoParsing(MSG_Get("PROGRAM_IMGMOUNT_SPECIFY2"));
 					return;
 				}
@@ -1141,7 +1215,7 @@ public:
 
 			if(fstype=="fat") {
 				if (imgsizedetect) {
-					FILE * diskfile = fopen(temp_line.c_str(), "rb+");
+					FILE * diskfile = fopen_wrap(temp_line.c_str(), "rb+");
 					if(!diskfile) {
 						WriteOut(MSG_Get("PROGRAM_IMGMOUNT_INVALID_IMAGE"));
 						return;
@@ -1176,7 +1250,7 @@ public:
 				}
 			} else if (fstype=="iso") {
 			} else {
-				FILE *newDisk = fopen(temp_line.c_str(), "rb+");
+				FILE *newDisk = fopen_wrap(temp_line.c_str(), "rb+");
 				fseek(newDisk,0L, SEEK_END);
 				imagesize = (ftell(newDisk) / 1024);
 
@@ -1270,7 +1344,7 @@ public:
 			WriteOut(MSG_Get("PROGRAM_IMGMOUNT_MOUNT_NUMBER"),drive-'0',temp_line.c_str());
 		}
 
-		// check if volume label is given. becareful for cdrom
+		// check if volume label is given. be careful for cdrom
 		//if (cmd->FindString("-label",label,true)) newdrive->dirCache.SetLabel(label.c_str());
 		return;
 	}
@@ -1358,8 +1432,9 @@ void DOS_SetupPrograms(void) {
 	/*Add Messages */
 
 	MSG_Add("PROGRAM_MOUNT_CDROMS_FOUND","CDROMs found: %d\n");
+	MSG_Add("PROGRAM_MOUNT_STATUS_FORMAT","%-5s  %-58s %-12s\n");
 	MSG_Add("PROGRAM_MOUNT_STATUS_2","Drive %c is mounted as %s\n");
-	MSG_Add("PROGRAM_MOUNT_STATUS_1","Current mounted drives are:\n");
+	MSG_Add("PROGRAM_MOUNT_STATUS_1","The currently mounted drives are:\n");
 	MSG_Add("PROGRAM_MOUNT_ERROR_1","Directory %s doesn't exist.\n");
 	MSG_Add("PROGRAM_MOUNT_ERROR_2","%s isn't a directory\n");
 	MSG_Add("PROGRAM_MOUNT_ILL_TYPE","Illegal type %s\n");

@@ -48,7 +48,6 @@ void INT10_SetSinglePaletteRegister(Bit8u reg,Bit8u val) {
 		}
 		IO_Write(VGAREG_ACTL_ADDRESS,32);		//Enable output and protect palette
 		break;
-   default:;
 	}
 }
 
@@ -65,7 +64,6 @@ void INT10_SetOverscanBorderColor(Bit8u val) {
 		IO_Write(VGAREG_ACTL_WRITE_DATA,val);
 		IO_Write(VGAREG_ACTL_ADDRESS,32);		//Enable output and protect palette
 		break;
-   default:;
 	}
 }
 
@@ -94,7 +92,6 @@ void INT10_SetAllPaletteRegisters(PhysPt data) {
 		IO_Write(VGAREG_ACTL_WRITE_DATA,mem_readb(data));
 		IO_Write(VGAREG_ACTL_ADDRESS,32);		//Enable output and protect palette
 		break;
-   default:;
 	}
 }
 

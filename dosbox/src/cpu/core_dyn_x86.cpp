@@ -61,11 +61,8 @@
 #define DYN_PAGE_HASH	(4096>>DYN_HASH_SHIFT)
 #define DYN_LINKS		(16)
 
-#if 0
-#define DYN_LOG	LOG_MSG
-#else 
-#define DYN_LOG
-#endif
+//#define DYN_LOG 1 //Turn logging on
+
 
 #if C_FPU
 #define CPU_FPU 1                                               //Enable FPU escape instructions
@@ -251,8 +248,8 @@ static void dyn_restoreregister(DynReg * src_reg, DynReg * dst_reg) {
 {										\
 	__asm__ volatile (					\
 		"fnsave		%0			\n"		\
+		:	"=m" (dyn_dh_fpu.state[0])	\
 		:								\
-		:	"m" (dyn_dh_fpu.state[0])	\
 		:	"memory"					\
 	);									\
 	dyn_dh_fpu.state_used=false;		\
@@ -307,7 +304,10 @@ run_block:
 		}
 #endif
 		if (!GETFLAG(TF)) {
-			if (GETFLAG(IF) && PIC_IRQCheck) return CBRET_NONE;
+			if (GETFLAG(IF) && PIC_IRQCheck) {
+				if (dyn_dh_fpu.state_used) DH_FPU_SAVE_REINIT
+				return CBRET_NONE;
+			}
 			goto restart_core;
 		}
 		cpudecoder=CPU_Core_Dyn_X86_Trap_Run;
@@ -454,8 +454,8 @@ void CPU_Core_Dyn_X86_Init(void) {
 		"finit					\n"
 		"fsave		%0			\n"
 		"fstcw		%1			\n"
+		:	"=m" (dyn_dh_fpu.state[0]), "=m" (dyn_dh_fpu.host_cw)
 		:
-		:	"m" (dyn_dh_fpu.state[0]), "m" (dyn_dh_fpu.host_cw)
 		:	"memory"
 	);
 #endif
@@ -472,8 +472,62 @@ void CPU_Core_Dyn_X86_Cache_Close(void) {
 	cache_close();
 }
 
+void CPU_Core_Dyn_X86_Cache_Reset(void) {
+	cache_reset();
+}
+
 void CPU_Core_Dyn_X86_SetFPUMode(bool dh_fpu) {
 	dyn_dh_fpu.dh_fpu_enabled=dh_fpu;
+}
+
+Bit32u fpu_state[32];
+
+void CPU_Core_Dyn_X86_SaveDHFPUState(void) {
+	if (dyn_dh_fpu.dh_fpu_enabled) {
+		if (dyn_dh_fpu.state_used!=0) {
+#if defined (_MSC_VER)
+			__asm {
+			__asm	fsave	fpu_state[0]
+			__asm	finit
+			}
+#else
+			__asm__ volatile (
+				"fsave		%0			\n"
+				"finit					\n"
+				:	"=m" (fpu_state[0])
+				:
+				:	"memory"
+			);
+#endif
+		}
+	}
+}
+
+void CPU_Core_Dyn_X86_RestoreDHFPUState(void) {
+	if (dyn_dh_fpu.dh_fpu_enabled) {
+		if (dyn_dh_fpu.state_used!=0) {
+#if defined (_MSC_VER)
+			__asm {
+			__asm	frstor	fpu_state[0]
+			}
+#else
+			__asm__ volatile (
+				"frstor		%0			\n"
+				:
+				:	"m" (fpu_state[0])
+				:
+			);
+#endif
+		}
+	}
+}
+
+#else
+
+void CPU_Core_Dyn_X86_SaveDHFPUState(void) {
+}
+
+void CPU_Core_Dyn_X86_RestoreDHFPUState(void) {
 }
 
 #endif

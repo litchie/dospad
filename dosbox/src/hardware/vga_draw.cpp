@@ -888,7 +888,7 @@ static void VGA_VerticalTimer(Bitu /*val*/) {
 		vga.draw.parts_left = vga.draw.parts_total;
 		PIC_AddEvent(VGA_DrawPart,(float)vga.draw.delay.parts + draw_skip,vga.draw.parts_lines);
 		break;
-	case LINE:
+	case DRAWLINE:
 		if (GCC_UNLIKELY(vga.draw.lines_done < vga.draw.lines_total)) {
 			LOG(LOG_VGAMISC,LOG_NORMAL)( "Lines left: %d", 
 				vga.draw.lines_total-vga.draw.lines_done);
@@ -980,11 +980,11 @@ void VGA_SetupDrawing(Bitu /*val*/) {
 	switch (machine) {
 	case MCH_CGA:
 	case MCH_PCJR:
-		vga.draw.mode = LINE;
+		vga.draw.mode = DRAWLINE;
 		break;
 	case MCH_VGA:
 		if (svgaCard==SVGA_None) {
-			vga.draw.mode = LINE;
+			vga.draw.mode = DRAWLINE;
 			break;
 		}
 		// fall-through
@@ -1440,8 +1440,10 @@ void VGA_SetupDrawing(Bitu /*val*/) {
 	}
 //	LOG_MSG("ht %d vt %d ratio %f", htotal, vtotal, aspect_ratio );
 
+	bool fps_changed = false;
 	// need to change the vertical timing?
 	if (fabs(vga.draw.delay.vtotal - 1000.0 / fps) > 0.0001) {
+		fps_changed = true;
 		vga.draw.delay.vtotal = 1000.0 / fps;
 		VGA_KillDrawing();
 		PIC_RemoveEvents(VGA_Other_VertInterrupt);
@@ -1468,7 +1470,7 @@ void VGA_SetupDrawing(Bitu /*val*/) {
 		(vga.draw.doublewidth != doublewidth) ||
 		(vga.draw.doubleheight != doubleheight) ||
 		(fabs(aspect_ratio - vga.draw.aspect_ratio) > 0.0001) ||
-		(vga.draw.bpp != bpp)) {
+		(vga.draw.bpp != bpp) || fps_changed) {
 
 		VGA_KillDrawing();
 

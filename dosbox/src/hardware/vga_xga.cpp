@@ -353,11 +353,11 @@ void XGA_DrawLineBresenham(Bitu val) {
 	// Probably a lot easier way to do this, but this works.
 
 	dminor = (Bits)((Bit16s)xga.desty);
-	if(xga.desty&0x2000) dminor |= 0xffffe000;
+	if(xga.desty&0x2000) dminor |= ~0x1fff;
 	dminor >>= 1;
 
 	destxtmp=(Bits)((Bit16s)xga.destx);
-	if(xga.destx&0x2000) destxtmp |= 0xffffe000;
+	if(xga.destx&0x2000) destxtmp |= ~0x1fff;
 
 
 	dmajor = -(destxtmp - (dminor << 1)) >> 1;
@@ -375,7 +375,7 @@ void XGA_DrawLineBresenham(Bitu val) {
 		sy = -1;
 	}
 	e = (Bits)((Bit16s)xga.ErrTerm);
-	if(xga.ErrTerm&0x2000) e |= 0xffffe000;
+	if(xga.ErrTerm&0x2000) e |= ~0x1fff;
 	xat = xga.curx;
 	yat = xga.cury;
 
@@ -988,7 +988,6 @@ void XGA_SetDualReg(Bit32u& reg, Bitu val) {
 			reg = (reg&0xffff0000)|(val&0x0000ffff);
 		xga.control1 ^= 0x10;
 		break;
-   default:;
 	}
 }
 
@@ -1003,7 +1002,6 @@ Bitu XGA_GetDualReg(Bit32u reg) {
 		xga.control1 ^= 0x10;
 		if (xga.control1 & 0x10) return reg&0x0000ffff;
 		else return reg>>16;
-   default:;
 	}
 	return 0;
 }

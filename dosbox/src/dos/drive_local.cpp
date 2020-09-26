@@ -56,16 +56,16 @@ bool localDrive::FileCreate(DOS_File * * file,char * name,Bit16u /*attributes*/)
 	CROSS_FILENAME(newname);
 	char* temp_name = dirCache.GetExpandName(newname); //Can only be used in till a new drive_cache action is preformed */
 	/* Test if file exists (so we need to truncate it). don't add to dirCache then */
-	bool existing_file=false;
+	bool existing_file = false;
 	
-	FILE * test=fopen(temp_name,"rb+");
+	FILE * test = fopen_wrap(temp_name,"rb+");
 	if(test) {
 		fclose(test);
 		existing_file=true;
 
 	}
 	
-	FILE * hand=fopen(temp_name,"wb+");
+	FILE * hand = fopen_wrap(temp_name,"wb+");
 	if (!hand){
 		LOG_MSG("Warning: file creation failed: %s",newname);
 		return false;
@@ -95,11 +95,11 @@ bool localDrive::FileOpen(DOS_File * * file,char * name,Bit32u flags) {
 	CROSS_FILENAME(newname);
 	dirCache.ExpandName(newname);
 
-	FILE * hand=fopen(newname,type);
+	FILE * hand = fopen_wrap(newname,type);
 //	Bit32u err=errno;
 	if (!hand) { 
 		if((flags&0xf) != OPEN_READ) {
-			FILE * hmm=fopen(newname,"rb");
+			FILE * hmm = fopen_wrap(newname,"rb");
 			if (hmm) {
 				fclose(hmm);
 				LOG_MSG("Warning: file %s exists and failed to open in write mode.\nPlease Remove write-protection",newname);
@@ -122,7 +122,7 @@ FILE * localDrive::GetSystemFilePtr(char const * const name, char const * const 
 	CROSS_FILENAME(newname);
 	dirCache.ExpandName(newname);
 
-	return fopen(newname,type);
+	return fopen_wrap(newname,type);
 }
 
 bool localDrive::GetSystemFilename(char *sysName, char const * const dosName) {
@@ -145,7 +145,7 @@ bool localDrive::FileUnlink(char * name) {
 		struct stat buffer;
 		if(stat(fullname,&buffer)) return false; // File not found.
 
-		FILE* file_writable = fopen(fullname,"rb+");
+		FILE* file_writable = fopen_wrap(fullname,"rb+");
 		if(!file_writable) return false; //No acces ? ERROR MESSAGE NOT SET. FIXME ?
 		fclose(file_writable);
 
@@ -377,7 +377,7 @@ bool localDrive::FileExists(const char* name) {
 	strcat(newname,name);
 	CROSS_FILENAME(newname);
 	dirCache.ExpandName(newname);
-	FILE* Temp=fopen(newname,"rb");
+	FILE* Temp=fopen(newname,"rb"); //No reading done, so no wrapping for 0.74-3 (later code uses different calls)
 	if(Temp==NULL) return false;
 	fclose(Temp);
 	return true;
@@ -553,7 +553,10 @@ bool MSCDEX_GetVolumeName(Bit8u subUnit, char* name);
 
 
 cdromDrive::cdromDrive(const char driveLetter, const char * startdir,Bit16u _bytes_sector,Bit8u _sectors_cluster,Bit16u _total_clusters,Bit16u _free_clusters,Bit8u _mediaid, int& error)
-		   :localDrive(startdir,_bytes_sector,_sectors_cluster,_total_clusters,_free_clusters,_mediaid) {
+		   :localDrive(startdir,_bytes_sector,_sectors_cluster,_total_clusters,_free_clusters,_mediaid),
+		    subUnit(0),
+		    driveLetter('\0')
+{
 	// Init mscdex
 	error = MSCDEX_AddDrive(driveLetter,startdir,subUnit);
 	strcpy(info, "CDRom ");

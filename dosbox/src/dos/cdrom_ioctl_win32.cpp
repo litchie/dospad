@@ -27,9 +27,9 @@
 #include <windows.h>
 #include <io.h>
 
-#if defined (_MSC_VER)
-#include <ntddcdrm.h>			// Ioctl stuff
+#if (defined (_MSC_VER)) || (defined __MINGW64_VERSION_MAJOR)
 #include <winioctl.h>			// Ioctl stuff
+#include <ntddcdrm.h>			// Ioctl stuff
 #else 
 #include "ddk/ntddcdrm.h"		// Ioctl stuff
 #endif

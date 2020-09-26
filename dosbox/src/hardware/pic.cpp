@@ -92,9 +92,9 @@ static void write_command(Bitu port,Bitu val,Bitu iolen) {
 			else pic->request_issr=false;			/* select read interrupt request register */
 		}
 		if (val&0x40) {		// special mask select
-			if (val&0x20) pic->special=true;
-			else pic->special=false;
-			if(pic[0].special || pics[1].special) 
+			if (val&0x20) pic->special = true;
+			else pic->special = false;
+			if (pics[0].special || pics[1].special) 
 				PIC_Special_Mode = true; else 
 				PIC_Special_Mode = false;
 			if (PIC_IRQCheck) { //Recheck irqs
@@ -540,13 +540,13 @@ void TIMER_AddTick(void) {
 	}
 }
 
-
-class PIC:public Module_base{
+/* Use full name to avoid name clash with compile option for position-independent code */
+class PIC_8259A: public Module_base {
 private:
 	IO_ReadHandleObject ReadHandler[4];
 	IO_WriteHandleObject WriteHandler[4];
 public:
-	PIC(Section* configuration):Module_base(configuration){
+	PIC_8259A(Section* configuration):Module_base(configuration){
 		/* Setup pic0 and pic1 with initial values like DOS has normally */
 		PIC_IRQCheck=0;
 		PIC_IRQActive=PIC_NOIRQ;
@@ -596,17 +596,17 @@ public:
 		pic_queue.free_entry=&pic_queue.entries[0];
 		pic_queue.next_entry=0;
 	}
-	~PIC(){
+	~PIC_8259A(){
 	}
 };
 
-static PIC* test;
+static PIC_8259A* test;
 
 void PIC_Destroy(Section* sec){
 	delete test;
 }
 
 void PIC_Init(Section* sec) {
-	test = new PIC(sec);
+	test = new PIC_8259A(sec);
 	sec->AddDestroyFunction(&PIC_Destroy);
 }

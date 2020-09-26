@@ -120,5 +120,3 @@ static void cache_block_closing(Bit8u* block_start,Bitu block_size) {
 // GP2X END
 #endif
 }
-#endif
-

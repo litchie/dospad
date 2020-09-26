@@ -1,5 +1,5 @@
 /* config.h.  Generated from config.h.in by configure.  */
-/* config.h.in.  Generated from configure.in by autoheader.  */
+/* config.h.in.  Generated from configure.ac by autoheader.  */
 
 
 /*
@@ -139,6 +139,9 @@
 /* Define to 1 if you have the <pwd.h> header file. */
 #define HAVE_PWD_H 1
 
+/* Define to 1 if you have the `realpath' function. */
+#define HAVE_REALPATH 1
+
 /* Define to 1 if you have the <stdint.h> header file. */
 #define HAVE_STDINT_H 1
 
@@ -182,7 +185,7 @@
 #define PACKAGE_NAME "dosbox"
 
 /* Define to the full name and version of this package. */
-#define PACKAGE_STRING "dosbox 0.74"
+#define PACKAGE_STRING "dosbox 0.74-3"
 
 /* Define to the one symbol short name of this package. */
 #define PACKAGE_TARNAME "dosbox"
@@ -191,7 +194,7 @@
 #define PACKAGE_URL ""
 
 /* Define to the version of this package. */
-#define PACKAGE_VERSION "0.74"
+#define PACKAGE_VERSION "0.74-3"
 
 /* The size of `int *', as computed by sizeof. */
 #ifdef __LP64__
@@ -226,7 +229,7 @@
 /* #undef TM_IN_SYS_TIME */
 
 /* Version number of package */
-#define VERSION "0.74"
+#define VERSION "0.74-3"
 
 /* Define WORDS_BIGENDIAN to 1 if your processor stores words with the most
    significant byte first (like Motorola and SPARC, unlike Intel). */

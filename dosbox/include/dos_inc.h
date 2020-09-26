@@ -28,6 +28,8 @@
 #include "mem.h"
 #endif
 
+#include <stddef.h> //for offsetof
+
 #ifdef _MSC_VER
 #pragma pack (1)
 #endif
@@ -636,7 +638,7 @@ struct DOS_Block {
 
 extern DOS_Block dos;
 
-static Bit8u RealHandle(Bit16u handle) {
+static INLINE Bit8u RealHandle(Bit16u handle) {
 	DOS_PSP psp(dos.psp());	
 	return psp.GetFileHandle(handle);
 }

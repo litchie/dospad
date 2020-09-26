@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2002-2010  The DOSBox Team
+ *  Copyright (C) 2002-2014  The DOSBox Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -358,8 +358,7 @@ static SDLKey sdlkey_map[]={
 #define MAX_SCANCODES (0x80+4)
 /* Make sure that the table above has the expected size.  This
    expression will raise a compiler error if the condition is false.  */
-
-typedef char assert_right_size [MAX_SCANCODES == (sizeof(sdlkey_map)/sizeof(sdlkey_map[0]))? 1 : -1];
+typedef char assert_right_size [MAX_SCANCODES == (sizeof(sdlkey_map)/sizeof(sdlkey_map[0]))	? 1 : -1];
 
 #else // !MACOSX
 
@@ -397,6 +396,7 @@ static SDLKey sdlkey_map[MAX_SCANCODES]={SDLK_UNKNOWN,SDLK_ESCAPE,
 #endif // IPHONEOS
 
 #endif
+
 #undef Z
 
 
@@ -516,8 +516,10 @@ public:
 	bool CheckEvent(SDL_Event * event) {
 		if (event->type!=SDL_KEYDOWN && event->type!=SDL_KEYUP) return false;
 		Bitu key=GetKeyCode(event->key.keysym);
-		//LOG_MSG("key type %i is %x [%x %x]",event->type,key,event->key.keysym.sym,event->key.keysym.scancode);
-		//assert(Bitu(event->key.keysym.sym)<keys);
+//		LOG_MSG("key type %i is %x [%x %x]",event->type,key,event->key.keysym.sym,event->key.keysym.scancode);
+#ifndef IPHONEOS
+		assert(Bitu(event->key.keysym.sym)<keys);
+#endif
 		if (event->type==SDL_KEYDOWN) ActivateBindList(&lists[key],0x7fff,true);
 		else DeactivateBindList(&lists[key],true);
 		return 0;
@@ -712,7 +714,7 @@ public:
 			if (abs(event->jaxis.value)<25000) return 0;
 			return CreateAxisBind(event->jaxis.axis,event->jaxis.value>0);
 		} else if (event->type==SDL_JOYBUTTONDOWN) {
-			if (event->button.which!=stick) return 0;
+			if (event->jbutton.which!=stick) return 0;
 #if defined (REDUCE_JOYSTICK_POLLING)
 			return CreateButtonBind(event->jbutton.button%button_wrap);
 #else
@@ -1684,7 +1686,7 @@ static void SetActiveEvent(CEvent * event) {
 }
 
 static void DrawButtons(void) {
-	SDL_FillRect(mapper.surface,0,0);
+	SDL_FillRect(mapper.surface,0,CLR_BLACK);
 	SDL_LockSurface(mapper.surface);
 	for (CButton_it but_it = buttons.begin();but_it!=buttons.end();but_it++) {
 		(*but_it)->Draw();
@@ -2334,6 +2336,8 @@ void MAPPER_Run(bool pressed) {
 	MAPPER_RunInternal();
 }
 
+SDL_Surface* SDL_SetVideoMode_Wrap(int width,int height,int bpp,Bit32u flags);
+
 void MAPPER_RunInternal() {
 	int cursor = SDL_ShowCursor(SDL_QUERY);
 	SDL_ShowCursor(SDL_ENABLE);
@@ -2345,7 +2349,7 @@ void MAPPER_RunInternal() {
 
 	/* Be sure that there is no update in progress */
 	GFX_EndUpdate( 0 );
-	mapper.surface=SDL_SetVideoMode(640,480,8,0);
+	mapper.surface=SDL_SetVideoMode_Wrap(640,480,8,0);
 	if (mapper.surface == NULL) E_Exit("Could not initialize video mode for mapper: %s",SDL_GetError());
 
 	/* Set some palette entries */
@@ -2384,17 +2388,21 @@ void MAPPER_Init(void) {
 	if (!MAPPER_LoadBinds()) CreateDefaultBinds();
 	if (SDL_GetModState()&KMOD_CAPS) {
 		for (CBindList_it bit=caps_lock_event->bindlist.begin();bit!=caps_lock_event->bindlist.end();bit++) {
-			(*bit)->ActivateBind(32767,true,true);
 #if SDL_VERSION_ATLEAST(1, 2, 14)
+			(*bit)->ActivateBind(32767,true,false);
 			(*bit)->DeActivateBind(false);
+#else
+			(*bit)->ActivateBind(32767,true,true); //Skip the action itself as bios_keyboard.cpp handles the startup state.
 #endif
 		}
 	}
 	if (SDL_GetModState()&KMOD_NUM) {
 		for (CBindList_it bit=num_lock_event->bindlist.begin();bit!=num_lock_event->bindlist.end();bit++) {
-			(*bit)->ActivateBind(32767,true,true);
 #if SDL_VERSION_ATLEAST(1, 2, 14)
+			(*bit)->ActivateBind(32767,true,false);
 			(*bit)->DeActivateBind(false);
+#else
+			(*bit)->ActivateBind(32767,true,true);
 #endif
 		}
 	}
@@ -2408,17 +2416,8 @@ void MAPPER_StartUp(Section * sec) {
 	Section_prop * section=static_cast<Section_prop *>(sec);
 	mapper.sticks.num=0;
 	mapper.sticks.num_groups=0;
-	Bitu i;
-	for (i=0; i<16; i++) {
-		virtual_joysticks[0].button_pressed[i]=false;
-		virtual_joysticks[1].button_pressed[i]=false;
-		virtual_joysticks[0].hat_pressed[i]=false;
-		virtual_joysticks[1].hat_pressed[i]=false;
-	}
-	for (i=0; i<8; i++) {
-		virtual_joysticks[0].axis_pos[i]=0;
-		virtual_joysticks[0].axis_pos[i]=0;
-	}
+
+	memset(&virtual_joysticks,0,sizeof(virtual_joysticks));
 
 	usescancodes = false;
 
@@ -2449,6 +2448,8 @@ void MAPPER_StartUp(Section * sec) {
 		sdlkey_map[0x41]=SDLK_KP6;
 #elif !defined (WIN32) /* => Linux & BSDs */
 		bool evdev_input = false;
+#ifdef SDL_VIDEO_DRIVER_X11
+//SDL needs to be compiled to use it, else the next makes no sense.
 #ifdef C_X11_XKB
 		SDL_SysWMinfo info;
 		SDL_VERSION(&info.version);
@@ -2467,6 +2468,7 @@ void MAPPER_StartUp(Section * sec) {
 			XkbFreeClientMap(desc,0,True);
 			}
 		}
+#endif
 #endif
 		if (evdev_input) {
 			sdlkey_map[0x67]=SDLK_UP;

@@ -264,7 +264,6 @@ static void write_color_select(Bit8u val) {
 	case M_TEXT:
 	case M_TANDY16:
 		break;
-   default:;
 	}
 }
 
