@@ -111,7 +111,7 @@ static struct {
     [btnLeft setImage:[UIImage imageNamed:@"leftmouse"] forState:UIControlStateHighlighted];
     [btnRight setImage:[UIImage imageNamed:@"rightmouse"] forState:UIControlStateHighlighted];
     
-    [btnOption addTarget:self action:@selector(showOption) forControlEvents:UIControlEventTouchUpInside];
+    [btnOption addTarget:self action:@selector(showOption:) forControlEvents:UIControlEventTouchUpInside];
     [btnLeft addTarget:self action:@selector(onMouseLeftDown) forControlEvents:UIControlEventTouchDown];
     [btnLeft addTarget:self action:@selector(onMouseLeftUp) forControlEvents:UIControlEventTouchUpInside];
     [btnRight addTarget:self action:@selector(onMouseRightDown) forControlEvents:UIControlEventTouchDown];
@@ -268,7 +268,7 @@ static struct {
         
     UIButton *btnOption = [[UIButton alloc] initWithFrame:CGRectMake(380,0,48,24)];
     [btnOption setImage:[UIImage imageNamed:@"options.png"] forState:UIControlStateNormal];
-    [btnOption addTarget:self action:@selector(showOption) forControlEvents:UIControlEventTouchUpInside];
+    [btnOption addTarget:self action:@selector(showOption:) forControlEvents:UIControlEventTouchUpInside];
     [items addObject:btnOption];
     
     UIButton *btnRemap = [[UIButton alloc] initWithFrame:CGRectMake(340,0,20,24)];
@@ -438,15 +438,13 @@ static struct {
 {
 	GamePadView * gpad = nil;
 	
-	if (configPath == nil) return nil;
-	
 	CGRect rect = self.view.bounds;
 	float maxSize = MAX(rect.size.width, rect.size.height);
 	NSString *section = [NSString stringWithFormat:@"[gamepad.%@.%@]",
 		maxSize > 480 ? @"iphone5" : @"iphone",
 		[self isPortrait] ? @"portrait" : @"landscape"];
 	
-	NSString *ui_cfg = [ConfigManager uiConfigFile];
+	NSString *ui_cfg = [[DOSPadEmulator sharedInstance] uiConfigFile];
 	if (ui_cfg != nil)
 	{
 		gpad = [[GamePadView alloc] initWithConfig:ui_cfg section:section];

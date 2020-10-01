@@ -21,6 +21,8 @@
 #import "DosPadViewController.h"
 #import "DosPadViewController_iPhone.h"
 #import "AppDelegate.h"
+#import <MobileCoreServices/MobileCoreServices.h>
+#import "UIViewController+Alert.h"
 
 #define NOT_IMPLEMENTED(func) func { NSLog(@"Error: `%s' is not implemented!", #func); }
 
@@ -38,7 +40,6 @@ extern int SDL_SendKeyboardKey(int index, Uint8 state, SDL_scancode scancode);
 
 @implementation DOSPadBaseViewController
 @synthesize autoExit;
-@synthesize configPath;
 @synthesize screenView;
 
 - (bool)isInputSourceEnabled:(InputSourceType)type
@@ -77,19 +78,17 @@ extern int SDL_SendKeyboardKey(int index, Uint8 state, SDL_scancode scancode);
     return d.frameskip;
 }
 
-+ (DOSPadBaseViewController*)dospadWithConfig:(NSString*)configPath
++ (DOSPadBaseViewController*)dospadController
 {
     if (ISIPAD())
     {
         DosPadViewController *ctrl = [[DosPadViewController alloc] init];
-        ctrl.configPath = configPath;
         return ctrl;
     }
     else
     {
         DosPadViewController_iPhone *ctrl = [[DosPadViewController_iPhone alloc] init];
-        ctrl.configPath = configPath;
-        return ctrl;        
+        return ctrl;
     }
 }
 
@@ -115,6 +114,8 @@ extern int SDL_SendKeyboardKey(int index, Uint8 state, SDL_scancode scancode);
 {
     [super viewDidLoad];
     
+    [[DOSPadEmulator sharedInstance] setDelegate:self];
+    
     screenView.delegate=self;
     screenView.mouseHoldDelegate=self;
     [self.view insertSubview:screenView atIndex:0];
@@ -129,21 +130,6 @@ extern int SDL_SendKeyboardKey(int index, Uint8 state, SDL_scancode scancode);
     self.title = @"DOSpad";
 #endif
 
-    if (configPath == nil)
-    {
-        self.configPath = [ConfigManager dospadConfigFile];
-    }
-    else
-    {        
-        if (dospad_command_line_ready)
-        {
-            strcpy(dospad_launch_config, [configPath UTF8String]);
-            sprintf(dospad_launch_section, "[start.%s]", ISIPAD()?"ipad":"iphone");
-            dospad_should_launch_game = 1;
-            SDL_SendKeyboardKey(0, SDL_PRESSED, SDL_SCANCODE_RETURN);
-            SDL_SendKeyboardKey(0, SDL_RELEASED, SDL_SCANCODE_RETURN);
-        }
-    }
     
     /* TODO: LITCHIE commented out by TVD
     vk = [[VKView alloc] initWithFrame:CGRectMake(0,0,1,1)];
@@ -266,12 +252,14 @@ extern int SDL_SendKeyboardKey(int index, Uint8 state, SDL_scancode scancode);
 // MARK: Mouse Hold
 -(void)onHold:(CGPoint)pt
 {
+#if 0 // Disable hold indicator
     CGPoint pt2 = [self.screenView convertPoint:pt toView:self.view];
     holdIndicator.center=pt2;
     [self.view bringSubviewToFront:holdIndicator];
     [UIView animateWithDuration:0.3 animations:^{
 		holdIndicator.alpha = 1;
 	}];
+#endif
 }
 
 -(void)cancelHold:(CGPoint)pt
@@ -311,33 +299,27 @@ extern int SDL_SendKeyboardKey(int index, Uint8 state, SDL_scancode scancode);
 
 - (void)sendCommandToDOS:(NSString *)cmd
 {
-    if (cmd == nil) return;
-    const char *p = [cmd UTF8String];
-    while (*p!=0) 
-    {
-        int ch = *p;
-        int shift=0;
-        int code=get_scancode_for_char(ch, &shift);
-        if (code >= 0) {
-            if (shift) 
-                SDL_SendKeyboardKey( 0, SDL_PRESSED, SDL_SCANCODE_LSHIFT);
-            
-            SDL_SendKeyboardKey( 0, SDL_PRESSED, code);
-            SDL_SendKeyboardKey( 0, SDL_RELEASED, code);
-            [NSThread sleepForTimeInterval:0.05];
-            if (shift) 
-                SDL_SendKeyboardKey( 0, SDL_RELEASED, SDL_SCANCODE_LSHIFT);
-            
-        } else {
-            break;
-        }
-        p++;
-    }
+	[[DOSPadEmulator sharedInstance] sendCommand:cmd];
 }
 
--(void)showOption
+-(void)showOption:(id)sender
 {
-	[[UIApplication sharedApplication] openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString]];
+	[self alert:@"Action" message:@"Please choose an option"
+		actions:@[
+	 		[UIAlertAction actionWithTitle:@"Screenshot"
+	 			style:UIAlertActionStyleDefault
+	 			handler:^(UIAlertAction * _Nonnull action) {
+	 				[[DOSPadEmulator sharedInstance] takeScreenshot];
+                }],
+	 		[UIAlertAction actionWithTitle:@"Settings"
+	 			style:UIAlertActionStyleDefault
+	 			handler:^(UIAlertAction * _Nonnull action) {
+					[[UIApplication sharedApplication]
+					 openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString]
+					 options:@{} completionHandler:nil];
+                }]
+		]
+		source:sender];
 }
 
 - (BOOL)isPortrait
@@ -636,6 +618,58 @@ extern int SDL_SendKeyboardKey(int index, Uint8 state, SDL_scancode scancode);
         [self refreshKeyMappingsInViews];
         [self.mfiInputHandler setupControllerInputsForController:[[GCController controllers] firstObject]];
     }
+}
+
+// MARK: DOSEmulatorDelegate
+
+- (void)emulator:(DOSPadEmulator *)emulator saveScreenshot:(NSString *)path
+{
+	UIImage *image = [self.screenView capture];
+	if (image) {
+		[UIImagePNGRepresentation(image) writeToFile:path atomically:YES];
+	}
+}
+
+- (void)emulator:(DOSPadEmulator *)emulator open:(NSString*)path
+{
+	if (path == nil)
+	{
+		NSArray *utis = @[
+			(NSString *)kUTTypeFolder,
+			@"com.litchie.idos-package"
+		];
+		UIDocumentPickerViewController *picker;
+		picker = [[UIDocumentPickerViewController alloc]
+			initWithDocumentTypes:utis
+			inMode:UIDocumentPickerModeOpen];
+		picker.delegate = self;
+		if (@available(iOS 11.0, *)) {
+			picker.allowsMultipleSelection = YES;
+		}
+		[self presentViewController:picker
+			animated:YES
+			completion:nil];
+	}
+}
+
+
+#pragma mark - DocumentPickerDelegate
+
+- (void)documentPicker:(UIDocumentPickerViewController *)controller
+	didPickDocumentsAtURLs:(NSArray<NSURL *> *)urls
+{
+	NSURL *url = [urls firstObject];
+	[url startAccessingSecurityScopedResource];
+	//[[DOSPadEmulator sharedInstance] sendCommand:@"mount -u d"];
+	NSString *cmd=[NSString stringWithFormat:@"mount d \"%@\"", url.path];
+	[[DOSPadEmulator sharedInstance] sendCommand:cmd];
+	[[DOSPadEmulator sharedInstance] sendCommand:@"d:"];
+	
+}
+
+- (void)documentPickerWasCancelled:(UIDocumentPickerViewController *)controller
+{
+	// Do nothing
 }
 
 

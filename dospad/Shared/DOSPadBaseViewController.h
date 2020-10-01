@@ -17,7 +17,6 @@
  */
 
 
-#import <UIKit/UIKit.h>
 #import "Common.h"
 #import "FileSystemObject.h"
 #import "HoldIndicator.h"
@@ -25,6 +24,7 @@
 #import "KeyboardView.h"
 #import "GamePadView.h"
 #import "PianoKeyboard.h"
+#import "DOSPadEmulator.h"
 
 typedef enum {
     InputSource_PCKeyboard = 0,
@@ -38,9 +38,15 @@ typedef enum {
 } InputSourceType;
 
 @interface DOSPadBaseViewController : UIViewController
-<SDL_uikitopenglview_delegate,MouseHoldDelegate,KeyDelegate,UIAlertViewDelegate>
+<
+	SDL_uikitopenglview_delegate,
+	MouseHoldDelegate,
+	KeyDelegate,
+	UIAlertViewDelegate,
+	DOSPadEmulatorDelegate,
+	UIDocumentPickerDelegate
+>
 {
-    NSString *configPath;
     BOOL autoExit;
     SDL_uikitopenglview *screenView;
     HoldIndicator *holdIndicator;
@@ -61,11 +67,10 @@ typedef enum {
     
 }
 
-@property (nonatomic, strong) NSString *configPath;
 @property (nonatomic, assign) BOOL autoExit;
 @property (nonatomic, strong) SDL_uikitopenglview *screenView;
 
-+ (DOSPadBaseViewController*)dospadWithConfig:(NSString*)configPath;
++ (DOSPadBaseViewController*)dospadController;
 
 - (void)onMouseLeftDown;
 - (void)onMouseLeftUp;
@@ -73,7 +78,7 @@ typedef enum {
 - (void)onMouseRightUp;
 - (void)onLaunchExit;
 - (void)sendCommandToDOS:(NSString*)cmd;
-- (void)showOption;
+- (void)showOption:(id)sender;
 - (NSString*)currentCycles;
 - (int)currentFrameskip;
 - (BOOL)isPortrait;

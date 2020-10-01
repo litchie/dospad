@@ -652,7 +652,9 @@ void SHELL_Init() {
 	MSG_Add("SHELL_CMD_PATH_HELP","Provided for compatibility.\n");
 	MSG_Add("SHELL_CMD_VER_HELP","View and set the reported DOS version.\n");
 	MSG_Add("SHELL_CMD_VER_VER","DOSBox version %s. Reported DOS version %d.%02d.\n");
-
+#ifdef IPHONEOS
+	MSG_Add("SHELL_CMD_OPEN_HELP","Open external directory. (dospad)\n");
+#endif
 	/* Regular startup */
 	call_shellstop=CALLBACK_Allocate();
 	/* Setup the startup CS:IP to kill the last running machine when exitted */

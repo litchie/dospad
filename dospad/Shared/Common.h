@@ -29,11 +29,8 @@
 
 #define THREADED
 
-#define DONATE_URL @"http://www.litchie.net/donate/dospad-donate.html"
-
 #include "keys.h"
 #include "cmd_history.h"
-#import "ConfigManager.h"
 
 #define kTransparency          @"transparency"
 #define kKeySoundEnabled       @"key_sound_enabled"

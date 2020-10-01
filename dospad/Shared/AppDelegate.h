@@ -18,13 +18,13 @@
 
 #import <Foundation/Foundation.h>
 #import "SDL_uikitappdelegate.h"
-#import "DosEmuThread.h"
+#import "DOSPadEmulator.h"
 
 @interface AppDelegate : SDLUIKitDelegate 
 {
     UINavigationController *navController;
     SDL_uikitopenglview *screenView;
-    DosEmuThread * emuThread;
+    DOSPadEmulator * emuThread;
     int cycles;
     int frameskip;
     int maxPercent;

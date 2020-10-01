@@ -111,6 +111,9 @@ public:
 	void CMD_PATH(char * args);
 	void CMD_SHIFT(char * args);
 	void CMD_VER(char * args);
+#ifdef IPHONEOS
+	void CMD_OPEN(char * args);
+#endif
 	/* The shell's variables */
 	Bit16u input_handle;
 	BatchFile * bf;

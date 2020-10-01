@@ -135,34 +135,12 @@
 			<string>PSToggleSwitchSpecifier</string>
 		</dict>
 		<dict>
-			<key>FooterText</key>
-			<string>The name of the directory where config files (*.cfg) are stored. Do not change unless you know what you are doing. Default value is &quot;default&quot;.</string>
-			<key>Title</key>
-			<string>Configuration Directory</string>
-			<key>Type</key>
-			<string>PSGroupSpecifier</string>
-		</dict>
-		<dict>
-			<key>AutocorrectionType</key>
-			<string>No</string>
-			<key>AutocapitalizationType</key>
-			<string>None</string>
-			<key>Key</key>
-			<string>config_dir</string>
-			<key>Title</key>
-			<string>Name</string>
-			<key>DefaultValue</key>
-			<string>default</string>
-			<key>Type</key>
-			<string>PSTextFieldSpecifier</string>
-		</dict>
-		<dict>
 			<key>Title</key>
 			<string>==== Credits ====</string>
 			<key>FooterText</key>
-			<string> - iDOS 2 is based on dosbox 0.74. DOSBox is a DOS-emulator that uses the SDL-library which makes DOSBox very easy to port to different platforms. DOSBox is developed by DOSBox Team. Visit `http://www.dosbox.com&apos; for more details.
+			<string> - iDOS is based on dosbox 0.74. DOSBox is a DOS-emulator that uses the SDL-library which makes DOSBox very easy to port to different platforms. DOSBox is developed by DOSBox Team. Visit `http://www.dosbox.com&apos; for more details.
 			
- - The source code for iDOS 2 is hosted at `https://github.com/litchie/dospad&apos;.
+ - The source code for iDOS is hosted at `https://github.com/litchie/dospad&apos;.
  
  - Bug reports, feedbacks or BETA test requests can be sent to `idos@litchie.com&apos;.
 			</string>

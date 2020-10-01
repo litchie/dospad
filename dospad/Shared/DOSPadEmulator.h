@@ -16,10 +16,28 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-int main(int argc, char *argv[])
-{
-    @autoreleasepool {
-        int retVal = UIApplicationMain(argc, argv, @"DosPadUIApplication", nil);
-        return retVal;
-    }
-}
+@class DOSPadEmulator;
+
+@protocol DOSPadEmulatorDelegate
+
+- (void)emulator:(DOSPadEmulator*)emulator saveScreenshot:(NSString*)path;
+- (void)emulator:(DOSPadEmulator *)emulator open:(NSString*)path;
+
+@end
+
+@interface DOSPadEmulator : NSObject
+
+@property (strong) NSString *diskcDirectory;
+@property (readonly) NSString *dospadConfigFile;
+@property (readonly) NSString *uiConfigFile;
+@property (readonly) BOOL started;
+@property (strong) id<DOSPadEmulatorDelegate> delegate;
+
++ (DOSPadEmulator*)sharedInstance;
++ (void)setSharedInstance:(DOSPadEmulator*)instance;
+
+- (void)start;
+- (void)takeScreenshot;
+- (void)sendCommand:(NSString *)cmd;
+
+@end

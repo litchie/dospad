@@ -132,7 +132,7 @@ static struct {
     // 7. Create Option Button
     //---------------------------------------------------    
     btnOption = [[UIButton alloc] initWithFrame:CGRectMake(632,592,79,46)];
-    [btnOption addTarget:self action:@selector(showOption) forControlEvents:UIControlEventTouchUpInside];
+    [btnOption addTarget:self action:@selector(showOption:) forControlEvents:UIControlEventTouchUpInside];
     [baseView addSubview:btnOption];
     
     //---------------------------------------------------
@@ -261,7 +261,7 @@ static struct {
     
     UIButton *btnOpt = [[UIButton alloc] initWithFrame:CGRectMake(0,0,72,36)];
     [btnOpt setImage:[UIImage imageNamed:@"options.png"] forState:UIControlStateNormal];
-    [btnOpt addTarget:self action:@selector(showOption) forControlEvents:UIControlEventTouchUpInside];
+    [btnOpt addTarget:self action:@selector(showOption:) forControlEvents:UIControlEventTouchUpInside];
     [items addObject:btnOpt];
 
     // Remap controls button
@@ -371,11 +371,11 @@ static struct {
 {    
     GamePadView *gpad = nil;
     
-    if (configPath == nil) return nil;
+    //if (configPath == nil) return nil;
 
 	BOOL isPortrait = [self isPortrait];
     NSString *section = (isPortrait ? @"[gamepad.ipad.portrait]" : @"[gamepad.ipad.landscape]");
-    NSString *ui_cfg = [ConfigManager uiConfigFile];
+    NSString *ui_cfg = [[DOSPadEmulator sharedInstance] uiConfigFile];
 
     gpad = [[GamePadView alloc] initWithConfig:ui_cfg section:section];
 	

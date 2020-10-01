@@ -22,6 +22,7 @@
 #import <AVFoundation/AVFoundation.h>
 #import "ColorTheme.h"
 #import "ZipArchive.h"
+#import "UIViewController+Alert.h"
 
 @implementation AppDelegate
 @synthesize frameskip;
@@ -63,7 +64,21 @@
 - (BOOL)application:(UIApplication *)application openURL:(NSURL *)url
 	sourceApplication:(NSString *)sourceApplication annotation:(id)annotation
 {
-	[self importFile:url];
+	NSLog(@"openURL: %@", url);
+	if (url.isFileURL)
+	{
+		if ([DOSPadEmulator sharedInstance].started)
+		{
+			// TODO: show alert can not open while it's running
+			// quick first.
+			[navController alert:@"Busy"
+				message:@"Can not launch the iDOS package while emulator is running. Please terminate the app first."];
+			return NO;
+		}
+		[url startAccessingSecurityScopedResource];
+		[DOSPadEmulator sharedInstance].diskcDirectory = url.path;
+	}
+//	[self importFile:url];
 	return YES;
 }
 
@@ -112,15 +127,7 @@
 
 - (void)startDOS 
 {
-    if (emuThread == nil) 
-    {
-        emuThread = [DosEmuThread alloc];
-    }
-    
-    if (!emuThread.started) 
-    {
-        [emuThread start];
-    }
+	[[DOSPadEmulator sharedInstance] start];
 }
 
 - (void)initColorTheme
@@ -186,8 +193,8 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions 
 {
+	NSLog(@"didFinishLaunchingWithOptions %@", launchOptions);
 	[self registerDefaultSettings];
-	[ConfigManager init];
 	[self initBackup];
 	[self initColorTheme];
 
@@ -202,7 +209,7 @@
 		error: &activationErr];
 
     screenView = [[SDL_uikitopenglview alloc] initWithFrame:CGRectMake(0,0,640,400)];
-    DOSPadBaseViewController *dospad = [DOSPadBaseViewController dospadWithConfig:[ConfigManager dospadConfigFile]];
+    DOSPadBaseViewController *dospad = [DOSPadBaseViewController dospadController];
     dospad.screenView = screenView;
     navController = [[UINavigationController alloc] initWithRootViewController:dospad];
     navController.navigationBar.barStyle = UIBarStyleBlack;

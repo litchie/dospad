@@ -17,7 +17,7 @@
  */
 
 #import <UIKit/UIKit.h>
-#import "DosEmuThread.h"
+#import "DOSPadEmulator.h"
 #import "KeyboardView.h"
 #import "KeyView.h"
 #import "FrameskipIndicator.h"

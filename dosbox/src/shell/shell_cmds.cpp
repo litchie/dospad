@@ -64,6 +64,9 @@ static SHELL_Cmd cmd_list[]={
 {	"SUBST",	1,			&DOS_Shell::CMD_SUBST,		"SHELL_CMD_SUBST_HELP"},
 {	"TYPE",		0,			&DOS_Shell::CMD_TYPE,		"SHELL_CMD_TYPE_HELP"},
 {	"VER",		0,			&DOS_Shell::CMD_VER,		"SHELL_CMD_VER_HELP"},
+#ifdef IPHONEOS
+{	"OPEN",		0,			&DOS_Shell::CMD_OPEN,		"SHELL_CMD_OPEN_HELP"},
+#endif
 {0,0,0,0}
 }; 
 
@@ -1098,3 +1101,33 @@ void DOS_Shell::CMD_VER(char *args) {
 		dos.version.minor = (Bit8u)(atoi(args));
 	} else WriteOut(MSG_Get("SHELL_CMD_VER_VER"),VERSION,dos.version.major,dos.version.minor);
 }
+
+#ifdef IPHONEOS
+extern "C" {
+    extern int dospad_open(const char* args);
+}
+extern char dospad_error_msg[1000];
+
+void DOS_Shell::CMD_OPEN(char *args)
+{
+	HELP("OPEN");
+	
+	//char dir_current[DOS_PATHLENGTH + 1];
+	//DOS_GetCurrentDir(0,dir_current);
+
+	int ret = dospad_open(args);
+	if (ret)
+	{
+    	WriteOut("Error: %s", dospad_error_msg);
+    }
+    else
+    {
+		// Get current drive
+		Bit8u drive = DOS_GetDefaultDrive();
+		if (Drives[drive]) {
+			Drives[drive]->EmptyCache();
+		}
+	}
+}
+
+#endif
