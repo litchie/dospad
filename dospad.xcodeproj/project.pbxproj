@@ -743,7 +743,7 @@
 		E71071D7129AA7CF00B21291 /* unsticky.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = unsticky.png; sourceTree = "<group>"; };
 		E7107229129AB6F200B21291 /* modegamepad~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "modegamepad~ipad.png"; sourceTree = "<group>"; };
 		E710722A129AB6F200B21291 /* modegamepadpressed~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "modegamepadpressed~ipad.png"; sourceTree = "<group>"; };
-		E7123FCC129D0D470021237F /* dpadglass.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = dpadglass.png; path = "dospad/gamepad-res/dpadglass.png"; sourceTree = "<group>"; };
+		E7123FCC129D0D470021237F /* dpadglass.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = dpadglass.png; path = "gamepad-res/dpadglass.png"; sourceTree = "<group>"; };
 		E7123FCE129D0D470021237F /* glass-centre.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "glass-centre.png"; sourceTree = "<group>"; };
 		E7123FD0129D0D470021237F /* glass-east.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "glass-east.png"; sourceTree = "<group>"; };
 		E7123FD2129D0D470021237F /* glass-north.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "glass-north.png"; sourceTree = "<group>"; };
@@ -755,8 +755,8 @@
 		E7123FDE129D0D470021237F /* glass-west.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "glass-west.png"; sourceTree = "<group>"; };
 		E715B3591293B7740098D437 /* DOSPadBaseViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DOSPadBaseViewController.h; path = Shared/DOSPadBaseViewController.h; sourceTree = "<group>"; };
 		E715B35A1293B7750098D437 /* DOSPadBaseViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DOSPadBaseViewController.m; path = Shared/DOSPadBaseViewController.m; sourceTree = "<group>"; };
-		E71A268C129A1B2D0013D51C /* landbariphon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = landbariphon.png; path = "dospad/misc-res/landbariphon.png"; sourceTree = "<group>"; };
-		E71A268D129A1B2D0013D51C /* landbariphon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "landbariphon@2x.png"; path = "dospad/misc-res/landbariphon@2x.png"; sourceTree = "<group>"; };
+		E71A268C129A1B2D0013D51C /* landbariphon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = landbariphon.png; path = "misc-res/landbariphon.png"; sourceTree = "<group>"; };
+		E71A268D129A1B2D0013D51C /* landbariphon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "landbariphon@2x.png"; path = "misc-res/landbariphon@2x.png"; sourceTree = "<group>"; };
 		E71E60EB11B5506800EC5A05 /* libdosbox.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libdosbox.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		E71E60F311B550FD00EC5A05 /* config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = config.h; sourceTree = "<group>"; };
 		E71E60F511B550FD00EC5A05 /* bios.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = bios.h; sourceTree = "<group>"; };
@@ -1022,28 +1022,28 @@
 		E72BE6CC12911B5C009DC46A /* KeyView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KeyView.m; sourceTree = "<group>"; };
 		E72BE6D612911B5C009DC46A /* ZipArchive.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ZipArchive.h; path = Shared/ZipArchive.h; sourceTree = "<group>"; };
 		E72BE6D712911B5C009DC46A /* ZipArchive.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ZipArchive.m; path = Shared/ZipArchive.m; sourceTree = "<group>"; };
-		E72BE71612911E2B009DC46A /* bar-portrait-iphone.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "bar-portrait-iphone.png"; path = "dospad/misc-res/bar-portrait-iphone.png"; sourceTree = "<group>"; };
-		E72BE71712911E2B009DC46A /* bar-portrait-iphone@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "bar-portrait-iphone@2x.png"; path = "dospad/misc-res/bar-portrait-iphone@2x.png"; sourceTree = "<group>"; };
-		E72BE71812911E2B009DC46A /* bar.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = bar.png; path = "dospad/misc-res/bar.png"; sourceTree = "<group>"; };
-		E72BE71A12911E2B009DC46A /* dospadportrait.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = dospadportrait.jpg; path = "dospad/misc-res/dospadportrait.jpg"; sourceTree = "<group>"; };
-		E72BE71B12911E2B009DC46A /* dpnote.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = dpnote.png; path = "dospad/misc-res/dpnote.png"; sourceTree = "<group>"; };
-		E72BE71C12911E2B009DC46A /* gear.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = gear.png; path = "dospad/misc-res/gear.png"; sourceTree = "<group>"; };
-		E72BE71D12911E2B009DC46A /* holdfinger.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = holdfinger.png; path = "dospad/misc-res/holdfinger.png"; sourceTree = "<group>"; };
-		E72BE72012911E2B009DC46A /* keyboard.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = keyboard.png; path = "dospad/misc-res/keyboard.png"; sourceTree = "<group>"; };
-		E72BE72112911E2B009DC46A /* leftmouse.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = leftmouse.png; path = "dospad/misc-res/leftmouse.png"; sourceTree = "<group>"; };
-		E72BE72212911E2B009DC46A /* leftmouse@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "leftmouse@2x.png"; path = "dospad/misc-res/leftmouse@2x.png"; sourceTree = "<group>"; };
-		E72BE72312911E2B009DC46A /* longbutton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = longbutton.png; path = "dospad/misc-res/longbutton.png"; sourceTree = "<group>"; };
-		E72BE72412911E2B009DC46A /* modesel.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = modesel.png; path = "dospad/misc-res/modesel.png"; sourceTree = "<group>"; };
-		E72BE72512911E2B009DC46A /* rightmouse.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = rightmouse.png; path = "dospad/misc-res/rightmouse.png"; sourceTree = "<group>"; };
-		E72BE72612911E2B009DC46A /* rightmouse@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "rightmouse@2x.png"; path = "dospad/misc-res/rightmouse@2x.png"; sourceTree = "<group>"; };
-		E72BE72712911E2B009DC46A /* slider.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = slider.png; path = "dospad/misc-res/slider.png"; sourceTree = "<group>"; };
-		E72BE72812911E2B009DC46A /* switch.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = switch.png; path = "dospad/misc-res/switch.png"; sourceTree = "<group>"; };
-		E72BE72912911E2B009DC46A /* switch@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "switch@2x.png"; path = "dospad/misc-res/switch@2x.png"; sourceTree = "<group>"; };
-		E72BE72A12911E2B009DC46A /* switchbutton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = switchbutton.png; path = "dospad/misc-res/switchbutton.png"; sourceTree = "<group>"; };
-		E72BE72B12911E2B009DC46A /* switchbutton@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "switchbutton@2x.png"; path = "dospad/misc-res/switchbutton@2x.png"; sourceTree = "<group>"; };
-		E72BE75812911E83009DC46A /* joystickbtn.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; name = joystickbtn.wav; path = "dospad/audio-res/joystickbtn.wav"; sourceTree = "<group>"; };
-		E72BE75912911E83009DC46A /* joystickmove.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; name = joystickmove.wav; path = "dospad/audio-res/joystickmove.wav"; sourceTree = "<group>"; };
-		E72BE75A12911E83009DC46A /* keypress.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; name = keypress.wav; path = "dospad/audio-res/keypress.wav"; sourceTree = "<group>"; };
+		E72BE71612911E2B009DC46A /* bar-portrait-iphone.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "bar-portrait-iphone.png"; path = "misc-res/bar-portrait-iphone.png"; sourceTree = "<group>"; };
+		E72BE71712911E2B009DC46A /* bar-portrait-iphone@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "bar-portrait-iphone@2x.png"; path = "misc-res/bar-portrait-iphone@2x.png"; sourceTree = "<group>"; };
+		E72BE71812911E2B009DC46A /* bar.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = bar.png; path = "misc-res/bar.png"; sourceTree = "<group>"; };
+		E72BE71A12911E2B009DC46A /* dospadportrait.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = dospadportrait.jpg; path = "misc-res/dospadportrait.jpg"; sourceTree = "<group>"; };
+		E72BE71B12911E2B009DC46A /* dpnote.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = dpnote.png; path = "misc-res/dpnote.png"; sourceTree = "<group>"; };
+		E72BE71C12911E2B009DC46A /* gear.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = gear.png; path = "misc-res/gear.png"; sourceTree = "<group>"; };
+		E72BE71D12911E2B009DC46A /* holdfinger.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = holdfinger.png; path = "misc-res/holdfinger.png"; sourceTree = "<group>"; };
+		E72BE72012911E2B009DC46A /* keyboard.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = keyboard.png; path = "misc-res/keyboard.png"; sourceTree = "<group>"; };
+		E72BE72112911E2B009DC46A /* leftmouse.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = leftmouse.png; path = "misc-res/leftmouse.png"; sourceTree = "<group>"; };
+		E72BE72212911E2B009DC46A /* leftmouse@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "leftmouse@2x.png"; path = "misc-res/leftmouse@2x.png"; sourceTree = "<group>"; };
+		E72BE72312911E2B009DC46A /* longbutton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = longbutton.png; path = "misc-res/longbutton.png"; sourceTree = "<group>"; };
+		E72BE72412911E2B009DC46A /* modesel.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = modesel.png; path = "misc-res/modesel.png"; sourceTree = "<group>"; };
+		E72BE72512911E2B009DC46A /* rightmouse.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = rightmouse.png; path = "misc-res/rightmouse.png"; sourceTree = "<group>"; };
+		E72BE72612911E2B009DC46A /* rightmouse@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "rightmouse@2x.png"; path = "misc-res/rightmouse@2x.png"; sourceTree = "<group>"; };
+		E72BE72712911E2B009DC46A /* slider.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = slider.png; path = "misc-res/slider.png"; sourceTree = "<group>"; };
+		E72BE72812911E2B009DC46A /* switch.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = switch.png; path = "misc-res/switch.png"; sourceTree = "<group>"; };
+		E72BE72912911E2B009DC46A /* switch@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "switch@2x.png"; path = "misc-res/switch@2x.png"; sourceTree = "<group>"; };
+		E72BE72A12911E2B009DC46A /* switchbutton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = switchbutton.png; path = "misc-res/switchbutton.png"; sourceTree = "<group>"; };
+		E72BE72B12911E2B009DC46A /* switchbutton@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "switchbutton@2x.png"; path = "misc-res/switchbutton@2x.png"; sourceTree = "<group>"; };
+		E72BE75812911E83009DC46A /* joystickbtn.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; name = joystickbtn.wav; path = "audio-res/joystickbtn.wav"; sourceTree = "<group>"; };
+		E72BE75912911E83009DC46A /* joystickmove.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; name = joystickmove.wav; path = "audio-res/joystickmove.wav"; sourceTree = "<group>"; };
+		E72BE75A12911E83009DC46A /* keypress.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; name = keypress.wav; path = "audio-res/keypress.wav"; sourceTree = "<group>"; };
 		E73A211E128EC1F5001FA168 /* AlertPrompt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AlertPrompt.h; sourceTree = "<group>"; };
 		E73A211F128EC1F5001FA168 /* AlertPrompt.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AlertPrompt.m; sourceTree = "<group>"; };
 		E73B77D7127ED67300184D3B /* configs */ = {isa = PBXFileReference; lastKnownFileType = folder; path = configs; sourceTree = "<group>"; };
@@ -1061,22 +1061,22 @@
 		E76C49371299490200901B69 /* FloatPanel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FloatPanel.m; sourceTree = "<group>"; };
 		E76DAEAD123EE08B00C2AEF7 /* FrameskipIndicator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FrameskipIndicator.h; sourceTree = "<group>"; };
 		E76DAEAE123EE08B00C2AEF7 /* FrameskipIndicator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FrameskipIndicator.m; sourceTree = "<group>"; };
-		E770957C1297BA4B0040ADA2 /* ipadleftside.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = ipadleftside.png; path = "dospad/gamepad-res/ipadleftside.png"; sourceTree = "<group>"; };
-		E770957D1297BA4C0040ADA2 /* ipadrightside.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = ipadrightside.png; path = "dospad/gamepad-res/ipadrightside.png"; sourceTree = "<group>"; };
-		E770961F1297F5670040ADA2 /* light.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = light.png; path = "dospad/gamepad-res/light.png"; sourceTree = "<group>"; };
-		E7735013128ACE3C0009CBEA /* centre.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = centre.png; path = "dospad/gamepad-res/centre.png"; sourceTree = "<group>"; };
-		E7735014128ACE3C0009CBEA /* east.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = east.png; path = "dospad/gamepad-res/east.png"; sourceTree = "<group>"; };
-		E7735015128ACE3C0009CBEA /* north.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = north.png; path = "dospad/gamepad-res/north.png"; sourceTree = "<group>"; };
-		E7735016128ACE3C0009CBEA /* northeast.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = northeast.png; path = "dospad/gamepad-res/northeast.png"; sourceTree = "<group>"; };
-		E7735017128ACE3C0009CBEA /* northwest.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = northwest.png; path = "dospad/gamepad-res/northwest.png"; sourceTree = "<group>"; };
-		E7735018128ACE3C0009CBEA /* south.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = south.png; path = "dospad/gamepad-res/south.png"; sourceTree = "<group>"; };
-		E7735019128ACE3C0009CBEA /* southeast.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = southeast.png; path = "dospad/gamepad-res/southeast.png"; sourceTree = "<group>"; };
-		E773501A128ACE3C0009CBEA /* southwest.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = southwest.png; path = "dospad/gamepad-res/southwest.png"; sourceTree = "<group>"; };
-		E773501B128ACE3C0009CBEA /* west.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = west.png; path = "dospad/gamepad-res/west.png"; sourceTree = "<group>"; };
-		E7735026128AD0540009CBEA /* centre@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "centre@2x.png"; path = "dospad/gamepad-res/centre@2x.png"; sourceTree = "<group>"; };
-		E773503E128AD8BD0009CBEA /* dpad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = dpad.png; path = "dospad/gamepad-res/dpad.png"; sourceTree = "<group>"; };
-		E773503F128AD8BD0009CBEA /* dpad@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "dpad@2x.png"; path = "dospad/gamepad-res/dpad@2x.png"; sourceTree = "<group>"; };
-		E7735040128AD8BD0009CBEA /* dpadpressed.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = dpadpressed.png; path = "dospad/gamepad-res/dpadpressed.png"; sourceTree = "<group>"; };
+		E770957C1297BA4B0040ADA2 /* ipadleftside.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = ipadleftside.png; path = "gamepad-res/ipadleftside.png"; sourceTree = "<group>"; };
+		E770957D1297BA4C0040ADA2 /* ipadrightside.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = ipadrightside.png; path = "gamepad-res/ipadrightside.png"; sourceTree = "<group>"; };
+		E770961F1297F5670040ADA2 /* light.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = light.png; path = "gamepad-res/light.png"; sourceTree = "<group>"; };
+		E7735013128ACE3C0009CBEA /* centre.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = centre.png; path = "gamepad-res/centre.png"; sourceTree = "<group>"; };
+		E7735014128ACE3C0009CBEA /* east.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = east.png; path = "gamepad-res/east.png"; sourceTree = "<group>"; };
+		E7735015128ACE3C0009CBEA /* north.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = north.png; path = "gamepad-res/north.png"; sourceTree = "<group>"; };
+		E7735016128ACE3C0009CBEA /* northeast.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = northeast.png; path = "gamepad-res/northeast.png"; sourceTree = "<group>"; };
+		E7735017128ACE3C0009CBEA /* northwest.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = northwest.png; path = "gamepad-res/northwest.png"; sourceTree = "<group>"; };
+		E7735018128ACE3C0009CBEA /* south.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = south.png; path = "gamepad-res/south.png"; sourceTree = "<group>"; };
+		E7735019128ACE3C0009CBEA /* southeast.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = southeast.png; path = "gamepad-res/southeast.png"; sourceTree = "<group>"; };
+		E773501A128ACE3C0009CBEA /* southwest.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = southwest.png; path = "gamepad-res/southwest.png"; sourceTree = "<group>"; };
+		E773501B128ACE3C0009CBEA /* west.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = west.png; path = "gamepad-res/west.png"; sourceTree = "<group>"; };
+		E7735026128AD0540009CBEA /* centre@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "centre@2x.png"; path = "gamepad-res/centre@2x.png"; sourceTree = "<group>"; };
+		E773503E128AD8BD0009CBEA /* dpad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = dpad.png; path = "gamepad-res/dpad.png"; sourceTree = "<group>"; };
+		E773503F128AD8BD0009CBEA /* dpad@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "dpad@2x.png"; path = "gamepad-res/dpad@2x.png"; sourceTree = "<group>"; };
+		E7735040128AD8BD0009CBEA /* dpadpressed.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = dpadpressed.png; path = "gamepad-res/dpadpressed.png"; sourceTree = "<group>"; };
 		E775411F12403C3C009EC11A /* KeyLockIndicator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KeyLockIndicator.h; sourceTree = "<group>"; };
 		E775412012403C3C009EC11A /* KeyLockIndicator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KeyLockIndicator.m; sourceTree = "<group>"; };
 		E778B2B2123918F6008AF49A /* libSDL_net.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libSDL_net.a; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -1102,8 +1102,8 @@
 		E794F3E012DB4C1B00427836 /* modepiano.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = modepiano.png; sourceTree = "<group>"; };
 		E794F3E112DB4C1B00427836 /* modepiano@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "modepiano@2x.png"; sourceTree = "<group>"; };
 		E794F3E212DB4C1B00427836 /* modepiano~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "modepiano~ipad.png"; sourceTree = "<group>"; };
-		E794F3F912DB4EDC00427836 /* 25-Keys-with-6x4-grid.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "25-Keys-with-6x4-grid.png"; path = "dospad/misc-res/25-Keys-with-6x4-grid.png"; sourceTree = "<group>"; };
-		E794F3FA12DB4EDC00427836 /* 25-keys.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "25-keys.png"; path = "dospad/misc-res/25-keys.png"; sourceTree = "<group>"; };
+		E794F3F912DB4EDC00427836 /* 25-Keys-with-6x4-grid.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "25-Keys-with-6x4-grid.png"; path = "misc-res/25-Keys-with-6x4-grid.png"; sourceTree = "<group>"; };
+		E794F3FA12DB4EDC00427836 /* 25-keys.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "25-keys.png"; path = "misc-res/25-keys.png"; sourceTree = "<group>"; };
 		E794F3FD12DB4F0E00427836 /* PianoKeyboard.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PianoKeyboard.h; sourceTree = "<group>"; };
 		E794F3FE12DB4F0E00427836 /* PianoKeyboard.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PianoKeyboard.m; sourceTree = "<group>"; };
 		E7996FAB1241C0A800502015 /* TipView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TipView.h; sourceTree = "<group>"; };
@@ -1113,18 +1113,18 @@
 		E79970251241FE4A00502015 /* CommandListView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CommandListView.m; path = ../iPad/CommandListView.m; sourceTree = "<group>"; };
 		E799706212422D6800502015 /* FloatingView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FloatingView.h; sourceTree = "<group>"; };
 		E799706312422D6800502015 /* FloatingView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FloatingView.m; sourceTree = "<group>"; };
-		E79C2E5611E131DB002FE898 /* MainWindow.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = MainWindow.xib; path = ../MainWindow.xib; sourceTree = "<group>"; };
+		E79C2E5611E131DB002FE898 /* MainWindow.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MainWindow.xib; sourceTree = "<group>"; };
 		E79E4A0011EC6BF400DEAA7B /* libc.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libc.dylib; path = usr/lib/libc.dylib; sourceTree = SDKROOT; };
 		E7A01EDC1CC927370036A4CF /* ColorTheme.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ColorTheme.h; path = Shared/ColorTheme.h; sourceTree = "<group>"; };
 		E7A01EDD1CC927370036A4CF /* ColorTheme.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ColorTheme.m; path = Shared/ColorTheme.m; sourceTree = "<group>"; };
 		E7A01EE01CC927370036A4CF /* UIExtendedTextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UIExtendedTextField.h; sourceTree = "<group>"; };
 		E7A01EE11CC927370036A4CF /* UIExtendedTextField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UIExtendedTextField.m; sourceTree = "<group>"; };
-		E7A01EE81CC92F0C0036A4CF /* gift.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = gift.png; path = "dospad/misc-res/gift.png"; sourceTree = "<group>"; };
-		E7A01EE91CC92F0C0036A4CF /* kbd.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = kbd.png; path = "dospad/misc-res/kbd.png"; sourceTree = "<group>"; };
-		E7A01EF01CC92F450036A4CF /* button.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = button.png; path = "dospad/gamepad-res/button.png"; sourceTree = "<group>"; };
-		E7A01EF11CC92F450036A4CF /* buttonpressed.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = buttonpressed.png; path = "dospad/gamepad-res/buttonpressed.png"; sourceTree = "<group>"; };
-		E7A01EF51CC9A82E0036A4CF /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = Settings.bundle; path = dospad/Settings.bundle; sourceTree = "<group>"; };
-		E7A482411FF731C100AE7DB6 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = iDOS2/Assets.xcassets; sourceTree = "<group>"; };
+		E7A01EE81CC92F0C0036A4CF /* gift.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = gift.png; path = "misc-res/gift.png"; sourceTree = "<group>"; };
+		E7A01EE91CC92F0C0036A4CF /* kbd.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = kbd.png; path = "misc-res/kbd.png"; sourceTree = "<group>"; };
+		E7A01EF01CC92F450036A4CF /* button.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = button.png; path = "gamepad-res/button.png"; sourceTree = "<group>"; };
+		E7A01EF11CC92F450036A4CF /* buttonpressed.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = buttonpressed.png; path = "gamepad-res/buttonpressed.png"; sourceTree = "<group>"; };
+		E7A01EF51CC9A82E0036A4CF /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
+		E7A482411FF731C100AE7DB6 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		E7A482451FF733DF00AE7DB6 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
 		E7A94CDB127D68B7006509E1 /* GamePadView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GamePadView.h; sourceTree = "<group>"; };
 		E7A94CDC127D68B7006509E1 /* GamePadView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GamePadView.m; sourceTree = "<group>"; };
@@ -1154,7 +1154,7 @@
 		E7B2BBDE252190CA00490083 /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
 		E7B2BBE6252432DA00490083 /* UIViewController+Alert.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "UIViewController+Alert.h"; path = "Shared/UIViewController+Alert.h"; sourceTree = "<group>"; };
 		E7B2BBE7252432DB00490083 /* UIViewController+Alert.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "UIViewController+Alert.m"; path = "Shared/UIViewController+Alert.m"; sourceTree = "<group>"; };
-		E7B2BBE92525728100490083 /* screenshot_bg.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = screenshot_bg.png; path = iDOS2/screenshot_bg.png; sourceTree = "<group>"; };
+		E7B2BBE92525728100490083 /* screenshot_bg.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = screenshot_bg.png; sourceTree = "<group>"; };
 		E7B7F86F1DE1D70200590701 /* libc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.tbd"; path = "usr/lib/libc++.tbd"; sourceTree = SDKROOT; };
 		E7BE1316128BF31A0046990B /* iDOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iDOS.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E7BE1318128BF31A0046990B /* iDOS-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "iDOS-Info.plist"; sourceTree = "<group>"; };
@@ -1172,11 +1172,11 @@
 		E7D6B8AB11BF325700D34665 /* zip.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = zip.c; sourceTree = "<group>"; };
 		E7D6B8AC11BF325700D34665 /* zip.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = zip.h; sourceTree = "<group>"; };
 		E7D6B8CE11BF332400D34665 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
-		E7D78A09129DF3210020D4A7 /* idos-portrait.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = "idos-portrait.jpg"; path = "dospad/misc-res/idos-portrait.jpg"; sourceTree = "<group>"; };
-		E7D78A61129E19380020D4A7 /* btn.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = btn.png; path = "dospad/gamepad-res/btn.png"; sourceTree = "<group>"; };
-		E7D78A63129E19380020D4A7 /* btnpressed.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = btnpressed.png; path = "dospad/gamepad-res/btnpressed.png"; sourceTree = "<group>"; };
-		E7D78AC4129E98480020D4A7 /* fire.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = fire.png; path = "dospad/gamepad-res/fire.png"; sourceTree = "<group>"; };
-		E7D78AC5129E98480020D4A7 /* firepressed.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = firepressed.png; path = "dospad/gamepad-res/firepressed.png"; sourceTree = "<group>"; };
+		E7D78A09129DF3210020D4A7 /* idos-portrait.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = "idos-portrait.jpg"; path = "misc-res/idos-portrait.jpg"; sourceTree = "<group>"; };
+		E7D78A61129E19380020D4A7 /* btn.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = btn.png; path = "gamepad-res/btn.png"; sourceTree = "<group>"; };
+		E7D78A63129E19380020D4A7 /* btnpressed.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = btnpressed.png; path = "gamepad-res/btnpressed.png"; sourceTree = "<group>"; };
+		E7D78AC4129E98480020D4A7 /* fire.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = fire.png; path = "gamepad-res/fire.png"; sourceTree = "<group>"; };
+		E7D78AC5129E98480020D4A7 /* firepressed.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = firepressed.png; path = "gamepad-res/firepressed.png"; sourceTree = "<group>"; };
 		E7E30FE4251E34D10021D10D /* sn76496.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = sn76496.h; sourceTree = "<group>"; };
 		E7E30FE6251E34D10021D10D /* emu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = emu.h; sourceTree = "<group>"; };
 		E7E30FE7251E34D10021D10D /* saa1099.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = saa1099.cpp; sourceTree = "<group>"; };
@@ -1537,8 +1537,7 @@
 				E7107152129A8E5A00B21291 /* options.png */,
 				E7107153129A8E5A00B21291 /* sticky.png */,
 			);
-			name = "floatpanel-res";
-			path = "dospad/floatpanel-res";
+			path = "floatpanel-res";
 			sourceTree = "<group>";
 		};
 		E7123FCD129D0D470021237F /* glass */ = {
@@ -1555,7 +1554,7 @@
 				E7123FDE129D0D470021237F /* glass-west.png */,
 			);
 			name = glass;
-			path = "dospad/gamepad-res/glass";
+			path = "gamepad-res/glass";
 			sourceTree = "<group>";
 		};
 		E71E60F211B550FD00EC5A05 /* dosbox */ = {
@@ -2064,7 +2063,6 @@
 				E7D214C511E45BD000D9654E /* keys.h */,
 				E7D214C711E45BDE00D9654E /* keys.m */,
 				E77DAFC411B5D83600B78E69 /* main.m */,
-				E79C2E5611E131DB002FE898 /* MainWindow.xib */,
 				9222DD511CC449DF00B321B9 /* MfiControllerInputHandler.h */,
 				9222DD521CC449DF00B321B9 /* MfiControllerInputHandler.m */,
 				9222DD491CC43ADC00B321B9 /* MfiGameControllerHandler.h */,
@@ -2087,6 +2085,7 @@
 		E79E44F411EC2D5200DEAA7B /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				E79C2E5611E131DB002FE898 /* MainWindow.xib */,
 				E7B2BBE92525728100490083 /* screenshot_bg.png */,
 				E7A482451FF733DF00AE7DB6 /* LaunchScreen.storyboard */,
 				E7A482411FF731C100AE7DB6 /* Assets.xcassets */,
@@ -2098,7 +2097,7 @@
 				E7734DDD128A720B0009CBEA /* gamepad */,
 				E72BE6F412911DD1009DC46A /* misc-res */,
 			);
-			name = Resources;
+			path = Resources;
 			sourceTree = "<group>";
 		};
 		E7B2BBA5252038CF00490083 /* uikit */ = {
@@ -3827,7 +3826,7 @@
 					IPHONEOS,
 				);
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
-				INFOPLIST_FILE = "iDOS-Info.plist";
+				INFOPLIST_FILE = "Resources/iDOS-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MARKETING_VERSION = 2.0;
 				OTHER_LDFLAGS = (
@@ -3858,7 +3857,7 @@
 					IPHONEOS,
 				);
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
-				INFOPLIST_FILE = "iDOS-Info.plist";
+				INFOPLIST_FILE = "Resources/iDOS-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MARKETING_VERSION = 2.0;
 				OTHER_LDFLAGS = (
@@ -4006,7 +4005,7 @@
 					APPSTORE,
 				);
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
-				INFOPLIST_FILE = "iDOS-Info.plist";
+				INFOPLIST_FILE = "Resources/iDOS-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MARKETING_VERSION = 2.0;
 				OTHER_LDFLAGS = (
