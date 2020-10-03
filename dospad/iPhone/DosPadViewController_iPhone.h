@@ -53,7 +53,7 @@
     UILabel *banner;
     FloatPanel *fullscreenPanel;
     
-    BOOL useOriginalScreenSize;
+    BOOL shouldShrinkScreen;
 }
 
 - (void)refreshFullscreenPanel;

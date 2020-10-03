@@ -457,15 +457,12 @@ static struct {
     [self updateBackground:self.interfaceOrientation];
 }
 
--(void)updateUI
+
+- (void)updateUI
 {
-    float sh = self.screenView.bounds.size.height;
-    float sw = self.screenView.bounds.size.width;
-    float additionalScaleY = 1.0;
-    if (sh / sw != 0.75) 
-    {
-        additionalScaleY = 0.75 / (sh/sw);
-    } 
+	CGFloat vw = self.view.bounds.size.width;
+	CGFloat vh = self.view.bounds.size.height;
+
     [self updateBackground];    
     if ([self isFullscreen]) 
     {
@@ -478,31 +475,14 @@ static struct {
         btnMouseLeftP.alpha = 0;
         btnMouseRightP.alpha = 0;
 		btnShowCommands.alpha = 0;
-        if (useOriginalScreenSize)
-        {
-            float maxWidth = 640;
-            float maxHeight = 480;
-            float sx = maxWidth/sw;
-            float sy = maxHeight/sh;
-            float scale = MIN(sx,sy);
-            screenView.transform = CGAffineTransformMakeScale(scale,scale*additionalScaleY);
-            screenView.center = CGPointMake(self.view.bounds.size.width/2, maxHeight/2);
-        }
-        else
-        {
-            float sx = self.view.bounds.size.width/sw;
-            float sy = self.view.bounds.size.height/sh;
-            float scale = MIN(sx,sy);
-            screenView.transform = CGAffineTransformMakeScale(scale,scale*additionalScaleY);
-            screenView.center = CGPointMake(self.view.bounds.size.width/2, self.view.bounds.size.height/2);
-        }
+        [self putScreen:CGRectMake(0, 0, vw, shouldShrinkScreen ? vh-260 : vh)];
         if (fullscreenPanel.superview != self.view)
         {
             fullscreenPanel.center = CGPointMake(self.view.frame.size.width/2, fullscreenPanel.frame.size.height/2);
             [self.view addSubview:fullscreenPanel];
             [fullscreenPanel showContent];
         }
-        piano.center = CGPointMake(512, 658);
+        piano.center = CGPointMake(vw/2, vh-110);
         [self refreshFullscreenPanel];
     }
     else 
@@ -521,10 +501,8 @@ static struct {
 				self.view.bounds.size.height/2);
 		}
 		
-        float scale=1;
-        if (sw < 640) { scale = 640.0f/sw; }
-        screenView.transform=CGAffineTransformMakeScale(scale,scale*additionalScaleY);
-        screenView.center=CGPointMake(384, 314);
+		[self putScreen:CGRectMake(64, 78, 640, 480)];
+        
         btnShowCommands.alpha = 1;
         btnOption.alpha=1;
         labCycles.alpha=1;
@@ -533,7 +511,7 @@ static struct {
         btnMouseLeftP.alpha = 1;
         keyboard.alpha=1;
         [fullscreenPanel removeFromSuperview];
-        piano.center = CGPointMake(512, 800);
+        piano.center = CGPointMake(vw/2, 800);
     }
 
     if (gamepad != nil)
@@ -566,7 +544,7 @@ static struct {
 
 - (void)toggleScreenSize
 {
-    useOriginalScreenSize = !useOriginalScreenSize;
+    shouldShrinkScreen = !shouldShrinkScreen;
     [self updateUI];
 }
 

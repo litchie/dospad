@@ -45,7 +45,7 @@
     FrameskipIndicator *fsIndicator2;
     UILabel *labCycles2;
     FloatPanel *fullscreenPanel;
-    BOOL useOriginalScreenSize;
+    BOOL shouldShrinkScreen;
 }
 
 - (void)refreshFullscreenPanel;

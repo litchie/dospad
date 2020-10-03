@@ -551,14 +551,34 @@ static struct {
 		[self refreshFullscreenPanel];
         [self removeGamepad];
 	}
-	[self onResize:screenView.bounds.size];
+	[self updateScreen];
 	[self updateBackground];
 	[self updateAlpha];
 }
 
+-(void)updateScreen
+{
+	CGRect viewRect = [self safeRootRect];
+	
+	if ([self isPortrait])
+	{
+		CGRect screenRect = [self putScreen:CGRectMake(viewRect.origin.x, viewRect.origin.y,
+			viewRect.size.width, viewRect.size.width*3/4)];
+        CGRect rect = toolPanel.frame ;
+        rect.origin.x = viewRect.origin.x + (viewRect.size.width-rect.size.width)/2;
+        rect.origin.y = viewRect.origin.y + screenRect.size.height;
+        toolPanel.frame = rect;
+	}
+	else
+	{
+		[self putScreen:CGRectMake(viewRect.origin.x, viewRect.origin.y,
+		 viewRect.size.width, shouldShrinkScreen ? viewRect.size.height-160 : viewRect.size.height)];
+	}
+}
+
 - (void)toggleScreenSize
 {
-    useOriginalScreenSize = !useOriginalScreenSize;
+    shouldShrinkScreen = !shouldShrinkScreen;
     [self updateUI];
 }
 
@@ -737,51 +757,5 @@ static struct {
 	[super viewSafeAreaInsetsDidChange];
 }
 
-/*
- * Handle dos screen resize.
- */
--(void)onResize:(CGSize)sizeNew
-{
-	CGRect viewRect = [self safeRootRect];
-	
-	screenView.bounds = CGRectMake(0, 0, sizeNew.width, sizeNew.height);
-	int maxWidth, maxHeight;
-	float scalex, scaley;
-	CGPoint ptCenter;
-	
-	if ([self isPortrait])
-	{
-        maxWidth = viewRect.size.width;
-        maxHeight = maxWidth * 3 / 4;
-		ptCenter = CGPointMake(viewRect.size.width/2, viewRect.origin.y+maxHeight/2);
-        CGRect rect = toolPanel.frame ;
-        rect.origin.x = viewRect.origin.x + (viewRect.size.width-rect.size.width)/2;
-        rect.origin.y = viewRect.origin.y + maxHeight;
-        toolPanel.frame = rect;
-	}
-	else
-	{
-		if (useOriginalScreenSize)
-		{
-			maxWidth = 320;
-			maxHeight= 240;
-			ptCenter = CGPointMake(viewRect.size.width/2, viewRect.origin.y+120);
-		}
-		else
-		{
-			maxWidth = viewRect.size.width;
-			maxHeight= viewRect.size.height;
-			ptCenter = CGPointMake(viewRect.origin.x+viewRect.size.width/2, viewRect.origin.y+viewRect.size.height/2);
-		}
-	}
-	
-	scalex = maxWidth / sizeNew.width;
-	scaley = maxHeight / sizeNew.height;
-	
-	CGAffineTransform t = CGAffineTransformIdentity;
-	t = CGAffineTransformScale(t, scalex, scaley);
-	screenView.transform = t;
-	screenView.center=ptCenter;
-}
 
 @end

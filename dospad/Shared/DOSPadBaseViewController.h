@@ -96,4 +96,5 @@ typedef enum {
 - (void)createJoystick;
 - (void)createMouseButtons;
 - (void)createPianoKeyboard;
+- (CGRect)putScreen:(CGRect)availRect;
 @end
