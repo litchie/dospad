@@ -337,7 +337,9 @@ static struct {
 - (void)createMouseButtons
 {    
     // Left Mouse Button
-    btnMouseLeft = [[UIButton alloc] initWithFrame:CGRectMake(440,160,48,80)];
+    CGFloat vw = self.view.bounds.size.width;
+    CGFloat vh = self.view.bounds.size.height;
+    btnMouseLeft = [[UIButton alloc] initWithFrame:CGRectMake(vw-40,vh-160,48,80)];
     [btnMouseLeft setTitle:@"L" forState:UIControlStateNormal];
     [btnMouseLeft setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];
     [btnMouseLeft setBackgroundImage:[UIImage imageNamed:@"longbutton.png"] 
@@ -351,7 +353,7 @@ static struct {
     [self.view addSubview:btnMouseLeft];
     
     // Right Mouse Button
-    btnMouseRight = [[UIButton alloc] initWithFrame:CGRectMake(440,80,48,80)];
+    btnMouseRight = [[UIButton alloc] initWithFrame:CGRectMake(vw-40,vh-240,48,80)];
     [btnMouseRight setTitle:@"R" forState:UIControlStateNormal];
     [btnMouseRight setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];
     [btnMouseRight setBackgroundImage:[UIImage imageNamed:@"longbutton.png"] 

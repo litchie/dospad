@@ -394,6 +394,7 @@ static struct {
 	// Make adjustment for screen sizes that are not 768x1024 or 1024x768
 	// Shift all down towards the bottom,
 	// and pull right part towards the right edge.
+	#if 0
     CGPoint leftPartOffset = CGPointMake(0, self.view.bounds.size.height - 1024);
     CGPoint rightPartOffset = CGPointMake(self.view.bounds.size.width - 768,
     	self.view.bounds.size.height - 1024);
@@ -408,6 +409,7 @@ static struct {
 			v.frame = CGRectOffset(v.frame, rightPartOffset.x, rightPartOffset.y);
 		}
 	}
+	#endif
 
     gpad.mode = mod;    
     if (isPortrait)
@@ -416,6 +418,16 @@ static struct {
     }
     else
     {
+    	CGFloat vw = self.view.bounds.size.width;
+		CGRect r = gpad.frame;
+		float offset = vw - r.size.width;
+		for (UIView *v in gpad.subviews) {
+			if (v.center.x > r.size.width/2)
+				v.center = CGPointMake(v.center.x+offset, v.center.y);
+		}
+		r.size.width = vw;
+		gpad.frame = r;
+    	
         gpad.dpadMovable = DEFS_GET_INT(kDPadMovable);
         gpad.alpha = [self floatAlpha];
         [self.view insertSubview:gpad belowSubview:fullscreenPanel];
