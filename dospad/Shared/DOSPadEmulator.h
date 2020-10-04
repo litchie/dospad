@@ -20,6 +20,7 @@
 
 @protocol DOSPadEmulatorDelegate
 
+- (void)emulatorWillStart:(DOSPadEmulator*)emulator;
 - (void)emulator:(DOSPadEmulator*)emulator saveScreenshot:(NSString*)path;
 - (void)emulator:(DOSPadEmulator *)emulator open:(NSString*)path;
 

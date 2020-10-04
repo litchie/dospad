@@ -97,4 +97,8 @@ typedef enum {
 - (void)createMouseButtons;
 - (void)createPianoKeyboard;
 - (CGRect)putScreen:(CGRect)availRect;
+-(void)updateFrameskip:(NSNumber*)skip;
+-(void)updateCpuCycles:(NSString*)title;
+- (void)updateScreen;
+
 @end

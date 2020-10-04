@@ -128,6 +128,11 @@ static DOSPadEmulator* _sharedInstance;
 	// Initalize command history
 	dospad_init_history();
 
+	if (_delegate)
+	{
+		[_delegate emulatorWillStart:self];
+	}
+
     //NSLog(@"Start dosbox in new thread");
     started = YES;
     [NSThread detachNewThreadSelector:@selector(run) toTarget:self withObject:nil];

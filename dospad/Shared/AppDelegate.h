@@ -22,9 +22,7 @@
 
 @interface AppDelegate : SDLUIKitDelegate 
 {
-    UINavigationController *navController;
     SDL_uikitopenglview *screenView;
-    DOSPadEmulator * emuThread;
     int cycles;
     int frameskip;
     int maxPercent;

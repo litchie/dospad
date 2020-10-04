@@ -166,12 +166,12 @@ static struct {
     banner.textColor = [UIColor whiteColor];
     banner.textAlignment = NSTextAlignmentCenter;
     banner.alpha = 0;
-    [_rootContainer addSubview:banner];
+   // [_rootContainer addSubview:banner];
     
     //---------------------------------------------------
     // 8. Navigation Bar Show Button
     //---------------------------------------------------  
-#ifdef IDOS
+#if 0
     if (!autoExit)
     {
         UIButton *btnTop = [[UIButton alloc] initWithFrame:CGRectMake(0,0,viewRect.size.width,30)];
@@ -467,6 +467,7 @@ static struct {
 			if (r.size.height - grect.origin.y > maxHeight)
 				grect.origin.y = r.size.height - maxHeight;
 			gpad.frame = grect;
+			NSAssert(toolPanel.superview == _rootContainer, @"Bad tool panel state");
 			[_rootContainer insertSubview:gpad belowSubview:toolPanel];
 		}
 		else
@@ -558,18 +559,31 @@ static struct {
 	[self updateAlpha];
 }
 
+- (void)emulatorWillStart:(DOSPadEmulator *)emulator
+{
+	[self updateUI];
+}
+
+// Place toolpanel right below the screen view
+- (void)updateToolpanel
+{
+	CGRect screenRect = [_rootContainer convertRect:self.screenView.frame fromView:self.view];
+	CGFloat scale = screenRect.size.width / toolPanel.bounds.size.width;
+	CGFloat cx = CGRectGetMidX(screenRect);
+	CGFloat cy = CGRectGetMaxY(screenRect) + toolPanel.bounds.size.height*scale/2;
+	toolPanel.center = CGPointMake(cx,cy);
+    toolPanel.transform = CGAffineTransformMakeScale(scale,scale);
+	toolPanel.alpha = 1;
+}
+
 -(void)updateScreen
 {
 	CGRect viewRect = [self safeRootRect];
-	
 	if ([self isPortrait])
 	{
 		CGRect screenRect = [self putScreen:CGRectMake(viewRect.origin.x, viewRect.origin.y,
 			viewRect.size.width, viewRect.size.width*3/4)];
-        CGRect rect = toolPanel.frame ;
-        rect.origin.x = viewRect.origin.x + (viewRect.size.width-rect.size.width)/2;
-        rect.origin.y = viewRect.origin.y + screenRect.size.height;
-        toolPanel.frame = rect;
+		[self updateToolpanel];
 	}
 	else
 	{

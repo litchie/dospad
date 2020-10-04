@@ -24,6 +24,13 @@
 #import "ZipArchive.h"
 #import "UIViewController+Alert.h"
 
+@interface AppDelegate ()
+{
+	DOSPadBaseViewController *_emulatorController;
+}
+@end
+
+
 @implementation AppDelegate
 @synthesize frameskip;
 @synthesize cycles;
@@ -71,7 +78,7 @@
 		{
 			// TODO: show alert can not open while it's running
 			// quick first.
-			[navController alert:@"Busy"
+			[_emulatorController alert:@"Busy"
 				message:@"Can not launch the iDOS package while emulator is running. Please terminate the app first."];
 			return NO;
 		}
@@ -100,18 +107,7 @@
 
 - (void)applicationDidBecomeActive:(UIApplication *)application
 {
-    // Only when we have a DOSPadBaseViewController on the stack
-    // that we resume the emulator
-    NSArray *controllers=[navController viewControllers];
-    for (int i = 0; i < [controllers count]; i++) 
-    {
-        UIViewController *ctrl=[controllers objectAtIndex:i];
-        if ([ctrl isKindOfClass:[DOSPadBaseViewController class]])
-        {
-            dospad_resume();
-            break;
-        }
-    }        
+    dospad_resume();
 }
 
 - (void)applicationDidEnterBackground:(UIApplication *)application
@@ -209,12 +205,9 @@
 		error: &activationErr];
 
     screenView = [[SDL_uikitopenglview alloc] initWithFrame:CGRectMake(0,0,640,400)];
-    DOSPadBaseViewController *dospad = [DOSPadBaseViewController dospadController];
-    dospad.screenView = screenView;
-    navController = [[UINavigationController alloc] initWithRootViewController:dospad];
-    navController.navigationBar.barStyle = UIBarStyleBlack;
-    navController.navigationBar.translucent=YES;
-	uiwindow.rootViewController = navController;
+    _emulatorController = [DOSPadBaseViewController dospadController];
+    _emulatorController.screenView = screenView;
+	uiwindow.rootViewController = _emulatorController;
     [uiwindow makeKeyAndVisible];
 	[super applicationDidFinishLaunching:application];
 #ifdef THREADED
@@ -241,28 +234,14 @@
         sprintf(buf, "%4d", cycles);
         maxPercent = 0;
     }
-    NSArray *controllers=[navController viewControllers];
-    for (int i = 0; i < [controllers count]; i++) {
-        UIViewController *ctrl=[controllers objectAtIndex:i];
-        if ([ctrl respondsToSelector:@selector(updateCpuCycles:)]) {
-            [ctrl performSelector:@selector(updateCpuCycles:) withObject:@(buf)];
-        }
-        if ([ctrl respondsToSelector:@selector(updateFrameskip:)]) {
-            [ctrl performSelector:@selector(updateFrameskip:)
-                                   withObject:[NSNumber numberWithInt:frameskip]];
-        }
-    }
+    
+    [_emulatorController updateCpuCycles:@(buf)];
+	[_emulatorController updateFrameskip:@(frameskip)];
 }
 
 -(void)onLaunchExit
 {
-    NSArray *controllers=[navController viewControllers];
-    for (int i = 0; i < [controllers count]; i++) {
-        UIViewController *ctrl=[controllers objectAtIndex:i];
-        if ([ctrl respondsToSelector:@selector(onLaunchExit)]) {
-            [ctrl performSelectorOnMainThread:@selector(onLaunchExit) withObject:nil waitUntilDone:NO];
-        }
-    }    
+	[_emulatorController onLaunchExit];
 }
 
 @end

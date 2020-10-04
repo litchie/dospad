@@ -391,29 +391,28 @@ static struct {
 		[gpad insertSubview:right atIndex:0];
     }
 	
-	// Make adjustment for screen sizes that are not 768x1024 or 1024x768
-	// Shift all down towards the bottom,
-	// and pull right part towards the right edge.
-	#if 0
-    CGPoint leftPartOffset = CGPointMake(0, self.view.bounds.size.height - 1024);
-    CGPoint rightPartOffset = CGPointMake(self.view.bounds.size.width - 768,
-    	self.view.bounds.size.height - 1024);
-	for (UIView *v in gpad.subviews)
-	{
-		if (v.center.x < (isPortrait?768:1024)/2) // left
-		{
-			v.frame = CGRectOffset(v.frame, leftPartOffset.x, leftPartOffset.y);
-		}
-		else
-		{
-			v.frame = CGRectOffset(v.frame, rightPartOffset.x, rightPartOffset.y);
-		}
-	}
-	#endif
 
     gpad.mode = mod;    
     if (isPortrait)
     {
+		// Make adjustment for screen sizes that are not 768x1024 or 1024x768
+		// Shift all down towards the bottom,
+		// and pull right part towards the right edge.
+		CGPoint leftPartOffset = CGPointMake(0, self.view.bounds.size.height - 1024);
+		CGPoint rightPartOffset = CGPointMake(self.view.bounds.size.width - 768,
+			self.view.bounds.size.height - 1024);
+		for (UIView *v in gpad.subviews)
+		{
+			if (v.center.x < (isPortrait?768:1024)/2) // left
+			{
+				v.frame = CGRectOffset(v.frame, leftPartOffset.x, leftPartOffset.y);
+			}
+			else
+			{
+				v.frame = CGRectOffset(v.frame, rightPartOffset.x, rightPartOffset.y);
+			}
+		}
+
         [self.view addSubview:gpad];
     }
     else
@@ -469,6 +468,16 @@ static struct {
     [self updateBackground:self.interfaceOrientation];
 }
 
+- (void)updateScreen
+{
+	CGFloat vw = self.view.bounds.size.width;
+	CGFloat vh = self.view.bounds.size.height;
+
+    if ([self isFullscreen])
+        [self putScreen:CGRectMake(0, 0, vw, shouldShrinkScreen ? vh-260 : vh)];
+	else
+		[self putScreen:CGRectMake(64, 78, 640, 480)];
+}
 
 - (void)updateUI
 {
@@ -502,8 +511,8 @@ static struct {
         [baseView insertSubview:self.screenView atIndex:0];
 		baseView.alpha = 1;
 		// Scaling baseView to fill self.view as much as possible
-		if (baseView.bounds.size.width != self.view.bounds.size.width ||
-			baseView.bounds.size.height != self.view.bounds.size.height)
+//		if (baseView.bounds.size.width != self.view.bounds.size.width ||
+//			baseView.bounds.size.height != self.view.bounds.size.height)
 		{
 			float scaleX = self.view.bounds.size.width/baseView.bounds.size.width;
 			float scaleY = self.view.bounds.size.height/baseView.bounds.size.height;
@@ -539,10 +548,7 @@ static struct {
 -(void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    [self updateBackground];
-    [self updateAlpha];
-    [self onResize:self.screenView.bounds.size];
-    [self refreshFullscreenPanel];
+    [self updateUI];
     //[vk becomeFirstResponder]; TODO Litchie commented out by tvd
 }
 
@@ -622,14 +628,6 @@ static struct {
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
-}
-
-
-
--(void)onResize:(CGSize)sizeNew
-{
-    self.screenView.bounds = CGRectMake(0, 0, sizeNew.width, sizeNew.height);
-    [self updateUI];
 }
 
 - (void)didFloatingView:(FloatingView *)fltView

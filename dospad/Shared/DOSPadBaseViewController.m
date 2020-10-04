@@ -42,6 +42,20 @@ extern int SDL_SendKeyboardKey(int index, Uint8 state, SDL_scancode scancode);
 @synthesize autoExit;
 @synthesize screenView;
 
+- (void)updateScreen
+{
+	NSAssert(FALSE, @"Must be implemented by subclass");
+}
+
+
+// MARK: opengles view delegate
+// Screen Resize
+-(void)onResize:(CGSize)sizeNew
+{
+    self.screenView.bounds = CGRectMake(0, 0, sizeNew.width, sizeNew.height);
+    [self updateScreen];
+}
+
 // scale the screen view to fill the available rect,
 // and keep it at 4:3 unless it's a wide screen (16:10).
 // Return the occupied rect.
@@ -65,8 +79,8 @@ extern int SDL_SendKeyboardKey(int index, Uint8 state, SDL_scancode scancode);
 	{
 		h = w * 3 / 4;
 	}
-	self.screenView.center = CGPointMake(cx, cy);
     self.screenView.transform = CGAffineTransformMakeScale(w/sw,h/sh);
+	self.screenView.center = CGPointMake(cx, cy);
     return CGRectMake(cx-w/2, cy-h/2, w, h);
 }
 
@@ -150,14 +164,7 @@ extern int SDL_SendKeyboardKey(int index, Uint8 state, SDL_scancode scancode);
     holdIndicator = [[HoldIndicator alloc] initWithFrame:CGRectMake(0,0,100,100)];
     holdIndicator.alpha = 0;
     //holdIndicator.transform = CGAffineTransformMakeScale(1.5, 1.5);
-    [self.view addSubview:holdIndicator];
-	
-#ifdef IDOS
-    self.title = @"iDOS";
-#else
-    self.title = @"DOSpad";
-#endif
-
+   // [self.view addSubview:holdIndicator];
     
     /* TODO: LITCHIE commented out by TVD
     vk = [[VKView alloc] initWithFrame:CGRectMake(0,0,1,1)];
@@ -308,11 +315,6 @@ extern int SDL_SendKeyboardKey(int index, Uint8 state, SDL_scancode scancode);
 	} else {
 		return MouseRightClickDefault;
 	}
-}
-
--(void)onResize:(CGSize)sizeNew
-{
-    NSLog(@"Warning: onResize not implemented");
 }
 
 -(void)updateFrameskip:(NSNumber*)skip
@@ -651,6 +653,10 @@ extern int SDL_SendKeyboardKey(int index, Uint8 state, SDL_scancode scancode);
 }
 
 // MARK: DOSEmulatorDelegate
+
+- (void)emulatorWillStart:(DOSPadEmulator *)emulator
+{
+}
 
 - (void)emulator:(DOSPadEmulator *)emulator saveScreenshot:(NSString *)path
 {
