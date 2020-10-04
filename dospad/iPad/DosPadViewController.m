@@ -505,8 +505,8 @@ static struct {
 		if (baseView.bounds.size.width != self.view.bounds.size.width ||
 			baseView.bounds.size.height != self.view.bounds.size.height)
 		{
-			float scaleX = self.view.bounds.size.width/baseView.frame.size.width;
-			float scaleY = self.view.bounds.size.height/baseView.frame.size.height;
+			float scaleX = self.view.bounds.size.width/baseView.bounds.size.width;
+			float scaleY = self.view.bounds.size.height/baseView.bounds.size.height;
 			float scale = MIN(scaleX, scaleY);
 			baseView.transform = CGAffineTransformMakeScale(scaleX, scaleY);
 			baseView.center = CGPointMake(self.view.bounds.size.width/2,
