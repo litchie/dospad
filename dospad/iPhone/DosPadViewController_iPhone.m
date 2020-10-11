@@ -729,13 +729,9 @@ static struct {
     return YES;
 }
 
-#define ISIPHONEX() ([[UIScreen mainScreen] nativeBounds].size.height==2436)
 - (UIInterfaceOrientationMask)supportedInterfaceOrientations
 {
-	if (ISIPHONEX())
-    	return UIInterfaceOrientationMaskPortrait;
-	else
-		return UIInterfaceOrientationMaskAll;
+	return UIInterfaceOrientationMaskAll;
 }
 
 - (void)didReceiveMemoryWarning {
