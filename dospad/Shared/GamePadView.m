@@ -20,13 +20,12 @@
 #include "SDL.h"
 #import <AudioToolbox/AudioServices.h>
 #import "Common.h"
+#import "DOSPadEmulator.h"
 
 #define DRAW_OVERLAY  0
 
 
 extern int SDL_SendKeyboardKey(int index, Uint8 state, SDL_scancode scancode);
-extern int SDL_PrivateJoystickButton(SDL_Joystick * joystick, Uint8 button, Uint8 state);
-extern int SDL_PrivateJoystickAxis(SDL_Joystick * joystick, Uint8 axis, Sint16 value);
 
 static SystemSoundID sound_joystick_button_click=0;
 static SystemSoundID sound_joystick_move=0;
@@ -179,14 +178,6 @@ static SystemSoundID sound_joystick_move=0;
 #endif
 }
 
-- (void)dealloc {
-    
-    if (joystick)
-    {
-        SDL_JoystickClose(joystick);
-    }
-}
-
 - (float)distantFrom:(CGPoint)pt1 to:(CGPoint)pt2
 {
     return sqrt( (pt1.x-pt2.x) * (pt1.x-pt2.x) + (pt1.y-pt2.y) * (pt1.y-pt2.y));
@@ -286,51 +277,19 @@ static SystemSoundID sound_joystick_move=0;
     if (sound_joystick_move != 0) AudioServicesPlaySystemSound(sound_joystick_move);
 }
 
-
-- (BOOL)ensureJoystick
-{
-    if (!joystick) 
-    {
-        joystick = SDL_JoystickOpen(0);
-    }
-    return joystick != 0;
-}
-
 - (void)updateJoystickAxis:(CGPoint)offset
 {
     if (useArrowsKeys) 
         return;
     
-    int maxValue = 32767;
     float r = (self.bounds.size.width / 2) * 0.618;
-    float dx = offset.x;
-    float dy = offset.y;
-    int x = dx / r * maxValue;
-    int y = dy / r * maxValue;
-    
-    if (x > 0) 
-    {
-        x = MIN(x, maxValue);
-    } 
-    else 
-    {
-        x = MAX(x, -maxValue);
-    }
-    
-    if (y > 0) 
-    {
-        y = MIN(y, maxValue);
-    } 
-    else 
-    {
-        y = MAX(y, -maxValue);
-    }
-    
-    if ([self ensureJoystick]) 
-    {
-        SDL_PrivateJoystickAxis(joystick, 0, x);
-        SDL_PrivateJoystickAxis(joystick, 1, y);
-    }
+    float x = offset.x / r;
+    float y = -offset.y / r;
+    if (x > 1.0) x = 1.0;
+    if (x < -1.0) x = -1.0;
+    if (y > 1.0) y = 1.0;
+    if (y < -1.0) y = -1.0;
+	[[DOSPadEmulator sharedInstance] updateJoystick:0 x:x y:y];
 }
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
@@ -454,15 +413,6 @@ static SystemSoundID sound_joystick_move=0;
     return self;
 }
 
-- (BOOL)ensureJoystick
-{
-    if (!joystick) 
-    {
-        joystick = SDL_JoystickOpen(0);
-    }
-    return joystick != 0;
-}
-
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
 {
     self.pressed=YES;
@@ -471,9 +421,9 @@ static SystemSoundID sound_joystick_move=0;
         if (keyCode > 0) SDL_SendKeyboardKey( 0, SDL_PRESSED, keyCode);
         if (keyCode2 > 0) SDL_SendKeyboardKey( 0, SDL_PRESSED, keyCode2);
     }
-    else if ([self ensureJoystick])
+    else
     {
-        SDL_PrivateJoystickButton(joystick, buttonIndex, SDL_PRESSED);        
+    	[[DOSPadEmulator sharedInstance] joystickButton:buttonIndex pressed:YES joystickIndex:0];
     }
     
     if (!quiet)
@@ -494,9 +444,9 @@ static SystemSoundID sound_joystick_move=0;
         if (keyCode2 > 0) SDL_SendKeyboardKey( 0, SDL_RELEASED, keyCode2);
         if (keyCode > 0) SDL_SendKeyboardKey( 0, SDL_RELEASED, keyCode);
     }
-    else if ([self ensureJoystick])
+    else
     {
-        SDL_PrivateJoystickButton(joystick, buttonIndex, SDL_RELEASED);        
+    	[[DOSPadEmulator sharedInstance] joystickButton:buttonIndex pressed:NO joystickIndex:0];
     }
 }
 
@@ -645,14 +595,6 @@ static SystemSoundID sound_joystick_move=0;
     }
 #endif
 }
-
-- (void)dealloc {
-    if (joystick)
-    {
-        SDL_JoystickClose(joystick);
-    }
-}
-
 
 @end
 

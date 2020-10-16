@@ -28,10 +28,6 @@
 #import "SliderView.h"
 #import "DOSPadBaseViewController.h"
 #import "FloatPanel.h"
-#import "KeyMapper.h"
-#import "MfiGameControllerHandler.h"
-#import "MfiControllerInputHandler.h"
-
 
 @interface ToolPanelView : UIView {}
 @end

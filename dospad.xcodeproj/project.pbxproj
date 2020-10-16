@@ -55,9 +55,6 @@
 		04F2AF561104ABD200D6DDF7 /* SDL_assert.c in Sources */ = {isa = PBXBuildFile; fileRef = 04F2AF551104ABD200D6DDF7 /* SDL_assert.c */; };
 		2A4546F917D2809F00D18563 /* CoreMIDI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E7F2A9CD12CD99EC0091B859 /* CoreMIDI.framework */; };
 		2A4546FA17D2812100D18563 /* PianoKeyboard.m in Sources */ = {isa = PBXBuildFile; fileRef = E794F3FE12DB4F0E00427836 /* PianoKeyboard.m */; };
-		9222DD4C1CC43ADC00B321B9 /* MfiGameControllerHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 9222DD4A1CC43ADC00B321B9 /* MfiGameControllerHandler.m */; };
-		9222DD501CC43B9200B321B9 /* KeyMapper.m in Sources */ = {isa = PBXBuildFile; fileRef = 9222DD4E1CC43B9200B321B9 /* KeyMapper.m */; };
-		9222DD541CC449DF00B321B9 /* MfiControllerInputHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 9222DD521CC449DF00B321B9 /* MfiControllerInputHandler.m */; };
 		9222DD561CC44A9F00B321B9 /* GameController.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9222DD551CC44A9F00B321B9 /* GameController.framework */; };
 		E70C044112A4B43F00AC178F /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E70C044012A4B43F00AC178F /* AVFoundation.framework */; };
 		E7107154129A8E5A00B21291 /* cpuwindow.png in Resources */ = {isa = PBXBuildFile; fileRef = E7107147129A8E5A00B21291 /* cpuwindow.png */; };
@@ -368,6 +365,8 @@
 		E72BE75E12911E83009DC46A /* joystickbtn.wav in Resources */ = {isa = PBXBuildFile; fileRef = E72BE75812911E83009DC46A /* joystickbtn.wav */; };
 		E72BE75F12911E83009DC46A /* joystickmove.wav in Resources */ = {isa = PBXBuildFile; fileRef = E72BE75912911E83009DC46A /* joystickmove.wav */; };
 		E72BE76012911E83009DC46A /* keypress.wav in Resources */ = {isa = PBXBuildFile; fileRef = E72BE75A12911E83009DC46A /* keypress.wav */; };
+		E73A566B2534979900E3B3FB /* MfiGamepadConfiguration.m in Sources */ = {isa = PBXBuildFile; fileRef = E73A566A2534979900E3B3FB /* MfiGamepadConfiguration.m */; };
+		E73A566E2534A49000E3B3FB /* MfiGamepadManager.m in Sources */ = {isa = PBXBuildFile; fileRef = E73A566D2534A49000E3B3FB /* MfiGamepadManager.m */; };
 		E74BB2B715C93DBC005EC552 /* DosPadUIApplication.m in Sources */ = {isa = PBXBuildFile; fileRef = E74BB2B515C93DBC005EC552 /* DosPadUIApplication.m */; };
 		E75276E712A0A77E00278BA1 /* modekeyoff.png in Resources */ = {isa = PBXBuildFile; fileRef = E75276E112A0A77E00278BA1 /* modekeyoff.png */; };
 		E75276E812A0A77E00278BA1 /* modekeyoff@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E75276E212A0A77E00278BA1 /* modekeyoff@2x.png */; };
@@ -482,6 +481,7 @@
 		E7D98C681CCA067400A17CFC /* modepianopressed.png in Resources */ = {isa = PBXBuildFile; fileRef = E794F3DA12DB4B6D00427836 /* modepianopressed.png */; };
 		E7D98C691CCA067400A17CFC /* modepianopressed@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E794F3DB12DB4B6D00427836 /* modepianopressed@2x.png */; };
 		E7D98C6A1CCA067400A17CFC /* modepianopressed~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = E794F3DC12DB4B6D00427836 /* modepianopressed~ipad.png */; };
+		E7DF95C92535965600ECB198 /* MfiGamepadMapperView.m in Sources */ = {isa = PBXBuildFile; fileRef = E7DF95C82535965600ECB198 /* MfiGamepadMapperView.m */; };
 		E7E30FEB251E34D20021D10D /* sn76496.h in Headers */ = {isa = PBXBuildFile; fileRef = E7E30FE4251E34D10021D10D /* sn76496.h */; };
 		E7E30FEC251E34D20021D10D /* emu.h in Headers */ = {isa = PBXBuildFile; fileRef = E7E30FE6251E34D10021D10D /* emu.h */; };
 		E7E30FED251E34D20021D10D /* saa1099.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E7E30FE7251E34D10021D10D /* saa1099.cpp */; };
@@ -710,12 +710,6 @@
 		1D30AB110D05D00D00671497 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		1D3623EB0D0F72F000981E51 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		1DF5F4DF0D08C38300B7A737 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
-		9222DD491CC43ADC00B321B9 /* MfiGameControllerHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MfiGameControllerHandler.h; sourceTree = "<group>"; };
-		9222DD4A1CC43ADC00B321B9 /* MfiGameControllerHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MfiGameControllerHandler.m; sourceTree = "<group>"; };
-		9222DD4D1CC43B9200B321B9 /* KeyMapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KeyMapper.h; sourceTree = "<group>"; };
-		9222DD4E1CC43B9200B321B9 /* KeyMapper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KeyMapper.m; sourceTree = "<group>"; };
-		9222DD511CC449DF00B321B9 /* MfiControllerInputHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MfiControllerInputHandler.h; sourceTree = "<group>"; };
-		9222DD521CC449DF00B321B9 /* MfiControllerInputHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MfiControllerInputHandler.m; sourceTree = "<group>"; };
 		9222DD551CC44A9F00B321B9 /* GameController.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GameController.framework; path = System/Library/Frameworks/GameController.framework; sourceTree = SDKROOT; };
 		E70C044012A4B43F00AC178F /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		E70EA4101242F83200528C9D /* SliderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SliderView.h; path = ../iPad/SliderView.h; sourceTree = "<group>"; };
@@ -1046,6 +1040,10 @@
 		E72BE75A12911E83009DC46A /* keypress.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; name = keypress.wav; path = "audio-res/keypress.wav"; sourceTree = "<group>"; };
 		E73A211E128EC1F5001FA168 /* AlertPrompt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AlertPrompt.h; sourceTree = "<group>"; };
 		E73A211F128EC1F5001FA168 /* AlertPrompt.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AlertPrompt.m; sourceTree = "<group>"; };
+		E73A56692534979900E3B3FB /* MfiGamepadConfiguration.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MfiGamepadConfiguration.h; sourceTree = "<group>"; };
+		E73A566A2534979900E3B3FB /* MfiGamepadConfiguration.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MfiGamepadConfiguration.m; sourceTree = "<group>"; };
+		E73A566C2534A49000E3B3FB /* MfiGamepadManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MfiGamepadManager.h; sourceTree = "<group>"; };
+		E73A566D2534A49000E3B3FB /* MfiGamepadManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MfiGamepadManager.m; sourceTree = "<group>"; };
 		E73B77D7127ED67300184D3B /* configs */ = {isa = PBXFileReference; lastKnownFileType = folder; path = configs; sourceTree = "<group>"; };
 		E745CE3D11F5991F00F00F7F /* HoldIndicator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HoldIndicator.h; sourceTree = "<group>"; };
 		E745CE3E11F5991F00F00F7F /* HoldIndicator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HoldIndicator.m; sourceTree = "<group>"; };
@@ -1177,6 +1175,8 @@
 		E7D78A63129E19380020D4A7 /* btnpressed.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = btnpressed.png; path = "gamepad-res/btnpressed.png"; sourceTree = "<group>"; };
 		E7D78AC4129E98480020D4A7 /* fire.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = fire.png; path = "gamepad-res/fire.png"; sourceTree = "<group>"; };
 		E7D78AC5129E98480020D4A7 /* firepressed.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = firepressed.png; path = "gamepad-res/firepressed.png"; sourceTree = "<group>"; };
+		E7DF95C72535965600ECB198 /* MfiGamepadMapperView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MfiGamepadMapperView.h; sourceTree = "<group>"; };
+		E7DF95C82535965600ECB198 /* MfiGamepadMapperView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MfiGamepadMapperView.m; sourceTree = "<group>"; };
 		E7E30FE4251E34D10021D10D /* sn76496.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = sn76496.h; sourceTree = "<group>"; };
 		E7E30FE6251E34D10021D10D /* emu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = emu.h; sourceTree = "<group>"; };
 		E7E30FE7251E34D10021D10D /* saa1099.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = saa1099.cpp; sourceTree = "<group>"; };
@@ -2058,17 +2058,17 @@
 				E77DAFB311B5D83600B78E69 /* dospad_Prefix.pch */,
 				E74BB2B415C93DBC005EC552 /* DosPadUIApplication.h */,
 				E74BB2B515C93DBC005EC552 /* DosPadUIApplication.m */,
-				9222DD4D1CC43B9200B321B9 /* KeyMapper.h */,
-				9222DD4E1CC43B9200B321B9 /* KeyMapper.m */,
 				E7D214C511E45BD000D9654E /* keys.h */,
 				E7D214C711E45BDE00D9654E /* keys.m */,
 				E77DAFC411B5D83600B78E69 /* main.m */,
-				9222DD511CC449DF00B321B9 /* MfiControllerInputHandler.h */,
-				9222DD521CC449DF00B321B9 /* MfiControllerInputHandler.m */,
-				9222DD491CC43ADC00B321B9 /* MfiGameControllerHandler.h */,
-				9222DD4A1CC43ADC00B321B9 /* MfiGameControllerHandler.m */,
 				E7A01EE01CC927370036A4CF /* UIExtendedTextField.h */,
 				E7A01EE11CC927370036A4CF /* UIExtendedTextField.m */,
+				E73A56692534979900E3B3FB /* MfiGamepadConfiguration.h */,
+				E73A566A2534979900E3B3FB /* MfiGamepadConfiguration.m */,
+				E73A566C2534A49000E3B3FB /* MfiGamepadManager.h */,
+				E73A566D2534A49000E3B3FB /* MfiGamepadManager.m */,
+				E7DF95C72535965600ECB198 /* MfiGamepadMapperView.h */,
+				E7DF95C82535965600ECB198 /* MfiGamepadMapperView.m */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
@@ -2975,12 +2975,12 @@
 			projectDirPath = "";
 			projectRoot = ./SDL;
 			targets = (
+				E7BE1297128BF31A0046990B /* iDOS */,
 				FD6526620DE8FCCB002AD96B /* SDLStaticLib */,
 				0064653F107E3D7400183915 /* SDL Generated Header Files */,
 				E778B2B1123918F6008AF49A /* SDL_net */,
 				E71E60EA11B5506800EC5A05 /* dosbox */,
 				E7D6B89711BF322E00D34665 /* minizip */,
-				E7BE1297128BF31A0046990B /* iDOS */,
 				E7B2BBCD252155EE00490083 /* iDOSThumbnail */,
 			);
 		};
@@ -3310,8 +3310,8 @@
 				E7BE12F3128BF31A0046990B /* keys.m in Sources */,
 				E7A01EE51CC927760036A4CF /* UIExtendedTextField.m in Sources */,
 				E7BE12F6128BF31A0046990B /* HoldIndicator.m in Sources */,
+				E73A566B2534979900E3B3FB /* MfiGamepadConfiguration.m in Sources */,
 				E7BE12F7128BF31A0046990B /* FrameskipIndicator.m in Sources */,
-				9222DD4C1CC43ADC00B321B9 /* MfiGameControllerHandler.m in Sources */,
 				E7B2BBE8252432DC00490083 /* UIViewController+Alert.m in Sources */,
 				E7BE12F8128BF31A0046990B /* KeyLockIndicator.m in Sources */,
 				E7BE12F9128BF31A0046990B /* TipView.m in Sources */,
@@ -3320,16 +3320,16 @@
 				E7BE12FD128BF31A0046990B /* SliderView.m in Sources */,
 				E7BE12FF128BF31A0046990B /* GamePadView.m in Sources */,
 				E7BE1301128BF31A0046990B /* VKView.m in Sources */,
-				9222DD501CC43B9200B321B9 /* KeyMapper.m in Sources */,
 				E7EF4372128FCE470014D060 /* AlertPrompt.m in Sources */,
 				E72BE69712911096009DC46A /* DosPadViewController_iPhone.m in Sources */,
 				E7A01EE71CC9277E0036A4CF /* ColorTheme.m in Sources */,
+				E73A566E2534A49000E3B3FB /* MfiGamepadManager.m in Sources */,
 				E72BE6E412911B5C009DC46A /* AppDelegate.m in Sources */,
 				E72BE6E512911B5C009DC46A /* DOSPadEmulator.m in Sources */,
 				E72BE6E612911B5C009DC46A /* FileSystemObject.m in Sources */,
 				E72BE6E712911B5C009DC46A /* KeyboardView.m in Sources */,
 				E72BE6E812911B5C009DC46A /* KeyView.m in Sources */,
-				9222DD541CC449DF00B321B9 /* MfiControllerInputHandler.m in Sources */,
+				E7DF95C92535965600ECB198 /* MfiGamepadMapperView.m in Sources */,
 				E72BE6EF12911B5C009DC46A /* ZipArchive.m in Sources */,
 				E715B35B1293B7750098D437 /* DOSPadBaseViewController.m in Sources */,
 				E76C49381299490200901B69 /* FloatPanel.m in Sources */,
@@ -3517,7 +3517,7 @@
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = NO;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 				VALID_ARCHS = "arm64 arm64e armv7 armv7s x86_64";
@@ -3534,7 +3534,7 @@
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = NO;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				SDKROOT = iphoneos;
 				VALID_ARCHS = "arm64 arm64e armv7 armv7s x86_64";
 			};
@@ -3811,7 +3811,7 @@
 				);
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				INFOPLIST_FILE = "Resources/iDOS-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				MARKETING_VERSION = 2.0.1;
 				OTHER_LDFLAGS = (
 					"-framework",
@@ -3843,7 +3843,7 @@
 				);
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				INFOPLIST_FILE = "Resources/iDOS-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				MARKETING_VERSION = 2.0.1;
 				OTHER_LDFLAGS = (
 					"-framework",
@@ -3898,7 +3898,7 @@
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = NO;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				SDKROOT = iphoneos;
 				VALID_ARCHS = "arm64 arm64e armv7 armv7s x86_64";
 			};
@@ -3991,7 +3991,7 @@
 				);
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				INFOPLIST_FILE = "Resources/iDOS-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				MARKETING_VERSION = 2.0.1;
 				OTHER_LDFLAGS = (
 					"-framework",

@@ -60,11 +60,6 @@ typedef enum {
     UIButton *btnMouseLeft;
     UIButton *btnMouseRight;
     PianoKeyboard *piano;
-    
-    BOOL remapControlsModeOn;
-    UILabel *remappingOnLabel;
-    UIButton *resetMappingsButton;
-    
 }
 
 @property (nonatomic, assign) BOOL autoExit;
@@ -100,5 +95,6 @@ typedef enum {
 -(void)updateFrameskip:(NSNumber*)skip;
 -(void)updateCpuCycles:(NSString*)title;
 - (void)updateScreen;
+-(void) openMfiMapper:(id)sender;
 
 @end

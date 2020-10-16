@@ -20,7 +20,6 @@
 #import "FileSystemObject.h"
 #import "Common.h"
 #import "AppDelegate.h"
-#import "MfiGameControllerHandler.h"
 #import "ColorTheme.h"
 
 
@@ -61,24 +60,11 @@ static struct {
 @end
 
 
-@interface DOSPadBaseViewController()
-
--(void) remapControlsButtonTapped:(id)sender;
--(void) refreshKeyMappingsInViews;
--(void) resetMappingsButtonTapped:(id)sender;
-
-@end
-
 @interface DosPadViewController_iPhone()
 {
 	// Only used in portrait mode
 	UIView *_rootContainer;
 }
-
-@property(nonatomic, strong) KeyMapper *keyMapper;
-@property(nonatomic, strong) UIAlertView *keyMapperAlertView;
-@property(nonatomic, strong) MfiGameControllerHandler *mfiHandler;
-@property(nonatomic, strong) MfiControllerInputHandler *mfiInputHandler;
 
 @end
 
@@ -273,7 +259,7 @@ static struct {
     
     UIButton *btnRemap = [[UIButton alloc] initWithFrame:CGRectMake(340,0,20,24)];
     [btnRemap setTitle:@"R" forState:UIControlStateNormal];
-    [btnRemap addTarget:self action:@selector(remapControlsButtonTapped:) forControlEvents:UIControlEventTouchUpInside];
+    [btnRemap addTarget:self action:@selector(openMfiMapper:) forControlEvents:UIControlEventTouchUpInside];
     [items addObject:btnRemap];
     
     [fullscreenPanel setItems:items];
@@ -431,9 +417,6 @@ static struct {
 		kbd.backgroundColor = [[ColorTheme defaultTheme] colorByName:@"keyboard-background"];
 		[_rootContainer addSubview:kbd];
 	}
-	
-    kbd.externKeyDelegate = remapControlsModeOn ? self : nil;
-    [self refreshKeyMappingsInViews];
 }
 
 - (GamePadView*)createGamepadHelper:(GamePadMode)mod
@@ -532,6 +515,8 @@ static struct {
 {
 	if ([self isPortrait])
 	{
+		self.view.backgroundColor = HexColor(0x585458);
+
 		_rootContainer.frame = [self safeRootRect];
 		toolPanel.alpha=1;
         
@@ -542,6 +527,7 @@ static struct {
 	}
 	else
 	{
+		self.view.backgroundColor = [UIColor blackColor];
 		if (self.view != fullscreenPanel.superview)
 		{
 			CGRect rc = fullscreenPanel.frame;
@@ -561,6 +547,7 @@ static struct {
 
 - (void)emulatorWillStart:(DOSPadEmulator *)emulator
 {
+	[super emulatorWillStart:emulator];
 	[self updateUI];
 }
 
@@ -628,17 +615,6 @@ static struct {
     [super viewDidLoad];
     mode = GamePadDefault;
 	[self initUI];
-
-    self.keyMapper = [[KeyMapper alloc] init];
-    [self.keyMapper loadFromDefaults];
-    self.mfiHandler = [[MfiGameControllerHandler alloc] init];
-    self.mfiInputHandler = [[MfiControllerInputHandler alloc] init];
-    self.mfiInputHandler.keyMapper = self.keyMapper;
-    [self.mfiHandler discoverController:^(GCController *gameController) {
-        [self.mfiInputHandler setupControllerInputsForController:gameController];
-    } disconnectedCallback:^{
-        
-    }];
 }
 
 

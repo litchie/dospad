@@ -17,7 +17,6 @@
  */
 
 #import <UIKit/UIKit.h>
-#import "SDL.h"
 
 typedef enum
 {
@@ -36,7 +35,6 @@ typedef enum
 {
     DPadDirection currentDirection;
     float minDistance;
-    SDL_Joystick *joystick;
     BOOL useArrowsKeys;
     BOOL quiet;
     UIImage *backgroundImage;
@@ -71,7 +69,6 @@ typedef enum
     NSString *title;
     GamePadButtonStyle style;
     NSArray *images;
-    SDL_Joystick *joystick;
     BOOL quiet;
     BOOL joy;
     BOOL showFire;

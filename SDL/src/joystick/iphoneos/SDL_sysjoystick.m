@@ -19,6 +19,17 @@
     Sam Lantinga
     slouken@libsdl.org
 */
+
+/*
+ * Oct 16, 2020 -- Chaoji Li
+ *   Modified for DOSPAD
+ *   We don't want to use accelerometer for joystick,
+ *   instead we can support external game controller as well as
+ *   on-screen virtual joystick.
+ *   We can support up to 4 controllers, each can act as
+ *   a joystick.
+ */
+
 #include "SDL_config.h"
 
 /* This is the system specific header for the SDL joystick API */
@@ -38,7 +49,7 @@ const char *accelerometerName = "iPhone accelerometer";
 int
 SDL_SYS_JoystickInit(void)
 {
-    SDL_numjoysticks = 1;
+    SDL_numjoysticks = 4;
     return (1);
 }
 
@@ -48,7 +59,13 @@ SDL_SYS_JoystickName(int index)
 {
 	switch(index) {
 		case 0:
-			return accelerometerName;
+			return "Joystick0";
+		case 1:
+			return "Joystick1";
+		case 2:
+			return "Joystick2";
+		case 3:
+			return "Joystick3";
 		default:
 			SDL_SetError("No joystick available with that index");
 			return NULL;
@@ -63,13 +80,27 @@ SDL_SYS_JoystickName(int index)
 int
 SDL_SYS_JoystickOpen(SDL_Joystick * joystick)
 {
-	if (joystick->index == 0) {
+	if (joystick->index >= 0 && joystick->index < 4) {
 		joystick->naxes = 2;
 		joystick->nhats = 0;
 		joystick->nballs = 0;
 		joystick->nbuttons = 2;
-		joystick->name  = "VirtualGamePad";
-		//[[SDLUIAccelerationDelegate sharedDelegate] startup];
+		switch (joystick->index) {
+		case 0:
+			joystick->name = "Joystick0";
+			break;
+		case 1:
+			joystick->name = "Joystick1";
+			break;
+		case 2:
+			joystick->name = "Joystick2";
+			break;
+		case 3:
+			joystick->name = "Joystick3";
+			break;
+		default:
+			break;
+		}
 		return 0;
 	}
 	else {
@@ -108,10 +139,13 @@ SDL_SYS_JoystickUpdate(SDL_Joystick * joystick)
 void
 SDL_SYS_JoystickClose(SDL_Joystick * joystick)
 {
+
+#if 0
 	if (joystick->index == 0 && [[SDLUIAccelerationDelegate sharedDelegate] isRunning]) {
 		[[SDLUIAccelerationDelegate sharedDelegate] shutdown];
 	}
 	SDL_SetError("No joystick open with that index");
+#endif
 
     return;
 }

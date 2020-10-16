@@ -29,7 +29,7 @@ typedef struct KeyDesc_t {
     int code;
 } KeyDesc;
 
-int get_scancode_for_name(char *name);
+int get_scancode_for_name(const char *name);
 const char *get_key_title(int code);
 int get_scancode_for_char(char c, int *shift);
 #endif

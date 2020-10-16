@@ -117,7 +117,7 @@ KeyDesc allkeys[] = {
     {"END",SDL_SCANCODE_END}
 };
 
-int get_scancode_for_name(char *name)
+int get_scancode_for_name(const char *name)
 {
     int i;
     for (i = 1; i < ARRAY_SIZE(allkeys); i++) 

@@ -28,6 +28,11 @@
 #import "DOSPadEmulator.h"
 #import "FileSystemObject.h"
 #import "Common.h"
+#import "keys.h"
+#include "SDL.h"
+
+extern int SDL_PrivateJoystickButton(SDL_Joystick * joystick, Uint8 button, Uint8 state);
+extern int SDL_PrivateJoystickAxis(SDL_Joystick * joystick, Uint8 axis, Sint16 value);
 
 extern char automount_path[];
 
@@ -47,6 +52,7 @@ static DOSPadEmulator* _sharedInstance;
 
 @interface DOSPadEmulator ()
 {
+    SDL_Joystick *_joystick[4];
 
 }
 @end
@@ -66,6 +72,14 @@ static DOSPadEmulator* _sharedInstance;
 + (void)setSharedInstance:(DOSPadEmulator*)instance
 {
 	_sharedInstance = instance;
+}
+
+- (void)dealloc
+{
+	for (int i = 0;  i < sizeof(_joystick)/sizeof(_joystick[0]); i++)
+	{
+		SDL_JoystickClose(_joystick[i]);
+	}
 }
 
 // Use config files under diskc, if not present,
@@ -97,6 +111,12 @@ static DOSPadEmulator* _sharedInstance;
 		_uiConfigFile = path;
 	} else {
 		_uiConfigFile = [bundleConfigs stringByAppendingPathComponent:@"ui.cfg"];
+	}
+
+	_mfiConfigFile = [configDir stringByAppendingPathComponent:@"mfi.cfg"];
+	if (![fm fileExistsAtPath:_mfiConfigFile]) {
+		[fm copyItemAtPath:[bundleConfigs stringByAppendingPathComponent:@"mfi.cfg"]
+			toPath:_mfiConfigFile error:nil];
 	}
 }
 
@@ -194,6 +214,55 @@ static DOSPadEmulator* _sharedInstance;
 	[NSThread sleepForTimeInterval:0.05];
 	SDL_SendKeyboardKey( 0, SDL_RELEASED, SDL_SCANCODE_RETURN);
   
+}
+
+- (BOOL)ensureJoystick:(NSInteger)index
+{
+    if (!_joystick[index])
+    {
+        _joystick[index] = SDL_JoystickOpen((int)index);
+    }
+    return _joystick[index] != 0;
+}
+
+
+- (void)updateJoystick:(NSInteger)index x:(float)x y:(float)y
+{
+	if (![self ensureJoystick:index])
+		return;
+		
+    int maxValue = 32767;
+    x *= maxValue;
+    y *= maxValue;
+    y = -y;
+    
+    if (x > 0)
+    {
+        x = MIN(x, maxValue);
+    }
+    else
+    {
+        x = MAX(x, -maxValue);
+    }
+    
+    if (y > 0)
+    {
+        y = MIN(y, maxValue);
+    }
+    else
+    {
+        y = MAX(y, -maxValue);
+    }
+    
+    SDL_PrivateJoystickAxis(_joystick[index], 0, (int)x);
+    SDL_PrivateJoystickAxis(_joystick[index], 1, (int)y);
+}
+
+- (void)joystickButton:(NSInteger)buttonIndex pressed:(BOOL)pressed joystickIndex:(NSInteger)index
+{
+	if (![self ensureJoystick:index])
+		return;
+	SDL_PrivateJoystickButton(_joystick[index], buttonIndex, pressed?SDL_PRESSED:SDL_RELEASED);
 }
 
 @end

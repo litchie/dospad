@@ -23,17 +23,21 @@
 #import "AppDelegate.h"
 #import <MobileCoreServices/MobileCoreServices.h>
 #import "UIViewController+Alert.h"
+#import "MfiGamepadManager.h"
+#import "MfiGamepadMapperView.h"
 
 #define NOT_IMPLEMENTED(func) func { NSLog(@"Error: `%s' is not implemented!", #func); }
 
 extern int SDL_SendKeyboardKey(int index, Uint8 state, SDL_scancode scancode);
 
 @interface DOSPadBaseViewController()
-
-@property(nonatomic, strong) KeyMapper *keyMapper;
-@property(nonatomic, strong) UIAlertView *keyMapperAlertView;
-@property(nonatomic, strong) MfiGameControllerHandler *mfiHandler;
-@property(nonatomic, strong) MfiControllerInputHandler *mfiInputHandler;
+<MfiGamepadManagerDelegate,
+MfiGamepadMapperDelegate>
+{
+	MfiGamepadConfiguration *_mfiConfig;
+	MfiGamepadManager *_mfiManager;
+	MfiGamepadMapperView *_mfiMapper;
+}
 
 @end
 
@@ -70,8 +74,9 @@ extern int SDL_SendKeyboardKey(int index, Uint8 state, SDL_scancode scancode);
 	if (w * 3 / 4 > h)
 	{
 		// Make it 16:10 if this is a wide screen
-		if (w / h >= 1.6)
-			w = h * 1.6;
+		CGFloat maxWidth = h * 16 / 10;
+		if (w >= maxWidth)
+			w = maxWidth;
 		else
 			w = h * 4 / 3;
 	}
@@ -175,7 +180,7 @@ extern int SDL_SendKeyboardKey(int index, Uint8 state, SDL_scancode scancode);
     //---------------------------------------------------
     // Remap controls
     //---------------------------------------------------
-    
+    #if 0
     remappingOnLabel = [[UILabel alloc] initWithFrame:CGRectZero];
     remappingOnLabel.text = @"Remapping Controls ON";
     remappingOnLabel.textColor = [UIColor redColor];
@@ -213,7 +218,7 @@ extern int SDL_SendKeyboardKey(int index, Uint8 state, SDL_scancode scancode);
     } disconnectedCallback:^{
         
     }];
-    
+    #endif
 }
 
 
@@ -575,87 +580,75 @@ extern int SDL_SendKeyboardKey(int index, Uint8 state, SDL_scancode scancode);
     }
 }
 
--(void) remapControlsButtonTapped:(id)sender {
-    remapControlsModeOn = !remapControlsModeOn;
-    remappingOnLabel.hidden = !remapControlsModeOn;
-    resetMappingsButton.hidden = !remapControlsModeOn;
-    
-    if ( remapControlsModeOn ) {
-        kbd.externKeyDelegate = self;
-    } else {
-        kbd.externKeyDelegate = nil;
-    }
+-(void) openMfiMapper:(id)sender
+{
+	// Sometimes we press too early before the emulator sets up
+	// configuration file.
+	if (![DOSPadEmulator sharedInstance].started)
+		return;
+		
+	if (_mfiMapper) {
+		[self.view bringSubviewToFront:_mfiMapper];
+		return;
+	}
+
+	[self addInputSourceExclusively:InputSource_PCKeyboard];
+	CGRect rect = self.view.bounds;
+	rect.size.height -= kbd.frame.size.height+4;
+	
+	CGFloat maxHeight = 400;
+	if (rect.size.height > maxHeight)
+	{
+		rect.origin.y += (rect.size.height - maxHeight)/2;
+		rect.size.height = maxHeight;
+	}
+
+	CGFloat maxWidth = rect.size.height * 2;
+	if (rect.size.width > maxWidth)
+	{
+		rect.origin.x = (rect.size.width-maxWidth)/2;
+		rect.size.width = maxWidth;
+	}
+
+	_mfiMapper = [[MfiGamepadMapperView alloc] initWithFrame:rect configuration:_mfiConfig];
+	[self.view addSubview:_mfiMapper];
+    kbd.externKeyDelegate = self;
+	_mfiMapper.delegate = self;
 }
 
--(void) refreshKeyMappingsInViews {
-    for (KeyView *keyView in kbd.keys) {
-        NSArray *mappedButtons = [self.keyMapper getControlsForMappedKey:keyView.code];
-        if ( mappedButtons.count > 0 ) {
-            NSMutableString *displayText = [NSMutableString string];
-            int index = 0;
-            for (NSNumber *button in mappedButtons) {
-                if ( index++ > 0 ) {
-                    [displayText appendString:@","];
-                }
-                [displayText appendString:[NSString stringWithFormat:@"%@",[KeyMapper controlToDisplayName:button.integerValue]]];
-            }
-            keyView.mappedKey = displayText;
-        } else {
-            keyView.mappedKey = @"";
-        }
-        [keyView setNeedsDisplay];
-    }
-}
+// MARK: MfiGamepadMapperDelegate
 
--(void) resetMappingsButtonTapped:(id)sender {
-    [self.keyMapper resetToDefaults];
-    [self refreshKeyMappingsInViews];    
-    [self.keyMapper saveKeyMapping];
-    [self.mfiInputHandler setupControllerInputsForController:[[GCController controllers] firstObject]];
+- (void)mfiGamepadMapperDidClose:(MfiGamepadMapperView *)mapper
+{
+	_mfiMapper = nil;
+	[self removeInputSource:InputSource_PCKeyboard];
 }
 
 # pragma - mark KeyDelegate
 -(void)onKeyDown:(KeyView*)k {
+	if (_mfiMapper && k.code > 0)
+	{
+		[_mfiMapper onKey:k.code pressed:YES];
+	}
 }
 
 -(void)onKeyUp:(KeyView*)k {
-    // show alert view
-    self.keyMapperAlertView = [[UIAlertView alloc] initWithTitle:@"Remap Key" message:[NSString stringWithFormat:@"Press a button to map the [%@] key",k.title] delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Unbind",nil];
-    self.keyMapperAlertView.tag = k.code;
-    [self.keyMapperAlertView show];
-    [self.mfiInputHandler startRemappingControlsForMfiControllerForKey:k.code];
-    
-    __weak __typeof(self) weakSelf = self;
-    
-    self.mfiInputHandler.dismiss = ^{
-        [weakSelf.keyMapperAlertView dismissWithClickedButtonIndex:0 animated:YES];
-        
-        [weakSelf.mfiInputHandler setupControllerInputsForController:[[GCController controllers] firstObject]];
-        [weakSelf.keyMapper saveKeyMapping];
-        [weakSelf refreshKeyMappingsInViews];
-    };
-    
+	if (_mfiMapper && k.code > 0)
+	{
+		[_mfiMapper onKey:k.code pressed:YES];
+	}	
 }
 
 -(void) onKeyFunction:(KeyView *)k {
-    [self refreshKeyMappingsInViews];
-}
-
-#pragma mark - UIAlertViewDelegate
-- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
-    if ( buttonIndex == 1 ) {
-        SDL_scancode mappedKey = (SDL_scancode)alertView.tag;
-        [self.keyMapper unmapKey:mappedKey];
-        [self.keyMapper saveKeyMapping];
-        [self refreshKeyMappingsInViews];
-        [self.mfiInputHandler setupControllerInputsForController:[[GCController controllers] firstObject]];
-    }
 }
 
 // MARK: DOSEmulatorDelegate
 
 - (void)emulatorWillStart:(DOSPadEmulator *)emulator
 {
+	_mfiConfig = [[MfiGamepadConfiguration alloc] initWithConfig:emulator.mfiConfigFile];
+	_mfiManager = [MfiGamepadManager defaultManager];
+	_mfiManager.delegate = self;
 }
 
 - (void)emulator:(DOSPadEmulator *)emulator saveScreenshot:(NSString *)path
@@ -706,6 +699,54 @@ extern int SDL_SendKeyboardKey(int index, Uint8 state, SDL_scancode scancode);
 - (void)documentPickerWasCancelled:(UIDocumentPickerViewController *)controller
 {
 	// Do nothing
+}
+
+// MARK: MfiGamepadManagerDelegate
+
+- (void)mfiButton:(MfiGamepadButtonIndex)buttonIndex pressed:(BOOL)pressed atPlayer:(NSInteger)playerIndex
+{
+	if (_mfiMapper)
+	{
+		[_mfiMapper onButton:buttonIndex pressed:pressed atPlayer:playerIndex];
+		return;
+	}
+
+	if (buttonIndex == MFI_GAMEPAD_BUTTON_A || buttonIndex == MFI_GAMEPAD_BUTTON_X)
+	{
+		if ([_mfiConfig isJoystickAtPlayer:playerIndex])
+		{
+			[[DOSPadEmulator sharedInstance] joystickButton:(buttonIndex == MFI_GAMEPAD_BUTTON_A?0:1)
+				pressed:pressed joystickIndex:playerIndex];
+			return;
+		}
+	}
+
+	int scancode = [_mfiConfig scancodeForButton:buttonIndex atPlayer:playerIndex];
+	if (scancode)
+	{
+		SDL_SendKeyboardKey( 0, pressed?SDL_PRESSED:SDL_RELEASED, scancode);
+	}
+}
+
+- (void)mfiJoystickMoveWithX:(float)x y:(float)y atPlayer:(NSInteger)playerIndex
+{
+	if (_mfiMapper)
+	{
+		[_mfiMapper onJoystickMoveWithX:x y:y atPlayer:playerIndex];
+		return;
+	}
+	if ([_mfiConfig isJoystickAtPlayer:playerIndex])
+	{
+		[[DOSPadEmulator sharedInstance] updateJoystick:playerIndex x:x y:y];
+	}
+}
+
+- (void)mfiDidUpdatePlayers
+{
+	NSLog(@"mfi did update players");
+	if (_mfiMapper) {
+		[_mfiMapper update];
+	}
 }
 
 

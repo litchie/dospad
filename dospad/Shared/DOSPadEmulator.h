@@ -31,6 +31,7 @@
 @property (strong) NSString *diskcDirectory;
 @property (readonly) NSString *dospadConfigFile;
 @property (readonly) NSString *uiConfigFile;
+@property (readonly) NSString *mfiConfigFile; // External Gamepad Configuration File
 @property (readonly) BOOL started;
 @property (strong) id<DOSPadEmulatorDelegate> delegate;
 
@@ -40,5 +41,7 @@
 - (void)start;
 - (void)takeScreenshot;
 - (void)sendCommand:(NSString *)cmd;
+- (void)updateJoystick:(NSInteger)index x:(float)x y:(float)y;
+- (void)joystickButton:(NSInteger)buttonIndex pressed:(BOOL)pressed joystickIndex:(NSInteger)index;
 
 @end
