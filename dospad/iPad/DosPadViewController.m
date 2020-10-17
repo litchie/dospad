@@ -533,7 +533,6 @@ static struct {
 {
     [super viewWillAppear:animated];
     [self updateUI];
-    //[vk becomeFirstResponder]; TODO Litchie commented out by tvd
 }
 
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.

@@ -50,10 +50,11 @@ char dospad_launch_section[256];
 extern int SDL_main(int argc, char *argv[]);
 static DOSPadEmulator* _sharedInstance;
 
+#define MAX_PENDING_KEY_EVENTS 1000
+
 @interface DOSPadEmulator ()
 {
     SDL_Joystick *_joystick[4];
-
 }
 @end
 
@@ -214,6 +215,18 @@ static DOSPadEmulator* _sharedInstance;
 	[NSThread sleepForTimeInterval:0.05];
 	SDL_SendKeyboardKey( 0, SDL_RELEASED, SDL_SCANCODE_RETURN);
   
+}
+
+- (void)sendKey:(int)scancode pressed:(BOOL)pressed
+{
+	SDL_SendKeyboardKey( 0, pressed?SDL_PRESSED:SDL_RELEASED, scancode);
+}
+
+- (void)sendKey:(int)scancode
+{
+	SDL_SendKeyboardKey( 0, SDL_PRESSED, scancode);
+    [NSThread sleepForTimeInterval:0.05]; // Very very important	
+	SDL_SendKeyboardKey( 0, SDL_RELEASED, scancode);
 }
 
 - (BOOL)ensureJoystick:(NSInteger)index

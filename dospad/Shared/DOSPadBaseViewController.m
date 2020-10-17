@@ -145,6 +145,12 @@ MfiGamepadMapperDelegate>
     screenView.alpha = 1; // Try to fix reboot problem on iPad 3.2.x
     dospad_resume();
     [self.navigationController setNavigationBarHidden:YES animated:NO];
+    
+    if (self.kbdspy)
+    {
+    	[self.kbdspy becomeFirstResponder];
+		[self.view bringSubviewToFront:self.kbdspy];
+	}
 }
 
 - (void)viewWillDisappear:(BOOL)animated
@@ -171,54 +177,13 @@ MfiGamepadMapperDelegate>
     //holdIndicator.transform = CGAffineTransformMakeScale(1.5, 1.5);
    // [self.view addSubview:holdIndicator];
     
-    /* TODO: LITCHIE commented out by TVD
-    vk = [[VKView alloc] initWithFrame:CGRectMake(0,0,1,1)];
-    vk.alpha = 0;
-    [self.view addSubview:vk];
-     */
+#ifdef APPSTORE
+    // For non appstore builds, we should use private API to support
+    // external keyboard.
+    self.kbdspy = [[KeyboardSpy alloc] initWithFrame:CGRectMake(0,0,60,40)];
+    [self.view addSubview:self.kbdspy];
+#endif
     
-    //---------------------------------------------------
-    // Remap controls
-    //---------------------------------------------------
-    #if 0
-    remappingOnLabel = [[UILabel alloc] initWithFrame:CGRectZero];
-    remappingOnLabel.text = @"Remapping Controls ON";
-    remappingOnLabel.textColor = [UIColor redColor];
-    remappingOnLabel.translatesAutoresizingMaskIntoConstraints = NO;
-    [self.view addSubview:remappingOnLabel];
-    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:remappingOnLabel attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeCenterX multiplier:1.0f constant:0.0f]];
-    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:remappingOnLabel attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeCenterY multiplier:0.5f constant:0.0f]];
-    remappingOnLabel.backgroundColor = [UIColor blackColor];
-    remappingOnLabel.alpha = 0.6f;
-    remappingOnLabel.hidden = YES;
-    
-    resetMappingsButton = [[UIButton alloc] initWithFrame:CGRectZero];
-    [resetMappingsButton setTitle:@"Reset Mappings" forState:UIControlStateNormal];
-    [resetMappingsButton setTitleColor:[UIColor redColor] forState:UIControlStateNormal];
-    [resetMappingsButton setTintColor:[UIColor redColor]];
-    resetMappingsButton.translatesAutoresizingMaskIntoConstraints = NO;
-    [resetMappingsButton addTarget:self action:@selector(resetMappingsButtonTapped:) forControlEvents:UIControlEventTouchUpInside];
-    [self.view addSubview:resetMappingsButton];
-    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:resetMappingsButton attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeCenterX multiplier:1.0f constant:0.0f]];
-    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:resetMappingsButton attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeCenterY multiplier:0.75f constant:0.0f]];
-    resetMappingsButton.contentEdgeInsets = UIEdgeInsetsMake(4.0f, 10.0f, 4.0f, 10.0f);
-    resetMappingsButton.backgroundColor = [UIColor blackColor];
-    resetMappingsButton.alpha = 0.6f;
-    resetMappingsButton.layer.borderWidth = 1.0f;
-    resetMappingsButton.layer.borderColor = [[UIColor redColor] CGColor];
-    resetMappingsButton.hidden = YES;
-    
-    self.keyMapper = [[KeyMapper alloc] init];
-    [self.keyMapper loadFromDefaults];
-    self.mfiHandler = [[MfiGameControllerHandler alloc] init];
-    self.mfiInputHandler = [[MfiControllerInputHandler alloc] init];
-    self.mfiInputHandler.keyMapper = self.keyMapper;
-    [self.mfiHandler discoverController:^(GCController *gameController) {
-        [self.mfiInputHandler setupControllerInputsForController:gameController];
-    } disconnectedCallback:^{
-        
-    }];
-    #endif
 }
 
 
@@ -250,9 +215,6 @@ MfiGamepadMapperDelegate>
 
 - (void)dealloc {
     [self removeAllInputSources];
-    
-    //TODO LITCHIE commented out by TVD
-    //[vk release];
 }
 
 - (void)onLaunchExit
@@ -411,30 +373,6 @@ MfiGamepadMapperDelegate>
 	return YES;
 }
 
-- (void)removeiOSKeyboard
-{
-    //TODO: Litchie commented out by tvd
-    /*
-    if (vk.useNativeKeyboard != YES)
-        return;
-    // Hide the virtual native keyboard
-    // However, we are still listening to external keyboard input
-    vk.active = NO;
-    vk.useNativeKeyboard=NO;
-    vk.active = YES;
-     */
-}
-
-- (void)createiOSKeyboard
-{
-    //TODO: Litchie commented out by tvd
-    /*
-    if (vk.active)
-        vk.active = NO;
-    vk.useNativeKeyboard = YES;
-    vk.active = YES;*/
-}
-
 - (void)NOT_IMPLEMENTED(createPCKeyboard);
 - (void)NOT_IMPLEMENTED(createNumpad);
 - (void)NOT_IMPLEMENTED(createGamepad);
@@ -529,11 +467,6 @@ MfiGamepadMapperDelegate>
                 [kbd removeFromSuperview];
                 kbd = nil;
             }
-            break;
-        }
-        case InputSource_iOSKeyboard:
-        {
-            [self removeiOSKeyboard];
             break;
         }
         case InputSource_GamePad:

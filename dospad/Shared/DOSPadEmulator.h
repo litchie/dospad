@@ -43,5 +43,7 @@
 - (void)sendCommand:(NSString *)cmd;
 - (void)updateJoystick:(NSInteger)index x:(float)x y:(float)y;
 - (void)joystickButton:(NSInteger)buttonIndex pressed:(BOOL)pressed joystickIndex:(NSInteger)index;
+- (void)sendKey:(int)scancode pressed:(BOOL)pressed;
+- (void)sendKey:(int)scancode;
 
 @end

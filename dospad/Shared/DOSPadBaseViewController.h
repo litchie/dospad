@@ -25,11 +25,11 @@
 #import "GamePadView.h"
 #import "PianoKeyboard.h"
 #import "DOSPadEmulator.h"
+#import "KeyboardSpy.h"
 
 typedef enum {
     InputSource_PCKeyboard = 0,
     InputSource_MouseButtons,
-    InputSource_iOSKeyboard,
     InputSource_NumPad,
     InputSource_GamePad,
     InputSource_Joystick,
@@ -51,8 +51,6 @@ typedef enum {
     SDL_uikitopenglview *screenView;
     HoldIndicator *holdIndicator;
     
-    // Input Devices
-    //VKView *vk; // Background, conflicts with iOS keyboard
     GamePadView *gamepad;
     GamePadView *joystick;
     KeyboardView *kbd;
@@ -64,6 +62,7 @@ typedef enum {
 
 @property (nonatomic, assign) BOOL autoExit;
 @property (nonatomic, strong) SDL_uikitopenglview *screenView;
+@property (nonatomic, strong) KeyboardSpy *kbdspy;
 
 + (DOSPadBaseViewController*)dospadController;
 

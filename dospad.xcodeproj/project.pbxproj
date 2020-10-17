@@ -56,6 +56,7 @@
 		2A4546F917D2809F00D18563 /* CoreMIDI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E7F2A9CD12CD99EC0091B859 /* CoreMIDI.framework */; };
 		2A4546FA17D2812100D18563 /* PianoKeyboard.m in Sources */ = {isa = PBXBuildFile; fileRef = E794F3FE12DB4F0E00427836 /* PianoKeyboard.m */; };
 		9222DD561CC44A9F00B321B9 /* GameController.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9222DD551CC44A9F00B321B9 /* GameController.framework */; };
+		E70836B92539EEB200B9321F /* KeyboardSpy.m in Sources */ = {isa = PBXBuildFile; fileRef = E70836B82539EEB200B9321F /* KeyboardSpy.m */; };
 		E70C044112A4B43F00AC178F /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E70C044012A4B43F00AC178F /* AVFoundation.framework */; };
 		E7107154129A8E5A00B21291 /* cpuwindow.png in Resources */ = {isa = PBXBuildFile; fileRef = E7107147129A8E5A00B21291 /* cpuwindow.png */; };
 		E7107155129A8E5A00B21291 /* exitfull.png in Resources */ = {isa = PBXBuildFile; fileRef = E7107148129A8E5A00B21291 /* exitfull.png */; };
@@ -384,7 +385,6 @@
 		E778B2CB123919ED008AF49A /* SDLnetsys.h in Headers */ = {isa = PBXBuildFile; fileRef = E778B2C5123919ED008AF49A /* SDLnetsys.h */; };
 		E778B2CC123919ED008AF49A /* SDLnetTCP.c in Sources */ = {isa = PBXBuildFile; fileRef = E778B2C6123919ED008AF49A /* SDLnetTCP.c */; };
 		E778B2CD123919ED008AF49A /* SDLnetUDP.c in Sources */ = {isa = PBXBuildFile; fileRef = E778B2C7123919ED008AF49A /* SDLnetUDP.c */; };
-		E7A01EE51CC927760036A4CF /* UIExtendedTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = E7A01EE11CC927370036A4CF /* UIExtendedTextField.m */; };
 		E7A01EE71CC9277E0036A4CF /* ColorTheme.m in Sources */ = {isa = PBXBuildFile; fileRef = E7A01EDD1CC927370036A4CF /* ColorTheme.m */; };
 		E7A01EF41CC9A5480036A4CF /* CoreAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FDB9E40C0DEB81970027A75A /* CoreAudio.framework */; };
 		E7A01EF71CC9C1AB0036A4CF /* gift.png in Resources */ = {isa = PBXBuildFile; fileRef = E7A01EE81CC92F0C0036A4CF /* gift.png */; };
@@ -447,7 +447,6 @@
 		E7BE12FC128BF31A0046990B /* FloatingView.m in Sources */ = {isa = PBXBuildFile; fileRef = E799706312422D6800502015 /* FloatingView.m */; };
 		E7BE12FD128BF31A0046990B /* SliderView.m in Sources */ = {isa = PBXBuildFile; fileRef = E70EA4111242F83200528C9D /* SliderView.m */; };
 		E7BE12FF128BF31A0046990B /* GamePadView.m in Sources */ = {isa = PBXBuildFile; fileRef = E7A94CDC127D68B7006509E1 /* GamePadView.m */; };
-		E7BE1301128BF31A0046990B /* VKView.m in Sources */ = {isa = PBXBuildFile; fileRef = E723F0C51286A1680009E3DA /* VKView.m */; };
 		E7BE1305128BF31A0046990B /* libSDLiPhoneOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FD6526630DE8FCCB002AD96B /* libSDLiPhoneOS.a */; };
 		E7BE1306128BF31A0046990B /* libdosbox.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E71E60EB11B5506800EC5A05 /* libdosbox.a */; };
 		E7BE1307128BF31A0046990B /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D3623EB0D0F72F000981E51 /* CoreGraphics.framework */; };
@@ -711,6 +710,8 @@
 		1D3623EB0D0F72F000981E51 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		1DF5F4DF0D08C38300B7A737 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		9222DD551CC44A9F00B321B9 /* GameController.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GameController.framework; path = System/Library/Frameworks/GameController.framework; sourceTree = SDKROOT; };
+		E70836B72539EEB200B9321F /* KeyboardSpy.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = KeyboardSpy.h; sourceTree = "<group>"; };
+		E70836B82539EEB200B9321F /* KeyboardSpy.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = KeyboardSpy.m; sourceTree = "<group>"; };
 		E70C044012A4B43F00AC178F /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		E70EA4101242F83200528C9D /* SliderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SliderView.h; path = ../iPad/SliderView.h; sourceTree = "<group>"; };
 		E70EA4111242F83200528C9D /* SliderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SliderView.m; path = ../iPad/SliderView.m; sourceTree = "<group>"; };
@@ -982,8 +983,6 @@
 		E71E61F511B550FD00EC5A05 /* shell_batch.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = shell_batch.cpp; sourceTree = "<group>"; };
 		E71E61F611B550FD00EC5A05 /* shell_cmds.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = shell_cmds.cpp; sourceTree = "<group>"; };
 		E71E61F711B550FD00EC5A05 /* shell_misc.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = shell_misc.cpp; sourceTree = "<group>"; };
-		E723F0C41286A1680009E3DA /* VKView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VKView.h; sourceTree = "<group>"; };
-		E723F0C51286A1680009E3DA /* VKView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VKView.m; sourceTree = "<group>"; };
 		E729BDF0129B506E002B05B2 /* cpuwindow~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cpuwindow~ipad.png"; sourceTree = "<group>"; };
 		E729BDF1129B506E002B05B2 /* exitfull~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "exitfull~ipad.png"; sourceTree = "<group>"; };
 		E729BDF2129B506E002B05B2 /* modejoy~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "modejoy~ipad.png"; sourceTree = "<group>"; };
@@ -1115,8 +1114,6 @@
 		E79E4A0011EC6BF400DEAA7B /* libc.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libc.dylib; path = usr/lib/libc.dylib; sourceTree = SDKROOT; };
 		E7A01EDC1CC927370036A4CF /* ColorTheme.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ColorTheme.h; path = Shared/ColorTheme.h; sourceTree = "<group>"; };
 		E7A01EDD1CC927370036A4CF /* ColorTheme.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ColorTheme.m; path = Shared/ColorTheme.m; sourceTree = "<group>"; };
-		E7A01EE01CC927370036A4CF /* UIExtendedTextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UIExtendedTextField.h; sourceTree = "<group>"; };
-		E7A01EE11CC927370036A4CF /* UIExtendedTextField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UIExtendedTextField.m; sourceTree = "<group>"; };
 		E7A01EE81CC92F0C0036A4CF /* gift.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = gift.png; path = "misc-res/gift.png"; sourceTree = "<group>"; };
 		E7A01EE91CC92F0C0036A4CF /* kbd.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = kbd.png; path = "misc-res/kbd.png"; sourceTree = "<group>"; };
 		E7A01EF01CC92F450036A4CF /* button.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = button.png; path = "gamepad-res/button.png"; sourceTree = "<group>"; };
@@ -2061,8 +2058,6 @@
 				E7D214C511E45BD000D9654E /* keys.h */,
 				E7D214C711E45BDE00D9654E /* keys.m */,
 				E77DAFC411B5D83600B78E69 /* main.m */,
-				E7A01EE01CC927370036A4CF /* UIExtendedTextField.h */,
-				E7A01EE11CC927370036A4CF /* UIExtendedTextField.m */,
 				E73A56692534979900E3B3FB /* MfiGamepadConfiguration.h */,
 				E73A566A2534979900E3B3FB /* MfiGamepadConfiguration.m */,
 				E73A566C2534A49000E3B3FB /* MfiGamepadManager.h */,
@@ -2196,8 +2191,8 @@
 				E70EA4111242F83200528C9D /* SliderView.m */,
 				E7996FAB1241C0A800502015 /* TipView.h */,
 				E7996FAC1241C0A800502015 /* TipView.m */,
-				E723F0C41286A1680009E3DA /* VKView.h */,
-				E723F0C51286A1680009E3DA /* VKView.m */,
+				E70836B72539EEB200B9321F /* KeyboardSpy.h */,
+				E70836B82539EEB200B9321F /* KeyboardSpy.m */,
 			);
 			name = Views;
 			path = Shared;
@@ -3308,7 +3303,6 @@
 				E7BE12EA128BF31A0046990B /* DosPadViewController.m in Sources */,
 				E7BE12EB128BF31A0046990B /* main.m in Sources */,
 				E7BE12F3128BF31A0046990B /* keys.m in Sources */,
-				E7A01EE51CC927760036A4CF /* UIExtendedTextField.m in Sources */,
 				E7BE12F6128BF31A0046990B /* HoldIndicator.m in Sources */,
 				E73A566B2534979900E3B3FB /* MfiGamepadConfiguration.m in Sources */,
 				E7BE12F7128BF31A0046990B /* FrameskipIndicator.m in Sources */,
@@ -3319,7 +3313,6 @@
 				E7BE12FC128BF31A0046990B /* FloatingView.m in Sources */,
 				E7BE12FD128BF31A0046990B /* SliderView.m in Sources */,
 				E7BE12FF128BF31A0046990B /* GamePadView.m in Sources */,
-				E7BE1301128BF31A0046990B /* VKView.m in Sources */,
 				E7EF4372128FCE470014D060 /* AlertPrompt.m in Sources */,
 				E72BE69712911096009DC46A /* DosPadViewController_iPhone.m in Sources */,
 				E7A01EE71CC9277E0036A4CF /* ColorTheme.m in Sources */,
@@ -3333,6 +3326,7 @@
 				E72BE6EF12911B5C009DC46A /* ZipArchive.m in Sources */,
 				E715B35B1293B7750098D437 /* DOSPadBaseViewController.m in Sources */,
 				E76C49381299490200901B69 /* FloatPanel.m in Sources */,
+				E70836B92539EEB200B9321F /* KeyboardSpy.m in Sources */,
 				E74BB2B715C93DBC005EC552 /* DosPadUIApplication.m in Sources */,
 				2A4546FA17D2812100D18563 /* PianoKeyboard.m in Sources */,
 			);
@@ -3808,6 +3802,7 @@
 					DEBUG,
 					IDOS,
 					IPHONEOS,
+					APPSTORE,
 				);
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				INFOPLIST_FILE = "Resources/iDOS-Info.plist";
