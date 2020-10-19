@@ -3807,7 +3807,7 @@
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				INFOPLIST_FILE = "Resources/iDOS-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
-				MARKETING_VERSION = 2.0.1;
+				MARKETING_VERSION = 2.1;
 				OTHER_LDFLAGS = (
 					"-framework",
 					Foundation,
@@ -3839,7 +3839,7 @@
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				INFOPLIST_FILE = "Resources/iDOS-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
-				MARKETING_VERSION = 2.0.1;
+				MARKETING_VERSION = 2.1;
 				OTHER_LDFLAGS = (
 					"-framework",
 					Foundation,
@@ -3987,7 +3987,7 @@
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				INFOPLIST_FILE = "Resources/iDOS-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
-				MARKETING_VERSION = 2.0.1;
+				MARKETING_VERSION = 2.1;
 				OTHER_LDFLAGS = (
 					"-framework",
 					Foundation,

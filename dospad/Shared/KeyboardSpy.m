@@ -94,6 +94,7 @@
 		@"F12": @(SDL_SCANCODE_F12),
 		@"ALT": @(SDL_SCANCODE_LALT),
 		@"CTRL": @(SDL_SCANCODE_LCTRL),
+		@"ESC": @(SDL_SCANCODE_ESCAPE),
 	}];
 	
 	// For text selection in dos programs
@@ -141,6 +142,7 @@
 	// and we won't get those key commands.
 	// Therefore we provide an alternative way to generate function
 	// keys.
+	[self registerCommandPrefix:@"`" title:@"ESC"];
 	[self registerCommandPrefix:@"1" title:@"F1"];
 	[self registerCommandPrefix:@"2" title:@"F2"];
 	[self registerCommandPrefix:@"3" title:@"F3"];
@@ -151,6 +153,8 @@
 	[self registerCommandPrefix:@"8" title:@"F8"];
 	[self registerCommandPrefix:@"9" title:@"F9"];
 	[self registerCommandPrefix:@"0" title:@"F10"];
+	[self registerCommandPrefix:@"-" title:@"F11"];
+	[self registerCommandPrefix:@"=" title:@"F12"];
 	[self registerCommandPrefix:@"c" title:@"CTRL"];
 	[self registerCommandPrefix:@"x" title:@"ALT"];
 	return self;
