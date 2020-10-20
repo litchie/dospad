@@ -251,7 +251,7 @@ static struct {
 
     // Remap controls button
     UIButton *btnRemap = [[UIButton alloc] initWithFrame:CGRectMake(0,0,72,36)];
-    [btnRemap setTitle:@"R" forState:UIControlStateNormal];
+    [btnRemap setImage:[UIImage imageNamed:@"ic_bluetooth_white_18pt"] forState:UIControlStateNormal];
     [btnRemap addTarget:self action:@selector(openMfiMapper:) forControlEvents:UIControlEventTouchUpInside];
     [items addObject:btnRemap];
     
