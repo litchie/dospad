@@ -682,5 +682,9 @@ MfiGamepadMapperDelegate>
 	}
 }
 
+- (BOOL)prefersHomeIndicatorAutoHidden
+{
+	return YES;
+}
 
 @end
