@@ -370,8 +370,12 @@ static struct {
 	}
 	else
 	{
-		[self putScreen:CGRectMake(viewRect.origin.x, viewRect.origin.y,
-		 viewRect.size.width, shouldShrinkScreen ? viewRect.size.height-160 : viewRect.size.height)];
+		if (shouldShrinkScreen) {
+			[self putScreen:CGRectMake(viewRect.origin.x, viewRect.origin.y,
+				 viewRect.size.width, viewRect.size.height-160)];
+		} else {
+			[self fillScreen:viewRect];
+		}
 	}
 }
 
