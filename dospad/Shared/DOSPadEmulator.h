@@ -30,6 +30,7 @@
 
 @property (strong) NSString *diskcDirectory;
 @property (readonly) NSString *dospadConfigFile;
+@property (readonly) NSString *gamepadConfigFile;
 @property (readonly) NSString *uiConfigFile;
 @property (readonly) NSString *mfiConfigFile; // External Gamepad Configuration File
 @property (readonly) BOOL started;
@@ -40,6 +41,7 @@
 
 - (void)start;
 - (void)takeScreenshot;
+- (void)sendText:(NSString *)text;
 - (void)sendCommand:(NSString *)cmd;
 - (void)updateJoystick:(NSInteger)index x:(float)x y:(float)y;
 - (void)joystickButton:(NSInteger)buttonIndex pressed:(BOOL)pressed joystickIndex:(NSInteger)index;

@@ -15,3 +15,9 @@ The package is actually a folder, and will be mounted as disk c.
 The package should include a dospad.cfg with all dosbox settings.
 
 If the package contains a `cover.png` or `scrnshot.png`, it will be used to generate thumbnails for Files app.
+
+## License
+
+All the source code is released under GPLv2. See `LICENSE`.
+
+All assets, including images and audios, are copyrighted and provided for your personal use only. Do not redistribute without a written permission.

@@ -30,6 +30,8 @@
 #import "Common.h"
 #import "keys.h"
 #include "SDL.h"
+#import "SDL_keyboard_c.h"
+#import "keyinfotable.h"
 
 extern int SDL_PrivateJoystickButton(SDL_Joystick * joystick, Uint8 button, Uint8 state);
 extern int SDL_PrivateJoystickAxis(SDL_Joystick * joystick, Uint8 axis, Sint16 value);
@@ -119,6 +121,11 @@ static DOSPadEmulator* _sharedInstance;
 		[fm copyItemAtPath:[bundleConfigs stringByAppendingPathComponent:@"mfi.cfg"]
 			toPath:_mfiConfigFile error:nil];
 	}
+	_gamepadConfigFile = [configDir stringByAppendingPathComponent:@"gamepad.cfg"];
+	if (![fm fileExistsAtPath:_gamepadConfigFile]) {
+		[fm copyItemAtPath:[bundleConfigs stringByAppendingPathComponent:@"gamepad.cfg"]
+			toPath:_gamepadConfigFile error:nil];
+	}
 }
 
 - (id)init
@@ -189,32 +196,43 @@ static DOSPadEmulator* _sharedInstance;
 
 - (void)sendCommand:(NSString *)cmd
 {
-    if (cmd == nil) return;
-    const char *p = [cmd UTF8String];
-    while (*p!=0)
-    {
-        int ch = *p;
-        int shift=0;
-        int code=get_scancode_for_char(ch, &shift);
-        if (code >= 0) {
-            if (shift)
-                SDL_SendKeyboardKey( 0, SDL_PRESSED, SDL_SCANCODE_LSHIFT);
-            
-            SDL_SendKeyboardKey( 0, SDL_PRESSED, code);
-            [NSThread sleepForTimeInterval:0.05];
-            SDL_SendKeyboardKey( 0, SDL_RELEASED, code);
-            if (shift)
-                SDL_SendKeyboardKey( 0, SDL_RELEASED, SDL_SCANCODE_LSHIFT);
-            
-        } else {
-            break;
-        }
-        p++;
-    }
-	SDL_SendKeyboardKey( 0, SDL_PRESSED, SDL_SCANCODE_RETURN);
-	[NSThread sleepForTimeInterval:0.05];
-	SDL_SendKeyboardKey( 0, SDL_RELEASED, SDL_SCANCODE_RETURN);
-  
+    for (int i = 0; i < cmd.length; i++)
+    	[self sendChar:[cmd characterAtIndex:i]];
+	[self sendKey:SDL_SCANCODE_RETURN];
+}
+
+- (void)sendText:(NSString *)text
+{
+    for (int i = 0; i < text.length; i++)
+    	[self sendChar:[text characterAtIndex:i]];
+}
+
+- (void)sendChar:(unichar)c
+{
+	Uint16 mod = 0;
+	SDL_scancode code;
+	
+	if (c < 127) {
+		/* figure out the SDL_scancode and SDL_keymod for this unichar */
+		code = unicharToUIKeyInfoTable[c].code;
+		mod  = unicharToUIKeyInfoTable[c].mod;
+	}
+	else {
+		/* we only deal with ASCII right now */
+		code = SDL_SCANCODE_UNKNOWN;
+		mod = 0;
+	}
+	
+	if (mod & KMOD_SHIFT) {
+		/* If character uses shift, press shift down */
+		SDL_SendKeyboardKey( 0, SDL_PRESSED, SDL_SCANCODE_LSHIFT);
+	}
+	/* send a keydown and keyup even for the character */
+	[self sendKey:code];
+	if (mod & KMOD_SHIFT) {
+		/* If character uses shift, press shift back up */
+		SDL_SendKeyboardKey( 0, SDL_RELEASED, SDL_SCANCODE_LSHIFT);
+	}
 }
 
 - (void)sendKey:(int)scancode pressed:(BOOL)pressed

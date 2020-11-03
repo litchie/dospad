@@ -90,7 +90,9 @@ typedef enum {
 - (void)createJoystick;
 - (void)createMouseButtons;
 - (void)createPianoKeyboard;
+- (void)fillScreen:(CGRect)availRect;
 - (CGRect)putScreen:(CGRect)availRect;
+
 -(void)updateFrameskip:(NSNumber*)skip;
 -(void)updateCpuCycles:(NSString*)title;
 - (void)updateScreen;

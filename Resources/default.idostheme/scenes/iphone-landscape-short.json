@@ -1,0 +1,26 @@
+{
+    "name": "iphone-landscape-medium",
+    "width": 1600,
+    "height": 900,
+    "gamepad": "gamepad-landscape-short",
+    "nodes": [
+        {
+            "type": "screen",
+            "frame": [
+                0,
+                0,
+                1600,
+                900
+            ]
+        },
+        {
+            "type": "landbar",
+            "frame": [
+                320,
+                0,
+                960,
+                64
+            ]
+        }
+    ]
+}

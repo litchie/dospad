@@ -1,6 +1,5 @@
 //
 //  UIViewController+AlertViewController.m
-//  TeX Writer
 //
 //  Created by Chaoji Li on 05/11/2017.
 //  Copyright © 2017 Chaoji Li. All rights reserved.
@@ -106,7 +105,7 @@
       {
         NSArray * textfields = alertController.textFields;
         UITextField * namefield = textfields[0];
-        completion([self trimString:namefield.text]);
+        completion(namefield.text);
     }]];
     
 	// Add CANCEL action

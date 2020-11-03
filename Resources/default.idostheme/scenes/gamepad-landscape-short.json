@@ -1,0 +1,130 @@
+{
+    "name": "gamepad",
+    "width": 480,
+    "height": 200,
+    "nodes": [
+        {
+            "type": "gamepad-dpad",
+            "frame": [
+                12,
+                52,
+                136,
+                136
+            ],
+            "arrow": "assets/dpad-button.png",
+            "arrow-pressed": "assets/dpad-button-pressed.png"
+        },
+        {
+            "type": "gamepad-joystick",
+            "frame": [
+                12,
+                52,
+                136,
+                136
+            ],
+            "hidden": true,
+            "shape": "circle",
+            "hat": "assets/joystick-hat.png"
+        },
+        {
+            "type": "gamepad-button",
+            "frame": [
+                4,
+                2,
+                72,
+                36
+            ],
+            "id": "button-l2",
+            "bg": "assets/gamepad-top-button.png",
+            "bg-pressed": "assets/gamepad-top-button-pressed.png"
+        },
+        {
+            "type": "gamepad-button",
+            "frame": [
+                94,
+                2,
+                72,
+                36
+            ],
+            "id": "button-l1",
+            "bg": "assets/gamepad-top-button.png",
+            "bg-pressed": "assets/gamepad-top-button-pressed.png"
+        },
+        {
+            "type": "gamepad-button",
+            "frame": [
+                324,
+                2,
+                72,
+                36
+            ],
+            "id": "button-r1",
+            "bg": "assets/gamepad-top-button.png",
+            "bg-pressed": "assets/gamepad-top-button-pressed.png"
+        },
+        {
+            "type": "gamepad-button",
+            "frame": [
+                404,
+                2,
+                72,
+                36
+            ],
+            "id": "button-r2",
+            "bg": "assets/gamepad-top-button.png",
+            "bg-pressed": "assets/gamepad-top-button-pressed.png"
+        },
+        {
+            "type": "gamepad-button",
+            "frame": [
+                373,
+                53,
+                54,
+                54
+            ],
+            "shape": "circle",
+            "id": "button-y",
+            "bg": "assets/gamepad-action-button.png",
+            "bg-pressed": "assets/gamepad-action-button-pressed.png"
+        },
+        {
+            "type": "gamepad-button",
+            "frame": [
+                333,
+                93,
+                54,
+                54
+            ],
+            "id": "button-x",
+            "shape": "circle",
+            "bg": "assets/gamepad-action-button.png",
+            "bg-pressed": "assets/gamepad-action-button-pressed.png"
+        },
+        {
+            "type": "gamepad-button",
+            "frame": [
+                373,
+                133,
+                54,
+                54
+            ],
+            "id": "button-a",
+            "shape": "circle",
+            "bg": "assets/gamepad-action-button.png",
+            "bg-pressed": "assets/gamepad-action-button-pressed.png"
+        },
+        {
+            "type": "gamepad-button",
+            "frame": [
+                413,
+                93,
+                54,
+                54
+            ],
+            "id": "button-b",
+            "bg": "assets/gamepad-action-button.png",
+            "shape": "circle",
+            "bg-pressed": "assets/gamepad-action-button-pressed.png"
+        }
+    ]
+}

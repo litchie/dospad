@@ -92,6 +92,8 @@
 		E7123FEF129D0D470021237F /* glass-southwest.png in Resources */ = {isa = PBXBuildFile; fileRef = E7123FDC129D0D470021237F /* glass-southwest.png */; };
 		E7123FF1129D0D470021237F /* glass-west.png in Resources */ = {isa = PBXBuildFile; fileRef = E7123FDE129D0D470021237F /* glass-west.png */; };
 		E715B35B1293B7750098D437 /* DOSPadBaseViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E715B35A1293B7750098D437 /* DOSPadBaseViewController.m */; };
+		E71706D2254643AD000AF482 /* DPTheme.m in Sources */ = {isa = PBXBuildFile; fileRef = E71706D1254643AC000AF482 /* DPTheme.m */; };
+		E71706DC25472C20000AF482 /* DPThemeScene.m in Sources */ = {isa = PBXBuildFile; fileRef = E71706DB25472C20000AF482 /* DPThemeScene.m */; };
 		E71A268E129A1B2D0013D51C /* landbariphon.png in Resources */ = {isa = PBXBuildFile; fileRef = E71A268C129A1B2D0013D51C /* landbariphon.png */; };
 		E71A268F129A1B2D0013D51C /* landbariphon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E71A268D129A1B2D0013D51C /* landbariphon@2x.png */; };
 		E71E61F811B550FD00EC5A05 /* config.h in Headers */ = {isa = PBXBuildFile; fileRef = E71E60F311B550FD00EC5A05 /* config.h */; };
@@ -385,6 +387,10 @@
 		E778B2CB123919ED008AF49A /* SDLnetsys.h in Headers */ = {isa = PBXBuildFile; fileRef = E778B2C5123919ED008AF49A /* SDLnetsys.h */; };
 		E778B2CC123919ED008AF49A /* SDLnetTCP.c in Sources */ = {isa = PBXBuildFile; fileRef = E778B2C6123919ED008AF49A /* SDLnetTCP.c */; };
 		E778B2CD123919ED008AF49A /* SDLnetUDP.c in Sources */ = {isa = PBXBuildFile; fileRef = E778B2C7123919ED008AF49A /* SDLnetUDP.c */; };
+		E77E08532548007C00B5B11D /* default.idostheme in Resources */ = {isa = PBXBuildFile; fileRef = E77E08522548007C00B5B11D /* default.idostheme */; };
+		E77E085E2549126900B5B11D /* DPGamepad.m in Sources */ = {isa = PBXBuildFile; fileRef = E77E085C2549126700B5B11D /* DPGamepad.m */; };
+		E77E08702549265F00B5B11D /* DPThemeSceneView.m in Sources */ = {isa = PBXBuildFile; fileRef = E77E086F2549265F00B5B11D /* DPThemeSceneView.m */; };
+		E77E0881254C080500B5B11D /* UIColor+hexColor.m in Sources */ = {isa = PBXBuildFile; fileRef = E77E087F254C080300B5B11D /* UIColor+hexColor.m */; };
 		E7A01EE71CC9277E0036A4CF /* ColorTheme.m in Sources */ = {isa = PBXBuildFile; fileRef = E7A01EDD1CC927370036A4CF /* ColorTheme.m */; };
 		E7A01EF41CC9A5480036A4CF /* CoreAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FDB9E40C0DEB81970027A75A /* CoreAudio.framework */; };
 		E7A01EF71CC9C1AB0036A4CF /* gift.png in Resources */ = {isa = PBXBuildFile; fileRef = E7A01EE81CC92F0C0036A4CF /* gift.png */; };
@@ -488,6 +494,10 @@
 		E7E30FEF251E34D20021D10D /* saa1099.h in Headers */ = {isa = PBXBuildFile; fileRef = E7E30FE9251E34D10021D10D /* saa1099.h */; };
 		E7EB354812A7C4320091D718 /* exitfull@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E7EB354712A7C4320091D718 /* exitfull@2x.png */; };
 		E7EF4372128FCE470014D060 /* AlertPrompt.m in Sources */ = {isa = PBXBuildFile; fileRef = E73A211F128EC1F5001FA168 /* AlertPrompt.m */; };
+		E7FDFB23254E6AF200A6DE66 /* DPGamepadButtonEditor.m in Sources */ = {isa = PBXBuildFile; fileRef = E7FDFB22254E6AF200A6DE66 /* DPGamepadButtonEditor.m */; };
+		E7FDFB42254E6EEE00A6DE66 /* DPKeyBinding.m in Sources */ = {isa = PBXBuildFile; fileRef = E7FDFB41254E6EEE00A6DE66 /* DPKeyBinding.m */; };
+		E7FDFB5A254EBD5800A6DE66 /* DPGamepadConfiguration.m in Sources */ = {isa = PBXBuildFile; fileRef = E7FDFB59254EBD5800A6DE66 /* DPGamepadConfiguration.m */; };
+		E7FDFB6A255150DA00A6DE66 /* SoundEffect.m in Sources */ = {isa = PBXBuildFile; fileRef = E7FDFB69255150DA00A6DE66 /* SoundEffect.m */; };
 		FD3F495C0DEA5B2100C5B771 /* begin_code.h in Headers */ = {isa = PBXBuildFile; fileRef = FD99B8CC0DD52EB400FB1D6B /* begin_code.h */; settings = {ATTRIBUTES = (); }; };
 		FD3F495D0DEA5B2100C5B771 /* close_code.h in Headers */ = {isa = PBXBuildFile; fileRef = FD99B8CD0DD52EB400FB1D6B /* close_code.h */; settings = {ATTRIBUTES = (); }; };
 		FD3F495F0DEA5B2100C5B771 /* SDL_audio.h in Headers */ = {isa = PBXBuildFile; fileRef = FD99B8CF0DD52EB400FB1D6B /* SDL_audio.h */; settings = {ATTRIBUTES = (); }; };
@@ -750,6 +760,10 @@
 		E7123FDE129D0D470021237F /* glass-west.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "glass-west.png"; sourceTree = "<group>"; };
 		E715B3591293B7740098D437 /* DOSPadBaseViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DOSPadBaseViewController.h; path = Shared/DOSPadBaseViewController.h; sourceTree = "<group>"; };
 		E715B35A1293B7750098D437 /* DOSPadBaseViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DOSPadBaseViewController.m; path = Shared/DOSPadBaseViewController.m; sourceTree = "<group>"; };
+		E71706D0254643AC000AF482 /* DPTheme.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DPTheme.h; sourceTree = "<group>"; };
+		E71706D1254643AC000AF482 /* DPTheme.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DPTheme.m; sourceTree = "<group>"; };
+		E71706DA25472C20000AF482 /* DPThemeScene.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DPThemeScene.h; sourceTree = "<group>"; };
+		E71706DB25472C20000AF482 /* DPThemeScene.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DPThemeScene.m; sourceTree = "<group>"; };
 		E71A268C129A1B2D0013D51C /* landbariphon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = landbariphon.png; path = "misc-res/landbariphon.png"; sourceTree = "<group>"; };
 		E71A268D129A1B2D0013D51C /* landbariphon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "landbariphon@2x.png"; path = "misc-res/landbariphon@2x.png"; sourceTree = "<group>"; };
 		E71E60EB11B5506800EC5A05 /* libdosbox.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libdosbox.a; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -1007,14 +1021,14 @@
 		E72BE6C412911B5C009DC46A /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		E72BE6C512911B5C009DC46A /* DOSPadEmulator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DOSPadEmulator.h; sourceTree = "<group>"; };
 		E72BE6C612911B5C009DC46A /* DOSPadEmulator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DOSPadEmulator.m; sourceTree = "<group>"; };
-		E72BE6C712911B5C009DC46A /* FileSystemObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FileSystemObject.h; path = Shared/FileSystemObject.h; sourceTree = "<group>"; };
-		E72BE6C812911B5C009DC46A /* FileSystemObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FileSystemObject.m; path = Shared/FileSystemObject.m; sourceTree = "<group>"; };
+		E72BE6C712911B5C009DC46A /* FileSystemObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileSystemObject.h; sourceTree = "<group>"; };
+		E72BE6C812911B5C009DC46A /* FileSystemObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FileSystemObject.m; sourceTree = "<group>"; };
 		E72BE6C912911B5C009DC46A /* KeyboardView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KeyboardView.h; sourceTree = "<group>"; };
 		E72BE6CA12911B5C009DC46A /* KeyboardView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KeyboardView.m; sourceTree = "<group>"; };
 		E72BE6CB12911B5C009DC46A /* KeyView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KeyView.h; sourceTree = "<group>"; };
 		E72BE6CC12911B5C009DC46A /* KeyView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KeyView.m; sourceTree = "<group>"; };
-		E72BE6D612911B5C009DC46A /* ZipArchive.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ZipArchive.h; path = Shared/ZipArchive.h; sourceTree = "<group>"; };
-		E72BE6D712911B5C009DC46A /* ZipArchive.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ZipArchive.m; path = Shared/ZipArchive.m; sourceTree = "<group>"; };
+		E72BE6D612911B5C009DC46A /* ZipArchive.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZipArchive.h; sourceTree = "<group>"; };
+		E72BE6D712911B5C009DC46A /* ZipArchive.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZipArchive.m; sourceTree = "<group>"; };
 		E72BE71612911E2B009DC46A /* bar-portrait-iphone.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "bar-portrait-iphone.png"; path = "misc-res/bar-portrait-iphone.png"; sourceTree = "<group>"; };
 		E72BE71712911E2B009DC46A /* bar-portrait-iphone@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "bar-portrait-iphone@2x.png"; path = "misc-res/bar-portrait-iphone@2x.png"; sourceTree = "<group>"; };
 		E72BE71812911E2B009DC46A /* bar.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = bar.png; path = "misc-res/bar.png"; sourceTree = "<group>"; };
@@ -1092,6 +1106,13 @@
 		E77DB04711B5E11900B78E69 /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
 		E77DB05511B5E13600B78E69 /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
 		E77DB05B11B5E17500B78E69 /* libstdc++.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libstdc++.dylib"; path = "usr/lib/gcc/arm-apple-darwin10/4.2.1/libstdc++.dylib"; sourceTree = SDKROOT; };
+		E77E08522548007C00B5B11D /* default.idostheme */ = {isa = PBXFileReference; lastKnownFileType = folder; path = default.idostheme; sourceTree = "<group>"; };
+		E77E085C2549126700B5B11D /* DPGamepad.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DPGamepad.m; sourceTree = "<group>"; };
+		E77E085D2549126700B5B11D /* DPGamepad.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DPGamepad.h; sourceTree = "<group>"; };
+		E77E086E2549265F00B5B11D /* DPThemeSceneView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DPThemeSceneView.h; sourceTree = "<group>"; };
+		E77E086F2549265F00B5B11D /* DPThemeSceneView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DPThemeSceneView.m; sourceTree = "<group>"; };
+		E77E087F254C080300B5B11D /* UIColor+hexColor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+hexColor.m"; sourceTree = "<group>"; };
+		E77E0880254C080300B5B11D /* UIColor+hexColor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+hexColor.h"; sourceTree = "<group>"; };
 		E792A4BA11E36C9C00894C71 /* Common.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Common.h; sourceTree = "<group>"; };
 		E794F3DA12DB4B6D00427836 /* modepianopressed.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = modepianopressed.png; sourceTree = "<group>"; };
 		E794F3DB12DB4B6D00427836 /* modepianopressed@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "modepianopressed@2x.png"; sourceTree = "<group>"; };
@@ -1112,8 +1133,8 @@
 		E799706312422D6800502015 /* FloatingView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FloatingView.m; sourceTree = "<group>"; };
 		E79C2E5611E131DB002FE898 /* MainWindow.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MainWindow.xib; sourceTree = "<group>"; };
 		E79E4A0011EC6BF400DEAA7B /* libc.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libc.dylib; path = usr/lib/libc.dylib; sourceTree = SDKROOT; };
-		E7A01EDC1CC927370036A4CF /* ColorTheme.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ColorTheme.h; path = Shared/ColorTheme.h; sourceTree = "<group>"; };
-		E7A01EDD1CC927370036A4CF /* ColorTheme.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ColorTheme.m; path = Shared/ColorTheme.m; sourceTree = "<group>"; };
+		E7A01EDC1CC927370036A4CF /* ColorTheme.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ColorTheme.h; sourceTree = "<group>"; };
+		E7A01EDD1CC927370036A4CF /* ColorTheme.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ColorTheme.m; sourceTree = "<group>"; };
 		E7A01EE81CC92F0C0036A4CF /* gift.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = gift.png; path = "misc-res/gift.png"; sourceTree = "<group>"; };
 		E7A01EE91CC92F0C0036A4CF /* kbd.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = kbd.png; path = "misc-res/kbd.png"; sourceTree = "<group>"; };
 		E7A01EF01CC92F450036A4CF /* button.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = button.png; path = "gamepad-res/button.png"; sourceTree = "<group>"; };
@@ -1147,8 +1168,8 @@
 		E7B2BBD3252155F100490083 /* ThumbnailProvider.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ThumbnailProvider.m; sourceTree = "<group>"; };
 		E7B2BBD5252155F100490083 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		E7B2BBDE252190CA00490083 /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
-		E7B2BBE6252432DA00490083 /* UIViewController+Alert.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "UIViewController+Alert.h"; path = "Shared/UIViewController+Alert.h"; sourceTree = "<group>"; };
-		E7B2BBE7252432DB00490083 /* UIViewController+Alert.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "UIViewController+Alert.m"; path = "Shared/UIViewController+Alert.m"; sourceTree = "<group>"; };
+		E7B2BBE6252432DA00490083 /* UIViewController+Alert.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIViewController+Alert.h"; sourceTree = "<group>"; };
+		E7B2BBE7252432DB00490083 /* UIViewController+Alert.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+Alert.m"; sourceTree = "<group>"; };
 		E7B2BBE92525728100490083 /* screenshot_bg.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = screenshot_bg.png; sourceTree = "<group>"; };
 		E7B7F86F1DE1D70200590701 /* libc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.tbd"; path = "usr/lib/libc++.tbd"; sourceTree = SDKROOT; };
 		E7BE1316128BF31A0046990B /* iDOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iDOS.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -1181,6 +1202,14 @@
 		E7E30FE9251E34D10021D10D /* saa1099.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = saa1099.h; sourceTree = "<group>"; };
 		E7EB354712A7C4320091D718 /* exitfull@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "exitfull@2x.png"; sourceTree = "<group>"; };
 		E7F2A9CD12CD99EC0091B859 /* CoreMIDI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMIDI.framework; path = System/Library/Frameworks/CoreMIDI.framework; sourceTree = SDKROOT; };
+		E7FDFB21254E6AF200A6DE66 /* DPGamepadButtonEditor.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DPGamepadButtonEditor.h; sourceTree = "<group>"; };
+		E7FDFB22254E6AF200A6DE66 /* DPGamepadButtonEditor.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DPGamepadButtonEditor.m; sourceTree = "<group>"; };
+		E7FDFB40254E6EEE00A6DE66 /* DPKeyBinding.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DPKeyBinding.h; sourceTree = "<group>"; };
+		E7FDFB41254E6EEE00A6DE66 /* DPKeyBinding.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DPKeyBinding.m; sourceTree = "<group>"; };
+		E7FDFB58254EBD5800A6DE66 /* DPGamepadConfiguration.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DPGamepadConfiguration.h; sourceTree = "<group>"; };
+		E7FDFB59254EBD5800A6DE66 /* DPGamepadConfiguration.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DPGamepadConfiguration.m; sourceTree = "<group>"; };
+		E7FDFB68255150DA00A6DE66 /* SoundEffect.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SoundEffect.h; sourceTree = "<group>"; };
+		E7FDFB69255150DA00A6DE66 /* SoundEffect.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SoundEffect.m; sourceTree = "<group>"; };
 		FD3F4A700DEA620800C5B771 /* SDL_getenv.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = SDL_getenv.c; sourceTree = "<group>"; };
 		FD3F4A710DEA620800C5B771 /* SDL_iconv.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = SDL_iconv.c; sourceTree = "<group>"; };
 		FD3F4A720DEA620800C5B771 /* SDL_malloc.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = SDL_malloc.c; sourceTree = "<group>"; };
@@ -1552,6 +1581,21 @@
 			);
 			name = glass;
 			path = "gamepad-res/glass";
+			sourceTree = "<group>";
+		};
+		E71706E425472C5F000AF482 /* Theme */ = {
+			isa = PBXGroup;
+			children = (
+				E7A01EDC1CC927370036A4CF /* ColorTheme.h */,
+				E7A01EDD1CC927370036A4CF /* ColorTheme.m */,
+				E71706D0254643AC000AF482 /* DPTheme.h */,
+				E71706D1254643AC000AF482 /* DPTheme.m */,
+				E71706DA25472C20000AF482 /* DPThemeScene.h */,
+				E71706DB25472C20000AF482 /* DPThemeScene.m */,
+				E77E086E2549265F00B5B11D /* DPThemeSceneView.h */,
+				E77E086F2549265F00B5B11D /* DPThemeSceneView.m */,
+			);
+			path = Theme;
 			sourceTree = "<group>";
 		};
 		E71E60F211B550FD00EC5A05 /* dosbox */ = {
@@ -2026,8 +2070,10 @@
 		E77DAFAF11B5D83600B78E69 /* dospad */ = {
 			isa = PBXGroup;
 			children = (
+				E7FDFB67255150DA00A6DE66 /* Util */,
+				E77E085B2549126700B5B11D /* Gamepad */,
+				E71706E425472C5F000AF482 /* Theme */,
 				E7D98C6C1CCB228200A17CFC /* Controllers */,
-				E7D98C6D1CCB235900A17CFC /* Util */,
 				E7D98C6B1CCB227A00A17CFC /* Views */,
 				E77DAFC311B5D83600B78E69 /* Shared */,
 			);
@@ -2064,8 +2110,23 @@
 				E73A566D2534A49000E3B3FB /* MfiGamepadManager.m */,
 				E7DF95C72535965600ECB198 /* MfiGamepadMapperView.h */,
 				E7DF95C82535965600ECB198 /* MfiGamepadMapperView.m */,
+				E7FDFB40254E6EEE00A6DE66 /* DPKeyBinding.h */,
+				E7FDFB41254E6EEE00A6DE66 /* DPKeyBinding.m */,
 			);
 			path = Shared;
+			sourceTree = "<group>";
+		};
+		E77E085B2549126700B5B11D /* Gamepad */ = {
+			isa = PBXGroup;
+			children = (
+				E7FDFB58254EBD5800A6DE66 /* DPGamepadConfiguration.h */,
+				E7FDFB59254EBD5800A6DE66 /* DPGamepadConfiguration.m */,
+				E77E085C2549126700B5B11D /* DPGamepad.m */,
+				E77E085D2549126700B5B11D /* DPGamepad.h */,
+				E7FDFB21254E6AF200A6DE66 /* DPGamepadButtonEditor.h */,
+				E7FDFB22254E6AF200A6DE66 /* DPGamepadButtonEditor.m */,
+			);
+			path = Gamepad;
 			sourceTree = "<group>";
 		};
 		E79C2E5511E131B8002FE898 /* iPhone */ = {
@@ -2080,6 +2141,7 @@
 		E79E44F411EC2D5200DEAA7B /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				E77E08522548007C00B5B11D /* default.idostheme */,
 				E79C2E5611E131DB002FE898 /* MainWindow.xib */,
 				E7B2BBE92525728100490083 /* screenshot_bg.png */,
 				E7A482451FF733DF00AE7DB6 /* LaunchScreen.storyboard */,
@@ -2209,21 +2271,6 @@
 			name = Controllers;
 			sourceTree = "<group>";
 		};
-		E7D98C6D1CCB235900A17CFC /* Util */ = {
-			isa = PBXGroup;
-			children = (
-				E7B2BBE6252432DA00490083 /* UIViewController+Alert.h */,
-				E7B2BBE7252432DB00490083 /* UIViewController+Alert.m */,
-				E7A01EDC1CC927370036A4CF /* ColorTheme.h */,
-				E7A01EDD1CC927370036A4CF /* ColorTheme.m */,
-				E72BE6C712911B5C009DC46A /* FileSystemObject.h */,
-				E72BE6C812911B5C009DC46A /* FileSystemObject.m */,
-				E72BE6D612911B5C009DC46A /* ZipArchive.h */,
-				E72BE6D712911B5C009DC46A /* ZipArchive.m */,
-			);
-			name = Util;
-			sourceTree = "<group>";
-		};
 		E7D98C6E1CCB23EE00A17CFC /* SDL */ = {
 			isa = PBXGroup;
 			children = (
@@ -2254,6 +2301,23 @@
 				E7E30FE9251E34D10021D10D /* saa1099.h */,
 			);
 			path = mame;
+			sourceTree = "<group>";
+		};
+		E7FDFB67255150DA00A6DE66 /* Util */ = {
+			isa = PBXGroup;
+			children = (
+				E7B2BBE6252432DA00490083 /* UIViewController+Alert.h */,
+				E7B2BBE7252432DB00490083 /* UIViewController+Alert.m */,
+				E7FDFB68255150DA00A6DE66 /* SoundEffect.h */,
+				E7FDFB69255150DA00A6DE66 /* SoundEffect.m */,
+				E77E0880254C080300B5B11D /* UIColor+hexColor.h */,
+				E77E087F254C080300B5B11D /* UIColor+hexColor.m */,
+				E72BE6D612911B5C009DC46A /* ZipArchive.h */,
+				E72BE6D712911B5C009DC46A /* ZipArchive.m */,
+				E72BE6C712911B5C009DC46A /* FileSystemObject.h */,
+				E72BE6C812911B5C009DC46A /* FileSystemObject.m */,
+			);
+			path = Util;
 			sourceTree = "<group>";
 		};
 		FD3F4A6F0DEA620800C5B771 /* stdlib */ = {
@@ -3018,6 +3082,7 @@
 				E72BE74412911E2B009DC46A /* bar.png in Resources */,
 				E72BE74712911E2B009DC46A /* dpnote.png in Resources */,
 				E7A482461FF733E400AE7DB6 /* LaunchScreen.storyboard in Resources */,
+				E77E08532548007C00B5B11D /* default.idostheme in Resources */,
 				E7A01EFC1CC9C1C80036A4CF /* buttonpressed.png in Resources */,
 				E72BE74812911E2B009DC46A /* gear.png in Resources */,
 				E7B2BBEA2525728600490083 /* screenshot_bg.png in Resources */,
@@ -3301,6 +3366,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				E7BE12EA128BF31A0046990B /* DosPadViewController.m in Sources */,
+				E77E0881254C080500B5B11D /* UIColor+hexColor.m in Sources */,
 				E7BE12EB128BF31A0046990B /* main.m in Sources */,
 				E7BE12F3128BF31A0046990B /* keys.m in Sources */,
 				E7BE12F6128BF31A0046990B /* HoldIndicator.m in Sources */,
@@ -3309,14 +3375,20 @@
 				E7B2BBE8252432DC00490083 /* UIViewController+Alert.m in Sources */,
 				E7BE12F8128BF31A0046990B /* KeyLockIndicator.m in Sources */,
 				E7BE12F9128BF31A0046990B /* TipView.m in Sources */,
+				E7FDFB42254E6EEE00A6DE66 /* DPKeyBinding.m in Sources */,
+				E77E085E2549126900B5B11D /* DPGamepad.m in Sources */,
 				E7BE12FA128BF31A0046990B /* CommandListView.m in Sources */,
+				E7FDFB5A254EBD5800A6DE66 /* DPGamepadConfiguration.m in Sources */,
 				E7BE12FC128BF31A0046990B /* FloatingView.m in Sources */,
 				E7BE12FD128BF31A0046990B /* SliderView.m in Sources */,
 				E7BE12FF128BF31A0046990B /* GamePadView.m in Sources */,
+				E77E08702549265F00B5B11D /* DPThemeSceneView.m in Sources */,
+				E7FDFB6A255150DA00A6DE66 /* SoundEffect.m in Sources */,
 				E7EF4372128FCE470014D060 /* AlertPrompt.m in Sources */,
 				E72BE69712911096009DC46A /* DosPadViewController_iPhone.m in Sources */,
 				E7A01EE71CC9277E0036A4CF /* ColorTheme.m in Sources */,
 				E73A566E2534A49000E3B3FB /* MfiGamepadManager.m in Sources */,
+				E71706DC25472C20000AF482 /* DPThemeScene.m in Sources */,
 				E72BE6E412911B5C009DC46A /* AppDelegate.m in Sources */,
 				E72BE6E512911B5C009DC46A /* DOSPadEmulator.m in Sources */,
 				E72BE6E612911B5C009DC46A /* FileSystemObject.m in Sources */,
@@ -3327,8 +3399,10 @@
 				E715B35B1293B7750098D437 /* DOSPadBaseViewController.m in Sources */,
 				E76C49381299490200901B69 /* FloatPanel.m in Sources */,
 				E70836B92539EEB200B9321F /* KeyboardSpy.m in Sources */,
+				E71706D2254643AD000AF482 /* DPTheme.m in Sources */,
 				E74BB2B715C93DBC005EC552 /* DosPadUIApplication.m in Sources */,
 				2A4546FA17D2812100D18563 /* PianoKeyboard.m in Sources */,
+				E7FDFB23254E6AF200A6DE66 /* DPGamepadButtonEditor.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -1,6 +1,5 @@
 //
 //  UIViewController+AlertViewController.h
-//  TeX Writer
 //
 //  Created by Chaoji Li on 05/11/2017.
 //  Copyright © 2017 Chaoji Li. All rights reserved.

@@ -28,27 +28,9 @@
 #import "DOSPadBaseViewController.h"
 #import "FloatPanel.h"
 
-@interface ToolPanelView : UIView {}
-@end
-
-
 @interface DosPadViewController_iPhone : DOSPadBaseViewController
 <KeyDelegate,UIAlertViewDelegate>
 {
-    GamePadMode mode;
-    UIButton *btnDPadSwitch;
-    ToolPanelView  *toolPanel;
-    UILabel *labCycles;
-    UILabel *labCycles2;
-    FrameskipIndicator *fsIndicator;
-    FrameskipIndicator *fsIndicator2;
-    UIButton *btnShowKeyboard;
-	
-    UIImageView *slider;
-    UILabel *banner;
-    FloatPanel *fullscreenPanel;
-    
-    BOOL shouldShrinkScreen;
 }
 
 - (void)refreshFullscreenPanel;

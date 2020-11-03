@@ -1,0 +1,106 @@
+{
+    "name": "iphone-portrait-medium",
+    "width": 900,
+    "height": 1600,
+    "nodes": [
+        {
+            "type": "screen",
+            "frame": [
+                0,
+                0,
+                900,
+                675
+            ]
+        },
+        {
+            "type": "keyboard",
+            "frame": [
+                0,
+                1032,
+                900,
+                568
+            ]
+        },
+        {
+            "type": "gamepad",
+            "hidden": true,
+            "frame": [
+                0,
+                1032,
+                900,
+                568
+            ]
+        },
+        {
+            "type": "cycles-label",
+            "frame": [
+                574,
+                774,
+                140,
+                64
+            ]
+        },
+        {
+            "id": "power",
+            "frame": [
+                741,
+                760,
+                86,
+                89
+            ],
+            "bg": "assets/power-button.png",
+            "type": "button",
+            "bg-pressed": "assets/power-button-pressed.png"
+        },
+        {
+            "id": "floppy",
+            "frame": [
+                83,
+                761,
+                310,
+                86
+            ],
+            "bg": "assets/floppy-off.png",
+            "type": "button",
+            "bg-pressed": "assets/floppy-on.png"
+        },
+        {
+            "frame": [
+                740,
+                925,
+                140,
+                70
+            ],
+            "id": "gamepad-toggle",
+            "bg": "assets/gamepad-toggle.png",
+            "type": "button",
+            "bg-pressed": "assets/gamepad-toggle-active.png"
+        },
+        {
+            "id": "mouse-left",
+            "frame": [
+                20,
+                925,
+                140,
+                70
+            ],
+            "bg": "assets/mouse-button-left.png",
+            "type": "button",
+            "bg-pressed": "assets/mouse-button-left-pressed.png"
+        },
+        {
+            "id": "mouse-right",
+            "frame": [
+                160,
+                925,
+                140,
+                70
+            ],
+            "bg": "assets/mouse-button-right.png",
+            "type": "button",
+            "bg-pressed": "assets/mouse-button-right-pressed.png"
+        }
+        
+    ],
+    "background": "assets/iphone-portrait-background-900x1600.png"
+}

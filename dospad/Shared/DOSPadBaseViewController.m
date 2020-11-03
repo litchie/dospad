@@ -89,6 +89,18 @@ MfiGamepadMapperDelegate>
     return CGRectMake(cx-w/2, cy-h/2, w, h);
 }
 
+- (void)fillScreen:(CGRect)availRect
+{
+	CGFloat cx = CGRectGetMidX(availRect);
+	CGFloat cy = CGRectGetMidY(availRect);
+	CGFloat w = availRect.size.width;
+	CGFloat h = availRect.size.height;
+    CGFloat sw = self.screenView.bounds.size.width;
+    CGFloat sh = self.screenView.bounds.size.height;
+    self.screenView.transform = CGAffineTransformMakeScale(w/sw,h/sh);
+	self.screenView.center = CGPointMake(cx, cy);
+}
+
 - (bool)isInputSourceEnabled:(InputSourceType)type
 {
 	switch (type) {
@@ -311,9 +323,14 @@ MfiGamepadMapperDelegate>
 	 		[UIAlertAction actionWithTitle:@"Settings"
 	 			style:UIAlertActionStyleDefault
 	 			handler:^(UIAlertAction * _Nonnull action) {
-					[[UIApplication sharedApplication]
-					 openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString]
-					 options:@{} completionHandler:nil];
+					if (@available(iOS 10.0, *)) {
+						[[UIApplication sharedApplication]
+						 openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString]
+						 options:@{} completionHandler:nil];
+					} else {
+						[[UIApplication sharedApplication]
+						 openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString]];
+					}
                 }]
 		]
 		source:sender];
