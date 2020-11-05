@@ -85,53 +85,51 @@ static DOSPadEmulator* _sharedInstance;
 	}
 }
 
-// Use config files under diskc, if not present,
-// use bundled ones.
-- (void)ensureConfigFiles
+// Use config file 'name' under <diskc>/config.
+// If not present, duplicate bundled ones.
+// The bundled one will be copied into <diskc>/config
+// so user can have a copy ready to work on.
+- (NSString*)ensureConfigFile:(NSString*)name
 {
 	NSFileManager *fm = [NSFileManager defaultManager];
+
+	// Make sure config directory exists under the disk c
 	NSString *configDir = [self.diskcDirectory stringByAppendingPathComponent:@"config"];
-	if (![fm fileExistsAtPath:configDir]) {
+	if (![fm fileExistsAtPath:configDir])
+	{
 		[fm createDirectoryAtPath:configDir withIntermediateDirectories:YES attributes:@{} error:nil];
 	}
-	NSString *path = [configDir stringByAppendingPathComponent:@"dospad.cfg"];
-    NSString *bundleConfigs = [[[NSBundle mainBundle] resourceURL] URLByAppendingPathComponent:@"configs"].path;
 
-	// Try to copy the bundled dospad.cfg if there is no dospad.cfg in c:/config
-	if (![fm fileExistsAtPath:path]) {
-		[fm copyItemAtPath:[bundleConfigs stringByAppendingPathComponent:@"dospad.cfg"] toPath:path error:nil];
-	}
-
-	// Fallback to bundled dospad.cfg
-	if ([fm fileExistsAtPath:path]) {
-		_dospadConfigFile = path;
-	} else {
-		_dospadConfigFile = [bundleConfigs stringByAppendingPathComponent:@"dospad.cfg"];
-	}
+	NSString *path = [configDir stringByAppendingPathComponent:name];
+	if ([fm fileExistsAtPath:path])
+		return path;
+		
+	// Try uppercase, as it could be saved by a DOS program
+	path = [configDir stringByAppendingPathComponent:name.uppercaseString];
+	if ([fm fileExistsAtPath:path])
+		return path;
 	
-	path = [configDir stringByAppendingPathComponent:@"ui.cfg"];
-	if ([fm fileExistsAtPath:path]) {
-		_uiConfigFile = path;
-	} else {
-		_uiConfigFile = [bundleConfigs stringByAppendingPathComponent:@"ui.cfg"];
-	}
+	NSString *bundleConfigs = [[[NSBundle mainBundle] resourceURL]
+		URLByAppendingPathComponent:@"configs"].path;
 
-	_mfiConfigFile = [configDir stringByAppendingPathComponent:@"mfi.cfg"];
-	if (![fm fileExistsAtPath:_mfiConfigFile]) {
-		[fm copyItemAtPath:[bundleConfigs stringByAppendingPathComponent:@"mfi.cfg"]
-			toPath:_mfiConfigFile error:nil];
+	NSError *err = nil;
+	if (![fm copyItemAtPath:[bundleConfigs stringByAppendingPathComponent:name]
+			toPath:path error:&err])
+	{
+		NSLog(@"copy configuration failed: %@",err);
+		return nil;
 	}
-	_gamepadConfigFile = [configDir stringByAppendingPathComponent:@"gamepad.cfg"];
-	if (![fm fileExistsAtPath:_gamepadConfigFile]) {
-		[fm copyItemAtPath:[bundleConfigs stringByAppendingPathComponent:@"gamepad.cfg"]
-			toPath:_gamepadConfigFile error:nil];
-	}
+	return path;
 }
+
 
 - (id)init
 {
 	self = [super init];
 	
+	// By default, use Documents folder in app sandbox as the
+	// disk C. It can be changed later to other location,
+	// but it must be done before the emulation starts.
 	self.diskcDirectory = [NSSearchPathForDirectoriesInDomains(
 		NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
 	
@@ -141,12 +139,17 @@ static DOSPadEmulator* _sharedInstance;
 - (void)start 
 {
 	NSAssert([NSThread isMainThread], @"Not in main thread");
-    if (started) {
-        //NSLog(@"DosEmuThread %p already started", self);
+    
+    if (started)
+    {
+        NSLog(@"Emulator %p already started", self);
         return;
     }
     
-    [self ensureConfigFiles];
+	_dospadConfigFile  = [self ensureConfigFile:@"dospad.cfg"];
+	_uiConfigFile      = [self ensureConfigFile:@"ui.cfg"];
+	_mfiConfigFile     = [self ensureConfigFile:@"mfi.cfg"];
+	_gamepadConfigFile = [self ensureConfigFile:@"gamepad.cfg"];
     
     strcpy(diskc, self.diskcDirectory.UTF8String);
 	//strcpy(diskd, "/var/mobile/Documents");
