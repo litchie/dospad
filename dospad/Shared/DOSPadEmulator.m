@@ -46,8 +46,7 @@ int cmd_count=0;
 int dospad_pause_flag = 0;
 int dospad_should_launch_game=0;
 int dospad_command_line_ready=0;
-char dospad_launch_config[256];
-char dospad_launch_section[256];
+char dospad_command_buffer[1024];
 
 extern int SDL_main(int argc, char *argv[]);
 static DOSPadEmulator* _sharedInstance;
@@ -58,6 +57,9 @@ static DOSPadEmulator* _sharedInstance;
 {
     SDL_Joystick *_joystick[4];
 }
+
+- (void)didCommandDone;
+
 @end
 
 @implementation DOSPadEmulator
@@ -199,9 +201,10 @@ static DOSPadEmulator* _sharedInstance;
 
 - (void)sendCommand:(NSString *)cmd
 {
-    for (int i = 0; i < cmd.length; i++)
-    	[self sendChar:[cmd characterAtIndex:i]];
-	[self sendKey:SDL_SCANCODE_RETURN];
+	if (dospad_command_line_ready && !dospad_command_buffer[0]) {
+		strcpy(dospad_command_buffer, cmd.UTF8String);
+		[self sendKey:SDL_SCANCODE_RETURN];
+	}
 }
 
 - (void)sendText:(NSString *)text
@@ -299,6 +302,12 @@ static DOSPadEmulator* _sharedInstance;
 	SDL_PrivateJoystickButton(_joystick[index], buttonIndex, pressed?SDL_PRESSED:SDL_RELEASED);
 }
 
+
+- (void)didCommandDone
+{
+	NSLog(@"command done");
+}
+
 @end
 
 ////////////////////////////////////////////////////////////
@@ -319,14 +328,10 @@ void dospad_resume()
     dospad_pause_flag = 0;
 }
 
-void dospad_launch_done()
+void dospad_command_done()
 {
-    if ([[[UIApplication sharedApplication] delegate] respondsToSelector:@selector(onLaunchExit)])
-    {
-        [[[UIApplication sharedApplication] delegate] performSelector:@selector(onLaunchExit)];
-    }
+	[_sharedInstance performSelectorOnMainThread:@selector(didCommandDone) withObject:nil waitUntilDone:NO];
 }
-
 
 static int strcmp_case_insensitive(const char *cs, const char *ct)
 {

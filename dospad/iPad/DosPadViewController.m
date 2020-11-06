@@ -129,18 +129,7 @@ static struct {
               forControlEvents:UIControlEventTouchUpInside];
     [baseView addSubview:btnShowCommands];
     
-    //---------------------------------------------------
-    // 9. Create back Button
-    //---------------------------------------------------  
-#ifdef IDOS
-    if (!autoExit)
-    {
-        btnBack = [[UIButton alloc] initWithFrame:CGRectMake(0,0,140,44)];
-        [btnBack addTarget:self action:@selector(back) forControlEvents:UIControlEventTouchUpInside];
-        [baseView addSubview:btnBack];
-    }
-#endif
-    
+ 
     //---------------------------------------------------
     // 10. Create light of input controls
     //---------------------------------------------------    

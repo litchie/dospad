@@ -266,6 +266,19 @@ public:
 			if ((i_drive - 'A') >= DOS_DRIVES || (i_drive-'A') < 0 ) goto showusage;
 			drive = static_cast<char>(i_drive);
 
+#ifdef IPHONEOS
+			// Add option to auto increase drive letter
+			// if the drive is already occupied
+			if (Drives[drive-'A'] && cmd->FindExist("-autoinc",false)) {
+				while (drive < 'Z') {
+					if (!Drives[drive-'A']) {
+						break;
+					}
+					drive++;
+				}
+			}
+#endif
+
 			if (!cmd->FindCommand(2,temp_line)) goto showusage;
 			if (!temp_line.size()) goto showusage;
 			struct stat test;

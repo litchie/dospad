@@ -239,9 +239,4 @@
 	[_emulatorController updateFrameskip:@(frameskip)];
 }
 
--(void)onLaunchExit
-{
-	[_emulatorController onLaunchExit];
-}
-
 @end

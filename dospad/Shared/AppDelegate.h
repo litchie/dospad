@@ -32,6 +32,4 @@
 @property (nonatomic, readonly) int frameskip;
 @property (nonatomic, readonly) int maxPercent;
 
--(void)onLaunchExit;
-
 @end

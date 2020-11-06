@@ -43,7 +43,6 @@ MfiGamepadMapperDelegate>
 
 
 @implementation DOSPadBaseViewController
-@synthesize autoExit;
 @synthesize screenView;
 
 - (void)updateScreen
@@ -227,14 +226,6 @@ MfiGamepadMapperDelegate>
 
 - (void)dealloc {
     [self removeAllInputSources];
-}
-
-- (void)onLaunchExit
-{
-    if (self.autoExit)
-    {
-        [self.navigationController popViewControllerAnimated:YES];
-    }
 }
 
 - (void)onMouseLeftDown
@@ -640,9 +631,9 @@ MfiGamepadMapperDelegate>
 	NSURL *url = [urls firstObject];
 	[url startAccessingSecurityScopedResource];
 	//[[DOSPadEmulator sharedInstance] sendCommand:@"mount -u d"];
-	NSString *cmd=[NSString stringWithFormat:@"mount d \"%@\"", url.path];
+	NSString *cmd=[NSString stringWithFormat:@"mount d \"%@\" -autoinc", url.path];
 	[[DOSPadEmulator sharedInstance] sendCommand:cmd];
-	[[DOSPadEmulator sharedInstance] sendCommand:@"d:"];
+//	[[DOSPadEmulator sharedInstance] sendCommand:@"d:"];
 	
 }
 

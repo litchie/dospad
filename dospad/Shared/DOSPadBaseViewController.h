@@ -47,7 +47,6 @@ typedef enum {
 	UIDocumentPickerDelegate
 >
 {
-    BOOL autoExit;
     SDL_uikitopenglview *screenView;
     HoldIndicator *holdIndicator;
     
@@ -60,7 +59,6 @@ typedef enum {
     PianoKeyboard *piano;
 }
 
-@property (nonatomic, assign) BOOL autoExit;
 @property (nonatomic, strong) SDL_uikitopenglview *screenView;
 @property (nonatomic, strong) KeyboardSpy *kbdspy;
 
@@ -70,7 +68,6 @@ typedef enum {
 - (void)onMouseLeftUp;
 - (void)onMouseRightDown;
 - (void)onMouseRightUp;
-- (void)onLaunchExit;
 - (void)sendCommandToDOS:(NSString*)cmd;
 - (void)showOption:(id)sender;
 - (NSString*)currentCycles;

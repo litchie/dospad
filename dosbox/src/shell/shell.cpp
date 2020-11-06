@@ -286,11 +286,10 @@ void DOS_Shell::RunInternal(void)
 #ifdef IPHONEOS
 char automount_path[1000];
 extern "C" void dospad_add_history(const char*);
-extern "C" void dospad_launch_done();
-extern int dospad_should_launch_game;
+extern "C" void dospad_command_done();
 extern int dospad_command_line_ready;
-extern char dospad_launch_config[256];
-extern char dospad_launch_section[256];
+extern char dospad_command_buffer[1000];
+
 #endif
 void DOS_Shell::Run(void) {
 	char input_line[CMD_MAXLINE] = {0};
@@ -376,35 +375,31 @@ void DOS_Shell::Run(void) {
 #ifdef IPHONEOS
             dospad_add_history(input_line);
             dospad_command_line_ready=0;
-            if (dospad_should_launch_game)
+            if (dospad_command_buffer[0])
             {
                 // Make sure we can access the new installed files
                 Bit8u drive = DOS_GetDefaultDrive();
                 if (Drives[drive]) {
                     Drives[drive]->EmptyCache();
-                }                
-                FILE *fp=fopen(dospad_launch_config, "r");
-                if (fp != NULL)
-                {
-                    char buf[256];
-                    size_t sectionLength = strlen(dospad_launch_section);
-                    while (fgets(buf, 256, fp))
-                    {
-                        if (strncmp(buf, dospad_launch_section, sectionLength) == 0)
-                        {
-                            while (fgets(buf, 256, fp))
-                            {
-                                if (buf[0] == '[') break;
-                                if (buf[0] == '#') continue;
-                                ParseLine(buf);
-                            }
-                        }
-                    }
-                    fclose(fp);
                 }
-                dospad_should_launch_game = 0;
-                sprintf(input_line,"cls");
-                dospad_launch_done();
+                
+                char *p = dospad_command_buffer;
+                // WriteOut("%s\n", p);
+						
+                while (*p) {
+                	char *endp = strchr(p, '\n');
+                	if (endp) {
+                		*endp = 0;
+                		ParseLine(p);
+                		p = endp + 1;
+					} else {
+						ParseLine(p);
+						break;
+					}
+				}
+				
+				dospad_command_buffer[0] = 0;
+				dospad_command_done();
             }
 #endif
 			ParseLine(input_line);
