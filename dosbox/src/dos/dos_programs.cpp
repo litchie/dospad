@@ -1172,6 +1172,19 @@ public:
 				WriteOut(MSG_Get("PROGRAM_IMGMOUNT_FORMAT_UNSUPPORTED"),fstype.c_str());
 				return;
 			}
+
+#ifdef IPHONEOS
+			// Add option to auto increase drive letter
+			// if the drive is already occupied
+			if (Drives[drive-'A'] && cmd->FindExist("-autoinc",false)) {
+				while (drive < 'Z') {
+					if (!Drives[drive-'A']) {
+						break;
+					}
+					drive++;
+				}
+			}
+#endif
 			
 			// find all file parameters, assuming that all option parameters have been removed
 			while(cmd->FindCommand((unsigned int)(paths.size() + 2), temp_line) && temp_line.size()) {

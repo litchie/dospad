@@ -443,8 +443,10 @@ int dospad_open(const char *args)
 	}
 	else
 	{
-		sprintf(dospad_error_msg, "Unsupported open");
-		return -1;
+		NSString *s = [NSString stringWithUTF8String:args];
+		s= [s stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+
+		[_sharedInstance performSelector:@selector(open:) withObject:s afterDelay:0.5];
 	}
 	return 0;
 }

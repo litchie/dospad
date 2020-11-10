@@ -2046,6 +2046,7 @@ int main(int argc, char* argv[]) {
 	}
                   
 #ifdef IPHONEOS
+	// Try upper case filename
       if(!parsed_anyconfigfile) {
           config_file.clear();
           Cross::GetPlatformConfigDir(config_path);

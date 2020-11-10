@@ -602,24 +602,37 @@ MfiGamepadMapperDelegate>
 
 - (void)emulator:(DOSPadEmulator *)emulator open:(NSString*)path
 {
+	NSArray *utis = nil;
 	if (path == nil)
 	{
-		NSArray *utis = @[
-			(NSString *)kUTTypeFolder,
-			@"com.litchie.idos-package"
+		utis = @[
+			@"public.folder",
+			@"com.litchie.idos-package",
+			@"com.litchie.idos-cdimage",
+			@"com.litchie.idos-diskimage"
 		];
-		UIDocumentPickerViewController *picker;
-		picker = [[UIDocumentPickerViewController alloc]
-			initWithDocumentTypes:utis
-			inMode:UIDocumentPickerModeOpen];
-		picker.delegate = self;
-		if (@available(iOS 11.0, *)) {
-			picker.allowsMultipleSelection = YES;
-		}
-		[self presentViewController:picker
-			animated:YES
-			completion:nil];
 	}
+	else if ([path isEqualToString:@"-d"])
+	{
+		utis = @[@"public.folder"];
+	}
+	
+	// Open external files
+	// Show document picker
+	UIDocumentPickerViewController *picker;
+	picker = [[UIDocumentPickerViewController alloc]
+		initWithDocumentTypes:utis
+		inMode:UIDocumentPickerModeOpen];
+	picker.delegate = self;
+	if (@available(iOS 13.0, *)) {
+		picker.shouldShowFileExtensions = YES;
+	}
+	if (@available(iOS 11.0, *)) {
+		picker.allowsMultipleSelection = YES;
+	}
+	[self presentViewController:picker
+		animated:YES
+		completion:nil];
 }
 
 
@@ -628,13 +641,34 @@ MfiGamepadMapperDelegate>
 - (void)documentPicker:(UIDocumentPickerViewController *)controller
 	didPickDocumentsAtURLs:(NSArray<NSURL *> *)urls
 {
-	NSURL *url = [urls firstObject];
-	[url startAccessingSecurityScopedResource];
-	//[[DOSPadEmulator sharedInstance] sendCommand:@"mount -u d"];
-	NSString *cmd=[NSString stringWithFormat:@"mount d \"%@\" -autoinc", url.path];
-	[[DOSPadEmulator sharedInstance] sendCommand:cmd];
-//	[[DOSPadEmulator sharedInstance] sendCommand:@"d:"];
+	NSMutableString *cmd = [NSMutableString string];
+	NSFileManager *fm = [NSFileManager defaultManager];
 	
+	for (NSURL *url in urls) {
+		NSURL *url = [urls firstObject];
+		[url startAccessingSecurityScopedResource];
+		NSString *ext = url.pathExtension.lowercaseString;
+		if ([ext isEqualToString:@"iso"] || [ext isEqualToString:@"cue"]) {
+			[cmd appendFormat:@"imgmount d \"%@\" -t iso -fs iso\n", url.path];
+		} else if ([ext isEqualToString:@"img"]) {
+			NSDictionary *attrs = [fm attributesOfItemAtPath:url.path error:nil];
+			NSNumber *fileSize = [attrs objectForKey:NSFileSize];
+			if ([fileSize integerValue] > 2000000) {
+				[cmd appendFormat:@"imgmount d \"%@\" -autoinc\n", url.path];
+			} else {
+				[cmd appendFormat:@"imgmount a \"%@\" -t floppy\n", url.path];
+			}
+		} else {
+			[cmd appendFormat:@"mount d \"%@\" -autoinc\n", url.path];
+		}
+	}
+	
+	if ([cmd length] > 1000) {
+		[self alert:@"Can not mount" message:@"Too many items"];
+		return;
+	}
+	if ([cmd length] > 0)
+		[[DOSPadEmulator sharedInstance] sendCommand:cmd];
 }
 
 - (void)documentPickerWasCancelled:(UIDocumentPickerViewController *)controller
