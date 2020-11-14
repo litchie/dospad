@@ -379,8 +379,8 @@ static struct {
 	else
 	{
 		if (shouldShrinkScreen) {
-			[self putScreen:CGRectMake(viewRect.origin.x, viewRect.origin.y,
-				 viewRect.size.width, viewRect.size.height-160)];
+			if (ISIPAD()) viewRect.size.height -= 160;
+			[self putScreen:viewRect];
 		} else {
 			[self fillScreen:viewRect];
 		}
