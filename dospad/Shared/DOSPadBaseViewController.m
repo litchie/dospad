@@ -18,8 +18,7 @@
 
 #import "DOSPadBaseViewController.h"
 #include "keys.h"
-#import "DosPadViewController.h"
-#import "DosPadViewController_iPhone.h"
+#import "DPEmulatorViewController.h"
 #import "AppDelegate.h"
 #import <MobileCoreServices/MobileCoreServices.h>
 #import "UIViewController+Alert.h"
@@ -138,16 +137,7 @@ MfiGamepadMapperDelegate>
 
 + (DOSPadBaseViewController*)dospadController
 {
-    if (ISIPAD())
-    {
-        DosPadViewController *ctrl = [[DosPadViewController alloc] init];
-        return ctrl;
-    }
-    else
-    {
-        DosPadViewController_iPhone *ctrl = [[DosPadViewController_iPhone alloc] init];
-        return ctrl;
-    }
+	return [[DPEmulatorViewController alloc] init];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -600,25 +590,30 @@ MfiGamepadMapperDelegate>
 	}
 }
 
-- (void)emulator:(DOSPadEmulator *)emulator open:(NSString*)path
+-(void)openDriveMountPicker:(DriveMountType)mountType
 {
 	NSArray *utis = nil;
-	if (path == nil)
-	{
-		utis = @[
-			@"public.folder",
-			@"com.litchie.idos-package",
-			@"com.litchie.idos-cdimage",
-			@"com.litchie.idos-diskimage"
-		];
-	}
-	else if ([path isEqualToString:@"-d"])
-	{
-		utis = @[@"public.folder"];
+	switch (mountType) {
+		case DriveMount_Default:
+			utis = @[
+				@"public.folder",
+				@"com.litchie.idos-package",
+				@"com.litchie.idos-cdimage",
+				@"com.litchie.idos-diskimage"
+			];
+			break;
+		case DriveMount_Folder:
+			utis = @[@"public.folder"];
+			break;
+		case DriveMount_CDImage:
+			utis = @[
+				@"com.litchie.idos-cdimage"
+			];
+			break;
+		default:
+			break;
 	}
 	
-	// Open external files
-	// Show document picker
 	UIDocumentPickerViewController *picker;
 	picker = [[UIDocumentPickerViewController alloc]
 		initWithDocumentTypes:utis
@@ -633,6 +628,18 @@ MfiGamepadMapperDelegate>
 	[self presentViewController:picker
 		animated:YES
 		completion:nil];
+}
+
+- (void)emulator:(DOSPadEmulator *)emulator open:(NSString*)path
+{
+	if (path == nil)
+	{
+		[self openDriveMountPicker:DriveMount_Default];
+	}
+	else if ([path isEqualToString:@"-d"])
+	{
+		[self openDriveMountPicker:DriveMount_Folder];
+	}
 }
 
 

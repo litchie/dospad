@@ -1,0 +1,120 @@
+{
+    "name": "ipad-portrait",
+    "width": 900,
+    "height": 1200,
+    "nodes": [
+        {
+            "type": "screen",
+            "frame": [
+                54,
+                58,
+                792,
+                594
+            ]
+        },
+        {
+            "type": "keyboard",
+            "frame": [
+                0,
+                840,
+                900,
+                360
+            ],
+            "layout": "kbd15x6"
+        },
+        {
+            "type": "gamepad",
+            "scene": "gamepad-wide",
+            "hidden": true,
+            "frame": [
+                0,
+                860,
+                900,
+                350
+            ]
+        },
+        {
+            "type": "cycles-label",
+            "frame": [
+                666,
+                715,
+                80,
+                40
+            ]
+        },
+        {
+            "id": "power",
+            "frame": [
+                787,
+                706,
+                50,
+                50
+            ],
+            "bg": "assets/power-button.png",
+            "type": "button",
+            "bg-pressed": "assets/power-button-pressed.png"
+        },
+        {
+            "id": "floppy",
+            "frame": [
+                67,
+                702,
+                172,
+                55
+            ],
+            "bg": "assets/floppy-off.png",
+            "type": "button",
+            "bg-pressed": "assets/floppy-on.png"
+        },
+        {
+            "id": "cdrom",
+            "frame": [
+                267,
+                702,
+                220,
+                55
+            ],
+            "bg": "assets/cdrom.png",
+            "type": "button",
+            "bg-pressed": "assets/cdrom-open.png"
+        },
+        {
+            "frame": [
+                797,
+                787,
+                90,
+                40
+            ],
+            "id": "gamepad-toggle",
+            "bg": "assets/gamepad-toggle.png",
+            "type": "button",
+            "bg-pressed": "assets/gamepad-toggle-active.png"
+        },
+        {
+            "id": "mouse-left",
+            "frame": [
+                20,
+                787,
+                80,
+                40
+            ],
+            "bg": "assets/mouse-button-left.png",
+            "type": "button",
+            "bg-pressed": "assets/mouse-button-left-pressed.png"
+        },
+        {
+            "id": "mouse-right",
+            "frame": [
+                100,
+                787,
+                80,
+                40
+            ],
+            "bg": "assets/mouse-button-right.png",
+            "type": "button",
+            "bg-pressed": "assets/mouse-button-right-pressed.png"
+        }
+        
+    ],
+    "background": "assets/ipad-portrait-background.png"
+}

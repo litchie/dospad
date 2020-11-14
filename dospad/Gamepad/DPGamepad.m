@@ -1,6 +1,8 @@
 
 #import "DPGamepad.h"
 #import "DPGamepadConfiguration.h"
+#import "DPThumbView.h"
+#import "ColorTheme.h"
 
 #define CENTER_OF_RECT(r) CGPointMake(r.size.width/2,r.size.height/2)
 #define DISTANCE_BETWEEN(a,b) sqrt((a.x-b.x)*(a.x-b.x) + (a.y-b.y)*(a.y-b.y))
@@ -339,11 +341,22 @@ if ((x) > 1.0) { \
 
 @end
 
-/** GamePadView is responsible for dispatching key events */
+
+@interface DPGamepad ()
+<DPThumbViewDelegate>
+{
+	DPThumbView *_thumbView;
+}
+
+@end
+
 @implementation DPGamepad
 
 - (BOOL)pointInside:(CGPoint)point withEvent:(UIEvent *)event
 {
+	if (_thumbView && _thumbView.showThumbOnly) {
+		return CGRectContainsPoint(_thumbView.frame, point);
+	}
 	NSArray *subviews = self.subviews;
 	for (int i = 0; i < [subviews count]; i++) {
 		UIView *view = [subviews objectAtIndex:i];
@@ -455,6 +468,14 @@ if ((x) > 1.0) { \
 		_stick.hatImage = [self.scene getImage:attrs[@"hat"]];
 		v = _stick;
 	}
+	else if ([type isEqualToString:@"thumb"])
+	{
+		_thumbView = [[DPThumbView alloc] initWithFrame:frame];
+		_thumbView.delegate = self;
+		_thumbView.text = attrs[@"label"];
+		_thumbView.textColor = [[ColorTheme defaultTheme] colorByName:@"key-text-color"];
+		[self addSubview:_thumbView];
+	}
 	return v;
 }
 
@@ -530,6 +551,16 @@ if ((x) > 1.0) { \
 	}
 	for (DPGamepadButton *btn in _buttons)
 		[btn setNeedsDisplay];
+}
+
+// MARK: DPThumbViewDelegate
+
+- (void)thumbViewDidMove:(DPThumbView*)thumbView
+{
+}
+
+- (void)thumbViewDidStop:(DPThumbView*)thumbView
+{
 }
 
 

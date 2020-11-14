@@ -10,6 +10,7 @@
 // SDL scancodes
 typedef enum {
 	DP_KEY_FN = -1,
+	DP_KEY_THUMB = -2,
 	DP_KEY_MOUSE_LEFT = -1000,
 	DP_KEY_MOUSE_RIGHT,
 	DP_KEY_X1,

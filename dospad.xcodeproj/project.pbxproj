@@ -340,7 +340,7 @@
 		E729BF52129BF18F002B05B2 /* mouseon.png in Resources */ = {isa = PBXBuildFile; fileRef = E729BF4C129BF18F002B05B2 /* mouseon.png */; };
 		E729BF53129BF18F002B05B2 /* mouseon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E729BF4D129BF18F002B05B2 /* mouseon@2x.png */; };
 		E729BF54129BF18F002B05B2 /* mouseon~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = E729BF4E129BF18F002B05B2 /* mouseon~ipad.png */; };
-		E72BE69712911096009DC46A /* DosPadViewController_iPhone.m in Sources */ = {isa = PBXBuildFile; fileRef = E72BE69512911096009DC46A /* DosPadViewController_iPhone.m */; };
+		E72BE69712911096009DC46A /* DPEmulatorViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E72BE69512911096009DC46A /* DPEmulatorViewController.m */; };
 		E72BE6E412911B5C009DC46A /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = E72BE6C412911B5C009DC46A /* AppDelegate.m */; };
 		E72BE6E512911B5C009DC46A /* DOSPadEmulator.m in Sources */ = {isa = PBXBuildFile; fileRef = E72BE6C612911B5C009DC46A /* DOSPadEmulator.m */; };
 		E72BE6E612911B5C009DC46A /* FileSystemObject.m in Sources */ = {isa = PBXBuildFile; fileRef = E72BE6C812911B5C009DC46A /* FileSystemObject.m */; };
@@ -442,7 +442,6 @@
 		E7BE12E2128BF31A0046990B /* dpad.png in Resources */ = {isa = PBXBuildFile; fileRef = E773503E128AD8BD0009CBEA /* dpad.png */; };
 		E7BE12E3128BF31A0046990B /* dpad@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E773503F128AD8BD0009CBEA /* dpad@2x.png */; };
 		E7BE12E4128BF31A0046990B /* dpadpressed.png in Resources */ = {isa = PBXBuildFile; fileRef = E7735040128AD8BD0009CBEA /* dpadpressed.png */; };
-		E7BE12EA128BF31A0046990B /* DosPadViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E77DAFB811B5D83600B78E69 /* DosPadViewController.m */; };
 		E7BE12EB128BF31A0046990B /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = E77DAFC411B5D83600B78E69 /* main.m */; };
 		E7BE12F3128BF31A0046990B /* keys.m in Sources */ = {isa = PBXBuildFile; fileRef = E7D214C711E45BDE00D9654E /* keys.m */; };
 		E7BE12F6128BF31A0046990B /* HoldIndicator.m in Sources */ = {isa = PBXBuildFile; fileRef = E745CE3E11F5991F00F00F7F /* HoldIndicator.m */; };
@@ -498,6 +497,7 @@
 		E7FDFB42254E6EEE00A6DE66 /* DPKeyBinding.m in Sources */ = {isa = PBXBuildFile; fileRef = E7FDFB41254E6EEE00A6DE66 /* DPKeyBinding.m */; };
 		E7FDFB5A254EBD5800A6DE66 /* DPGamepadConfiguration.m in Sources */ = {isa = PBXBuildFile; fileRef = E7FDFB59254EBD5800A6DE66 /* DPGamepadConfiguration.m */; };
 		E7FDFB6A255150DA00A6DE66 /* SoundEffect.m in Sources */ = {isa = PBXBuildFile; fileRef = E7FDFB69255150DA00A6DE66 /* SoundEffect.m */; };
+		E7FDFB96255A3F8300A6DE66 /* DPThumbView.m in Sources */ = {isa = PBXBuildFile; fileRef = E7FDFB95255A3F8000A6DE66 /* DPThumbView.m */; };
 		FD3F495C0DEA5B2100C5B771 /* begin_code.h in Headers */ = {isa = PBXBuildFile; fileRef = FD99B8CC0DD52EB400FB1D6B /* begin_code.h */; settings = {ATTRIBUTES = (); }; };
 		FD3F495D0DEA5B2100C5B771 /* close_code.h in Headers */ = {isa = PBXBuildFile; fileRef = FD99B8CD0DD52EB400FB1D6B /* close_code.h */; settings = {ATTRIBUTES = (); }; };
 		FD3F495F0DEA5B2100C5B771 /* SDL_audio.h in Headers */ = {isa = PBXBuildFile; fileRef = FD99B8CF0DD52EB400FB1D6B /* SDL_audio.h */; settings = {ATTRIBUTES = (); }; };
@@ -1015,8 +1015,8 @@
 		E729BF4C129BF18F002B05B2 /* mouseon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = mouseon.png; sourceTree = "<group>"; };
 		E729BF4D129BF18F002B05B2 /* mouseon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "mouseon@2x.png"; sourceTree = "<group>"; };
 		E729BF4E129BF18F002B05B2 /* mouseon~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "mouseon~ipad.png"; sourceTree = "<group>"; };
-		E72BE69412911096009DC46A /* DosPadViewController_iPhone.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DosPadViewController_iPhone.h; path = iPhone/DosPadViewController_iPhone.h; sourceTree = "<group>"; };
-		E72BE69512911096009DC46A /* DosPadViewController_iPhone.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DosPadViewController_iPhone.m; path = iPhone/DosPadViewController_iPhone.m; sourceTree = "<group>"; };
+		E72BE69412911096009DC46A /* DPEmulatorViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DPEmulatorViewController.h; path = iPhone/DPEmulatorViewController.h; sourceTree = "<group>"; };
+		E72BE69512911096009DC46A /* DPEmulatorViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DPEmulatorViewController.m; path = iPhone/DPEmulatorViewController.m; sourceTree = "<group>"; };
 		E72BE6C312911B5C009DC46A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		E72BE6C412911B5C009DC46A /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		E72BE6C512911B5C009DC46A /* DOSPadEmulator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DOSPadEmulator.h; sourceTree = "<group>"; };
@@ -1098,8 +1098,6 @@
 		E778B2C6123919ED008AF49A /* SDLnetTCP.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = SDLnetTCP.c; path = SDL_net/SDLnetTCP.c; sourceTree = "<group>"; };
 		E778B2C7123919ED008AF49A /* SDLnetUDP.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = SDLnetUDP.c; path = SDL_net/SDLnetUDP.c; sourceTree = "<group>"; };
 		E77DAFB311B5D83600B78E69 /* dospad_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = dospad_Prefix.pch; path = ../dospad_Prefix.pch; sourceTree = "<group>"; };
-		E77DAFB711B5D83600B78E69 /* DosPadViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DosPadViewController.h; sourceTree = "<group>"; };
-		E77DAFB811B5D83600B78E69 /* DosPadViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DosPadViewController.m; sourceTree = "<group>"; };
 		E77DAFC411B5D83600B78E69 /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		E77DB04111B5E10700B78E69 /* libstdc++.6.0.9.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libstdc++.6.0.9.dylib"; path = "usr/lib/libstdc++.6.0.9.dylib"; sourceTree = SDKROOT; };
 		E77DB04311B5E11100B78E69 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
@@ -1210,6 +1208,8 @@
 		E7FDFB59254EBD5800A6DE66 /* DPGamepadConfiguration.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DPGamepadConfiguration.m; sourceTree = "<group>"; };
 		E7FDFB68255150DA00A6DE66 /* SoundEffect.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SoundEffect.h; sourceTree = "<group>"; };
 		E7FDFB69255150DA00A6DE66 /* SoundEffect.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SoundEffect.m; sourceTree = "<group>"; };
+		E7FDFB94255A3F8000A6DE66 /* DPThumbView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DPThumbView.h; sourceTree = "<group>"; };
+		E7FDFB95255A3F8000A6DE66 /* DPThumbView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DPThumbView.m; sourceTree = "<group>"; };
 		FD3F4A700DEA620800C5B771 /* SDL_getenv.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = SDL_getenv.c; sourceTree = "<group>"; };
 		FD3F4A710DEA620800C5B771 /* SDL_iconv.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = SDL_iconv.c; sourceTree = "<group>"; };
 		FD3F4A720DEA620800C5B771 /* SDL_malloc.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = SDL_malloc.c; sourceTree = "<group>"; };
@@ -2080,15 +2080,6 @@
 			path = dospad;
 			sourceTree = "<group>";
 		};
-		E77DAFB411B5D83600B78E69 /* iPad */ = {
-			isa = PBXGroup;
-			children = (
-				E77DAFB711B5D83600B78E69 /* DosPadViewController.h */,
-				E77DAFB811B5D83600B78E69 /* DosPadViewController.m */,
-			);
-			path = iPad;
-			sourceTree = "<group>";
-		};
 		E77DAFC311B5D83600B78E69 /* Shared */ = {
 			isa = PBXGroup;
 			children = (
@@ -2127,15 +2118,6 @@
 				E7FDFB22254E6AF200A6DE66 /* DPGamepadButtonEditor.m */,
 			);
 			path = Gamepad;
-			sourceTree = "<group>";
-		};
-		E79C2E5511E131B8002FE898 /* iPhone */ = {
-			isa = PBXGroup;
-			children = (
-				E72BE69412911096009DC46A /* DosPadViewController_iPhone.h */,
-				E72BE69512911096009DC46A /* DosPadViewController_iPhone.m */,
-			);
-			name = iPhone;
 			sourceTree = "<group>";
 		};
 		E79E44F411EC2D5200DEAA7B /* Resources */ = {
@@ -2255,6 +2237,8 @@
 				E7996FAC1241C0A800502015 /* TipView.m */,
 				E70836B72539EEB200B9321F /* KeyboardSpy.h */,
 				E70836B82539EEB200B9321F /* KeyboardSpy.m */,
+				E7FDFB94255A3F8000A6DE66 /* DPThumbView.h */,
+				E7FDFB95255A3F8000A6DE66 /* DPThumbView.m */,
 			);
 			name = Views;
 			path = Shared;
@@ -2263,10 +2247,10 @@
 		E7D98C6C1CCB228200A17CFC /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				E72BE69512911096009DC46A /* DPEmulatorViewController.m */,
+				E72BE69412911096009DC46A /* DPEmulatorViewController.h */,
 				E715B3591293B7740098D437 /* DOSPadBaseViewController.h */,
 				E715B35A1293B7750098D437 /* DOSPadBaseViewController.m */,
-				E77DAFB411B5D83600B78E69 /* iPad */,
-				E79C2E5511E131B8002FE898 /* iPhone */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -3365,7 +3349,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E7BE12EA128BF31A0046990B /* DosPadViewController.m in Sources */,
 				E77E0881254C080500B5B11D /* UIColor+hexColor.m in Sources */,
 				E7BE12EB128BF31A0046990B /* main.m in Sources */,
 				E7BE12F3128BF31A0046990B /* keys.m in Sources */,
@@ -3385,8 +3368,9 @@
 				E77E08702549265F00B5B11D /* DPThemeSceneView.m in Sources */,
 				E7FDFB6A255150DA00A6DE66 /* SoundEffect.m in Sources */,
 				E7EF4372128FCE470014D060 /* AlertPrompt.m in Sources */,
-				E72BE69712911096009DC46A /* DosPadViewController_iPhone.m in Sources */,
+				E72BE69712911096009DC46A /* DPEmulatorViewController.m in Sources */,
 				E7A01EE71CC9277E0036A4CF /* ColorTheme.m in Sources */,
+				E7FDFB96255A3F8300A6DE66 /* DPThumbView.m in Sources */,
 				E73A566E2534A49000E3B3FB /* MfiGamepadManager.m in Sources */,
 				E71706DC25472C20000AF482 /* DPThemeScene.m in Sources */,
 				E72BE6E412911B5C009DC46A /* AppDelegate.m in Sources */,
@@ -3723,7 +3707,7 @@
 				INFOPLIST_FILE = iDOSThumbnail/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
-				MARKETING_VERSION = 2.1;
+				MARKETING_VERSION = 2.3;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.litchie.idosgames.thumbnail;
@@ -3785,7 +3769,7 @@
 				INFOPLIST_FILE = iDOSThumbnail/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
-				MARKETING_VERSION = 2.1;
+				MARKETING_VERSION = 2.3;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.litchie.idosgames.thumbnail;
@@ -3848,7 +3832,7 @@
 				INFOPLIST_FILE = iDOSThumbnail/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
-				MARKETING_VERSION = 2.1;
+				MARKETING_VERSION = 2.3;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.litchie.idosgames.thumbnail;
@@ -3881,7 +3865,7 @@
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				INFOPLIST_FILE = "Resources/iDOS-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
-				MARKETING_VERSION = 2.1;
+				MARKETING_VERSION = 2.3;
 				OTHER_LDFLAGS = (
 					"-framework",
 					Foundation,
@@ -3913,7 +3897,7 @@
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				INFOPLIST_FILE = "Resources/iDOS-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
-				MARKETING_VERSION = 2.1;
+				MARKETING_VERSION = 2.3;
 				OTHER_LDFLAGS = (
 					"-framework",
 					Foundation,
@@ -4061,7 +4045,7 @@
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				INFOPLIST_FILE = "Resources/iDOS-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
-				MARKETING_VERSION = 2.1;
+				MARKETING_VERSION = 2.3;
 				OTHER_LDFLAGS = (
 					"-framework",
 					Foundation,

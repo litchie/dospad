@@ -16,7 +16,7 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#import "DosPadViewController_iPhone.h"
+#import "DPEmulatorViewController.h"
 #import "FileSystemObject.h"
 #import "Common.h"
 #import "AppDelegate.h"
@@ -24,6 +24,7 @@
 #import "DPTheme.h"
 #import "DPGamepad.h"
 #import "DPGamepadButtonEditor.h"
+#import "DPThumbView.h"
 
 enum {
 	TAG_INPUT_MIN = 1000,
@@ -50,7 +51,7 @@ static struct {
 };
 #define NUM_BUTTON_INFO (sizeof(toggleButtonInfo)/sizeof(toggleButtonInfo[0]))
 
-@interface DosPadViewController_iPhone()<DPGamepadDelegate>
+@interface DPEmulatorViewController ()<DPGamepadDelegate>
 {
 	// Only used in portrait mode
 	UIView *_rootContainer;
@@ -65,11 +66,12 @@ static struct {
     FloatPanel *fullscreenPanel;
     
     BOOL shouldShrinkScreen;
+    CGRect _screenRect; // portraint only?
 }
 @property (strong) DPGamepadConfiguration *gamepadConfig;
 @end
 
-@implementation DosPadViewController_iPhone
+@implementation DPEmulatorViewController
 
 
 - (UILabel*)cyclesLabel:(CGRect)frame
@@ -256,12 +258,21 @@ static struct {
 
 - (void)createMouseButtons
 {
-	UIView *container = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 160, 40)];
-	
-    // Left Mouse Button
     CGFloat vw = _rootContainer.bounds.size.width;
     CGFloat vh = _rootContainer.bounds.size.height;
-    UIButton *btnMouseLeft = [[UIButton alloc] initWithFrame:CGRectMake(0,0,80,40)];
+	UIView *container = [[UIView alloc] initWithFrame:CGRectMake(0, vh-40, 200, 40)];
+    // Transparency
+    container.tag = TAG_INPUT_MOUSE_BUTTONS;
+    container.alpha=[self floatAlpha];
+	[_rootContainer addSubview:container];
+	
+	// Add movable control
+	DPThumbView *thumbView = [[DPThumbView alloc] initWithFrame:CGRectMake(0, 0, 40, 40)];
+	thumbView.text = @"☰";
+	[container addSubview:thumbView];
+	
+    // Left Mouse Button
+    UIButton *btnMouseLeft = [[UIButton alloc] initWithFrame:CGRectMake(40,0,80,40)];
 	[btnMouseLeft setImage:[_currentScene getImage:@"assets/mouse-button-left.png"] forState:UIControlStateNormal];
 	[btnMouseLeft setImage:[_currentScene getImage:@"assets/mouse-button-left-pressed.png"] forState:UIControlStateHighlighted];
     [btnMouseLeft addTarget:self
@@ -273,7 +284,7 @@ static struct {
     [container addSubview:btnMouseLeft];
     
     // Right Mouse Button
-    UIButton *btnMouseRight = [[UIButton alloc] initWithFrame:CGRectMake(80,0,80,40)];
+    UIButton *btnMouseRight = [[UIButton alloc] initWithFrame:CGRectMake(120,0,80,40)];
 	[btnMouseRight setImage:[_currentScene getImage:@"assets/mouse-button-right.png"] forState:UIControlStateNormal];
 	[btnMouseRight setImage:[_currentScene getImage:@"assets/mouse-button-right-pressed.png"]
 		forState:UIControlStateHighlighted];
@@ -284,19 +295,13 @@ static struct {
                     action:@selector(onMouseRightUp)
           forControlEvents:UIControlEventTouchUpInside];
 	[container addSubview:btnMouseRight];
-    [_rootContainer addSubview:container];
-    
-    // Transparency
-    container.tag = TAG_INPUT_MOUSE_BUTTONS;
-    container.alpha=[self floatAlpha];
-    container.center = CGPointMake(CGRectGetMidX(_rootContainer.bounds),
-    	CGRectGetMaxY(_rootContainer.bounds)-25);
 }
 
 
 - (void)createNumpad
 {
-	KeyboardView *numpad = [[KeyboardView alloc] initWithType:KeyboardTypeNumPad frame:CGRectMake(_rootContainer.bounds.size.width-160,120,160,200)];
+	KeyboardView *numpad = [[KeyboardView alloc] initWithFrame:CGRectMake(_rootContainer.bounds.size.width-160,120,160,200)
+	layout:@"kpad4x5"];
 	numpad.alpha = [self floatAlpha];
 	numpad.tag = TAG_INPUT_NUMPAD;
 	[_rootContainer addSubview:numpad];
@@ -311,12 +316,13 @@ static struct {
 
 - (void)createPCKeyboard
 {
-	CGRect rect = CGRectMake(0, _rootContainer.bounds.size.height-175,
-		_rootContainer.bounds.size.width, 175);
-	
-	// Our base class will access it.
-	kbd = [[KeyboardView alloc] initWithType:[self isPortrait]?KeyboardTypePortrait: KeyboardTypeLandscape
-									   frame:rect];
+	const CGFloat keyboardHeight = ISIPAD() ? 250 : 175;
+	CGRect rect = CGRectMake(0,
+		_rootContainer.bounds.size.height-keyboardHeight,
+		_rootContainer.bounds.size.width,
+		keyboardHeight);
+	kbd = [[KeyboardView alloc] initWithFrame:rect
+			layout:(NSString*)[_currentScene getAttribute:@"keyboard"]];
 	kbd.alpha = [self floatAlpha];
 	[_rootContainer addSubview:kbd];
 	kbd.tag = TAG_INPUT_KEYBOARD;
@@ -325,7 +331,10 @@ static struct {
 - (DPGamepad*)createGamepadHelper
 {
 	DPThemeScene *scn = [_currentTheme findSceneByName:(NSString*)[_currentScene getAttribute:@"gamepad"]];
-	CGRect rect = CGRectMake(0, CGRectGetMaxY(_rootContainer.bounds)-240, _rootContainer.bounds.size.width, 240  );
+	const CGFloat height = ISIPAD() ? 300 : 240;
+	
+	CGRect rect = CGRectMake(0, CGRectGetMaxY(_rootContainer.bounds)-height,
+		_rootContainer.bounds.size.width, height);
 	
 	DPGamepad *gamepad = [[DPGamepad alloc] initWithFrame:rect scene:scn];
 	[_rootContainer addSubview:gamepad];
@@ -365,8 +374,7 @@ static struct {
 	CGRect viewRect = _rootContainer.bounds;
 	if ([self isPortrait])
 	{
-		CGRect screenRect = [self putScreen:CGRectMake(viewRect.origin.x, viewRect.origin.y,
-			viewRect.size.width, viewRect.size.width*3/4)];
+		[self putScreen:_screenRect];
 	}
 	else
 	{
@@ -392,6 +400,7 @@ static struct {
 - (DPThemeScene*)findSceneForSize:(CGSize)size
 {
 	CGFloat aspectRatio = size.width / size.height;
+	
 	if (size.width < size.height)
 	{
 		if (aspectRatio < 0.52)
@@ -406,13 +415,22 @@ static struct {
 		}
 		else
 		{
-			// iPhone 4S
-			return [_currentTheme findSceneByName:@"iphone-portrait-small"];
+			if (size.width >= 768) {
+				return [_currentTheme findSceneByName:@"ipad-portrait"];
+			} else {
+				// iPhone 4S
+				return [_currentTheme findSceneByName:@"iphone-portrait-small"];
+			}
 		}
 	}
 	else
 	{
+		if (ISIPAD()) {
+			return [_currentTheme findSceneByName:@"ipad-landscape"];
+		}
 		if (size.width <= 480) { // iPhone 4S
+			return [_currentTheme findSceneByName:@"iphone-landscape-short"];
+		} else if (aspectRatio < 1.5) {
 			return [_currentTheme findSceneByName:@"iphone-landscape-short"];
 		} else if (aspectRatio < 1.92 ) {
 			return [_currentTheme findSceneByName:@"iphone-landscape-medium"];
@@ -446,6 +464,7 @@ static struct {
 		if ([type isEqualToString:@"screen"])
 		{
 			[sceneContainer addSubview:self.screenView];
+			_screenRect = frame;
 			[self fillScreen:frame];
 		}
 		else if ([type isEqualToString:@"cycles-label"])
@@ -454,14 +473,16 @@ static struct {
 		}
 		else if ([type isEqualToString:@"keyboard"])
 		{
-			KeyboardType *kbt = scene.isPortrait ? KeyboardTypePortrait: KeyboardTypeLandscape;
-			KeyboardView* kv = [[KeyboardView alloc] initWithType:kbt frame:frame];
+			KeyboardView* kv;
+			kv = [[KeyboardView alloc] initWithFrame:frame layout:x[@"layout"]];
 			kv.hidden = hidden;
 			[sceneContainer addSubview:kv];
 		}
 		else if ([type isEqualToString:@"gamepad"])
 		{
-			DPThemeScene *scn = [_currentTheme findSceneByName:@"gamepad"];
+			NSString *sceneName = x[@"scene"];
+			if (!sceneName) sceneName = @"gamepad";
+			DPThemeScene *scn = [_currentTheme findSceneByName:sceneName];
 			DPGamepad *gamepad = [[DPGamepad alloc] initWithFrame:frame scene:scn];
 			gamepad.gamepadDelegate = self;
 			gamepad.hidden = hidden;
@@ -474,11 +495,21 @@ static struct {
 		{
 			// FIXME: A dirty fix, FloatPanel has certain sizing requirements
 			// Ignore the frame settings
-			frame = CGRectMake((rootRect.size.width-480)/2, 0, 480, 32);
+			CGSize barSize = ISIPAD() ? CGSizeMake(700, 47): CGSizeMake(480, 32);
+			frame = CGRectMake((rootRect.size.width-barSize.width)/2, 0, barSize.width, barSize.height);
+			UIButton *btnExitFS;
+			
 			fullscreenPanel = [[FloatPanel alloc] initWithFrame:frame];
-			UIButton *btnExitFS = [[UIButton alloc] initWithFrame:CGRectMake(0,0,48,24)];
-			btnExitFS.center=CGPointMake(44, 13);
-			[btnExitFS setImage:[UIImage imageNamed:@"exitfull.png"] forState:UIControlStateNormal];
+			if (ISIPAD()) {
+				btnExitFS = [[UIButton alloc] initWithFrame:CGRectMake(0,0,72,36)];
+			    btnExitFS.center=CGPointMake(63, 18);
+			    [btnExitFS setImage:[UIImage imageNamed:@"exitfull~ipad"] forState:UIControlStateNormal];
+			} else {
+				btnExitFS = [[UIButton alloc] initWithFrame:CGRectMake(0,0,48,24)];
+				btnExitFS.center=CGPointMake(44, 13);
+				[btnExitFS setImage:[UIImage imageNamed:@"exitfull.png"] forState:UIControlStateNormal];
+			}
+			
 			[btnExitFS addTarget:self action:@selector(toggleScreenSize) forControlEvents:UIControlEventTouchUpInside];
 			[fullscreenPanel.contentView addSubview:btnExitFS];
 			[sceneContainer addSubview:fullscreenPanel];
@@ -580,13 +611,22 @@ static struct {
 	}
 	else if ([name isEqualToString:@"floppy"])
 	{
-		[btn addTarget:self action:@selector(mountDirectory:) forControlEvents:UIControlEventTouchUpInside];
+		[btn addTarget:self action:@selector(mountDrive:) forControlEvents:UIControlEventTouchUpInside];
+	}
+	else if ([name isEqualToString:@"cdrom"])
+	{
+		[btn addTarget:self action:@selector(mountCDDrive:) forControlEvents:UIControlEventTouchUpInside];
 	}
 }
 
-- (void)mountDirectory:(id)sender
+- (void)mountDrive:(id)sender
 {
-	[self emulator:nil open:nil];
+	[self openDriveMountPicker:DriveMount_Default];
+}
+
+- (void)mountCDDrive:(id)sender
+{
+	[self openDriveMountPicker:DriveMount_CDImage];
 }
 
 - (void)viewDidLoad

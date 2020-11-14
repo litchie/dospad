@@ -22,85 +22,21 @@
 #include "SDL.h"
 #import "ColorTheme.h"
 #import "DPKeyBinding.h"
+#import "DPThumbView.h"
 
 extern int SDL_SendKeyboardKey(int index, Uint8 state, SDL_scancode scancode);
 
-KeyDesc combo_f[12] = {
-    {"F1", SDL_SCANCODE_F1},
-    {"F2", SDL_SCANCODE_F2},
-    {"F3", SDL_SCANCODE_F3},
-    {"F4", SDL_SCANCODE_F4},
-    {"F5", SDL_SCANCODE_F5},
-    {"F6", SDL_SCANCODE_F6},
-    {"F7", SDL_SCANCODE_F7},
-    {"F8", SDL_SCANCODE_F8},
-    {"F9", SDL_SCANCODE_F9},
-    {"F10", SDL_SCANCODE_F10},
-    {"F11", SDL_SCANCODE_F11},
-    {"F12", SDL_SCANCODE_F12}
-};
-
-KeyDesc combo_1[] = {
-    {"`~", SDL_SCANCODE_GRAVE},
-    {"1!", SDL_SCANCODE_1},
-    {"2@", SDL_SCANCODE_2},
-    {"3#", SDL_SCANCODE_3},
-    {"4$", SDL_SCANCODE_4},
-    {"5%", SDL_SCANCODE_5},
-    {"6^", SDL_SCANCODE_6},
-    {"7&", SDL_SCANCODE_7},
-    {"8*", SDL_SCANCODE_8},
-    {"9(", SDL_SCANCODE_9},
-    {"0)", SDL_SCANCODE_0},
-    {"-_", SDL_SCANCODE_MINUS},
-    {"=+", SDL_SCANCODE_EQUALS}
-};
-
-KeyDesc combo_2[] = {
-    {"Q", SDL_SCANCODE_Q},
-    {"W", SDL_SCANCODE_W},
-    {"E", SDL_SCANCODE_E},
-    {"R", SDL_SCANCODE_R},
-    {"T", SDL_SCANCODE_T},
-    {"Y", SDL_SCANCODE_Y},
-    {"U", SDL_SCANCODE_U},
-    {"I", SDL_SCANCODE_I},
-    {"O", SDL_SCANCODE_O},
-    {"P", SDL_SCANCODE_P},
-    {"[{", SDL_SCANCODE_LEFTBRACKET},
-    {"]}", SDL_SCANCODE_RIGHTBRACKET},
-    {"\\|", SDL_SCANCODE_BACKSLASH}
-};
-
-KeyDesc combo_3[] = {
-    {"A", SDL_SCANCODE_A},
-    {"S", SDL_SCANCODE_S},
-    {"D", SDL_SCANCODE_D},
-    {"F", SDL_SCANCODE_F},
-    {"G", SDL_SCANCODE_G},
-    {"H", SDL_SCANCODE_H},
-    {"J", SDL_SCANCODE_J},
-    {"K", SDL_SCANCODE_K},
-    {"L", SDL_SCANCODE_L},
-    {";:", SDL_SCANCODE_SEMICOLON},
-    {"\'\"", SDL_SCANCODE_APOSTROPHE}
-};
-
-KeyDesc combo_4[] = {
-    {"Z", SDL_SCANCODE_Z},
-    {"X", SDL_SCANCODE_X},
-    {"C", SDL_SCANCODE_C},
-    {"V", SDL_SCANCODE_V},
-    {"B", SDL_SCANCODE_B},
-    {"N", SDL_SCANCODE_N},
-    {"M", SDL_SCANCODE_M},
-    {",<", SDL_SCANCODE_COMMA},
-    {".>", SDL_SCANCODE_PERIOD},
-    {"/?", SDL_SCANCODE_SLASH}
-};
-
 
 #define LOCK_SIZE 5
+
+@interface KeyboardView () <DPThumbViewDelegate>
+{
+	NSString *_layoutFilename;
+	DPThumbView *_thumbView;
+	CGFloat _prevAlpha;
+}
+
+@end
 
 @implementation KeyboardView
 @synthesize externKeyDelegate;
@@ -125,14 +61,6 @@ const CGFloat kIPhoneLandscapeKeyboardHeight = 200.0;// : 288
         btn.bkgColor = [UIColor clearColor];
         btn.edgeColor = [UIColor clearColor];
     }
-
-    if (btn.code == SDL_SCANCODE_LEFT ||
-        btn.code == SDL_SCANCODE_RIGHT ||
-        btn.code == SDL_SCANCODE_UP ||
-        btn.code == SDL_SCANCODE_DOWN)
-    {
-        btn.textColor = [UIColor colorWithRed:0.8 green:0.8 blue:0.8 alpha:1];
-    }
     
     [self addSubview:btn];
     self.keys = [self.keys arrayByAddingObject:btn];
@@ -149,197 +77,22 @@ const CGFloat kIPhoneLandscapeKeyboardHeight = 200.0;// : 288
     self.keys = nil;
 }
 
-- (void)createIPadPortraitKeys
-{
-    [self removeKeys];
-    KeyView *key;
-    BOOL fullKeys = FALSE;
-    int mainKeysWidth = fullKeys?780:740;
-    self.keys = [NSArray array];
-    float x0 = 15;
-    float marginy = 3.5;
-    float kw = 42.5;
-    float kh = 44;
-    float marginx = (mainKeysWidth-x0-x0-14.5*kw)/13;
-    float x = x0;
-    float y = 15;
-    float maxwidth = x0 + kw * 1.5 + 13 * (kw + marginx);
-    float rowY[6];
-   
-    [self createKey:@"ESC" code:SDL_SCANCODE_ESCAPE x:x y:y width:kw height:kh];
-    
-    x = maxwidth - 12 * kw - 11 * marginx;
-    rowY[0]=y;
-    for (int i = 0; i < ARRAY_SIZE(combo_f); i++) {
-        [self createKey:@(combo_f[i].title) code:combo_f[i].code x:x y:y width:kw height:kh];
-        x += kw+marginx;
-    }
-    
-    // 1 2 3 4 5 ...
-    y += kh + marginy*3;
-    if (fullKeys) y+=0.2*kh;
-    rowY[1]=y;
-    x = x0;
-    for (int i = 0; i < ARRAY_SIZE(combo_1); i++) {
-        [self createKey:@(combo_1[i].title) code:combo_1[i].code x:x y:y width:kw height:kh];
-        x += kw+marginx;
-    }
-    [self createKey:@" BS " code:SDL_SCANCODE_BACKSPACE x:x y:y width:maxwidth-x height:kh];
-    
-    // TAB Q W E R T Y ...
-    y += kh + marginy;
-    x = x0;
-    rowY[2]=y;
-
-    [self createKey:@"TAB" code:SDL_SCANCODE_TAB x:x y:y width:kw*1.5 height:kh];
-
-    x+=kw*1.5+marginx;
-    
-    for (int i = 0; i < ARRAY_SIZE(combo_2); i++) {
-        [self createKey:@(combo_2[i].title) code:combo_2[i].code x:x y:y width:kw height:kh];
-        x += kw+marginx;
-    }
-    
-    // CAPSLOCK A S D F ....
-    y += kh + marginy;
-    x = x0;
-    rowY[3]=y;
-
-    key=[self createKey:@"CAPSLOCK" code:SDL_SCANCODE_CAPSLOCK x:x y:y width:kw*2 height:kh];
-    self.capsLock=[[KeyLockIndicator alloc] initWithFrame:CGRectMake(8,8,LOCK_SIZE,LOCK_SIZE)];
-    [key addSubview:self.capsLock];
-    
-    x+=kw*2+marginx;
-    
-    for (int i = 0; i < ARRAY_SIZE(combo_3); i++) {
-        [self createKey:@(combo_3[i].title) code:combo_3[i].code x:x y:y width:kw height:kh];
-        x += kw+marginx;
-    }
-    [self createKey:@"RETURN" code:SDL_SCANCODE_RETURN x:x y:y width:maxwidth-x height:kh];
-
-    // SHIFT Z X C ...
-    y += kh + marginy;
-    x = x0;
-    rowY[4]=y;
-
-    [self createKey:@"SHIFT" code:SDL_SCANCODE_LSHIFT x:x y:y width:kw*2.5 height:kh];
-    x+=kw*2.5+marginx;
-    for (int i = 0; i < ARRAY_SIZE(combo_4); i++) {
-        [self createKey:@(combo_4[i].title) code:combo_4[i].code x:x y:y width:kw height:kh];
-        x += kw+marginx;
-    }
-    [self createKey:@"SHIFT" code:SDL_SCANCODE_RSHIFT x:x y:y width:maxwidth-x height:kh];
-
-    // CTRL, ALT, WHITESPACE, ...
-    y+= kh + marginy;
-    rowY[5]=y;
-
-    x = x0;
-    if (!fullKeys) {
-        kh = 1.2 * kh;
-    }
-    [self createKey:@"CTRL" code:SDL_SCANCODE_LCTRL x:x y:y width:1.5*kw height:kh];
-    x += 1.5*kw + marginx;
-    [self createKey:@"ALT" code:SDL_SCANCODE_LALT x:x y:y width:1.5*kw height:kh];
-    x += 1.5*kw + marginx;
-    
-    float spaceWidth;
-    if (fullKeys) {
-        spaceWidth = (maxwidth-3*kw-2*marginx-x);
-    } else {
-        spaceWidth = 5.5*kw;
-    }
-    
-    [self createKey:@" " code:SDL_SCANCODE_SPACE x:x y:y width:spaceWidth height:kh];
-    x += spaceWidth + marginx;
-    [self createKey:@"ALT" code:SDL_SCANCODE_RALT x:x y:y width:1.5*kw height:kh];
-    x += 1.5*kw + marginx;
-    [self createKey:@"CTRL" code:SDL_SCANCODE_RCTRL x:x y:y width:1.5*kw height:kh];
-    x += 1.5*kw + marginx;
-    
-    if (!fullKeys) {
-        float tmp_marginy = 5;
-        x += 20;
-        if (transparentKeys) {
-            [self createKey:@"    " code:SDL_SCANCODE_LEFT x:x y:y+kw+tmp_marginy width:kw height:kw];
-            x += kw + marginx;
-            [self createKey:@"    " code:SDL_SCANCODE_DOWN x:x y:y+kw+tmp_marginy width:kw height:kw];
-            [self createKey:@"    " code:SDL_SCANCODE_UP x:x y:y+tmp_marginy width:kw height:kw];
-            x += kw + marginx;
-            [self createKey:@"    " code:SDL_SCANCODE_RIGHT x:x y:y+kw+tmp_marginy width:kw height:kw];
-        } else {
-            [self createKey:@"LEFT" code:SDL_SCANCODE_LEFT x:x y:y+kw+tmp_marginy width:kw height:kw];
-            x += kw + marginx;
-            [self createKey:@"DOWN" code:SDL_SCANCODE_DOWN x:x y:y+kw+tmp_marginy width:kw height:kw];
-            [self createKey:@" UP " code:SDL_SCANCODE_UP x:x y:y+tmp_marginy width:kw height:kw];
-            x += kw + marginx;
-            [self createKey:@"RIGHT" code:SDL_SCANCODE_RIGHT x:x y:y+kw+tmp_marginy width:kw height:kw];
-        }
-    } else {
-        x0 = maxwidth+(self.bounds.size.width-maxwidth-3*kw-2*marginx)/2;
-        y = rowY[1];
-        x = x0;
-        [self createKey:@"INS" code:SDL_SCANCODE_INSERT x:x y:y width:kw height:kh];
-        x += kw+marginx;
-        [self createKey:@"HOME" code:SDL_SCANCODE_HOME x:x y:y width:kw height:kh];
-        x += kw+marginx;
-        [self createKey:@"PGUP" code:SDL_SCANCODE_PAGEUP x:x y:y width:kw height:kh];
-        ////////////////////
-        y = rowY[2];
-        x = x0;
-        [self createKey:@"DEL" code:SDL_SCANCODE_DELETE x:x y:y width:kw height:kh];
-        x += kw+marginx;
-        [self createKey:@"END" code:SDL_SCANCODE_END x:x y:y width:kw height:kh];
-        x += kw+marginx;
-        [self createKey:@"PGDN" code:SDL_SCANCODE_PAGEDOWN x:x y:y width:kw height:kh];
-        ////////////////////
-        y = rowY[4];
-        x = x0+kw+marginx;
-        [self createKey:@" UP " code:SDL_SCANCODE_UP x:x y:y width:kw height:kh];
-        x += kw+marginx;
-        ////////////////////
-        y = rowY[5];
-        x = x0;
-        [self createKey:@"LEFT" code:SDL_SCANCODE_LEFT x:x y:y width:kw height:kh];
-        x += kw+marginx;
-        [self createKey:@"DOWN" code:SDL_SCANCODE_DOWN x:x y:y width:kw height:kh];
-        x += kw+marginx;
-        [self createKey:@"RIGHT" code:SDL_SCANCODE_RIGHT x:x y:y width:kw height:kh];
-    }
-    
-    // On iPad, we will recreate keyboard
-    // after rotation. So we need to refresh
-    // Lock states.
-    [self updateKeyLock];
-}
-
-
--(void)createNumPadKeys
-{
-	NSString *configFile = [NSString stringWithFormat:@"configs/kpad4x5.json"];
-	NSString *kbdFile = [[[NSBundle mainBundle] bundlePath] stringByAppendingPathComponent:configFile];
-	[self createKeysFromConfigFile:kbdFile];
-}
-
--(void)createIPadLandscapeKeys
-{
-	NSString *configFile = [NSString stringWithFormat:@"configs/kbd18x5%@.json",fnSwitch?@"_fn":@""];
-	NSString *kbdFile = [[[NSBundle mainBundle] bundlePath] stringByAppendingPathComponent:configFile];
-	[self createKeysFromConfigFile:kbdFile];
-}
-
 - (void)createKeysFromConfigFile:(NSString*)kbdFile
 {
-
 	NSLog(@"kbdFile: %@", kbdFile);
-	
+	NSError *err = nil;
 	NSArray *infoList = [NSJSONSerialization
 					  JSONObjectWithData:[NSData dataWithContentsOfFile:kbdFile]
 					  options:0
-					  error:nil];
+					  error:&err];
+	if (!infoList) {
+		NSLog(@"keyboard layout file error: %@", err);
+		return;
+	}
     [self removeKeys];
     self.keys = [NSArray array];
 	
+	_thumbView = nil;
 	CGSize size = self.frame.size;
 	if (infoList != nil && [infoList isKindOfClass:[NSArray class]]) {
 		for (NSDictionary *info in infoList) {
@@ -354,8 +107,16 @@ const CGFloat kIPhoneLandscapeKeyboardHeight = 200.0;// : 288
 			
 			NSString *label = [info objectForKey:@"label"];
 			NSString *scancode = [info objectForKey:@"scancode"];
+		
+			if ([scancode isEqualToString:@"key-thumb"]) {
+				_thumbView = [[DPThumbView alloc] initWithFrame:CGRectMake(x, y, w, h)];
+				_thumbView.delegate = self;
+				_thumbView.text = info[@"label"];
+				_thumbView.textColor = [[ColorTheme defaultTheme] colorByName:@"key-text-color"];
+				[self addSubview:_thumbView];
+				continue;
+			}
 			int code = [DPKeyBinding keyIndexFromName:scancode];
-
 			KeyView *key = [self createKey:label code:code
 				x:(int)x y:(int)y width:(int)w height:(int)(h)];
 			key.altTitle = [info objectForKey:@"alt"];
@@ -374,72 +135,39 @@ const CGFloat kIPhoneLandscapeKeyboardHeight = 200.0;// : 288
 	[self updateKeyLock];
 }
 
--(void)createIphoneKeys
+- (void)createKeys
 {
-	int row = 5;
-	int col = 11;
-	if (self.bounds.size.height > 240) {
-		row = 6;
+	NSString *configFile = nil;
+	
+	if (_layoutFilename)
+	{
+		configFile = _layoutFilename;
 	}
-
-	NSString *configFile = [NSString stringWithFormat:@"configs/kbd%dx%d%@.json", col,row,fnSwitch?@"_fn":@""];
+	else
+	{
+		int row = 5;
+		int col = 11;
+		if (self.bounds.size.height > 240) {
+			row = 6;
+		}
+		configFile = [NSString stringWithFormat:@"kbd%dx%d", col, row];
+	}
+	
+	configFile = [NSString stringWithFormat:@"configs/%@%@.json", configFile, fnSwitch?@"_fn":@""];
 	NSString *kbdFile = [[[NSBundle mainBundle] bundlePath] stringByAppendingPathComponent:configFile];
 	[self createKeysFromConfigFile:kbdFile];
 }
 
-- (id)initWithType:(KeyboardType)type frame:(CGRect)frame
+-(id)initWithFrame:(CGRect)frame layout:(NSString*)layoutConfig
 {
-    if (self = [self initWithFrame:frame])
-    {
-        transparentKeys = YES;
-		
-        self.backgroundColor = [UIColor clearColor];
-    	self.numLock =[[KeyLockIndicator alloc] initWithFrame:CGRectMake(8,8,LOCK_SIZE,LOCK_SIZE)];
-    	self.capsLock =[[KeyLockIndicator alloc] initWithFrame:CGRectMake(8,8,LOCK_SIZE,LOCK_SIZE)];
-		
-        if (ISIPAD())
-        {
-            switch (type)
-            {
-                case KeyboardTypeLandscape:  
-                {
-                    [self createIPadLandscapeKeys];
-                    break;
-                }
-                    
-                case KeyboardTypePortrait:
-                {
-                    keyPadding = UIEdgeInsetsMake(2,  /* top */
-                                                  5,  /* left */
-                                                  7,  /* bottom */
-                                                  6); /* right */
-                    [self createIPadPortraitKeys];
-                    break;
-                }
-                    
-                default:
-                    break;
-            }
-        }
-        else
-        {
-            switch (type)
-            {
-                case KeyboardTypeNumPad:   
-                    [self createNumPadKeys];
-                    break;
-                case KeyboardTypeLandscape: 
-                case KeyboardTypePortrait:
-                    [self createIphoneKeys];
-                    break;
-                default:
-                    break;
-            }     
-        }
-    }
-    return self;
+	self = [self initWithFrame:frame];
+	self.backgroundColor = [UIColor clearColor];
+	self.numLock =[[KeyLockIndicator alloc] initWithFrame:CGRectMake(8,8,LOCK_SIZE,LOCK_SIZE)];
+	self.capsLock =[[KeyLockIndicator alloc] initWithFrame:CGRectMake(8,8,LOCK_SIZE,LOCK_SIZE)];
+	_layoutFilename = layoutConfig;
+	[self createKeys];
+	return self;
 }
-
 
 - (void)drawRect:(CGRect)rect 
 {
@@ -473,17 +201,11 @@ const CGFloat kIPhoneLandscapeKeyboardHeight = 200.0;// : 288
 
 - (void)onKeyDown:(KeyView*)k
 {
+	[self becomeOpaque];
     if (k.code == FN_KEY) 
     {
         fnSwitch = !fnSwitch;
-        if (ISIPAD()) 
-        {
-            [self createIPadLandscapeKeys];
-        } 
-        else 
-        {
-        	[self createIphoneKeys];
-        }
+        [self createKeys];
         if ( externKeyDelegate && [externKeyDelegate respondsToSelector:@selector(onKeyFunction:)]) {
             [externKeyDelegate onKeyFunction:k];
         }
@@ -519,6 +241,55 @@ const CGFloat kIPhoneLandscapeKeyboardHeight = 200.0;// : 288
             [self updateKeyLock];
         }
     }
+}
+
+- (BOOL)pointInside:(CGPoint)point withEvent:(UIEvent *)event
+{
+	if (_thumbView && _thumbView.showThumbOnly) {
+		return CGRectContainsPoint(_thumbView.frame, point);
+	} else {
+		return [super pointInside:point withEvent:event];
+	}
+}
+
+- (void)becomeTransparent
+{
+	if (_prevAlpha > 0) {
+		[UIView animateWithDuration:0.1 animations:^{
+			self.alpha = _prevAlpha;
+			//self.backgroundColor = [UIColor clearColor];
+			_prevAlpha = 0;
+		}];
+	}
+}
+
+- (void)becomeOpaque
+{
+	if (self.alpha != 1) {
+		[UIView animateWithDuration:0.1 animations:^{
+			_prevAlpha = self.alpha;
+			self.alpha = 1;
+			//self.backgroundColor = [UIColor blackColor];
+		}];
+	}
+	[NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(becomeTransparent) object:nil];
+	[self performSelector:@selector(becomeTransparent) withObject:nil afterDelay:5];
+}
+
+// MARK: DPThumbViewDelegate
+
+- (void)thumbViewDidMove:(DPThumbView*)thumbView
+{
+	if (_prevAlpha == 0) {
+		[NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(becomeTransparent) object:nil];
+		_prevAlpha = self.alpha;
+		self.alpha = 1;
+	}
+}
+
+- (void)thumbViewDidStop:(DPThumbView*)thumbView
+{
+	[self performSelector:@selector(becomeTransparent) withObject:nil afterDelay:5];
 }
 
 

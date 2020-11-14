@@ -45,7 +45,7 @@ typedef enum
 @property (nonatomic, strong) KeyLockIndicator *capsLock;
 @property (nonatomic, strong) KeyLockIndicator *numLock;
 
--(id)initWithType:(KeyboardType)type frame:(CGRect)frame;
+-(id)initWithFrame:(CGRect)frame layout:(NSString*)config;
 - (void)updateKeyLock;
 
 @end

@@ -28,7 +28,7 @@
 #import "DOSPadBaseViewController.h"
 #import "FloatPanel.h"
 
-@interface DosPadViewController_iPhone : DOSPadBaseViewController
+@interface DPEmulatorViewController : DOSPadBaseViewController
 <KeyDelegate,UIAlertViewDelegate>
 {
 }

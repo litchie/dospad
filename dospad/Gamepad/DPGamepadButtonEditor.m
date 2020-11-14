@@ -79,15 +79,9 @@
 	}
 }
 
-- (void)viewDidLoad
+- (void)viewWillAppear:(BOOL)animated
 {
-    [super viewDidLoad];
-    // Do any additional setup after loading the view.
-    self.view.backgroundColor = [UIColor lightGrayColor];
-    self.navigationItem.rightBarButtonItem = [self doneButtonItem];
-    self.navigationItem.rightBarButtonItem.enabled = NO;
-    self.editing = YES;
-    self.navigationItem.leftBarButtonItem = [self cancelButtonItem];
+	[super viewWillAppear:animated];
 	CGRect r = self.view.bounds;
 	self.scroller = [[UIScrollView alloc] initWithFrame:r];
 	self.scroller.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
@@ -148,7 +142,7 @@
 
 	y += 80 + margin;
  	
-	self.keyboard = [[KeyboardView alloc] initWithType:KeyboardTypePortrait frame:CGRectMake(x, y, w, 236)];
+	self.keyboard = [[KeyboardView alloc] initWithFrame:CGRectMake(x, y, w, 236) layout:@"kbd11x5"];
 	[self.container addSubview:self.keyboard];
 	self.keyboard.externKeyDelegate = self;
 	y += self.keyboard.frame.size.height + margin;
@@ -170,6 +164,18 @@
 	else
 		_keyIndex = keybinding.index;
   	[self updateVisibility];
+	
+}
+
+- (void)viewDidLoad
+{
+    [super viewDidLoad];
+    // Do any additional setup after loading the view.
+    self.view.backgroundColor = [UIColor lightGrayColor];
+    self.navigationItem.rightBarButtonItem = [self doneButtonItem];
+    self.navigationItem.rightBarButtonItem.enabled = NO;
+    self.editing = YES;
+    self.navigationItem.leftBarButtonItem = [self cancelButtonItem];
 }
 
 - (void)didPressButton:(UIButton*)btn

@@ -37,6 +37,12 @@ typedef enum {
     InputSource_TotalCount
 } InputSourceType;
 
+typedef enum {
+	DriveMount_Default,
+	DriveMount_Folder,
+	DriveMount_CDImage
+} DriveMountType;
+
 @interface DOSPadBaseViewController : UIViewController
 <
 	SDL_uikitopenglview_delegate,
@@ -94,5 +100,6 @@ typedef enum {
 -(void)updateCpuCycles:(NSString*)title;
 - (void)updateScreen;
 -(void) openMfiMapper:(id)sender;
+-(void)openDriveMountPicker:(DriveMountType)mountType;
 
 @end

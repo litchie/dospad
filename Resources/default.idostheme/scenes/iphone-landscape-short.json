@@ -2,6 +2,7 @@
     "name": "iphone-landscape-medium",
     "width": 1600,
     "height": 900,
+    "keyboard": "kbd11x5_land",
     "gamepad": "gamepad-landscape-short",
     "nodes": [
         {
