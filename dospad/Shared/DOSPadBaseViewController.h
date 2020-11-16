@@ -40,6 +40,8 @@ typedef enum {
 typedef enum {
 	DriveMount_Default,
 	DriveMount_Folder,
+	DriveMount_Packages,
+	DriveMount_DiskImage,
 	DriveMount_CDImage
 } DriveMountType;
 

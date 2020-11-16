@@ -350,9 +350,7 @@
 		E72BE74212911E2B009DC46A /* bar-portrait-iphone.png in Resources */ = {isa = PBXBuildFile; fileRef = E72BE71612911E2B009DC46A /* bar-portrait-iphone.png */; };
 		E72BE74312911E2B009DC46A /* bar-portrait-iphone@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E72BE71712911E2B009DC46A /* bar-portrait-iphone@2x.png */; };
 		E72BE74412911E2B009DC46A /* bar.png in Resources */ = {isa = PBXBuildFile; fileRef = E72BE71812911E2B009DC46A /* bar.png */; };
-		E72BE74712911E2B009DC46A /* dpnote.png in Resources */ = {isa = PBXBuildFile; fileRef = E72BE71B12911E2B009DC46A /* dpnote.png */; };
 		E72BE74812911E2B009DC46A /* gear.png in Resources */ = {isa = PBXBuildFile; fileRef = E72BE71C12911E2B009DC46A /* gear.png */; };
-		E72BE74912911E2B009DC46A /* holdfinger.png in Resources */ = {isa = PBXBuildFile; fileRef = E72BE71D12911E2B009DC46A /* holdfinger.png */; };
 		E72BE74C12911E2B009DC46A /* keyboard.png in Resources */ = {isa = PBXBuildFile; fileRef = E72BE72012911E2B009DC46A /* keyboard.png */; };
 		E72BE74D12911E2B009DC46A /* leftmouse.png in Resources */ = {isa = PBXBuildFile; fileRef = E72BE72112911E2B009DC46A /* leftmouse.png */; };
 		E72BE74E12911E2B009DC46A /* leftmouse@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E72BE72212911E2B009DC46A /* leftmouse@2x.png */; };
@@ -368,6 +366,7 @@
 		E72BE75E12911E83009DC46A /* joystickbtn.wav in Resources */ = {isa = PBXBuildFile; fileRef = E72BE75812911E83009DC46A /* joystickbtn.wav */; };
 		E72BE75F12911E83009DC46A /* joystickmove.wav in Resources */ = {isa = PBXBuildFile; fileRef = E72BE75912911E83009DC46A /* joystickmove.wav */; };
 		E72BE76012911E83009DC46A /* keypress.wav in Resources */ = {isa = PBXBuildFile; fileRef = E72BE75A12911E83009DC46A /* keypress.wav */; };
+		E72FA29A25622C5C009731A4 /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E72FA29925622C5C009731A4 /* CloudKit.framework */; };
 		E73A566B2534979900E3B3FB /* MfiGamepadConfiguration.m in Sources */ = {isa = PBXBuildFile; fileRef = E73A566A2534979900E3B3FB /* MfiGamepadConfiguration.m */; };
 		E73A566E2534A49000E3B3FB /* MfiGamepadManager.m in Sources */ = {isa = PBXBuildFile; fileRef = E73A566D2534A49000E3B3FB /* MfiGamepadManager.m */; };
 		E74BB2B715C93DBC005EC552 /* DosPadUIApplication.m in Sources */ = {isa = PBXBuildFile; fileRef = E74BB2B515C93DBC005EC552 /* DosPadUIApplication.m */; };
@@ -474,7 +473,6 @@
 		E7D6B8B911BF325700D34665 /* zconf.h in Headers */ = {isa = PBXBuildFile; fileRef = E7D6B8AA11BF325700D34665 /* zconf.h */; };
 		E7D6B8BA11BF325700D34665 /* zip.c in Sources */ = {isa = PBXBuildFile; fileRef = E7D6B8AB11BF325700D34665 /* zip.c */; };
 		E7D6B8BB11BF325700D34665 /* zip.h in Headers */ = {isa = PBXBuildFile; fileRef = E7D6B8AC11BF325700D34665 /* zip.h */; };
-		E7D78A0A129DF3210020D4A7 /* idos-portrait.jpg in Resources */ = {isa = PBXBuildFile; fileRef = E7D78A09129DF3210020D4A7 /* idos-portrait.jpg */; };
 		E7D78A65129E19380020D4A7 /* btn.png in Resources */ = {isa = PBXBuildFile; fileRef = E7D78A61129E19380020D4A7 /* btn.png */; };
 		E7D78A67129E19380020D4A7 /* btnpressed.png in Resources */ = {isa = PBXBuildFile; fileRef = E7D78A63129E19380020D4A7 /* btnpressed.png */; };
 		E7D78AC6129E98480020D4A7 /* fire.png in Resources */ = {isa = PBXBuildFile; fileRef = E7D78AC4129E98480020D4A7 /* fire.png */; };
@@ -1032,10 +1030,7 @@
 		E72BE71612911E2B009DC46A /* bar-portrait-iphone.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "bar-portrait-iphone.png"; path = "misc-res/bar-portrait-iphone.png"; sourceTree = "<group>"; };
 		E72BE71712911E2B009DC46A /* bar-portrait-iphone@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "bar-portrait-iphone@2x.png"; path = "misc-res/bar-portrait-iphone@2x.png"; sourceTree = "<group>"; };
 		E72BE71812911E2B009DC46A /* bar.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = bar.png; path = "misc-res/bar.png"; sourceTree = "<group>"; };
-		E72BE71A12911E2B009DC46A /* dospadportrait.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = dospadportrait.jpg; path = "misc-res/dospadportrait.jpg"; sourceTree = "<group>"; };
-		E72BE71B12911E2B009DC46A /* dpnote.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = dpnote.png; path = "misc-res/dpnote.png"; sourceTree = "<group>"; };
 		E72BE71C12911E2B009DC46A /* gear.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = gear.png; path = "misc-res/gear.png"; sourceTree = "<group>"; };
-		E72BE71D12911E2B009DC46A /* holdfinger.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = holdfinger.png; path = "misc-res/holdfinger.png"; sourceTree = "<group>"; };
 		E72BE72012911E2B009DC46A /* keyboard.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = keyboard.png; path = "misc-res/keyboard.png"; sourceTree = "<group>"; };
 		E72BE72112911E2B009DC46A /* leftmouse.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = leftmouse.png; path = "misc-res/leftmouse.png"; sourceTree = "<group>"; };
 		E72BE72212911E2B009DC46A /* leftmouse@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "leftmouse@2x.png"; path = "misc-res/leftmouse@2x.png"; sourceTree = "<group>"; };
@@ -1051,6 +1046,7 @@
 		E72BE75812911E83009DC46A /* joystickbtn.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; name = joystickbtn.wav; path = "audio-res/joystickbtn.wav"; sourceTree = "<group>"; };
 		E72BE75912911E83009DC46A /* joystickmove.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; name = joystickmove.wav; path = "audio-res/joystickmove.wav"; sourceTree = "<group>"; };
 		E72BE75A12911E83009DC46A /* keypress.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; name = keypress.wav; path = "audio-res/keypress.wav"; sourceTree = "<group>"; };
+		E72FA29925622C5C009731A4 /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = System/Library/Frameworks/CloudKit.framework; sourceTree = SDKROOT; };
 		E73A211E128EC1F5001FA168 /* AlertPrompt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AlertPrompt.h; sourceTree = "<group>"; };
 		E73A211F128EC1F5001FA168 /* AlertPrompt.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AlertPrompt.m; sourceTree = "<group>"; };
 		E73A56692534979900E3B3FB /* MfiGamepadConfiguration.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MfiGamepadConfiguration.h; sourceTree = "<group>"; };
@@ -1186,7 +1182,6 @@
 		E7D6B8AB11BF325700D34665 /* zip.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = zip.c; sourceTree = "<group>"; };
 		E7D6B8AC11BF325700D34665 /* zip.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = zip.h; sourceTree = "<group>"; };
 		E7D6B8CE11BF332400D34665 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
-		E7D78A09129DF3210020D4A7 /* idos-portrait.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = "idos-portrait.jpg"; path = "misc-res/idos-portrait.jpg"; sourceTree = "<group>"; };
 		E7D78A61129E19380020D4A7 /* btn.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = btn.png; path = "gamepad-res/btn.png"; sourceTree = "<group>"; };
 		E7D78A63129E19380020D4A7 /* btnpressed.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = btnpressed.png; path = "gamepad-res/btnpressed.png"; sourceTree = "<group>"; };
 		E7D78AC4129E98480020D4A7 /* fire.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = fire.png; path = "gamepad-res/fire.png"; sourceTree = "<group>"; };
@@ -1375,6 +1370,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				E7B2BBD0252155F000490083 /* QuickLookThumbnailing.framework in Frameworks */,
+				E72FA29A25622C5C009731A4 /* CloudKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1484,6 +1480,7 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				E72FA29925622C5C009731A4 /* CloudKit.framework */,
 				E7B2BBDE252190CA00490083 /* MobileCoreServices.framework */,
 				E7B7F86F1DE1D70200590701 /* libc++.tbd */,
 				FDB9E4CC0DEB84540027A75A /* AudioToolbox.framework */,
@@ -1987,16 +1984,12 @@
 				E7A01EE91CC92F0C0036A4CF /* kbd.png */,
 				E794F3F912DB4EDC00427836 /* 25-Keys-with-6x4-grid.png */,
 				E794F3FA12DB4EDC00427836 /* 25-keys.png */,
-				E7D78A09129DF3210020D4A7 /* idos-portrait.jpg */,
 				E71A268C129A1B2D0013D51C /* landbariphon.png */,
 				E71A268D129A1B2D0013D51C /* landbariphon@2x.png */,
 				E72BE71612911E2B009DC46A /* bar-portrait-iphone.png */,
 				E72BE71712911E2B009DC46A /* bar-portrait-iphone@2x.png */,
 				E72BE71812911E2B009DC46A /* bar.png */,
-				E72BE71A12911E2B009DC46A /* dospadportrait.jpg */,
-				E72BE71B12911E2B009DC46A /* dpnote.png */,
 				E72BE71C12911E2B009DC46A /* gear.png */,
-				E72BE71D12911E2B009DC46A /* holdfinger.png */,
 				E72BE72012911E2B009DC46A /* keyboard.png */,
 				E72BE72112911E2B009DC46A /* leftmouse.png */,
 				E72BE72212911E2B009DC46A /* leftmouse@2x.png */,
@@ -3064,13 +3057,11 @@
 				E72BE74212911E2B009DC46A /* bar-portrait-iphone.png in Resources */,
 				E72BE74312911E2B009DC46A /* bar-portrait-iphone@2x.png in Resources */,
 				E72BE74412911E2B009DC46A /* bar.png in Resources */,
-				E72BE74712911E2B009DC46A /* dpnote.png in Resources */,
 				E7A482461FF733E400AE7DB6 /* LaunchScreen.storyboard in Resources */,
 				E77E08532548007C00B5B11D /* default.idostheme in Resources */,
 				E7A01EFC1CC9C1C80036A4CF /* buttonpressed.png in Resources */,
 				E72BE74812911E2B009DC46A /* gear.png in Resources */,
 				E7B2BBEA2525728600490083 /* screenshot_bg.png in Resources */,
-				E72BE74912911E2B009DC46A /* holdfinger.png in Resources */,
 				E72BE74C12911E2B009DC46A /* keyboard.png in Resources */,
 				E72BE74D12911E2B009DC46A /* leftmouse.png in Resources */,
 				E72BE74E12911E2B009DC46A /* leftmouse@2x.png in Resources */,
@@ -3148,7 +3139,6 @@
 				E7123FEF129D0D470021237F /* glass-southwest.png in Resources */,
 				E7123FF1129D0D470021237F /* glass-west.png in Resources */,
 				E7D98C691CCA067400A17CFC /* modepianopressed@2x.png in Resources */,
-				E7D78A0A129DF3210020D4A7 /* idos-portrait.jpg in Resources */,
 				E7D78A65129E19380020D4A7 /* btn.png in Resources */,
 				E7D78A67129E19380020D4A7 /* btnpressed.png in Resources */,
 				E7D78AC6129E98480020D4A7 /* fire.png in Resources */,

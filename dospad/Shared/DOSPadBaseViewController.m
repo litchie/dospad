@@ -605,6 +605,16 @@ MfiGamepadMapperDelegate>
 		case DriveMount_Folder:
 			utis = @[@"public.folder"];
 			break;
+		case DriveMount_Packages:
+			utis = @[
+				@"com.litchie.idos-package"
+			];
+			break;
+		case DriveMount_DiskImage:
+			utis = @[
+				@"com.litchie.idos-diskimage"
+			];
+			break;
 		case DriveMount_CDImage:
 			utis = @[
 				@"com.litchie.idos-cdimage"

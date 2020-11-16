@@ -25,6 +25,7 @@
 #import "DPGamepad.h"
 #import "DPGamepadButtonEditor.h"
 #import "DPThumbView.h"
+#import "UIViewController+Alert.h"
 
 enum {
 	TAG_INPUT_MIN = 1000,
@@ -331,8 +332,10 @@ static struct {
 - (DPGamepad*)createGamepadHelper
 {
 	DPThemeScene *scn = [_currentTheme findSceneByName:(NSString*)[_currentScene getAttribute:@"gamepad"]];
-	const CGFloat height = ISIPAD() ? 300 : 240;
-	
+	CGFloat height = 240;
+	if (ISIPAD()) {
+		height = _rootContainer.bounds.size.width*0.3;
+	}
 	CGRect rect = CGRectMake(0, CGRectGetMaxY(_rootContainer.bounds)-height,
 		_rootContainer.bounds.size.width, height);
 	
@@ -379,7 +382,7 @@ static struct {
 	else
 	{
 		if (shouldShrinkScreen) {
-			if (ISIPAD()) viewRect.size.height -= 160;
+			if (ISIPAD()) viewRect.size.height -= 250;
 			[self putScreen:viewRect];
 		} else {
 			[self fillScreen:viewRect];
@@ -621,7 +624,43 @@ static struct {
 
 - (void)mountDrive:(id)sender
 {
-	[self openDriveMountPicker:DriveMount_Default];
+	NSMutableArray *actions = [NSMutableArray array];
+	
+	[actions addObject:[UIAlertAction
+		actionWithTitle:@"Folder"
+		style:UIAlertActionStyleDefault
+		handler:^(UIAlertAction * _Nonnull action) {
+			[self openDriveMountPicker:DriveMount_Folder];
+		}]];
+		
+	[actions addObject:[UIAlertAction
+		actionWithTitle:@"iDOS Packages"
+		style:UIAlertActionStyleDefault
+		handler:^(UIAlertAction * _Nonnull action) {
+			[self openDriveMountPicker:DriveMount_Packages];
+		}]];
+		
+	[actions addObject:[UIAlertAction
+		actionWithTitle:@"Disk images"
+		style:UIAlertActionStyleDefault
+		handler:^(UIAlertAction * _Nonnull action) {
+			[self openDriveMountPicker:DriveMount_DiskImage];
+		}]];
+
+	// iPad has a dedicated CDROM drive button for this
+	if (!ISIPAD())
+	{
+		[actions addObject:[UIAlertAction
+			actionWithTitle:@"CD Images"
+			style:UIAlertActionStyleDefault
+			handler:^(UIAlertAction * _Nonnull action) {
+				[self openDriveMountPicker:DriveMount_CDImage];
+			}]];
+	}
+	
+	[self alert:@"Mount as drive" message:@"Choose an option"
+		actions:actions
+		source:sender];
 }
 
 - (void)mountCDDrive:(id)sender
