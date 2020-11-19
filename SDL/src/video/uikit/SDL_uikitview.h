@@ -41,18 +41,11 @@
 #include "SDL_events.h"
 
 
-typedef enum {
-	MouseRightClickDefault,
-	MouseRightClickWithDoubleTap
-} MouseRightClickMode;
-
-
 @protocol MouseHoldDelegate
 
 -(void)onHold:(CGPoint)pt;
 -(void)cancelHold:(CGPoint)pt;
 -(void)onHoldMoved:(CGPoint)pt;
-- (MouseRightClickMode)currentRightClickMode;
 
 @end
 

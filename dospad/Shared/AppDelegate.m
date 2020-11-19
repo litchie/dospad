@@ -23,6 +23,7 @@
 #import "ColorTheme.h"
 #import "ZipArchive.h"
 #import "UIViewController+Alert.h"
+#import "DPSettings.h"
 
 @interface AppDelegate ()
 {
@@ -133,25 +134,6 @@
 	[ColorTheme setDefaultTheme:theme];
 }
 
-- (void)registerDefaultSettings
-{
-	NSString *path = [[NSBundle mainBundle] bundlePath];
-	path = [path stringByAppendingPathComponent:@"Settings.bundle"];
-	path = [path stringByAppendingPathComponent:@"Root.plist"];
-	NSDictionary *settingsDict = [NSDictionary dictionaryWithContentsOfFile:path];
-	NSArray *prefs = settingsDict[@"PreferenceSpecifiers"];
-	NSMutableDictionary *defs = [NSMutableDictionary dictionary];
-	for (NSDictionary *item in prefs) {
-		NSString *key = item[@"Key"];
-		NSObject *obj = item[@"DefaultValue"];
-		if (key && obj) {
-			defs[key] = obj;
-		}
-	}
-	if (defs.count > 0) {
-		[[NSUserDefaults standardUserDefaults] registerDefaults:defs];
-	}
-}
 
 // Reference: https://developer.apple.com/library/ios/qa/qa1719/_index.html
 - (BOOL)setBackupAttributeToItemAtPath:(NSString *)filePathString skip:(BOOL)skip
@@ -190,7 +172,7 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions 
 {
 	NSLog(@"didFinishLaunchingWithOptions %@", launchOptions);
-	[self registerDefaultSettings];
+	[DPSettings shared];
 	[self initBackup];
 	[self initColorTheme];
 

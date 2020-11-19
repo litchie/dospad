@@ -26,6 +26,7 @@
 #import "PianoKeyboard.h"
 #import "DOSPadEmulator.h"
 #import "KeyboardSpy.h"
+#import "DPSettings.h"
 
 typedef enum {
     InputSource_PCKeyboard = 0,
@@ -96,7 +97,7 @@ typedef enum {
 - (void)createMouseButtons;
 - (void)createPianoKeyboard;
 - (void)fillScreen:(CGRect)availRect;
-- (CGRect)putScreen:(CGRect)availRect;
+- (CGRect)putScreen:(CGRect)availRect scaleMode:(DPScreenScaleMode)scaleMode;
 
 -(void)updateFrameskip:(NSNumber*)skip;
 -(void)updateCpuCycles:(NSString*)title;

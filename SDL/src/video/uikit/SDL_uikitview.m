@@ -54,6 +54,8 @@ void SDL_init_keyboard()
 	SDL_GetDefaultKeymap(keymap);
 	SDL_SetKeymap(0, 0, keymap, SDL_NUM_SCANCODES);
 }
+#import "DPSettings.h"
+
 #endif
 
 @interface SDL_uikitview ()
@@ -236,9 +238,7 @@ static CGFloat CGPointDistanceToPoint(CGPoint a, CGPoint b)
 		if (touch == _primaryTouch) {
 			
 			//NSLog(@"primary ended tap count %d", (int)[_primaryTouch tapCount]);
-			if (self.mouseHoldDelegate
-				&& [self.mouseHoldDelegate currentRightClickMode] == MouseRightClickWithDoubleTap
-				&& [_primaryTouch tapCount] == 2)
+			if ([DPSettings shared].doubleTapAsRightClick && [_primaryTouch tapCount] == 2)
 			{
 				[self addClick:YES];
 			}
@@ -317,7 +317,7 @@ static CGFloat CGPointDistanceToPoint(CGPoint a, CGPoint b)
 - (void)sendMouseMotion:(int)index x:(CGFloat)x y:(CGFloat)y
 {
 	[self ensureSDLMouse];
-	float mouseSpeed = [[NSUserDefaults standardUserDefaults] floatForKey:@"mouse_speed"];
+	float mouseSpeed = [DPSettings shared].mouseSpeed;
 	if (mouseSpeed == 0) mouseSpeed=0.5;
 	float scale = 1+2*mouseSpeed;
 	NSAssert(index==0 && SDL_GetNumMice()==1, @"Bad mouse");
@@ -326,6 +326,9 @@ static CGFloat CGPointDistanceToPoint(CGPoint a, CGPoint b)
 
 - (void)sendMouseEvent:(int)index left:(BOOL)isLeft down:(BOOL)isDown
 {
+	if (![DPSettings shared].tapAsClick)
+		return;
+
 	[self ensureSDLMouse];
 	NSAssert(index==0 && SDL_GetNumMice()==1, @"Bad mouse");
 	NSLog(@"mouse button %@ %@", isLeft?@"Left":@"Right", isDown?@"Down":@"Up");
@@ -363,6 +366,9 @@ static CGFloat CGPointDistanceToPoint(CGPoint a, CGPoint b)
 
 - (void)addClick:(BOOL)rightClick
 {
+	if (![DPSettings shared].tapAsClick)
+		return;
+		
 	if (_pendingClickCount >= MAX_PENDING_CLICKS)
 		return;
 	int i = _pendingClickIndex + _pendingClickCount;

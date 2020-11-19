@@ -238,16 +238,10 @@ static struct {
     }
 }
 
--(float)floatAlpha
-{
-    NSUserDefaults *defs=[NSUserDefaults standardUserDefaults];
-    return 1-[defs floatForKey:kTransparency];    
-}
-
 
 -(void)updateAlpha
 {
-    float a = [self floatAlpha];
+    float a = [DPSettings shared].floatAlpha;
     for (UIView *v in _rootContainer.subviews)
     {
     	if (v.tag > TAG_INPUT_MIN && v.tag < TAG_INPUT_MAX)
@@ -264,7 +258,7 @@ static struct {
 	UIView *container = [[UIView alloc] initWithFrame:CGRectMake(0, vh-40, 200, 40)];
     // Transparency
     container.tag = TAG_INPUT_MOUSE_BUTTONS;
-    container.alpha=[self floatAlpha];
+    container.alpha = [DPSettings shared].floatAlpha;
 	[_rootContainer addSubview:container];
 	
 	// Add movable control
@@ -303,7 +297,7 @@ static struct {
 {
 	KeyboardView *numpad = [[KeyboardView alloc] initWithFrame:CGRectMake(_rootContainer.bounds.size.width-160,120,160,200)
 	layout:@"kpad4x5"];
-	numpad.alpha = [self floatAlpha];
+	numpad.alpha = [DPSettings shared].floatAlpha;
 	numpad.tag = TAG_INPUT_NUMPAD;
 	[_rootContainer addSubview:numpad];
 	
@@ -324,7 +318,7 @@ static struct {
 		keyboardHeight);
 	kbd = [[KeyboardView alloc] initWithFrame:rect
 			layout:(NSString*)[_currentScene getAttribute:@"keyboard"]];
-	kbd.alpha = [self floatAlpha];
+	kbd.alpha = [DPSettings shared].floatAlpha;
 	[_rootContainer addSubview:kbd];
 	kbd.tag = TAG_INPUT_KEYBOARD;
 }
@@ -352,14 +346,14 @@ static struct {
 {
 	DPGamepad *gamepad = [self createGamepadHelper];
 	gamepad.tag = TAG_INPUT_JOYSTICK;
-	gamepad.alpha = [self floatAlpha];
+	gamepad.alpha = [DPSettings shared].floatAlpha;
 	gamepad.stickMode = YES;
 }
 
 - (void)createGamepad
 {
 	DPGamepad *gamepad = [self createGamepadHelper];
-	gamepad.alpha = [self floatAlpha];
+	gamepad.alpha = [DPSettings shared].floatAlpha;
 	gamepad.tag = TAG_INPUT_GAMEPAD;
 }
 
@@ -377,15 +371,22 @@ static struct {
 	CGRect viewRect = _rootContainer.bounds;
 	if ([self isPortrait])
 	{
-		[self putScreen:_screenRect];
+		[self fillScreen:_screenRect];
 	}
 	else
 	{
-		if (shouldShrinkScreen) {
-			if (ISIPAD()) viewRect.size.height -= 250;
-			[self putScreen:viewRect];
-		} else {
-			[self fillScreen:viewRect];
+		if (shouldShrinkScreen)
+		{
+			if (ISIPAD()) {
+				viewRect.size.height -= 250;
+				[self putScreen:viewRect scaleMode:[DPSettings shared].screenScaleMode];
+			} else {
+				[self putScreen:viewRect scaleMode:DPScreenScaleModeAspectFit4x3];
+			}
+		}
+		else
+		{
+			[self putScreen:viewRect scaleMode:[DPSettings shared].screenScaleMode];
 		}
 	}
 }
@@ -468,7 +469,6 @@ static struct {
 		{
 			[sceneContainer addSubview:self.screenView];
 			_screenRect = frame;
-			[self fillScreen:frame];
 		}
 		else if ([type isEqualToString:@"cycles-label"])
 		{
@@ -567,6 +567,7 @@ static struct {
 	}
 	_rootContainer = [self createSceneView:_currentScene frame:viewRect];
 	[self.view addSubview:_rootContainer];
+	[self updateScreen];
 }
 
 // Portrait mode only

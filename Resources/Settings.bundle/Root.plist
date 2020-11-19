@@ -51,22 +51,103 @@
 			<string>PSToggleSwitchSpecifier</string>
 		</dict>
 		<dict>
-			<key>DefaultValue</key>
-			<false/>
-			<key>Key</key>
-			<string>double_tap_as_right_click</string>
-			<key>Title</key>
-			<string>Double Tap As Right Click</string>
-			<key>Type</key>
-			<string>PSToggleSwitchSpecifier</string>
-		</dict>
-		<dict>
 			<key>Type</key>
 			<string>PSToggleSwitchSpecifier</string>
 			<key>Title</key>
 			<string>Smart Keyboard Mappings (iPad)</string>
 			<key>Key</key>
 			<string>smart_keyboard_mappings</string>
+			<key>DefaultValue</key>
+			<false/>
+		</dict>
+		<dict>
+			<key>Type</key>
+			<string>PSGroupSpecifier</string>
+			<key>Title</key>
+			<string>Screen</string>
+			<key>FooterText</key>
+			<string>Screen works as trackpad. To right click: hold one finger on screen, then quickly tap with another finger.</string>
+		</dict>
+		<dict>
+			<key>Type</key>
+			<string>PSMultiValueSpecifier</string>
+			<key>Title</key>
+			<string>Landscape scale</string>
+			<key>Key</key>
+			<string>screen_scale_mode</string>
+			<key>DefaultValue</key>
+			<integer>1</integer>
+			<key>Titles</key>
+			<array>
+				<string>fill screen</string>
+				<string>aspect fit 4:3</string>
+				<string>aspect fit 16:10</string>
+				<string>aspect fit 16:9</string>
+			</array>
+			<key>Values</key>
+			<array>
+				<integer>1</integer>
+				<integer>2</integer>
+				<integer>3</integer>
+				<integer>4</integer>
+			</array>
+			<key>ShortTitles</key>
+			<array>
+				<string>fill</string>
+				<string>4:3</string>
+				<string>16:10</string>
+				<string>16:9</string>
+			</array>
+		</dict>
+		<dict>
+			<key>Type</key>
+			<string>PSToggleSwitchSpecifier</string>
+			<key>Title</key>
+			<string>Tap as click</string>
+			<key>Key</key>
+			<string>tap_as_click</string>
+			<key>DefaultValue</key>
+			<true/>
+		</dict>
+		<dict>
+			<key>DefaultValue</key>
+			<false/>
+			<key>Key</key>
+			<string>double_tap_as_right_click</string>
+			<key>Title</key>
+			<string>Double tap as right click</string>
+			<key>Type</key>
+			<string>PSToggleSwitchSpecifier</string>
+		</dict>
+		<dict>
+			<key>Title</key>
+			<string>Pan as mouse move</string>
+			<key>Type</key>
+			<string>PSTitleValueSpecifier</string>
+			<key>DefaultValue</key>
+			<string>speed👇</string>
+			<key>Key</key>
+			<string>mouse_speed_title</string>
+		</dict>
+		<dict>
+			<key>DefaultValue</key>
+			<real>0.5</real>
+			<key>Key</key>
+			<string>mouse_speed</string>
+			<key>MaximumValue</key>
+			<integer>1</integer>
+			<key>MinimumValue</key>
+			<integer>0</integer>
+			<key>Type</key>
+			<string>PSSliderSpecifier</string>
+		</dict>
+		<dict>
+			<key>Type</key>
+			<string>PSToggleSwitchSpecifier</string>
+			<key>Title</key>
+			<string>Show mouse hold indicator</string>
+			<key>Key</key>
+			<string>show_mouse_hold</string>
 			<key>DefaultValue</key>
 			<false/>
 		</dict>
@@ -81,24 +162,6 @@
 			<real>0.2</real>
 			<key>Key</key>
 			<string>transparency</string>
-			<key>MaximumValue</key>
-			<integer>1</integer>
-			<key>MinimumValue</key>
-			<integer>0</integer>
-			<key>Type</key>
-			<string>PSSliderSpecifier</string>
-		</dict>
-		<dict>
-			<key>Title</key>
-			<string>Mouse Speed</string>
-			<key>Type</key>
-			<string>PSGroupSpecifier</string>
-		</dict>
-		<dict>
-			<key>DefaultValue</key>
-			<real>0.5</real>
-			<key>Key</key>
-			<string>mouse_speed</string>
 			<key>MaximumValue</key>
 			<integer>1</integer>
 			<key>MinimumValue</key>

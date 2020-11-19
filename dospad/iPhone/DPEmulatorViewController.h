@@ -23,7 +23,6 @@
 #import "Common.h"
 #import "HoldIndicator.h"
 #import "FrameskipIndicator.h"
-#import "GamePadView.h"
 #import "SliderView.h"
 #import "DOSPadBaseViewController.h"
 #import "FloatPanel.h"

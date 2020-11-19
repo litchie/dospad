@@ -61,7 +61,7 @@ MfiGamepadMapperDelegate>
 // scale the screen view to fill the available rect,
 // and keep it at 4:3 unless it's a wide screen (16:10).
 // Return the occupied rect.
-- (CGRect)putScreen:(CGRect)availRect
+- (CGRect)putScreen:(CGRect)availRect scaleMode:(DPScreenScaleMode)scaleMode
 {
 	CGFloat cx = CGRectGetMidX(availRect);
 	CGFloat cy = CGRectGetMidY(availRect);
@@ -69,19 +69,30 @@ MfiGamepadMapperDelegate>
 	CGFloat h = availRect.size.height;
     CGFloat sw = self.screenView.bounds.size.width;
     CGFloat sh = self.screenView.bounds.size.height;
-	if (w * 3 / 4 > h)
-	{
-		// Make it 16:10 if this is a wide screen
-		CGFloat maxWidth = h * 16 / 10;
-		if (w >= maxWidth)
-			w = maxWidth;
-		else
-			w = h * 4 / 3;
+
+	switch (scaleMode) {
+		case DPScreenScaleModeAspectFit4x3:
+			if (h * 4 / 3 > w)
+				h = w * 3 / 4;
+			else
+				w = h * 4 / 3;
+			break;
+		case DPScreenScaleModeAspectFit16x10:
+			if (h * 16 / 10 > w)
+				h = w * 10 / 16;
+			else
+				w = h * 16 / 10;
+			break;
+		case DPScreenScaleModeAspectFit16x9:
+			if (h * 16 / 9 > w)
+				h = w * 9 / 16;
+			else
+				w = h * 16 / 9;
+			break;
+		default:
+			break;
 	}
-	else
-	{
-		h = w * 3 / 4;
-	}
+	
     self.screenView.transform = CGAffineTransformMakeScale(w/sw,h/sh);
 	self.screenView.center = CGPointMake(cx, cy);
     return CGRectMake(cx-w/2, cy-h/2, w, h);
@@ -176,7 +187,7 @@ MfiGamepadMapperDelegate>
     holdIndicator = [[HoldIndicator alloc] initWithFrame:CGRectMake(0,0,100,100)];
     holdIndicator.alpha = 0;
     //holdIndicator.transform = CGAffineTransformMakeScale(1.5, 1.5);
-   // [self.view addSubview:holdIndicator];
+    [self.view addSubview:holdIndicator];
     
 #ifdef APPSTORE
     // For non appstore builds, we should use private API to support
@@ -247,14 +258,15 @@ MfiGamepadMapperDelegate>
 // MARK: Mouse Hold
 -(void)onHold:(CGPoint)pt
 {
-#if 0 // Disable hold indicator
-    CGPoint pt2 = [self.screenView convertPoint:pt toView:self.view];
-    holdIndicator.center=pt2;
-    [self.view bringSubviewToFront:holdIndicator];
-    [UIView animateWithDuration:0.3 animations:^{
-		holdIndicator.alpha = 1;
-	}];
-#endif
+	if ([DPSettings shared].showMouseHold)
+	{
+		CGPoint pt2 = [self.screenView convertPoint:pt toView:self.view];
+		holdIndicator.center=pt2;
+		[self.view bringSubviewToFront:holdIndicator];
+		[UIView animateWithDuration:0.3 animations:^{
+			holdIndicator.alpha = 1;
+		}];
+	}
 }
 
 -(void)cancelHold:(CGPoint)pt
@@ -266,15 +278,6 @@ MfiGamepadMapperDelegate>
 {
     CGPoint pt2 = [self.screenView convertPoint:pt toView:self.view];
     holdIndicator.center=pt2;
-}
-
-- (MouseRightClickMode)currentRightClickMode
-{
-	if (DEFS_GET_INT(kDoubleTapAsRightClick) == 1) {
-		return MouseRightClickWithDoubleTap;
-	} else {
-		return MouseRightClickDefault;
-	}
 }
 
 -(void)updateFrameskip:(NSNumber*)skip

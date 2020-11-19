@@ -32,27 +32,17 @@
 #include "keys.h"
 #include "cmd_history.h"
 
-#define kTransparency          @"transparency"
 #define kKeySoundEnabled       @"key_sound_enabled"
-#define kDoubleTapAsRightClick @"double_tap_as_right_click"
 #define kGamePadSoundEnabled   @"gamepad_sound_enabled"
-#define kDPadMovable           @"dpad_movable"
 #define kSmartKeyboardMappings @"smart_keyboard_mappings"
 #define kNumpadEnabled         @"numpad_enabled"
 #define kJoystickEnabled       @"joystick_enabled"
-#define KWebServerEnabled      @"httpd_enabled"
-#define kWebServerPort         @"httpd_port"
 #define kiCloudBackupEnabled   @"icloud_backup_enabled"
 
 #define DOCUMENTS_DIR [\
 	NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) \
 	objectAtIndex:0]
 
-/*
- * NOTE: If you are modifying this string,
- *       you must manually update SDL_uikitview.m!
- */
-#define kMouseSpeed            @"mouse_speed"
 
 
 #define BUILD_VERSION [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleVersion"]
