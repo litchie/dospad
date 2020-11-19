@@ -23,7 +23,7 @@
 #import "SDL_uikitview.h"
 
 #define POSITION_CHANGE_THRESHOLD 20 /* Cancel hold If finger pos move beyond this */
-#define MOUSE_HOLD_INTERVAL 1.0f /* mouse hold happens after this interval */
+#define MOUSE_HOLD_INTERVAL 1.5f /* mouse hold happens after this interval */
 #define TAP_THRESHOLD 0.3f /* Tap interval should be less than 0.3s */
 
 /* Mouse hold status */
@@ -256,6 +256,8 @@ static CGFloat CGPointDistanceToPoint(CGPoint a, CGPoint b)
 			if ([_secondaryTouch tapCount] > 0)
 			{
 				[self addClick:YES];
+				// Don't send left button down
+				[self endHold];
 			}
 
 			// If right down, we should release it as well
