@@ -416,7 +416,6 @@
 		E7960FDC2564CE7100556B9D /* BReverbModel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E7960FAD2564CE7100556B9D /* BReverbModel.cpp */; };
 		E79610272564DCA000556B9D /* libmt32emu.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E7960F462564CE4D00556B9D /* libmt32emu.a */; };
 		E79610322566580000556B9D /* DPSettings.m in Sources */ = {isa = PBXBuildFile; fileRef = E7961031256657FF00556B9D /* DPSettings.m */; };
-		E79610332566580000556B9D /* DPSettings.m in Sources */ = {isa = PBXBuildFile; fileRef = E7961031256657FF00556B9D /* DPSettings.m */; };
 		E796109E256A6B5700556B9D /* iDOSThumbnail.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = E7B2BBCE252155EF00490083 /* iDOSThumbnail.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		E7A01EE71CC9277E0036A4CF /* ColorTheme.m in Sources */ = {isa = PBXBuildFile; fileRef = E7A01EDD1CC927370036A4CF /* ColorTheme.m */; };
 		E7A01EF41CC9A5480036A4CF /* CoreAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FDB9E40C0DEB81970027A75A /* CoreAudio.framework */; };
@@ -1050,10 +1049,10 @@
 		E729BF4C129BF18F002B05B2 /* mouseon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = mouseon.png; sourceTree = "<group>"; };
 		E729BF4D129BF18F002B05B2 /* mouseon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "mouseon@2x.png"; sourceTree = "<group>"; };
 		E729BF4E129BF18F002B05B2 /* mouseon~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "mouseon~ipad.png"; sourceTree = "<group>"; };
-		E72BE69412911096009DC46A /* DPEmulatorViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DPEmulatorViewController.h; path = Main/DPEmulatorViewController.h; sourceTree = "<group>"; };
-		E72BE69512911096009DC46A /* DPEmulatorViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DPEmulatorViewController.m; path = Main/DPEmulatorViewController.m; sourceTree = "<group>"; };
-		E72BE6C312911B5C009DC46A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = Main/AppDelegate.h; sourceTree = "<group>"; };
-		E72BE6C412911B5C009DC46A /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppDelegate.m; path = Main/AppDelegate.m; sourceTree = "<group>"; };
+		E72BE69412911096009DC46A /* DPEmulatorViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DPEmulatorViewController.h; sourceTree = "<group>"; };
+		E72BE69512911096009DC46A /* DPEmulatorViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DPEmulatorViewController.m; sourceTree = "<group>"; };
+		E72BE6C312911B5C009DC46A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		E72BE6C412911B5C009DC46A /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		E72BE6C512911B5C009DC46A /* DOSPadEmulator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DOSPadEmulator.h; sourceTree = "<group>"; };
 		E72BE6C612911B5C009DC46A /* DOSPadEmulator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DOSPadEmulator.m; sourceTree = "<group>"; };
 		E72BE6C912911B5C009DC46A /* KeyboardView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KeyboardView.h; sourceTree = "<group>"; };
@@ -1124,7 +1123,7 @@
 		E778B2C5123919ED008AF49A /* SDLnetsys.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SDLnetsys.h; path = SDL_net/SDLnetsys.h; sourceTree = "<group>"; };
 		E778B2C6123919ED008AF49A /* SDLnetTCP.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = SDLnetTCP.c; path = SDL_net/SDLnetTCP.c; sourceTree = "<group>"; };
 		E778B2C7123919ED008AF49A /* SDLnetUDP.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = SDLnetUDP.c; path = SDL_net/SDLnetUDP.c; sourceTree = "<group>"; };
-		E77DAFB311B5D83600B78E69 /* dospad_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = dospad_Prefix.pch; path = ../dospad_Prefix.pch; sourceTree = "<group>"; };
+		E77DAFB311B5D83600B78E69 /* dospad_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = dospad_Prefix.pch; sourceTree = "<group>"; };
 		E77DAFC411B5D83600B78E69 /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		E77DB04111B5E10700B78E69 /* libstdc++.6.0.9.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libstdc++.6.0.9.dylib"; path = "usr/lib/libstdc++.6.0.9.dylib"; sourceTree = SDKROOT; };
 		E77DB04311B5E11100B78E69 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
@@ -1237,6 +1236,7 @@
 		E79610002564DBB800556B9D /* midi_mt32.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = midi_mt32.cpp; sourceTree = "<group>"; };
 		E7961030256657FF00556B9D /* DPSettings.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DPSettings.h; sourceTree = "<group>"; };
 		E7961031256657FF00556B9D /* DPSettings.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DPSettings.m; sourceTree = "<group>"; };
+		E796111B256ACA4300556B9D /* DPPrefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DPPrefix.pch; sourceTree = "<group>"; };
 		E79970041241F09400502015 /* cmd_history.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cmd_history.h; sourceTree = "<group>"; };
 		E799706212422D6800502015 /* FloatingView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FloatingView.h; sourceTree = "<group>"; };
 		E799706312422D6800502015 /* FloatingView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FloatingView.m; sourceTree = "<group>"; };
@@ -2168,41 +2168,28 @@
 		E77DAFAF11B5D83600B78E69 /* dospad */ = {
 			isa = PBXGroup;
 			children = (
-				E7FDFB67255150DA00A6DE66 /* Util */,
+				E796111B256ACA4300556B9D /* DPPrefix.pch */,
 				E77E085B2549126700B5B11D /* Gamepad */,
-				E71706E425472C5F000AF482 /* Theme */,
 				E7D98C6C1CCB228200A17CFC /* Main */,
+				E77DAFC311B5D83600B78E69 /* MfiGamepad */,
+				E71706E425472C5F000AF482 /* Theme */,
+				E7FDFB67255150DA00A6DE66 /* Util */,
 				E7D98C6B1CCB227A00A17CFC /* Views */,
-				E77DAFC311B5D83600B78E69 /* Shared */,
 			);
 			path = dospad;
 			sourceTree = "<group>";
 		};
-		E77DAFC311B5D83600B78E69 /* Shared */ = {
+		E77DAFC311B5D83600B78E69 /* MfiGamepad */ = {
 			isa = PBXGroup;
 			children = (
-				E79970041241F09400502015 /* cmd_history.h */,
-				E792A4BA11E36C9C00894C71 /* Common.h */,
-				E72BE6C512911B5C009DC46A /* DOSPadEmulator.h */,
-				E72BE6C612911B5C009DC46A /* DOSPadEmulator.m */,
-				E77DAFB311B5D83600B78E69 /* dospad_Prefix.pch */,
-				E74BB2B415C93DBC005EC552 /* DosPadUIApplication.h */,
-				E74BB2B515C93DBC005EC552 /* DosPadUIApplication.m */,
-				E7D214C511E45BD000D9654E /* keys.h */,
-				E7D214C711E45BDE00D9654E /* keys.m */,
-				E77DAFC411B5D83600B78E69 /* main.m */,
 				E73A56692534979900E3B3FB /* MfiGamepadConfiguration.h */,
 				E73A566A2534979900E3B3FB /* MfiGamepadConfiguration.m */,
 				E73A566C2534A49000E3B3FB /* MfiGamepadManager.h */,
 				E73A566D2534A49000E3B3FB /* MfiGamepadManager.m */,
 				E7DF95C72535965600ECB198 /* MfiGamepadMapperView.h */,
 				E7DF95C82535965600ECB198 /* MfiGamepadMapperView.m */,
-				E7FDFB40254E6EEE00A6DE66 /* DPKeyBinding.h */,
-				E7FDFB41254E6EEE00A6DE66 /* DPKeyBinding.m */,
-				E7961030256657FF00556B9D /* DPSettings.h */,
-				E7961031256657FF00556B9D /* DPSettings.m */,
 			);
-			path = Shared;
+			path = MfiGamepad;
 			sourceTree = "<group>";
 		};
 		E77E085B2549126700B5B11D /* Gamepad */ = {
@@ -2478,8 +2465,7 @@
 				E7FDFB94255A3F8000A6DE66 /* DPThumbView.h */,
 				E7FDFB95255A3F8000A6DE66 /* DPThumbView.m */,
 			);
-			name = Views;
-			path = Shared;
+			path = Views;
 			sourceTree = "<group>";
 		};
 		E7D98C6C1CCB228200A17CFC /* Main */ = {
@@ -2487,10 +2473,24 @@
 			children = (
 				E72BE6C312911B5C009DC46A /* AppDelegate.h */,
 				E72BE6C412911B5C009DC46A /* AppDelegate.m */,
-				E72BE69512911096009DC46A /* DPEmulatorViewController.m */,
+				E79970041241F09400502015 /* cmd_history.h */,
+				E792A4BA11E36C9C00894C71 /* Common.h */,
+				E77DAFB311B5D83600B78E69 /* dospad_Prefix.pch */,
+				E72BE6C512911B5C009DC46A /* DOSPadEmulator.h */,
+				E72BE6C612911B5C009DC46A /* DOSPadEmulator.m */,
+				E74BB2B415C93DBC005EC552 /* DosPadUIApplication.h */,
+				E74BB2B515C93DBC005EC552 /* DosPadUIApplication.m */,
 				E72BE69412911096009DC46A /* DPEmulatorViewController.h */,
+				E72BE69512911096009DC46A /* DPEmulatorViewController.m */,
+				E7FDFB40254E6EEE00A6DE66 /* DPKeyBinding.h */,
+				E7FDFB41254E6EEE00A6DE66 /* DPKeyBinding.m */,
+				E7961030256657FF00556B9D /* DPSettings.h */,
+				E7961031256657FF00556B9D /* DPSettings.m */,
+				E7D214C511E45BD000D9654E /* keys.h */,
+				E7D214C711E45BDE00D9654E /* keys.m */,
+				E77DAFC411B5D83600B78E69 /* main.m */,
 			);
-			name = Main;
+			path = Main;
 			sourceTree = "<group>";
 		};
 		E7D98C6E1CCB23EE00A17CFC /* SDL */ = {
@@ -3591,7 +3591,6 @@
 				E7960FDB2564CE7100556B9D /* LA32FloatWaveGenerator.cpp in Sources */,
 				E7960FCE2564CE7100556B9D /* TVP.cpp in Sources */,
 				E7960FCF2564CE7100556B9D /* Poly.cpp in Sources */,
-				E79610332566580000556B9D /* DPSettings.m in Sources */,
 				E7960FD32564CE7100556B9D /* Synth.cpp in Sources */,
 				E7960FD12564CE7100556B9D /* Tables.cpp in Sources */,
 				E7960FCC2564CE7100556B9D /* TVF.cpp in Sources */,
@@ -4291,7 +4290,7 @@
 				DEVELOPMENT_TEAM = 4C8YZND49H;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = dospad/dospad_Prefix.pch;
+				GCC_PREFIX_HEADER = dospad/DPPrefix.pch;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					DEBUG,
 					IDOS,
@@ -4326,7 +4325,7 @@
 				CURRENT_PROJECT_VERSION = 20201019.2;
 				DEVELOPMENT_TEAM = 4C8YZND49H;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = dospad/dospad_Prefix.pch;
+				GCC_PREFIX_HEADER = dospad/DPPrefix.pch;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					IDOS,
 					IPHONEOS,
@@ -4436,7 +4435,7 @@
 				CURRENT_PROJECT_VERSION = 20201019.2;
 				DEVELOPMENT_TEAM = 4C8YZND49H;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = dospad/dospad_Prefix.pch;
+				GCC_PREFIX_HEADER = dospad/DPPrefix.pch;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					IDOS,
 					IPHONEOS,
