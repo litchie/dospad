@@ -137,7 +137,7 @@ static UIKitKeyInfo unicharToUIKeyInfoTable[] = {
 /*  93 */ {   SDL_SCANCODE_RIGHTBRACKET, 0 },
 /*  94 */ {   SDL_SCANCODE_6,  KMOD_SHIFT },			/* plus shift modifier '^' */
 /*  95 */ {   SDL_SCANCODE_MINUS,  KMOD_SHIFT },		/* plus shift modifier '_' */
-/*  96 */ {   SDL_SCANCODE_GRAVE,  KMOD_SHIFT },		/* '`'
+/*  96 */ {   SDL_SCANCODE_GRAVE,  KMOD_SHIFT },		/* '`' */
 /*  97 */ {   SDL_SCANCODE_A, 0	},	
 /*  98 */ {   SDL_SCANCODE_B, 0 },
 /*  99 */ {   SDL_SCANCODE_C, 0 },
