@@ -342,10 +342,8 @@
 		E72BE69712911096009DC46A /* DPEmulatorViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E72BE69512911096009DC46A /* DPEmulatorViewController.m */; };
 		E72BE6E412911B5C009DC46A /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = E72BE6C412911B5C009DC46A /* AppDelegate.m */; };
 		E72BE6E512911B5C009DC46A /* DOSPadEmulator.m in Sources */ = {isa = PBXBuildFile; fileRef = E72BE6C612911B5C009DC46A /* DOSPadEmulator.m */; };
-		E72BE6E612911B5C009DC46A /* FileSystemObject.m in Sources */ = {isa = PBXBuildFile; fileRef = E72BE6C812911B5C009DC46A /* FileSystemObject.m */; };
 		E72BE6E712911B5C009DC46A /* KeyboardView.m in Sources */ = {isa = PBXBuildFile; fileRef = E72BE6CA12911B5C009DC46A /* KeyboardView.m */; };
 		E72BE6E812911B5C009DC46A /* KeyView.m in Sources */ = {isa = PBXBuildFile; fileRef = E72BE6CC12911B5C009DC46A /* KeyView.m */; };
-		E72BE6EF12911B5C009DC46A /* ZipArchive.m in Sources */ = {isa = PBXBuildFile; fileRef = E72BE6D712911B5C009DC46A /* ZipArchive.m */; };
 		E72BE74212911E2B009DC46A /* bar-portrait-iphone.png in Resources */ = {isa = PBXBuildFile; fileRef = E72BE71612911E2B009DC46A /* bar-portrait-iphone.png */; };
 		E72BE74312911E2B009DC46A /* bar-portrait-iphone@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E72BE71712911E2B009DC46A /* bar-portrait-iphone@2x.png */; };
 		E72BE74412911E2B009DC46A /* bar.png in Resources */ = {isa = PBXBuildFile; fileRef = E72BE71812911E2B009DC46A /* bar.png */; };
@@ -474,9 +472,7 @@
 		E7BE12F6128BF31A0046990B /* HoldIndicator.m in Sources */ = {isa = PBXBuildFile; fileRef = E745CE3E11F5991F00F00F7F /* HoldIndicator.m */; };
 		E7BE12F7128BF31A0046990B /* FrameskipIndicator.m in Sources */ = {isa = PBXBuildFile; fileRef = E76DAEAE123EE08B00C2AEF7 /* FrameskipIndicator.m */; };
 		E7BE12F8128BF31A0046990B /* KeyLockIndicator.m in Sources */ = {isa = PBXBuildFile; fileRef = E775412012403C3C009EC11A /* KeyLockIndicator.m */; };
-		E7BE12F9128BF31A0046990B /* TipView.m in Sources */ = {isa = PBXBuildFile; fileRef = E7996FAC1241C0A800502015 /* TipView.m */; };
 		E7BE12FC128BF31A0046990B /* FloatingView.m in Sources */ = {isa = PBXBuildFile; fileRef = E799706312422D6800502015 /* FloatingView.m */; };
-		E7BE12FD128BF31A0046990B /* SliderView.m in Sources */ = {isa = PBXBuildFile; fileRef = E70EA4111242F83200528C9D /* SliderView.m */; };
 		E7BE1305128BF31A0046990B /* libSDLiPhoneOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FD6526630DE8FCCB002AD96B /* libSDLiPhoneOS.a */; };
 		E7BE1306128BF31A0046990B /* libdosbox.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E71E60EB11B5506800EC5A05 /* libdosbox.a */; };
 		E7BE1307128BF31A0046990B /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D3623EB0D0F72F000981E51 /* CoreGraphics.framework */; };
@@ -486,19 +482,8 @@
 		E7BE130B128BF31A0046990B /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D30AB110D05D00D00671497 /* Foundation.framework */; };
 		E7BE130D128BF31A0046990B /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E77DB05511B5E13600B78E69 /* MessageUI.framework */; };
 		E7BE130F128BF31A0046990B /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E7D6B8CE11BF332400D34665 /* libz.dylib */; };
-		E7BE1310128BF31A0046990B /* libminizip.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E7D6B89811BF322E00D34665 /* libminizip.a */; };
 		E7BE1311128BF31A0046990B /* libc.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E79E4A0011EC6BF400DEAA7B /* libc.dylib */; };
 		E7BE1312128BF31A0046990B /* libSDL_net.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E778B2B2123918F6008AF49A /* libSDL_net.a */; };
-		E7D6B8AD11BF325700D34665 /* crypt.h in Headers */ = {isa = PBXBuildFile; fileRef = E7D6B89E11BF325700D34665 /* crypt.h */; };
-		E7D6B8AE11BF325700D34665 /* ioapi.c in Sources */ = {isa = PBXBuildFile; fileRef = E7D6B89F11BF325700D34665 /* ioapi.c */; };
-		E7D6B8AF11BF325700D34665 /* ioapi.h in Headers */ = {isa = PBXBuildFile; fileRef = E7D6B8A011BF325700D34665 /* ioapi.h */; };
-		E7D6B8B511BF325700D34665 /* mztools.c in Sources */ = {isa = PBXBuildFile; fileRef = E7D6B8A611BF325700D34665 /* mztools.c */; };
-		E7D6B8B611BF325700D34665 /* mztools.h in Headers */ = {isa = PBXBuildFile; fileRef = E7D6B8A711BF325700D34665 /* mztools.h */; };
-		E7D6B8B711BF325700D34665 /* unzip.c in Sources */ = {isa = PBXBuildFile; fileRef = E7D6B8A811BF325700D34665 /* unzip.c */; };
-		E7D6B8B811BF325700D34665 /* unzip.h in Headers */ = {isa = PBXBuildFile; fileRef = E7D6B8A911BF325700D34665 /* unzip.h */; };
-		E7D6B8B911BF325700D34665 /* zconf.h in Headers */ = {isa = PBXBuildFile; fileRef = E7D6B8AA11BF325700D34665 /* zconf.h */; };
-		E7D6B8BA11BF325700D34665 /* zip.c in Sources */ = {isa = PBXBuildFile; fileRef = E7D6B8AB11BF325700D34665 /* zip.c */; };
-		E7D6B8BB11BF325700D34665 /* zip.h in Headers */ = {isa = PBXBuildFile; fileRef = E7D6B8AC11BF325700D34665 /* zip.h */; };
 		E7D78A65129E19380020D4A7 /* btn.png in Resources */ = {isa = PBXBuildFile; fileRef = E7D78A61129E19380020D4A7 /* btn.png */; };
 		E7D78A67129E19380020D4A7 /* btnpressed.png in Resources */ = {isa = PBXBuildFile; fileRef = E7D78A63129E19380020D4A7 /* btnpressed.png */; };
 		E7D78AC6129E98480020D4A7 /* fire.png in Resources */ = {isa = PBXBuildFile; fileRef = E7D78AC4129E98480020D4A7 /* fire.png */; };
@@ -706,13 +691,6 @@
 			remoteGlobalIDString = E71E60EA11B5506800EC5A05;
 			remoteInfo = dosbox;
 		};
-		E7BE129F128BF31A0046990B /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = E7D6B89711BF322E00D34665;
-			remoteInfo = minizip;
-		};
 		E7BE12A1128BF31A0046990B /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
@@ -784,8 +762,6 @@
 		E70836B72539EEB200B9321F /* KeyboardSpy.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = KeyboardSpy.h; sourceTree = "<group>"; };
 		E70836B82539EEB200B9321F /* KeyboardSpy.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = KeyboardSpy.m; sourceTree = "<group>"; };
 		E70C044012A4B43F00AC178F /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
-		E70EA4101242F83200528C9D /* SliderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SliderView.h; path = ../iPad/SliderView.h; sourceTree = "<group>"; };
-		E70EA4111242F83200528C9D /* SliderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SliderView.m; path = ../iPad/SliderView.m; sourceTree = "<group>"; };
 		E7107147129A8E5A00B21291 /* cpuwindow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cpuwindow.png; sourceTree = "<group>"; };
 		E7107148129A8E5A00B21291 /* exitfull.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = exitfull.png; sourceTree = "<group>"; };
 		E7107149129A8E5A00B21291 /* landbarblank.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = landbarblank.png; sourceTree = "<group>"; };
@@ -1080,14 +1056,10 @@
 		E72BE6C412911B5C009DC46A /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppDelegate.m; path = Main/AppDelegate.m; sourceTree = "<group>"; };
 		E72BE6C512911B5C009DC46A /* DOSPadEmulator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DOSPadEmulator.h; sourceTree = "<group>"; };
 		E72BE6C612911B5C009DC46A /* DOSPadEmulator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DOSPadEmulator.m; sourceTree = "<group>"; };
-		E72BE6C712911B5C009DC46A /* FileSystemObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileSystemObject.h; sourceTree = "<group>"; };
-		E72BE6C812911B5C009DC46A /* FileSystemObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FileSystemObject.m; sourceTree = "<group>"; };
 		E72BE6C912911B5C009DC46A /* KeyboardView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KeyboardView.h; sourceTree = "<group>"; };
 		E72BE6CA12911B5C009DC46A /* KeyboardView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KeyboardView.m; sourceTree = "<group>"; };
 		E72BE6CB12911B5C009DC46A /* KeyView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KeyView.h; sourceTree = "<group>"; };
 		E72BE6CC12911B5C009DC46A /* KeyView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KeyView.m; sourceTree = "<group>"; };
-		E72BE6D612911B5C009DC46A /* ZipArchive.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZipArchive.h; sourceTree = "<group>"; };
-		E72BE6D712911B5C009DC46A /* ZipArchive.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZipArchive.m; sourceTree = "<group>"; };
 		E72BE71612911E2B009DC46A /* bar-portrait-iphone.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "bar-portrait-iphone.png"; path = "misc-res/bar-portrait-iphone.png"; sourceTree = "<group>"; };
 		E72BE71712911E2B009DC46A /* bar-portrait-iphone@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "bar-portrait-iphone@2x.png"; path = "misc-res/bar-portrait-iphone@2x.png"; sourceTree = "<group>"; };
 		E72BE71812911E2B009DC46A /* bar.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = bar.png; path = "misc-res/bar.png"; sourceTree = "<group>"; };
@@ -1265,8 +1237,6 @@
 		E79610002564DBB800556B9D /* midi_mt32.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = midi_mt32.cpp; sourceTree = "<group>"; };
 		E7961030256657FF00556B9D /* DPSettings.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DPSettings.h; sourceTree = "<group>"; };
 		E7961031256657FF00556B9D /* DPSettings.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DPSettings.m; sourceTree = "<group>"; };
-		E7996FAB1241C0A800502015 /* TipView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TipView.h; sourceTree = "<group>"; };
-		E7996FAC1241C0A800502015 /* TipView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TipView.m; sourceTree = "<group>"; };
 		E79970041241F09400502015 /* cmd_history.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cmd_history.h; sourceTree = "<group>"; };
 		E799706212422D6800502015 /* FloatingView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FloatingView.h; sourceTree = "<group>"; };
 		E799706312422D6800502015 /* FloatingView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FloatingView.m; sourceTree = "<group>"; };
@@ -1313,17 +1283,6 @@
 		E7BE1318128BF31A0046990B /* iDOS-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "iDOS-Info.plist"; sourceTree = "<group>"; };
 		E7D214C511E45BD000D9654E /* keys.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = keys.h; sourceTree = "<group>"; };
 		E7D214C711E45BDE00D9654E /* keys.m */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; path = keys.m; sourceTree = "<group>"; };
-		E7D6B89811BF322E00D34665 /* libminizip.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libminizip.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		E7D6B89E11BF325700D34665 /* crypt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = crypt.h; sourceTree = "<group>"; };
-		E7D6B89F11BF325700D34665 /* ioapi.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ioapi.c; sourceTree = "<group>"; };
-		E7D6B8A011BF325700D34665 /* ioapi.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ioapi.h; sourceTree = "<group>"; };
-		E7D6B8A611BF325700D34665 /* mztools.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = mztools.c; sourceTree = "<group>"; };
-		E7D6B8A711BF325700D34665 /* mztools.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mztools.h; sourceTree = "<group>"; };
-		E7D6B8A811BF325700D34665 /* unzip.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = unzip.c; sourceTree = "<group>"; };
-		E7D6B8A911BF325700D34665 /* unzip.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = unzip.h; sourceTree = "<group>"; };
-		E7D6B8AA11BF325700D34665 /* zconf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = zconf.h; sourceTree = "<group>"; };
-		E7D6B8AB11BF325700D34665 /* zip.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = zip.c; sourceTree = "<group>"; };
-		E7D6B8AC11BF325700D34665 /* zip.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = zip.h; sourceTree = "<group>"; };
 		E7D6B8CE11BF332400D34665 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
 		E7D78A61129E19380020D4A7 /* btn.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = btn.png; path = "gamepad-res/btn.png"; sourceTree = "<group>"; };
 		E7D78A63129E19380020D4A7 /* btnpressed.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = btnpressed.png; path = "gamepad-res/btnpressed.png"; sourceTree = "<group>"; };
@@ -1542,17 +1501,9 @@
 				E7BE130B128BF31A0046990B /* Foundation.framework in Frameworks */,
 				E7BE130D128BF31A0046990B /* MessageUI.framework in Frameworks */,
 				E7BE130F128BF31A0046990B /* libz.dylib in Frameworks */,
-				E7BE1310128BF31A0046990B /* libminizip.a in Frameworks */,
 				E7BE1311128BF31A0046990B /* libc.dylib in Frameworks */,
 				E7BE1312128BF31A0046990B /* libSDL_net.a in Frameworks */,
 				E70C044112A4B43F00AC178F /* AVFoundation.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		E7D6B89611BF322E00D34665 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1608,7 +1559,6 @@
 			children = (
 				FD6526630DE8FCCB002AD96B /* libSDLiPhoneOS.a */,
 				E71E60EB11B5506800EC5A05 /* libdosbox.a */,
-				E7D6B89811BF322E00D34665 /* libminizip.a */,
 				E778B2B2123918F6008AF49A /* libSDL_net.a */,
 				E7BE1316128BF31A0046990B /* iDOS.app */,
 				E7B2BBCE252155EF00490083 /* iDOSThumbnail.appex */,
@@ -2492,31 +2442,12 @@
 			path = iDOSThumbnail;
 			sourceTree = "<group>";
 		};
-		E7D6B89C11BF325700D34665 /* minizip */ = {
-			isa = PBXGroup;
-			children = (
-				E7D6B89E11BF325700D34665 /* crypt.h */,
-				E7D6B89F11BF325700D34665 /* ioapi.c */,
-				E7D6B8A011BF325700D34665 /* ioapi.h */,
-				E7D6B8A611BF325700D34665 /* mztools.c */,
-				E7D6B8A711BF325700D34665 /* mztools.h */,
-				E7D6B8A811BF325700D34665 /* unzip.c */,
-				E7D6B8A911BF325700D34665 /* unzip.h */,
-				E7D6B8AA11BF325700D34665 /* zconf.h */,
-				E7D6B8AB11BF325700D34665 /* zip.c */,
-				E7D6B8AC11BF325700D34665 /* zip.h */,
-			);
-			name = minizip;
-			path = dospad/minizip;
-			sourceTree = "<group>";
-		};
 		E7D98C491CC9F7F000A17CFC /* Sources */ = {
 			isa = PBXGroup;
 			children = (
 				E7B2BBD1252155F100490083 /* iDOSThumbnail */,
 				E71E60F211B550FD00EC5A05 /* dosbox */,
 				E77DAFAF11B5D83600B78E69 /* dospad */,
-				E7D6B89C11BF325700D34665 /* minizip */,
 				E7D98C6E1CCB23EE00A17CFC /* SDL */,
 				E778B2BA12391963008AF49A /* SDL_net */,
 			);
@@ -2542,10 +2473,6 @@
 				E72BE6CC12911B5C009DC46A /* KeyView.m */,
 				E794F3FD12DB4F0E00427836 /* PianoKeyboard.h */,
 				E794F3FE12DB4F0E00427836 /* PianoKeyboard.m */,
-				E70EA4101242F83200528C9D /* SliderView.h */,
-				E70EA4111242F83200528C9D /* SliderView.m */,
-				E7996FAB1241C0A800502015 /* TipView.h */,
-				E7996FAC1241C0A800502015 /* TipView.m */,
 				E70836B72539EEB200B9321F /* KeyboardSpy.h */,
 				E70836B82539EEB200B9321F /* KeyboardSpy.m */,
 				E7FDFB94255A3F8000A6DE66 /* DPThumbView.h */,
@@ -2607,10 +2534,6 @@
 				E7FDFB69255150DA00A6DE66 /* SoundEffect.m */,
 				E77E0880254C080300B5B11D /* UIColor+hexColor.h */,
 				E77E087F254C080300B5B11D /* UIColor+hexColor.m */,
-				E72BE6D612911B5C009DC46A /* ZipArchive.h */,
-				E72BE6D712911B5C009DC46A /* ZipArchive.m */,
-				E72BE6C712911B5C009DC46A /* FileSystemObject.h */,
-				E72BE6C812911B5C009DC46A /* FileSystemObject.m */,
 			);
 			path = Util;
 			sourceTree = "<group>";
@@ -3078,19 +3001,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		E7D6B89411BF322E00D34665 /* Headers */ = {
-			isa = PBXHeadersBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				E7D6B8AD11BF325700D34665 /* crypt.h in Headers */,
-				E7D6B8AF11BF325700D34665 /* ioapi.h in Headers */,
-				E7D6B8B611BF325700D34665 /* mztools.h in Headers */,
-				E7D6B8B811BF325700D34665 /* unzip.h in Headers */,
-				E7D6B8B911BF325700D34665 /* zconf.h in Headers */,
-				E7D6B8BB11BF325700D34665 /* zip.h in Headers */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		FD65265F0DE8FCCB002AD96B /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
@@ -3265,7 +3175,6 @@
 				E7BE1298128BF31A0046990B /* PBXTargetDependency */,
 				E7BE129A128BF31A0046990B /* PBXTargetDependency */,
 				E7BE129C128BF31A0046990B /* PBXTargetDependency */,
-				E7BE129E128BF31A0046990B /* PBXTargetDependency */,
 				E7BE12A0128BF31A0046990B /* PBXTargetDependency */,
 				E796109D256A6B2B00556B9D /* PBXTargetDependency */,
 				E79610A0256A6B5700556B9D /* PBXTargetDependency */,
@@ -3274,23 +3183,6 @@
 			productName = dospad;
 			productReference = E7BE1316128BF31A0046990B /* iDOS.app */;
 			productType = "com.apple.product-type.application";
-		};
-		E7D6B89711BF322E00D34665 /* minizip */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = E7D6B89B11BF325000D34665 /* Build configuration list for PBXNativeTarget "minizip" */;
-			buildPhases = (
-				E7D6B89411BF322E00D34665 /* Headers */,
-				E7D6B89511BF322E00D34665 /* Sources */,
-				E7D6B89611BF322E00D34665 /* Frameworks */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = minizip;
-			productName = minizip;
-			productReference = E7D6B89811BF322E00D34665 /* libminizip.a */;
-			productType = "com.apple.product-type.library.static";
 		};
 		FD6526620DE8FCCB002AD96B /* SDLStaticLib */ = {
 			isa = PBXNativeTarget;
@@ -3360,7 +3252,6 @@
 				0064653F107E3D7400183915 /* SDL Generated Header Files */,
 				E778B2B1123918F6008AF49A /* SDL_net */,
 				E71E60EA11B5506800EC5A05 /* dosbox */,
-				E7D6B89711BF322E00D34665 /* minizip */,
 				E7B2BBCD252155EE00490083 /* iDOSThumbnail */,
 				E7960F452564CE4D00556B9D /* mt32emu */,
 			);
@@ -3727,12 +3618,10 @@
 				E7BE12F7128BF31A0046990B /* FrameskipIndicator.m in Sources */,
 				E7B2BBE8252432DC00490083 /* UIViewController+Alert.m in Sources */,
 				E7BE12F8128BF31A0046990B /* KeyLockIndicator.m in Sources */,
-				E7BE12F9128BF31A0046990B /* TipView.m in Sources */,
 				E7FDFB42254E6EEE00A6DE66 /* DPKeyBinding.m in Sources */,
 				E77E085E2549126900B5B11D /* DPGamepad.m in Sources */,
 				E7FDFB5A254EBD5800A6DE66 /* DPGamepadConfiguration.m in Sources */,
 				E7BE12FC128BF31A0046990B /* FloatingView.m in Sources */,
-				E7BE12FD128BF31A0046990B /* SliderView.m in Sources */,
 				E77E08702549265F00B5B11D /* DPThemeSceneView.m in Sources */,
 				E7FDFB6A255150DA00A6DE66 /* SoundEffect.m in Sources */,
 				E72BE69712911096009DC46A /* DPEmulatorViewController.m in Sources */,
@@ -3742,11 +3631,9 @@
 				E71706DC25472C20000AF482 /* DPThemeScene.m in Sources */,
 				E72BE6E412911B5C009DC46A /* AppDelegate.m in Sources */,
 				E72BE6E512911B5C009DC46A /* DOSPadEmulator.m in Sources */,
-				E72BE6E612911B5C009DC46A /* FileSystemObject.m in Sources */,
 				E72BE6E712911B5C009DC46A /* KeyboardView.m in Sources */,
 				E72BE6E812911B5C009DC46A /* KeyView.m in Sources */,
 				E7DF95C92535965600ECB198 /* MfiGamepadMapperView.m in Sources */,
-				E72BE6EF12911B5C009DC46A /* ZipArchive.m in Sources */,
 				E76C49381299490200901B69 /* FloatPanel.m in Sources */,
 				E70836B92539EEB200B9321F /* KeyboardSpy.m in Sources */,
 				E71706D2254643AD000AF482 /* DPTheme.m in Sources */,
@@ -3754,17 +3641,6 @@
 				2A4546FA17D2812100D18563 /* PianoKeyboard.m in Sources */,
 				E7FDFB23254E6AF200A6DE66 /* DPGamepadButtonEditor.m in Sources */,
 				E79610322566580000556B9D /* DPSettings.m in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		E7D6B89511BF322E00D34665 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				E7D6B8AE11BF325700D34665 /* ioapi.c in Sources */,
-				E7D6B8B511BF325700D34665 /* mztools.c in Sources */,
-				E7D6B8B711BF325700D34665 /* unzip.c in Sources */,
-				E7D6B8BA11BF325700D34665 /* zip.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3911,11 +3787,6 @@
 			isa = PBXTargetDependency;
 			target = E71E60EA11B5506800EC5A05 /* dosbox */;
 			targetProxy = E7BE129D128BF31A0046990B /* PBXContainerItemProxy */;
-		};
-		E7BE129E128BF31A0046990B /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = E7D6B89711BF322E00D34665 /* minizip */;
-			targetProxy = E7BE129F128BF31A0046990B /* PBXContainerItemProxy */;
 		};
 		E7BE12A0128BF31A0046990B /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -4480,34 +4351,6 @@
 			};
 			name = Release;
 		};
-		E7D6B89911BF323200D34665 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				COPY_PHASE_STRIP = NO;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
-				PREBINDING = NO;
-				PRODUCT_NAME = minizip;
-				SKIP_INSTALL = YES;
-			};
-			name = Debug;
-		};
-		E7D6B89A11BF323200D34665 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				COPY_PHASE_STRIP = YES;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
-				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
-				PREBINDING = NO;
-				PRODUCT_NAME = minizip;
-				SKIP_INSTALL = YES;
-				ZERO_LINK = NO;
-			};
-			name = Release;
-		};
 		E7D98C5D1CC9FA6E00A17CFC /* AppStore */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -4578,19 +4421,6 @@
 					./mt32emu/include,
 				);
 				PRODUCT_NAME = dosbox;
-				SKIP_INSTALL = YES;
-				ZERO_LINK = NO;
-			};
-			name = AppStore;
-		};
-		E7D98C631CC9FA6E00A17CFC /* AppStore */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				COPY_PHASE_STRIP = YES;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
-				PRODUCT_NAME = minizip;
 				SKIP_INSTALL = YES;
 				ZERO_LINK = NO;
 			};
@@ -4736,16 +4566,6 @@
 				E7BE1314128BF31A0046990B /* Debug */,
 				E7BE1315128BF31A0046990B /* Release */,
 				E7D98C641CC9FA6E00A17CFC /* AppStore */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		E7D6B89B11BF325000D34665 /* Build configuration list for PBXNativeTarget "minizip" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				E7D6B89911BF323200D34665 /* Debug */,
-				E7D6B89A11BF323200D34665 /* Release */,
-				E7D98C631CC9FA6E00A17CFC /* AppStore */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

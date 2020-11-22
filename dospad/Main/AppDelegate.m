@@ -21,7 +21,6 @@
 #import "Common.h"
 #import <AVFoundation/AVFoundation.h>
 #import "ColorTheme.h"
-#import "ZipArchive.h"
 #import "UIViewController+Alert.h"
 #import "DPSettings.h"
 

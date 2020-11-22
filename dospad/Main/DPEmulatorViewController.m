@@ -17,7 +17,6 @@
  */
 
 #import "DPEmulatorViewController.h"
-#import "FileSystemObject.h"
 #import "Common.h"
 #import "AppDelegate.h"
 #import "ColorTheme.h"

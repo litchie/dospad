@@ -26,7 +26,6 @@
 //   that folder will be mounted as diskc instead.
 //
 #import "DOSPadEmulator.h"
-#import "FileSystemObject.h"
 #import "Common.h"
 #import "keys.h"
 #include "SDL.h"
