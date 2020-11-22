@@ -16,22 +16,36 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#import <UIKit/UIKit.h>
+#import "Common.h"
 #import "DOSPadEmulator.h"
 #import "KeyboardView.h"
 #import "KeyView.h"
-#import "Common.h"
 #import "HoldIndicator.h"
 #import "FrameskipIndicator.h"
-#import "SliderView.h"
-#import "DOSPadBaseViewController.h"
 #import "FloatPanel.h"
+#import "HoldIndicator.h"
+#import "SDL_uikitopenglview.h"
+#import "PianoKeyboard.h"
+#import "KeyboardSpy.h"
+#import "DPSettings.h"
 
-@interface DPEmulatorViewController : DOSPadBaseViewController
-<KeyDelegate,UIAlertViewDelegate>
-{
-}
+typedef enum {
+	DriveMount_Default,
+	DriveMount_Folder,
+	DriveMount_Packages,
+	DriveMount_DiskImage,
+	DriveMount_CDImage
+} DriveMountType;
 
-- (void)refreshFullscreenPanel;
+@interface DPEmulatorViewController : UIViewController
+
+@property (nonatomic, strong) SDL_uikitopenglview *screenView;
+@property (nonatomic, strong) KeyboardSpy *kbdspy;
+
+- (NSString*)currentCycles;
+- (int)currentFrameskip;
+
+-(void)updateFrameskip:(NSNumber*)skip;
+-(void)updateCpuCycles:(NSString*)title;
 
 @end

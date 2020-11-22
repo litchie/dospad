@@ -26,8 +26,10 @@
 #import "DPGamepadButtonEditor.h"
 #import "DPThumbView.h"
 #import "UIViewController+Alert.h"
+#import "MfiGamepadManager.h"
+#import "MfiGamepadMapperView.h"
 
-enum {
+typedef NS_ENUM(NSInteger, DPFloatingInputType) {
 	TAG_INPUT_MIN = 1000,
 	TAG_INPUT_KEYBOARD,
 	TAG_INPUT_MOUSE_BUTTONS,
@@ -43,17 +45,32 @@ static struct {
 	const char *onImageName;
 	const char *offImageName;
 } toggleButtonInfo [] = {
-	{TAG_INPUT_KEYBOARD,    "modekeyon.png",          "modekeyoff.png"    },
+	{TAG_INPUT_KEYBOARD,       "modekeyon.png",          "modekeyoff.png"    },
 	{TAG_INPUT_MOUSE_BUTTONS,  "mouseon.png",            "mouseoff.png"      },
-	{TAG_INPUT_GAMEPAD,       "modegamepadpressed.png", "modegamepad.png"   },
-	{TAG_INPUT_JOYSTICK,      "modejoypressed.png",     "modejoy.png"       },
-	{TAG_INPUT_NUMPAD,        "modenumpadpressed.png",  "modenumpad.png"    },
+	{TAG_INPUT_GAMEPAD,        "modegamepadpressed.png", "modegamepad.png"   },
+	{TAG_INPUT_JOYSTICK,       "modejoypressed.png",     "modejoy.png"       },
+	{TAG_INPUT_NUMPAD,         "modenumpadpressed.png",  "modenumpad.png"    },
 	{TAG_INPUT_PIANO_KEYBOARD, "modepianopressed.png",   "modepiano.png"     },
 };
 #define NUM_BUTTON_INFO (sizeof(toggleButtonInfo)/sizeof(toggleButtonInfo[0]))
 
-@interface DPEmulatorViewController ()<DPGamepadDelegate>
+@interface DPEmulatorViewController ()
+<
+	SDL_uikitopenglview_delegate,
+	MouseHoldDelegate,
+	KeyDelegate,
+	UIAlertViewDelegate,
+	DOSPadEmulatorDelegate,
+	UIDocumentPickerDelegate,
+	DPGamepadDelegate,
+	MfiGamepadManagerDelegate,
+	MfiGamepadMapperDelegate
+>
 {
+	MfiGamepadConfiguration *_mfiConfig;
+	MfiGamepadManager *_mfiManager;
+	MfiGamepadMapperView *_mfiMapper;
+
 	// Only used in portrait mode
 	UIView *_rootContainer;
 	DPTheme *_currentTheme;
@@ -68,7 +85,13 @@ static struct {
     
     BOOL shouldShrinkScreen;
     CGRect _screenRect; // portraint only?
+    
+    HoldIndicator *holdIndicator;
+    KeyboardView *kbd;
+    KeyboardView *numpad;
+    PianoKeyboard *piano;
 }
+
 @property (strong) DPGamepadConfiguration *gamepadConfig;
 @end
 
@@ -104,19 +127,33 @@ static struct {
 - (void)toggleInput:(id)sender
 {
     UIButton *btn = (UIButton*)sender;
-    UIView *v = [self findInputView:btn.tag];
+    
+    if ([self removeFloatingInput:btn.tag] == NO) {
+		[self createFloatingInput:btn.tag];
+	}
+}
+
+// Return YES if floating input of type exists
+- (BOOL)removeFloatingInput:(DPFloatingInputType)type
+{
+    UIView *v = [self findInputView:type];
     if (v) {
     	[v removeFromSuperview];
-    	return;
+	    [self refreshFullscreenPanel];
+    	return YES;
 	}
-	
+	return NO;
+}
+
+- (void)createFloatingInput:(DPFloatingInputType)type
+{
 	for (UIView *v in _rootContainer.subviews)
 	{
 		if (v.tag > TAG_INPUT_MIN && v.tag < TAG_INPUT_MAX)
 			[v removeFromSuperview];
 	}
-
-	switch (btn.tag) {
+	
+	switch (type) {
 	case TAG_INPUT_NUMPAD:
 		[self createNumpad];
 		break;
@@ -138,21 +175,12 @@ static struct {
 	default:
 		break;
 	}
+
     [self refreshFullscreenPanel];
 }
 
-- (void)addInputSourceExclusively:(InputSourceType)type
-{
-	for (UIView *v in _rootContainer.subviews)
-	{
-		if (v.tag > TAG_INPUT_MIN && v.tag < TAG_INPUT_MAX)
-			[v removeFromSuperview];
-	}
-	[self addInputSource:type];
-}
 
-
-- (BOOL)allowsInput:(NSInteger)type
+- (BOOL)allowsInput:(DPFloatingInputType)type
 {
 	switch (type) {
 		case TAG_INPUT_JOYSTICK:
@@ -358,18 +386,11 @@ static struct {
 }
 
 
-- (void)emulatorWillStart:(DOSPadEmulator *)emulator
-{
-	[super emulatorWillStart:emulator];
-	_gamepadConfig = [[DPGamepadConfiguration alloc] initWithURL:[NSURL
-		fileURLWithPath:[DOSPadEmulator sharedInstance].gamepadConfigFile]];
-	[[self findGamepad] applyConfiguration:_gamepadConfig];
-}
 
 -(void)updateScreen
 {
 	CGRect viewRect = _rootContainer.bounds;
-	if ([self isPortrait])
+	if (_currentScene.isPortrait)
 	{
 		[self fillScreen:_screenRect];
 	}
@@ -672,29 +693,29 @@ static struct {
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+    [[DOSPadEmulator sharedInstance] setDelegate:self];
+    
+    self.screenView.delegate=self;
+    self.screenView.mouseHoldDelegate=self;
+
+    holdIndicator = [[HoldIndicator alloc] initWithFrame:CGRectMake(0,0,100,100)];
+    holdIndicator.alpha = 0;
+    //holdIndicator.transform = CGAffineTransformMakeScale(1.5, 1.5);
+    [self.view addSubview:holdIndicator];
+    
     NSURL *url = [[NSBundle mainBundle].resourceURL URLByAppendingPathComponent:@"default.idostheme"];
     _currentTheme = [[DPTheme alloc] initWithURL:url];
     self.view.backgroundColor = _currentTheme.backgroundColor;
+
+#ifdef APPSTORE
+    // For non appstore builds, we should use private API to support
+    // external keyboard.
+    self.kbdspy = [[KeyboardSpy alloc] initWithFrame:CGRectMake(0,0,60,40)];
+    [self.view addSubview:self.kbdspy];
+#endif
 }
 
-// Override to allow orientations other than the default portrait orientation.
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
-{
-    return YES;
-}
-
-- (UIInterfaceOrientationMask)supportedInterfaceOrientations
-{
-	return UIInterfaceOrientationMaskAll;
-}
-
-- (CGRect)safeRootRect
-{
-	if (@available(iOS 11.0, *))
-		return UIEdgeInsetsInsetRect(self.view.bounds, self.view.safeAreaInsets);
-	else
-		return self.view.bounds;
-}
 
 // MARK: DPGamepadDelegate
 
@@ -748,5 +769,468 @@ static struct {
 	//NSLog(@"gamepad joy %f %f", x, y);
 	[[DOSPadEmulator sharedInstance] updateJoystick:0 x:x y:y];
 }
+
+// MARK: opengles view delegate
+// Screen Resize
+-(void)onResize:(CGSize)sizeNew
+{
+    self.screenView.bounds = CGRectMake(0, 0, sizeNew.width, sizeNew.height);
+    [self updateScreen];
+}
+
+// scale the screen view to fill the available rect,
+// and keep it at 4:3 unless it's a wide screen (16:10).
+// Return the occupied rect.
+- (CGRect)putScreen:(CGRect)availRect scaleMode:(DPScreenScaleMode)scaleMode
+{
+	CGFloat cx = CGRectGetMidX(availRect);
+	CGFloat cy = CGRectGetMidY(availRect);
+	CGFloat w = availRect.size.width;
+	CGFloat h = availRect.size.height;
+    CGFloat sw = self.screenView.bounds.size.width;
+    CGFloat sh = self.screenView.bounds.size.height;
+
+	switch (scaleMode) {
+		case DPScreenScaleModeAspectFit4x3:
+			if (h * 4 / 3 > w)
+				h = w * 3 / 4;
+			else
+				w = h * 4 / 3;
+			break;
+		case DPScreenScaleModeAspectFit16x10:
+			if (h * 16 / 10 > w)
+				h = w * 10 / 16;
+			else
+				w = h * 16 / 10;
+			break;
+		case DPScreenScaleModeAspectFit16x9:
+			if (h * 16 / 9 > w)
+				h = w * 9 / 16;
+			else
+				w = h * 16 / 9;
+			break;
+		default:
+			break;
+	}
+	
+    self.screenView.transform = CGAffineTransformMakeScale(w/sw,h/sh);
+	self.screenView.center = CGPointMake(cx, cy);
+    return CGRectMake(cx-w/2, cy-h/2, w, h);
+}
+
+- (void)fillScreen:(CGRect)availRect
+{
+	CGFloat cx = CGRectGetMidX(availRect);
+	CGFloat cy = CGRectGetMidY(availRect);
+	CGFloat w = availRect.size.width;
+	CGFloat h = availRect.size.height;
+    CGFloat sw = self.screenView.bounds.size.width;
+    CGFloat sh = self.screenView.bounds.size.height;
+    self.screenView.transform = CGAffineTransformMakeScale(w/sw,h/sh);
+	self.screenView.center = CGPointMake(cx, cy);
+}
+
+- (NSString*)currentCycles
+{
+    AppDelegate *d = (AppDelegate*)[[UIApplication sharedApplication] delegate];
+    
+    if (d.maxPercent != 0)
+    {
+        return [NSString stringWithFormat:@"%3d%%", d.maxPercent];
+    }
+    else
+    {
+        return [NSString stringWithFormat:@"%4d", d.cycles];
+    }
+}
+
+- (int)currentFrameskip
+{
+    AppDelegate *d = (AppDelegate*)[[UIApplication sharedApplication] delegate];
+    return d.frameskip;
+}
+
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    self.screenView.alpha = 1; // Try to fix reboot problem on iPad 3.2.x
+    dospad_resume();
+    
+    if (self.kbdspy)
+    {
+    	[self.kbdspy becomeFirstResponder];
+		[self.view bringSubviewToFront:self.kbdspy];
+	}
+}
+
+- (void)viewWillDisappear:(BOOL)animated
+{
+    [super viewWillDisappear:animated];
+    if (ISIPAD() && !_currentScene.isPortrait)
+    {
+        self.screenView.alpha = 0; // Try to fix reboot problem on iPad 3.2.x
+    }
+    dospad_pause();
+}
+
+- (void)onMouseLeftDown
+{
+    [self.screenView sendMouseEvent:0 left:YES down:YES];
+}
+
+- (void)onMouseLeftUp
+{
+    [self.screenView sendMouseEvent:0 left:YES down:NO];
+}
+
+- (void)onMouseRightDown
+{
+    [self.screenView sendMouseEvent:0 left:NO down:YES];
+}
+
+- (void)onMouseRightUp
+{
+    [self.screenView sendMouseEvent:0 left:NO down:NO];
+}
+
+-(BOOL)onDoubleTap:(CGPoint)pt
+{
+    // Do nothing
+    return NO;
+}
+
+// MARK: Mouse Hold
+-(void)onHold:(CGPoint)pt
+{
+	if ([DPSettings shared].showMouseHold)
+	{
+		CGPoint pt2 = [self.screenView convertPoint:pt toView:self.view];
+		holdIndicator.center=pt2;
+		[self.view bringSubviewToFront:holdIndicator];
+		[UIView animateWithDuration:0.3 animations:^{
+			holdIndicator.alpha = 1;
+		}];
+	}
+}
+
+-(void)cancelHold:(CGPoint)pt
+{
+    holdIndicator.alpha=0;
+}
+
+-(void)onHoldMoved:(CGPoint)pt
+{
+    CGPoint pt2 = [self.screenView convertPoint:pt toView:self.view];
+    holdIndicator.center=pt2;
+}
+
+-(void)showOption:(id)sender
+{
+	[self alert:@"Action" message:@"Please choose an option"
+		actions:@[
+	 		[UIAlertAction actionWithTitle:@"Screenshot"
+	 			style:UIAlertActionStyleDefault
+	 			handler:^(UIAlertAction * _Nonnull action) {
+	 				[[DOSPadEmulator sharedInstance] takeScreenshot];
+                }],
+	 		[UIAlertAction actionWithTitle:@"Settings"
+	 			style:UIAlertActionStyleDefault
+	 			handler:^(UIAlertAction * _Nonnull action) {
+					if (@available(iOS 10.0, *)) {
+						[[UIApplication sharedApplication]
+						 openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString]
+						 options:@{} completionHandler:nil];
+					} else {
+						[[UIApplication sharedApplication]
+						 openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString]];
+					}
+                }]
+		]
+		source:sender];
+}
+
+- (void)createPianoKeyboard
+{
+    NSString *ui_cfg = 0;//get_temporary_merged_file(configPath, get_default_config());
+    
+    if (ui_cfg != nil)
+    {
+        piano = [[PianoKeyboard alloc] initWithConfig:ui_cfg section:@"[piano.keybinding]"];
+        if (piano)
+        {
+            [self.view addSubview:piano];
+        }
+    }
+}
+
+#pragma mark -
+// MARK: Mfi
+
+-(void) openMfiMapper:(id)sender
+{
+	// Sometimes we press too early before the emulator sets up
+	// configuration file.
+	if (![DOSPadEmulator sharedInstance].started)
+		return;
+		
+	if (_mfiMapper) {
+		[self.view bringSubviewToFront:_mfiMapper];
+		return;
+	}
+
+	[self createFloatingInput:TAG_INPUT_KEYBOARD];
+
+	CGRect rect = _rootContainer.bounds;
+	rect.size.height -= kbd.frame.size.height+4;
+	
+	CGFloat maxHeight = 400;
+	if (rect.size.height > maxHeight)
+	{
+		rect.origin.y += (rect.size.height - maxHeight)/2;
+		rect.size.height = maxHeight;
+	}
+
+	CGFloat maxWidth = rect.size.height * 2;
+	if (rect.size.width > maxWidth)
+	{
+		rect.origin.x = (rect.size.width-maxWidth)/2;
+		rect.size.width = maxWidth;
+	}
+
+	_mfiMapper = [[MfiGamepadMapperView alloc] initWithFrame:rect configuration:_mfiConfig];
+	[_rootContainer addSubview:_mfiMapper];
+    kbd.externKeyDelegate = self;
+	_mfiMapper.delegate = self;
+}
+
+// MARK: MfiGamepadMapperDelegate
+
+- (void)mfiGamepadMapperDidClose:(MfiGamepadMapperView *)mapper
+{
+	_mfiMapper = nil;
+	[self removeFloatingInput:TAG_INPUT_KEYBOARD];
+}
+
+// MARK: MfiGamepadManagerDelegate
+
+- (void)mfiButton:(MfiGamepadButtonIndex)buttonIndex pressed:(BOOL)pressed atPlayer:(NSInteger)playerIndex
+{
+	if (_mfiMapper)
+	{
+		[_mfiMapper onButton:buttonIndex pressed:pressed atPlayer:playerIndex];
+		return;
+	}
+
+	if (buttonIndex == MFI_GAMEPAD_BUTTON_A || buttonIndex == MFI_GAMEPAD_BUTTON_X)
+	{
+		if ([_mfiConfig isJoystickAtPlayer:playerIndex])
+		{
+			[[DOSPadEmulator sharedInstance] joystickButton:(buttonIndex == MFI_GAMEPAD_BUTTON_A?0:1)
+				pressed:pressed joystickIndex:playerIndex];
+			return;
+		}
+	}
+
+	int scancode = [_mfiConfig scancodeForButton:buttonIndex atPlayer:playerIndex];
+	if (scancode)
+	{
+		SDL_SendKeyboardKey( 0, pressed?SDL_PRESSED:SDL_RELEASED, scancode);
+	}
+}
+
+- (void)mfiJoystickMoveWithX:(float)x y:(float)y atPlayer:(NSInteger)playerIndex
+{
+	if (_mfiMapper)
+	{
+		[_mfiMapper onJoystickMoveWithX:x y:y atPlayer:playerIndex];
+		return;
+	}
+	if ([_mfiConfig isJoystickAtPlayer:playerIndex])
+	{
+		[[DOSPadEmulator sharedInstance] updateJoystick:playerIndex x:x y:y];
+	}
+}
+
+- (void)mfiDidUpdatePlayers
+{
+	NSLog(@"mfi did update players");
+	if (_mfiMapper) {
+		[_mfiMapper update];
+	}
+}
+
+# pragma - mark KeyDelegate
+-(void)onKeyDown:(KeyView*)k {
+	if (_mfiMapper && k.code > 0)
+	{
+		[_mfiMapper onKey:k.code pressed:YES];
+	}
+}
+
+-(void)onKeyUp:(KeyView*)k {
+	if (_mfiMapper && k.code > 0)
+	{
+		[_mfiMapper onKey:k.code pressed:YES];
+	}
+}
+
+-(void) onKeyFunction:(KeyView *)k {
+}
+
+// MARK: DOSEmulatorDelegate
+
+- (void)emulatorWillStart:(DOSPadEmulator *)emulator
+{
+	_gamepadConfig = [[DPGamepadConfiguration alloc] initWithURL:[NSURL
+		fileURLWithPath:[DOSPadEmulator sharedInstance].gamepadConfigFile]];
+	[[self findGamepad] applyConfiguration:_gamepadConfig];
+	_mfiConfig = [[MfiGamepadConfiguration alloc] initWithConfig:emulator.mfiConfigFile];
+	_mfiManager = [MfiGamepadManager defaultManager];
+	_mfiManager.delegate = self;
+}
+
+- (void)emulator:(DOSPadEmulator *)emulator saveScreenshot:(NSString *)path
+{
+	UIImage *image = [self.screenView capture];
+	if (image) {
+		[UIImagePNGRepresentation(image) writeToFile:path atomically:YES];
+	}
+}
+
+-(void)openDriveMountPicker:(DriveMountType)mountType
+{
+	NSArray *utis = nil;
+	switch (mountType) {
+		case DriveMount_Default:
+			utis = @[
+				@"public.folder",
+				@"com.litchie.idos-package",
+				@"com.litchie.idos-cdimage",
+				@"com.litchie.idos-diskimage"
+			];
+			break;
+		case DriveMount_Folder:
+			utis = @[@"public.folder"];
+			break;
+		case DriveMount_Packages:
+			utis = @[
+				@"com.litchie.idos-package"
+			];
+			break;
+		case DriveMount_DiskImage:
+			utis = @[
+				@"com.litchie.idos-diskimage"
+			];
+			break;
+		case DriveMount_CDImage:
+			utis = @[
+				@"com.litchie.idos-cdimage"
+			];
+			break;
+		default:
+			break;
+	}
+	
+	UIDocumentPickerViewController *picker;
+	picker = [[UIDocumentPickerViewController alloc]
+		initWithDocumentTypes:utis
+		inMode:UIDocumentPickerModeOpen];
+	picker.delegate = self;
+	if (@available(iOS 13.0, *)) {
+		picker.shouldShowFileExtensions = YES;
+	}
+	if (@available(iOS 11.0, *)) {
+		picker.allowsMultipleSelection = YES;
+	}
+	[self presentViewController:picker
+		animated:YES
+		completion:nil];
+}
+
+- (void)emulator:(DOSPadEmulator *)emulator open:(NSString*)path
+{
+	if (path == nil)
+	{
+		[self openDriveMountPicker:DriveMount_Default];
+	}
+	else if ([path isEqualToString:@"-d"])
+	{
+		[self openDriveMountPicker:DriveMount_Folder];
+	}
+}
+
+
+#pragma mark - DocumentPickerDelegate
+
+- (void)documentPicker:(UIDocumentPickerViewController *)controller
+	didPickDocumentsAtURLs:(NSArray<NSURL *> *)urls
+{
+	NSMutableString *cmd = [NSMutableString string];
+	NSFileManager *fm = [NSFileManager defaultManager];
+	
+	for (NSURL *url in urls) {
+		NSURL *url = [urls firstObject];
+		[url startAccessingSecurityScopedResource];
+		NSString *ext = url.pathExtension.lowercaseString;
+		if ([ext isEqualToString:@"iso"] || [ext isEqualToString:@"cue"]) {
+			[cmd appendFormat:@"imgmount d \"%@\" -t iso -fs iso\n", url.path];
+		} else if ([ext isEqualToString:@"img"]) {
+			NSDictionary *attrs = [fm attributesOfItemAtPath:url.path error:nil];
+			NSNumber *fileSize = [attrs objectForKey:NSFileSize];
+			if ([fileSize integerValue] > 2000000) {
+				[cmd appendFormat:@"imgmount d \"%@\" -autoinc\n", url.path];
+			} else {
+				[cmd appendFormat:@"imgmount a \"%@\" -t floppy\n", url.path];
+			}
+		} else {
+			[cmd appendFormat:@"mount d \"%@\" -autoinc\n", url.path];
+		}
+	}
+	
+	if ([cmd length] > 1000) {
+		[self alert:@"Can not mount" message:@"Too many items"];
+		return;
+	}
+	if ([cmd length] > 0)
+		[[DOSPadEmulator sharedInstance] sendCommand:cmd];
+}
+
+- (void)documentPickerWasCancelled:(UIDocumentPickerViewController *)controller
+{
+	// Do nothing
+}
+
+#pragma mark -
+// MARK: Misc configurations
+
+- (BOOL)prefersHomeIndicatorAutoHidden
+{
+	return YES;
+}
+
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
+{
+    return YES;
+}
+
+- (UIInterfaceOrientationMask)supportedInterfaceOrientations
+{
+	return UIInterfaceOrientationMaskAll;
+}
+
+- (CGRect)safeRootRect
+{
+	if (@available(iOS 11.0, *))
+		return UIEdgeInsetsInsetRect(self.view.bounds, self.view.safeAreaInsets);
+	else
+		return self.view.bounds;
+}
+
+- (BOOL)prefersStatusBarHidden
+{
+	return YES;
+}
+
 
 @end

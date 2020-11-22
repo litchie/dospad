@@ -91,7 +91,6 @@
 		E7123FED129D0D470021237F /* glass-southeast.png in Resources */ = {isa = PBXBuildFile; fileRef = E7123FDA129D0D470021237F /* glass-southeast.png */; };
 		E7123FEF129D0D470021237F /* glass-southwest.png in Resources */ = {isa = PBXBuildFile; fileRef = E7123FDC129D0D470021237F /* glass-southwest.png */; };
 		E7123FF1129D0D470021237F /* glass-west.png in Resources */ = {isa = PBXBuildFile; fileRef = E7123FDE129D0D470021237F /* glass-west.png */; };
-		E715B35B1293B7750098D437 /* DOSPadBaseViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E715B35A1293B7750098D437 /* DOSPadBaseViewController.m */; };
 		E71706D2254643AD000AF482 /* DPTheme.m in Sources */ = {isa = PBXBuildFile; fileRef = E71706D1254643AC000AF482 /* DPTheme.m */; };
 		E71706DC25472C20000AF482 /* DPThemeScene.m in Sources */ = {isa = PBXBuildFile; fileRef = E71706DB25472C20000AF482 /* DPThemeScene.m */; };
 		E71A268E129A1B2D0013D51C /* landbariphon.png in Resources */ = {isa = PBXBuildFile; fileRef = E71A268C129A1B2D0013D51C /* landbariphon.png */; };
@@ -420,6 +419,7 @@
 		E79610272564DCA000556B9D /* libmt32emu.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E7960F462564CE4D00556B9D /* libmt32emu.a */; };
 		E79610322566580000556B9D /* DPSettings.m in Sources */ = {isa = PBXBuildFile; fileRef = E7961031256657FF00556B9D /* DPSettings.m */; };
 		E79610332566580000556B9D /* DPSettings.m in Sources */ = {isa = PBXBuildFile; fileRef = E7961031256657FF00556B9D /* DPSettings.m */; };
+		E796109E256A6B5700556B9D /* iDOSThumbnail.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = E7B2BBCE252155EF00490083 /* iDOSThumbnail.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		E7A01EE71CC9277E0036A4CF /* ColorTheme.m in Sources */ = {isa = PBXBuildFile; fileRef = E7A01EDD1CC927370036A4CF /* ColorTheme.m */; };
 		E7A01EF41CC9A5480036A4CF /* CoreAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FDB9E40C0DEB81970027A75A /* CoreAudio.framework */; };
 		E7A01EF71CC9C1AB0036A4CF /* gift.png in Resources */ = {isa = PBXBuildFile; fileRef = E7A01EE81CC92F0C0036A4CF /* gift.png */; };
@@ -449,8 +449,6 @@
 		E7B2BBC9252038D000490083 /* jumphack.h in Headers */ = {isa = PBXBuildFile; fileRef = E7B2BBB7252038CF00490083 /* jumphack.h */; };
 		E7B2BBD0252155F000490083 /* QuickLookThumbnailing.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E7B2BBCF252155F000490083 /* QuickLookThumbnailing.framework */; };
 		E7B2BBD4252155F100490083 /* ThumbnailProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = E7B2BBD3252155F100490083 /* ThumbnailProvider.m */; };
-		E7B2BBDF252190CB00490083 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E7B2BBDE252190CA00490083 /* MobileCoreServices.framework */; };
-		E7B2BBE125221FCC00490083 /* iDOSThumbnail.appex in CopyFiles */ = {isa = PBXBuildFile; fileRef = E7B2BBCE252155EF00490083 /* iDOSThumbnail.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		E7B2BBE2252224AC00490083 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E7A482411FF731C100AE7DB6 /* Assets.xcassets */; };
 		E7B2BBE8252432DC00490083 /* UIViewController+Alert.m in Sources */ = {isa = PBXBuildFile; fileRef = E7B2BBE7252432DB00490083 /* UIViewController+Alert.m */; };
 		E7B2BBEA2525728600490083 /* screenshot_bg.png in Resources */ = {isa = PBXBuildFile; fileRef = E7B2BBE92525728100490083 /* screenshot_bg.png */; };
@@ -666,6 +664,20 @@
 			remoteGlobalIDString = E7960F452564CE4D00556B9D;
 			remoteInfo = mt32emu;
 		};
+		E796109C256A6B2B00556B9D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = E7B2BBCD252155EE00490083;
+			remoteInfo = iDOSThumbnail;
+		};
+		E796109F256A6B5700556B9D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = E7B2BBCD252155EE00490083;
+			remoteInfo = iDOSThumbnail;
+		};
 		E7B2BBEC252628D300490083 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
@@ -720,14 +732,15 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		E7B2BBE025221FBA00490083 /* CopyFiles */ = {
+		E79610A1256A6B5700556B9D /* Embed App Extensions */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
-				E7B2BBE125221FCC00490083 /* iDOSThumbnail.appex in CopyFiles */,
+				E796109E256A6B5700556B9D /* iDOSThumbnail.appex in Embed App Extensions */,
 			);
+			name = "Embed App Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXCopyFilesBuildPhase section */
@@ -806,8 +819,6 @@
 		E7123FDA129D0D470021237F /* glass-southeast.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "glass-southeast.png"; sourceTree = "<group>"; };
 		E7123FDC129D0D470021237F /* glass-southwest.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "glass-southwest.png"; sourceTree = "<group>"; };
 		E7123FDE129D0D470021237F /* glass-west.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "glass-west.png"; sourceTree = "<group>"; };
-		E715B3591293B7740098D437 /* DOSPadBaseViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DOSPadBaseViewController.h; path = Shared/DOSPadBaseViewController.h; sourceTree = "<group>"; };
-		E715B35A1293B7750098D437 /* DOSPadBaseViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DOSPadBaseViewController.m; path = Shared/DOSPadBaseViewController.m; sourceTree = "<group>"; };
 		E71706D0254643AC000AF482 /* DPTheme.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DPTheme.h; sourceTree = "<group>"; };
 		E71706D1254643AC000AF482 /* DPTheme.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DPTheme.m; sourceTree = "<group>"; };
 		E71706DA25472C20000AF482 /* DPThemeScene.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DPThemeScene.h; sourceTree = "<group>"; };
@@ -1063,10 +1074,10 @@
 		E729BF4C129BF18F002B05B2 /* mouseon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = mouseon.png; sourceTree = "<group>"; };
 		E729BF4D129BF18F002B05B2 /* mouseon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "mouseon@2x.png"; sourceTree = "<group>"; };
 		E729BF4E129BF18F002B05B2 /* mouseon~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "mouseon~ipad.png"; sourceTree = "<group>"; };
-		E72BE69412911096009DC46A /* DPEmulatorViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DPEmulatorViewController.h; path = iPhone/DPEmulatorViewController.h; sourceTree = "<group>"; };
-		E72BE69512911096009DC46A /* DPEmulatorViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DPEmulatorViewController.m; path = iPhone/DPEmulatorViewController.m; sourceTree = "<group>"; };
-		E72BE6C312911B5C009DC46A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
-		E72BE6C412911B5C009DC46A /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		E72BE69412911096009DC46A /* DPEmulatorViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DPEmulatorViewController.h; path = Main/DPEmulatorViewController.h; sourceTree = "<group>"; };
+		E72BE69512911096009DC46A /* DPEmulatorViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DPEmulatorViewController.m; path = Main/DPEmulatorViewController.m; sourceTree = "<group>"; };
+		E72BE6C312911B5C009DC46A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = Main/AppDelegate.h; sourceTree = "<group>"; };
+		E72BE6C412911B5C009DC46A /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppDelegate.m; path = Main/AppDelegate.m; sourceTree = "<group>"; };
 		E72BE6C512911B5C009DC46A /* DOSPadEmulator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DOSPadEmulator.h; sourceTree = "<group>"; };
 		E72BE6C612911B5C009DC46A /* DOSPadEmulator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DOSPadEmulator.m; sourceTree = "<group>"; };
 		E72BE6C712911B5C009DC46A /* FileSystemObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileSystemObject.h; sourceTree = "<group>"; };
@@ -1518,7 +1529,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				E79610272564DCA000556B9D /* libmt32emu.a in Frameworks */,
-				E7B2BBDF252190CB00490083 /* MobileCoreServices.framework in Frameworks */,
 				E7B7F8701DE1D70200590701 /* libc++.tbd in Frameworks */,
 				E7A01EF41CC9A5480036A4CF /* CoreAudio.framework in Frameworks */,
 				9222DD561CC44A9F00B321B9 /* GameController.framework in Frameworks */,
@@ -2211,7 +2221,7 @@
 				E7FDFB67255150DA00A6DE66 /* Util */,
 				E77E085B2549126700B5B11D /* Gamepad */,
 				E71706E425472C5F000AF482 /* Theme */,
-				E7D98C6C1CCB228200A17CFC /* Controllers */,
+				E7D98C6C1CCB228200A17CFC /* Main */,
 				E7D98C6B1CCB227A00A17CFC /* Views */,
 				E77DAFC311B5D83600B78E69 /* Shared */,
 			);
@@ -2221,8 +2231,6 @@
 		E77DAFC311B5D83600B78E69 /* Shared */ = {
 			isa = PBXGroup;
 			children = (
-				E72BE6C312911B5C009DC46A /* AppDelegate.h */,
-				E72BE6C412911B5C009DC46A /* AppDelegate.m */,
 				E79970041241F09400502015 /* cmd_history.h */,
 				E792A4BA11E36C9C00894C71 /* Common.h */,
 				E72BE6C512911B5C009DC46A /* DOSPadEmulator.h */,
@@ -2547,15 +2555,15 @@
 			path = Shared;
 			sourceTree = "<group>";
 		};
-		E7D98C6C1CCB228200A17CFC /* Controllers */ = {
+		E7D98C6C1CCB228200A17CFC /* Main */ = {
 			isa = PBXGroup;
 			children = (
+				E72BE6C312911B5C009DC46A /* AppDelegate.h */,
+				E72BE6C412911B5C009DC46A /* AppDelegate.m */,
 				E72BE69512911096009DC46A /* DPEmulatorViewController.m */,
 				E72BE69412911096009DC46A /* DPEmulatorViewController.h */,
-				E715B3591293B7740098D437 /* DOSPadBaseViewController.h */,
-				E715B35A1293B7750098D437 /* DOSPadBaseViewController.m */,
 			);
-			name = Controllers;
+			name = Main;
 			sourceTree = "<group>";
 		};
 		E7D98C6E1CCB23EE00A17CFC /* SDL */ = {
@@ -3247,7 +3255,7 @@
 				E7BE12A2128BF31A0046990B /* Resources */,
 				E7BE12E7128BF31A0046990B /* Sources */,
 				E7BE1304128BF31A0046990B /* Frameworks */,
-				E7B2BBE025221FBA00490083 /* CopyFiles */,
+				E79610A1256A6B5700556B9D /* Embed App Extensions */,
 			);
 			buildRules = (
 			);
@@ -3259,6 +3267,8 @@
 				E7BE129C128BF31A0046990B /* PBXTargetDependency */,
 				E7BE129E128BF31A0046990B /* PBXTargetDependency */,
 				E7BE12A0128BF31A0046990B /* PBXTargetDependency */,
+				E796109D256A6B2B00556B9D /* PBXTargetDependency */,
+				E79610A0256A6B5700556B9D /* PBXTargetDependency */,
 			);
 			name = iDOS;
 			productName = dospad;
@@ -3737,7 +3747,6 @@
 				E72BE6E812911B5C009DC46A /* KeyView.m in Sources */,
 				E7DF95C92535965600ECB198 /* MfiGamepadMapperView.m in Sources */,
 				E72BE6EF12911B5C009DC46A /* ZipArchive.m in Sources */,
-				E715B35B1293B7750098D437 /* DOSPadBaseViewController.m in Sources */,
 				E76C49381299490200901B69 /* FloatPanel.m in Sources */,
 				E70836B92539EEB200B9321F /* KeyboardSpy.m in Sources */,
 				E71706D2254643AD000AF482 /* DPTheme.m in Sources */,
@@ -3872,6 +3881,16 @@
 			isa = PBXTargetDependency;
 			target = E7960F452564CE4D00556B9D /* mt32emu */;
 			targetProxy = E79610252564DC9700556B9D /* PBXContainerItemProxy */;
+		};
+		E796109D256A6B2B00556B9D /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = E7B2BBCD252155EE00490083 /* iDOSThumbnail */;
+			targetProxy = E796109C256A6B2B00556B9D /* PBXContainerItemProxy */;
+		};
+		E79610A0256A6B5700556B9D /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = E7B2BBCD252155EE00490083 /* iDOSThumbnail */;
+			targetProxy = E796109F256A6B5700556B9D /* PBXContainerItemProxy */;
 		};
 		E7B2BBED252628D300490083 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -4422,6 +4441,7 @@
 				PRODUCT_NAME = iDOS;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_WORKSPACE_SKIPPED_SDK_FRAMEWORKS = OpenGLES;
 			};
 			name = Debug;
 		};
@@ -4455,6 +4475,7 @@
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = NO;
+				VALIDATE_WORKSPACE_SKIPPED_SDK_FRAMEWORKS = OpenGLES;
 				ZERO_LINK = NO;
 			};
 			name = Release;
@@ -4606,6 +4627,7 @@
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
+				VALIDATE_WORKSPACE_SKIPPED_SDK_FRAMEWORKS = OpenGLES;
 				ZERO_LINK = NO;
 			};
 			name = AppStore;
