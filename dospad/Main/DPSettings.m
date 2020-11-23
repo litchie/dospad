@@ -13,6 +13,9 @@
 #define kMouseSpeed            @"mouse_speed"
 #define kTransparency          @"transparency"
 #define kShowMouseHold         @"show_mouse_hold"
+#define kKeySoundEnabled       @"key_sound_enabled"
+#define kGamePadSoundEnabled   @"gamepad_sound_enabled"
+
 static DPSettings *s_settings;
 
 @implementation DPSettings
@@ -72,6 +75,8 @@ static DPSettings *s_settings;
 	_mouseSpeed = [defs floatForKey:kMouseSpeed];
 	_floatAlpha = 1-[defs floatForKey:kTransparency];
 	_showMouseHold = [defs boolForKey:kShowMouseHold];
+	_keyPressSound = [defs boolForKey:kKeySoundEnabled];
+	_gamepadSound = [defs boolForKey:kGamePadSoundEnabled];
 }
 
 @end

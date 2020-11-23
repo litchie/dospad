@@ -18,10 +18,8 @@
 
 #import "KeyView.h"
 #import "KeyboardView.h"
-#import <AudioToolbox/AudioServices.h>
-#import "Common.h"
-#include "SDL.h"
-static SystemSoundID keyPressSound=0;
+#import "DPSettings.h"
+#import "SoundEffect.h"
 
 @implementation KeyView
 
@@ -111,12 +109,9 @@ static SystemSoundID keyPressSound=0;
 
 -(void)playKeyPressSound
 {
-    if (!DEFS_GET_INT(kKeySoundEnabled)) return;
-    if (keyPressSound == 0) {
-        NSString *path = [[NSBundle mainBundle] pathForResource:@"keypress" ofType:@"wav"];
-        AudioServicesCreateSystemSoundID((__bridge CFURLRef)[NSURL fileURLWithPath:path],&keyPressSound);
-    }
-    if (keyPressSound != 0) AudioServicesPlaySystemSound(keyPressSound);
+	if ([DPSettings shared].keyPressSound) {
+		[SoundEffect play:@"keypress.wav"];
+	}
 }
 
 -(void)showHighlight

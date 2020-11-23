@@ -13,15 +13,12 @@ static NSMutableDictionary *_sounds = nil;
 
 + (void)play:(NSString *)name
 {
-	if (![[NSUserDefaults standardUserDefaults] boolForKey:@"play_sound"])
-		return;
-		
 	if (_sounds == nil)
 		_sounds = [NSMutableDictionary dictionary];
 	SystemSoundID soundId = 0;
 	if (!_sounds[name])
 	{
-	    NSURL *url = [[[NSBundle mainBundle] resourceURL] URLByAppendingPathComponent:[NSString stringWithFormat:@"sounds/%@.mp3", name]];
+	    NSURL *url = [[[NSBundle mainBundle] resourceURL] URLByAppendingPathComponent:name];
         AudioServicesCreateSystemSoundID((__bridge CFURLRef)url, &soundId);
 		_sounds[name] = @(soundId);
 	}

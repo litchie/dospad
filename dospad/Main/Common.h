@@ -32,8 +32,6 @@
 #include "keys.h"
 #include "cmd_history.h"
 
-#define kKeySoundEnabled       @"key_sound_enabled"
-#define kGamePadSoundEnabled   @"gamepad_sound_enabled"
 #define kSmartKeyboardMappings @"smart_keyboard_mappings"
 #define kNumpadEnabled         @"numpad_enabled"
 #define kJoystickEnabled       @"joystick_enabled"

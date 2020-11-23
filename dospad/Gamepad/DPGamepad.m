@@ -3,6 +3,8 @@
 #import "DPGamepadConfiguration.h"
 #import "DPThumbView.h"
 #import "ColorTheme.h"
+#import "DPSettings.h"
+#import "SoundEffect.h"
 
 #define CENTER_OF_RECT(r) CGPointMake(r.size.width/2,r.size.height/2)
 #define DISTANCE_BETWEEN(a,b) sqrt((a.x-b.x)*(a.x-b.x) + (a.y-b.y)*(a.y-b.y))
@@ -121,21 +123,30 @@ if ((x) > 1.0) { \
 	}
 }
 
-- (void)updateCurrentDirectionFromPoint:(CGPoint)pt
+- (BOOL)updateCurrentDirectionFromPoint:(CGPoint)pt
 {
 	DPGamepadDPadDirection dir = DPGamepadDPadDirectionNone;
 	CGPoint ptCenter = CENTER_OF_RECT(self.bounds);
 	if (DISTANCE_BETWEEN(pt, ptCenter) > minDistance) 
 		dir = [self directionOfPoint:pt];
-	if (dir != currentDirection) 
+	if (dir != currentDirection) {
 		[self setCurrentDirection:dir];
+		return YES;
+	} else {
+		return NO;
+	}
 }
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
 {
 	UITouch *touch = [touches anyObject];
 	CGPoint pt = [touch locationInView:self];
-	[self updateCurrentDirectionFromPoint:pt];
+	if ([self updateCurrentDirectionFromPoint:pt]) {
+		if ([DPSettings shared].gamepadSound)
+		{
+			[SoundEffect play:@"joystickmove.wav"];
+		}
+	}
 }
 
 - (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event
@@ -208,7 +219,10 @@ if ((x) > 1.0) { \
 	UITouch *touch = [touches anyObject];
 	CGPoint pt = [touch locationInView:self];
 	CGPoint ptCenter = CENTER_OF_RECT(self.bounds);
-
+	if ([DPSettings shared].gamepadSound)
+	{
+		[SoundEffect play:@"joystickmove.wav"];
+	}
 	[self updateJoystickAxis:CGPointMake(pt.x - ptCenter.x, pt.y - ptCenter.y)];
 }
 
@@ -254,6 +268,9 @@ if ((x) > 1.0) { \
 {
 	if (_pressed != b) {
 		_pressed = b;
+		if (b && [DPSettings shared].gamepadSound) {
+			[SoundEffect play:@"joystickbtn.wav"];
+		}
 		[self setNeedsDisplay];
 		[_gamepad.gamepadDelegate gamepad:_gamepad buttonIndex:self.buttonIndex pressed:b];
 	}
