@@ -40,7 +40,6 @@ extern int SDL_SendKeyboardKey(int index, Uint8 state, SDL_scancode scancode);
 
 @implementation KeyboardView
 @synthesize externKeyDelegate;
-@synthesize backgroundImage;
 @synthesize keys;
 @synthesize capsLock, numLock;
 
@@ -54,14 +53,6 @@ const CGFloat kIPhoneLandscapeKeyboardHeight = 200.0;// : 288
     btn.code = scancode;
     btn.title = title;
     btn.delegate = self;
-    btn.padding = keyPadding;
-    
-    if (transparentKeys)
-    {
-        btn.bkgColor = [UIColor clearColor];
-        btn.edgeColor = [UIColor clearColor];
-    }
-    
     [self addSubview:btn];
     self.keys = [self.keys arrayByAddingObject:btn];
     return btn;
@@ -124,7 +115,6 @@ const CGFloat kIPhoneLandscapeKeyboardHeight = 200.0;// : 288
 			key.bkgColor       = [[ColorTheme defaultTheme] colorByName:@"key-color"];
 			key.highlightColor = [[ColorTheme defaultTheme] colorByName:@"key-highlight-color"];
 			key.bottomColor    = [[ColorTheme defaultTheme] colorByName:@"key-bottom-color"];
-			key.newStyle = YES;
 			if (code == SDL_SCANCODE_CAPSLOCK) {
 				[key addSubview:self.capsLock];
 			} else if (code == SDL_SCANCODE_NUMLOCKCLEAR) {
@@ -167,14 +157,6 @@ const CGFloat kIPhoneLandscapeKeyboardHeight = 200.0;// : 288
 	_layoutFilename = layoutConfig;
 	[self createKeys];
 	return self;
-}
-
-- (void)drawRect:(CGRect)rect 
-{
-    if (backgroundImage)
-    {
-        [backgroundImage drawInRect:rect];
-    }
 }
 
 - (void)updateKeyLock

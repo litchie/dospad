@@ -31,16 +31,12 @@ typedef enum
 {
     NSArray *keys;
     BOOL fnSwitch;
-    BOOL transparentKeys;
-    UIEdgeInsets keyPadding;
     id<KeyDelegate> __weak externKeyDelegate;
     KeyLockIndicator *capsLock;
     KeyLockIndicator *numLock;
-    UIImage *backgroundImage;
 }
 
 @property (nonatomic, weak) id<KeyDelegate> externKeyDelegate;
-@property (nonatomic, strong) UIImage *backgroundImage;
 @property (nonatomic, strong) NSArray *keys;
 @property (nonatomic, strong) KeyLockIndicator *capsLock;
 @property (nonatomic, strong) KeyLockIndicator *numLock;

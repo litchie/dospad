@@ -39,18 +39,13 @@
     NSString *title,*altTitle;
     BOOL highlight;
     id<KeyDelegate> __weak delegate;
-    UIEdgeInsets padding;
-	BOOL newStyle;
 }
 
-@property UIEdgeInsets padding;
 @property (nonatomic) BOOL highlight;
 @property (nonatomic,strong)NSString *title,*altTitle;
 @property int code;
 @property (nonatomic, strong) UIColor *textColor;
 @property (nonatomic, strong) UIColor *bkgColor,*edgeColor,*bottomColor,*highlightColor;
 @property (nonatomic,weak) id<KeyDelegate> delegate;
-@property (nonatomic) BOOL newStyle;
-@property (nonatomic, strong) NSString *mappedKey;
 
 @end
