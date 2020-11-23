@@ -29,6 +29,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (readonly) DPScreenScaleMode screenScaleMode;
 @property (readonly) float floatAlpha; // overlay controls
 @property (readonly) BOOL showMouseHold;
+@property (readonly) BOOL autoOpenLastPackage;
 
 + (DPSettings*)shared;
 

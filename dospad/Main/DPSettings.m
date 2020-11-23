@@ -15,6 +15,7 @@
 #define kShowMouseHold         @"show_mouse_hold"
 #define kKeySoundEnabled       @"key_sound_enabled"
 #define kGamePadSoundEnabled   @"gamepad_sound_enabled"
+#define kAutoOpenLast          @"auto_open_last"
 
 static DPSettings *s_settings;
 
@@ -77,6 +78,7 @@ static DPSettings *s_settings;
 	_showMouseHold = [defs boolForKey:kShowMouseHold];
 	_keyPressSound = [defs boolForKey:kKeySoundEnabled];
 	_gamepadSound = [defs boolForKey:kGamePadSoundEnabled];
+	_autoOpenLastPackage = [defs boolForKey:kAutoOpenLast];
 }
 
 @end

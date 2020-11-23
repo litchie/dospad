@@ -14,6 +14,16 @@
 			<key>Type</key>
 			<string>PSToggleSwitchSpecifier</string>
 			<key>Title</key>
+			<string>Auto open last package</string>
+			<key>Key</key>
+			<string>auto_open_last</string>
+			<key>DefaultValue</key>
+			<false/>
+		</dict>
+		<dict>
+			<key>Type</key>
+			<string>PSToggleSwitchSpecifier</string>
+			<key>Title</key>
 			<string>Enable iCloud/iTunes Backup</string>
 			<key>Key</key>
 			<string>icloud_backup_enabled</string>

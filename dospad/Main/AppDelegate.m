@@ -24,6 +24,8 @@
 #import "UIViewController+Alert.h"
 #import "DPSettings.h"
 
+#define kLastURL @"LastPackageURL"
+
 @interface AppDelegate ()
 {
 	DPEmulatorViewController *_emulatorController;
@@ -35,6 +37,35 @@
 @synthesize frameskip;
 @synthesize cycles;
 @synthesize maxPercent;
+
+- (void)rememberURL:(NSURL*)url
+{
+    NSData *bookmark = [url bookmarkDataWithOptions:0
+        includingResourceValuesForKeys:nil
+        relativeToURL:nil
+        error:nil];
+    if (bookmark)
+    {
+        [[NSUserDefaults standardUserDefaults] setObject:bookmark
+            forKey:kLastURL];
+    }
+}
+
+- (NSURL*)openLastURL
+{
+	NSData *bookmark = [[NSUserDefaults standardUserDefaults] objectForKey:kLastURL];
+	if (bookmark)
+	{
+		NSError *err = nil;
+		BOOL isStale = NO;
+		NSURL *url = [NSURL URLByResolvingBookmarkData:bookmark options:0 relativeToURL:nil bookmarkDataIsStale:&isStale error:&err];
+		if (url && [[NSFileManager defaultManager] fileExistsAtPath:url.path] && !isStale)
+		{
+			return url;
+		}
+	}
+	return nil;
+}
 
 
 - (BOOL)application:(UIApplication *)application openURL:(NSURL *)url
@@ -52,6 +83,7 @@
 			return NO;
 		}
 		[url startAccessingSecurityScopedResource];
+		[self rememberURL:url];
 		[DOSPadEmulator sharedInstance].diskcDirectory = url.path;
 	}
 	return YES;
@@ -142,6 +174,14 @@
 	[DPSettings shared];
 	[self initBackup];
 	[self initColorTheme];
+	
+	if ([DPSettings shared].autoOpenLastPackage)
+	{
+		NSURL *lastUrl = [self openLastURL];
+		if (lastUrl) {
+			[DOSPadEmulator sharedInstance].diskcDirectory = lastUrl.path;
+		}
+	}
 
 	// Make sure we are allowed to play in lock screen
 	NSError *setCategoryErr = nil;
