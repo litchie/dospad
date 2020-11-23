@@ -16,6 +16,7 @@
 #define kKeySoundEnabled       @"key_sound_enabled"
 #define kGamePadSoundEnabled   @"gamepad_sound_enabled"
 #define kAutoOpenLast          @"auto_open_last"
+#define kPixelatedScaling      @"screen_pixelated"
 
 static DPSettings *s_settings;
 
@@ -79,6 +80,7 @@ static DPSettings *s_settings;
 	_keyPressSound = [defs boolForKey:kKeySoundEnabled];
 	_gamepadSound = [defs boolForKey:kGamePadSoundEnabled];
 	_autoOpenLastPackage = [defs boolForKey:kAutoOpenLast];
+	_pixelatedScaling = [defs boolForKey:kPixelatedScaling];
 }
 
 @end

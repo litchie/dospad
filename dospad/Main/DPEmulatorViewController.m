@@ -811,9 +811,7 @@ static struct {
 		default:
 			break;
 	}
-	
-    self.screenView.transform = CGAffineTransformMakeScale(w/sw,h/sh);
-	self.screenView.center = CGPointMake(cx, cy);
+	[self scaleScreenViewToSize:CGSizeMake(w, h) center:CGPointMake(cx, cy)];
     return CGRectMake(cx-w/2, cy-h/2, w, h);
 }
 
@@ -823,10 +821,22 @@ static struct {
 	CGFloat cy = CGRectGetMidY(availRect);
 	CGFloat w = availRect.size.width;
 	CGFloat h = availRect.size.height;
+	[self scaleScreenViewToSize:availRect.size center:CGPointMake(cx, cy)];
+}
+
+- (void)scaleScreenViewToSize:(CGSize)size center:(CGPoint)center
+{
     CGFloat sw = self.screenView.bounds.size.width;
     CGFloat sh = self.screenView.bounds.size.height;
-    self.screenView.transform = CGAffineTransformMakeScale(w/sw,h/sh);
-	self.screenView.center = CGPointMake(cx, cy);
+    self.screenView.transform = CGAffineTransformMakeScale(size.width/sw,size.height/sh);
+	self.screenView.center = CGPointMake(center.x, center.y);
+	if ([DPSettings shared].pixelatedScaling) {
+		self.screenView.layer.magnificationFilter = kCAFilterNearest;
+		self.screenView.layer.shouldRasterize = YES;
+	} else {
+		self.screenView.layer.magnificationFilter = kCAFilterLinear;
+		self.screenView.layer.shouldRasterize = NO;
+	}
 }
 
 - (NSString*)currentCycles

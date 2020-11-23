@@ -30,6 +30,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (readonly) float floatAlpha; // overlay controls
 @property (readonly) BOOL showMouseHold;
 @property (readonly) BOOL autoOpenLastPackage;
+@property (readonly) BOOL pixelatedScaling;
 
 + (DPSettings*)shared;
 
