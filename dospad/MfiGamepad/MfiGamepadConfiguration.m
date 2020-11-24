@@ -49,8 +49,8 @@
 	_path = path;
 	
 	// NOTE: must sync with button index
-	_buttonNames = @[@"BTN_A",@"BTN_B",@"BTN_X",@"BTN_Y",@"BTN_L1",@"BTN_L2",@"BTN_R1",@"BTN_R2",
-		@"DPAD_UP",@"DPAD_DOWN",@"DPAD_LEFT", @"DPAD_RIGHT"];
+	_buttonNames = @[@"BTN_A",@"BTN_B",@"BTN_X",@"BTN_Y",@"BTN_L1",@"BTN_L2",@"BTN_L3",@"BTN_R1",@"BTN_R2",
+          @"BTN_R3",@"DPAD_UP",@"DPAD_DOWN",@"DPAD_LEFT", @"DPAD_RIGHT"];
 	
 	NSError *err = nil;
 	NSData *data = [NSData dataWithContentsOfFile:path];

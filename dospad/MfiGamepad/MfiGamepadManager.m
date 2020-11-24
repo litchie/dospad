@@ -117,6 +117,16 @@ static MfiGamepadManager *_defaultManager;
 			{
 				[self onButton:MFI_GAMEPAD_BUTTON_R2 pressed:pressed atPlayer:c.playerIndex];
 			}];
+        if (@available(iOS 12.1, *)) {
+            [gamepad.leftThumbstickButton setPressedChangedHandler:^(GCControllerButtonInput * _Nonnull button, float value, BOOL pressed)
+             {
+                [self onButton:MFI_GAMEPAD_BUTTON_L3 pressed:pressed atPlayer:c.playerIndex];
+            }];
+            [gamepad.rightThumbstickButton setPressedChangedHandler:^(GCControllerButtonInput * _Nonnull button, float value, BOOL pressed)
+                {
+                    [self onButton:MFI_GAMEPAD_BUTTON_R3 pressed:pressed atPlayer:c.playerIndex];
+                }];
+        }
 		[gamepad.dpad.left setPressedChangedHandler:^(GCControllerButtonInput * _Nonnull button,
 				float value, BOOL pressed)
 			{

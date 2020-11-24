@@ -19,8 +19,10 @@
 	UILabel *_dpadDownLabel;
 	UILabel *_buttonL1Label;
 	UILabel *_buttonL2Label;
+    UILabel *_buttonL3Label;
 	UILabel *_buttonR1Label;
 	UILabel *_buttonR2Label;
+    UILabel *_buttonR3Label;
 	UILabel *_buttonALabel;
 	UILabel *_buttonBLabel;
 	UILabel *_buttonXLabel;
@@ -87,8 +89,10 @@
 	_buttonBLabel.text   = [self titleForButton:MFI_GAMEPAD_BUTTON_B];
 	_buttonL1Label.text  = [self titleForButton:MFI_GAMEPAD_BUTTON_L1];
 	_buttonL2Label.text  = [self titleForButton:MFI_GAMEPAD_BUTTON_L2];
+    _buttonL3Label.text  = [self titleForButton:MFI_GAMEPAD_BUTTON_L3];
 	_buttonR1Label.text  = [self titleForButton:MFI_GAMEPAD_BUTTON_R1];
 	_buttonR2Label.text  = [self titleForButton:MFI_GAMEPAD_BUTTON_R2];
+    _buttonR3Label.text  = [self titleForButton:MFI_GAMEPAD_BUTTON_R3];
 	_dpadLeftLabel.text  = [self titleForButton:MFI_GAMEPAD_BUTTON_LEFT];
 	_dpadRightLabel.text = [self titleForButton:MFI_GAMEPAD_BUTTON_RIGHT];
 	_dpadUpLabel.text    = [self titleForButton:MFI_GAMEPAD_BUTTON_UP];
@@ -184,10 +188,12 @@
 	_buttonYLabel = [[UILabel alloc] initWithFrame:rect2];
 	_buttonBLabel = [[UILabel alloc] initWithFrame:rect2];
 	_buttonXLabel = [[UILabel alloc] initWithFrame:rect2];
+    _buttonR3Label = [[UILabel alloc] initWithFrame:rect2];
 	_buttonALabel.center = CGPointMake(x, y+u);
 	_buttonBLabel.center = CGPointMake(x+u, y);
 	_buttonXLabel.center = CGPointMake(x-u, y);
 	_buttonYLabel.center = CGPointMake(x, y-u);
+    _buttonR3Label.center = CGPointMake(x-(u*2.0), y+u);
 	
 	x = 1.5*gw;
 	y = 2.5*gh;
@@ -195,6 +201,7 @@
 	_dpadUpLabel    = [[UILabel alloc] initWithFrame:rect1];
 	_dpadLeftLabel  = [[UILabel alloc] initWithFrame:rect1];
 	_dpadRightLabel = [[UILabel alloc] initWithFrame:rect1];
+    _buttonL3Label  = [[UILabel alloc] initWithFrame:rect2];
 	
 	_dpadDownLabel.center  = CGPointMake(x, y+u);
 	_dpadRightLabel.center = CGPointMake(x+u, y);
@@ -202,6 +209,7 @@
 	_dpadUpLabel.center    = CGPointMake(x, y-u);
 	_dpadDownLabel.transform = CGAffineTransformMakeRotation(M_PI_2);
 	_dpadUpLabel.transform = CGAffineTransformMakeRotation(M_PI_2);
+    _buttonL3Label.center  = CGPointMake(x+(u*2.0), y+u);
 	
 	x = 1.5*gw;
 	y = 0.5*gh;
@@ -219,8 +227,8 @@
 	
 	
 	for (UILabel *x in @[_buttonXLabel,_buttonBLabel,_buttonYLabel,_buttonALabel,
-		_buttonL1Label,_buttonL2Label,_buttonR1Label,_buttonR2Label,
-		_dpadUpLabel,_dpadDownLabel,_dpadLeftLabel,_dpadRightLabel])
+		_buttonL1Label,_buttonL2Label, _buttonL3Label, _buttonR1Label,_buttonR2Label,
+		_buttonR3Label, _dpadUpLabel,_dpadDownLabel,_dpadLeftLabel,_dpadRightLabel])
 	{
 		x.textAlignment = NSTextAlignmentCenter;
 		x.textColor = [UIColor whiteColor];
@@ -231,7 +239,7 @@
 		[mainView addSubview:x];
 	}
 
-	for (UILabel *x in @[_buttonXLabel,_buttonBLabel,_buttonYLabel,_buttonALabel]) {
+	for (UILabel *x in @[_buttonXLabel,_buttonBLabel,_buttonYLabel,_buttonALabel, _buttonR3Label, _buttonL3Label]) {
 		x.layer.cornerRadius = x.bounds.size.width/2;
 	}
 
@@ -349,6 +357,12 @@
 	case MFI_GAMEPAD_BUTTON_RIGHT:
 		_selectedLabel = _dpadRightLabel;
 		break;
+    case MFI_GAMEPAD_BUTTON_L3:
+        _selectedLabel = _buttonL3Label;
+        break;
+    case MFI_GAMEPAD_BUTTON_R3:
+        _selectedLabel = _buttonR3Label;
+        break;
 	default:
 		_selectedLabel = nil;
 		break;
