@@ -41,7 +41,7 @@ static DPSettings *s_settings;
     		selector:@selector(defaultsDidChange:)
     		name:NSUserDefaultsDidChangeNotification
     		object:nil];
-		[self defaultsDidChange:nil];
+		[self loadDefaults];
 	}
 	return self;
 }
@@ -68,10 +68,16 @@ static DPSettings *s_settings;
 
 - (void)defaultsDidChange:(NSNotification *)aNotification
 {
-	if (aNotification)
-		NSLog(@"defaultsDidChange");
+	NSLog(@"defaultsDidChange");
+	[self loadDefaults];
+	[[NSNotificationCenter defaultCenter] postNotification:[NSNotification
+		notificationWithName:DPFSettingsChangedNotification object:nil]];
+}
+
+- (void)loadDefaults
+{
 	NSUserDefaults *defs = [NSUserDefaults standardUserDefaults];
-     _tapAsClick = [defs boolForKey:kTapAsClick];
+    _tapAsClick = [defs boolForKey:kTapAsClick];
 	_screenScaleMode = [defs integerForKey:kScreenScaleMode];
 	_doubleTapAsRightClick = [defs integerForKey:kDoubleTapAsRightClick];
 	_mouseSpeed = [defs floatForKey:kMouseSpeed];

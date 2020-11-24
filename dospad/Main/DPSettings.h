@@ -7,6 +7,8 @@
 
 #import <Foundation/Foundation.h>
 
+#define DPFSettingsChangedNotification @"DPSettingsChanged"
+
 typedef NS_ENUM(NSInteger, DPScreenScaleMode) {
 	DPScreenScaleModeNone,
 	DPScreenScaleModeFill,

@@ -96,6 +96,10 @@ static struct {
 
 @implementation DPEmulatorViewController
 
+- (void)dealloc
+{
+	[[NSNotificationCenter defaultCenter] removeObserver:self];
+}
 
 - (UILabel*)cyclesLabel:(CGRect)frame
 {
@@ -713,8 +717,14 @@ static struct {
     self.kbdspy = [[KeyboardSpy alloc] initWithFrame:CGRectMake(0,0,60,40)];
     [self.view addSubview:self.kbdspy];
 #endif
+
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didSettingsChanged:) name:DPFSettingsChangedNotification object:nil];
 }
 
+- (void)didSettingsChanged:(NSNotification*)note
+{
+	[self updateScreen];
+}
 
 // MARK: DPGamepadDelegate
 
