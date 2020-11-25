@@ -893,6 +893,21 @@ static struct {
     dospad_pause();
 }
 
+-(void)willResignActive
+{
+
+}
+
+-(void)didBecomeActive
+{
+    if (self.kbdspy)
+    {
+    	[self.kbdspy becomeFirstResponder];
+		[self.view bringSubviewToFront:self.kbdspy];
+	}
+}
+
+
 - (void)onMouseLeftDown
 {
     [self.screenView sendMouseEvent:0 left:YES down:YES];

@@ -47,5 +47,6 @@ typedef enum {
 
 -(void)updateFrameskip:(NSNumber*)skip;
 -(void)updateCpuCycles:(NSString*)title;
-
+-(void)willResignActive;
+-(void)didBecomeActive;
 @end

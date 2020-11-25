@@ -94,20 +94,17 @@
     return screenView;
 }
 
-// iOS 4.x
-- (void)applicationWillEnterForeground:(UIApplication *)application
-{
-    dospad_resume();
-}
 
 - (void)applicationWillResignActive:(UIApplication *)application
 {
     dospad_pause();
+    [_emulatorController willResignActive];
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application
 {
     dospad_resume();
+    [_emulatorController didBecomeActive];
 }
 
 - (void)applicationDidEnterBackground:(UIApplication *)application
