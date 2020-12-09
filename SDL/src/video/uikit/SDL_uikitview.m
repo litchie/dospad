@@ -136,7 +136,9 @@ static CGFloat CGPointDistanceToPoint(CGPoint a, CGPoint b)
 	if (self.mouseHoldDelegate) {
 		[self.mouseHoldDelegate onHold:_primaryOrigin];
 	}
-	[self sendMouseEvent:0 left:YES down:YES];
+	
+	if ([DPSettings shared].tapAsClick)
+		[self sendMouseEvent:0 left:YES down:YES];
 }
 
 - (void)endHold
@@ -149,7 +151,8 @@ static CGFloat CGPointDistanceToPoint(CGPoint a, CGPoint b)
 		[NSThread cancelPreviousPerformRequestsWithTarget:self selector:@selector(beginHold) object:self];
 	} else {
 		//NSLog(@"hold up");
-		[self sendMouseEvent:0 left:YES down:NO];
+		if ([DPSettings shared].tapAsClick)
+			[self sendMouseEvent:0 left:YES down:NO];
 	}
 	if (self.mouseHoldDelegate) {
 		[self.mouseHoldDelegate cancelHold:CGPointZero];
@@ -328,12 +331,9 @@ static CGFloat CGPointDistanceToPoint(CGPoint a, CGPoint b)
 
 - (void)sendMouseEvent:(int)index left:(BOOL)isLeft down:(BOOL)isDown
 {
-	if (![DPSettings shared].tapAsClick)
-		return;
-
 	[self ensureSDLMouse];
 	NSAssert(index==0 && SDL_GetNumMice()==1, @"Bad mouse");
-	NSLog(@"mouse button %@ %@", isLeft?@"Left":@"Right", isDown?@"Down":@"Up");
+	//NSLog(@"mouse button %@ %@", isLeft?@"Left":@"Right", isDown?@"Down":@"Up");
 	SDL_SendMouseButton(index,
 						isDown?SDL_PRESSED:SDL_RELEASED,
 						isLeft?SDL_BUTTON_LEFT:SDL_BUTTON_RIGHT);
@@ -345,7 +345,10 @@ static CGFloat CGPointDistanceToPoint(CGPoint a, CGPoint b)
 {
 	if (_pendingClickCount == 0)
 		return;
-	
+
+	if (![DPSettings shared].tapAsClick)
+		return;
+
 	[self sendMouseEvent:0 left:!_pendingClicks[_pendingClickIndex].rightClick
 		down:_pendingClicks[_pendingClickIndex].down];
 		
