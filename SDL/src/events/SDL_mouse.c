@@ -480,6 +480,7 @@ SDL_SendMouseMotion(int id, int relative, int x, int y, int pressure)
         event.motion.xrel = xrel;
         event.motion.yrel = yrel;
         event.motion.windowID = mouse->focus ? mouse->focus->id : 0;
+        event.motion.relative_mode = mouse->relative_mode;
         posted = (SDL_PushEvent(&event) > 0);
     }
     mouse->last_x = mouse->x;

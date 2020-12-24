@@ -182,6 +182,7 @@ typedef struct SDL_MouseMotionEvent
     int cursor;         /**< The cursor being used in the event */
     int xrel;           /**< The relative motion in the X direction */
     int yrel;           /**< The relative motion in the Y direction */
+    SDL_bool relative_mode; /**< holds relative mode flag of  event generating SDL mouse */
 } SDL_MouseMotionEvent;
 
 /**

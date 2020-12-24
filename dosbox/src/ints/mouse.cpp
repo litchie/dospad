@@ -492,6 +492,7 @@ void Mouse_CursorMoved(float xrel,float yrel,float x,float y,bool emulate) {
 void Mouse_CursorSet(float x,float y) {
 	mouse.x=x;
 	mouse.y=y;
+    Mouse_AddEvent(MOUSE_HAS_MOVED);
 	DrawCursor();
 }
 

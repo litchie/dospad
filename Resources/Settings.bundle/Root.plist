@@ -208,6 +208,80 @@
 			<string>PSToggleSwitchSpecifier</string>
 		</dict>
 		<dict>
+			<key>Type</key>
+			<string>PSGroupSpecifier</string>
+			<key>Title</key>
+			<string>Mouse Absolute Coordinates</string>
+			<key>FooterText</key>
+			<string>When enabled, it changes in-dos mouse behavior to &quot;pointer to touched location&quot; (sometimes called as &quot;direct touch&quot;). Note that each dos program may need different scale factor. If mouse pointer is not in sync with your touch, you need to adjust the scale factors.</string>
+		</dict>
+		<dict>
+			<key>Type</key>
+			<string>PSToggleSwitchSpecifier</string>
+			<key>Title</key>
+			<string>Enable Mouse Absolute Coordinate</string>
+			<key>Key</key>
+			<string>mouse_abs_enable</string>
+			<key>DefaultValue</key>
+			<false/>
+		</dict>
+		<dict>
+			<key>Type</key>
+			<string>PSMultiValueSpecifier</string>
+			<key>Title</key>
+			<string>X-coord Scale Factor</string>
+			<key>Key</key>
+			<string>mouse_abs_xscale</string>
+			<key>DefaultValue</key>
+			<string>1</string>
+			<key>Titles</key>
+			<array>
+				<string>x0.5</string>
+				<string>x1</string>
+				<string>x2</string>
+				<string>x4</string>
+				<string>x6</string>
+				<string>x8</string>
+			</array>
+			<key>Values</key>
+			<array>
+				<string>0.5</string>
+				<string>1</string>
+				<string>2</string>
+				<string>4</string>
+				<string>6</string>
+				<string>8</string>
+			</array>
+		</dict>
+		<dict>
+			<key>Type</key>
+			<string>PSMultiValueSpecifier</string>
+			<key>Title</key>
+			<string>Y-coord Scale Factor</string>
+			<key>Key</key>
+			<string>mouse_abs_yscale</string>
+			<key>DefaultValue</key>
+			<string>1</string>
+			<key>Titles</key>
+			<array>
+				<string>x0.5</string>
+				<string>x1</string>
+				<string>x2</string>
+				<string>x4</string>
+				<string>x6</string>
+				<string>x8</string>
+			</array>
+			<key>Values</key>
+			<array>
+				<string>0.5</string>
+				<string>1</string>
+				<string>2</string>
+				<string>4</string>
+				<string>6</string>
+				<string>8</string>
+			</array>
+		</dict>
+		<dict>
 			<key>Title</key>
 			<string>==== Credits ====</string>
 			<key>FooterText</key>

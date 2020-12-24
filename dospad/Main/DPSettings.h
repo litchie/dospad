@@ -33,6 +33,9 @@ NS_ASSUME_NONNULL_BEGIN
 @property (readonly) BOOL showMouseHold;
 @property (readonly) BOOL autoOpenLastPackage;
 @property (readonly) BOOL pixelatedScaling;
+@property (readonly) BOOL mouseAbsEnable;
+@property (readonly) float mouseAbsXScale;
+@property (readonly) float mouseAbsYScale;
 
 + (DPSettings*)shared;
 

@@ -17,6 +17,9 @@
 #define kGamePadSoundEnabled   @"gamepad_sound_enabled"
 #define kAutoOpenLast          @"auto_open_last"
 #define kPixelatedScaling      @"screen_pixelated"
+#define kMouseAbsEnable        @"mouse_abs_enable"
+#define kMouseAbsXScale        @"mouse_abs_xscale"
+#define kMouseAbsYScale        @"mouse_abs_yscale"
 
 static DPSettings *s_settings;
 
@@ -87,6 +90,9 @@ static DPSettings *s_settings;
 	_gamepadSound = [defs boolForKey:kGamePadSoundEnabled];
 	_autoOpenLastPackage = [defs boolForKey:kAutoOpenLast];
 	_pixelatedScaling = [defs boolForKey:kPixelatedScaling];
+    _mouseAbsEnable = [defs boolForKey:kMouseAbsEnable];
+    _mouseAbsXScale = [defs floatForKey:kMouseAbsXScale];
+    _mouseAbsYScale = [defs floatForKey:kMouseAbsYScale];
 }
 
 @end

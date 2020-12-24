@@ -191,6 +191,12 @@ static CGFloat CGPointDistanceToPoint(CGPoint a, CGPoint b)
 		_secondaryTouch = touch;
 		_secondaryOrigin = [_secondaryTouch locationInView:self];
 	}
+    
+    // if asbolute coordinate mode is active (direct touch),
+    // move cursor directly to the touched point
+    if([DPSettings shared].mouseAbsEnable) {
+        [self sendMouseCoordinate:0 x:_primaryOrigin.x y:_primaryOrigin.y];
+    }
 }
 
 // Get called if there is a mouse and you try to use finger
@@ -266,6 +272,12 @@ static CGFloat CGPointDistanceToPoint(CGPoint a, CGPoint b)
 			// If right down, we should release it as well
 			// clear right button states
 			_secondaryTouch = nil;
+        
+            // in absolute coordinate mode (direct touch mode)
+            // we need to clear primary too, to prevent unintended move or click
+            if([DPSettings shared].mouseAbsEnable) {
+                _primaryTouch = nil;
+            }
 		}
 	}
 }
@@ -293,7 +305,15 @@ static CGFloat CGPointDistanceToPoint(CGPoint a, CGPoint b)
 					[self.mouseHoldDelegate onHoldMoved:b];
 				}
 			}
-			[self sendMouseMotion:0 x:b.x-a.x y:b.y-a.y];
+            
+            // send mouse motion (normal mode), or coordinate (absolute coordinate mode)
+            if([DPSettings shared].mouseAbsEnable) {
+                [self sendMouseCoordinate:0 x:b.x y:b.y];
+            }
+            else
+            {
+                [self sendMouseMotion:0 x:b.x-a.x y:b.y-a.y];
+            }
 		}
 		else if (touch == _secondaryTouch)
 		{
@@ -313,9 +333,20 @@ static CGFloat CGPointDistanceToPoint(CGPoint a, CGPoint b)
 		mice.id = 0;
 		mice.driverdata = NULL;
 		SDL_AddMouse(&mice, "Mouse", 0, 0, 1);
-		SDL_SetRelativeMouseMode(0, SDL_TRUE);
         NSAssert(SDL_GetNumMice()==1, @"Can not create mouse");
 		SDL_SelectMouse(0);
+    }
+
+    // update mouse relative / absolute mode, if required
+    if(SDL_GetMouse(0)->relative_mode == SDL_TRUE &&
+       [DPSettings shared].mouseAbsEnable == YES) {
+        // mouse is currently in relative mode, but absolute mode requested
+        SDL_SetRelativeMouseMode(0, SDL_FALSE); // update to absolute (non-relative) mode
+    }
+    if(SDL_GetMouse(0)->relative_mode == SDL_FALSE &&
+       [DPSettings shared].mouseAbsEnable == NO) {
+        // mouse is currently NOT in relative mode, but should be
+        SDL_SetRelativeMouseMode(0, SDL_TRUE);  // update to relative mode
     }
 }
 
@@ -327,6 +358,18 @@ static CGFloat CGPointDistanceToPoint(CGPoint a, CGPoint b)
 	float scale = 1+2*mouseSpeed;
 	NSAssert(index==0 && SDL_GetNumMice()==1, @"Bad mouse");
 	SDL_SendMouseMotion(index, 1, x*scale, y*scale, 0);
+}
+
+- (void)sendMouseCoordinate:(int)index x:(CGFloat)x y:(CGFloat)y
+{
+    [self ensureSDLMouse];
+
+    // x and y scale from settings
+    float xscale = [DPSettings shared].mouseAbsXScale;
+    float yscale = [DPSettings shared].mouseAbsYScale;
+    
+    // sends the actual mouse coordinate
+    SDL_SendMouseMotion(index, 0, x*xscale, y*yscale, 0);  // note 2nd argument 'relative'=0
 }
 
 - (void)sendMouseEvent:(int)index left:(BOOL)isLeft down:(BOOL)isDown
@@ -401,10 +444,17 @@ static CGFloat CGPointDistanceToPoint(CGPoint a, CGPoint b)
 	{
 		if (currentTime - _pointerActiveTime < 2.0)
 		{
-			CGFloat dx = request.location.x - _lastPointerLocation.x;
-			CGFloat dy = request.location.y - _lastPointerLocation.y;
-			//NSLog(@"pointer location: %f %f,  %f %f",request.location.x, request.location.y, dx, dy);
-			[self sendMouseMotion:0 x:dx y:dy];
+            if([DPSettings shared].mouseAbsEnable) {
+                // absolute coordinate mode, send coord directly
+                [self sendMouseCoordinate:0 x:request.location.x y:request.location.y];
+            }
+            else
+            {
+                CGFloat dx = request.location.x - _lastPointerLocation.x;
+                CGFloat dy = request.location.y - _lastPointerLocation.y;
+                //NSLog(@"pointer location: %f %f,  %f %f",request.location.x, request.location.y, dx, dy);
+                [self sendMouseMotion:0 x:dx y:dy];
+            }
 		}
 	}
 	
