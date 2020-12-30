@@ -363,10 +363,6 @@ static CGFloat CGPointDistanceToPoint(CGPoint a, CGPoint b)
 - (void)sendMouseCoordinate:(int)index x:(CGFloat)x y:(CGFloat)y
 {
     [self ensureSDLMouse];
-
-    // x and y scale from settings
-    float xscale = [DPSettings shared].mouseAbsXScale;
-    float yscale = [DPSettings shared].mouseAbsYScale;
     
     // sends the actual mouse coordinate
     SDL_SendMouseMotion(index, 0, x, y, 0);  // note 2nd argument 'relative'=0
