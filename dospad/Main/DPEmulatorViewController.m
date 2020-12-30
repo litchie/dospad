@@ -645,6 +645,24 @@ static struct {
 	{
 		[btn addTarget:self action:@selector(mountCDDrive:) forControlEvents:UIControlEventTouchUpInside];
 	}
+	else if ([name isEqualToString:@"mouse-right"])
+	{
+        [btn addTarget:self
+                         action:@selector(onMouseRightDown)
+               forControlEvents:UIControlEventTouchDown];
+        [btn addTarget:self
+                        action:@selector(onMouseRightUp)
+              forControlEvents:UIControlEventTouchUpInside];
+	}
+	else if ([name isEqualToString:@"mouse-left"])
+	{
+        [btn addTarget:self
+                    action:@selector(onMouseLeftDown)
+          forControlEvents:UIControlEventTouchDown];
+        [btn addTarget:self
+                    action:@selector(onMouseLeftUp)
+          forControlEvents:UIControlEventTouchUpInside];
+	}
 }
 
 - (void)mountDrive:(id)sender
