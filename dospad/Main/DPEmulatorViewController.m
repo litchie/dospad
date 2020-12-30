@@ -723,7 +723,10 @@ static struct {
 
 - (void)didSettingsChanged:(NSNotification*)note
 {
-	[self updateScreen];
+    // May be called in background thread
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self updateScreen];
+    });
 }
 
 // MARK: DPGamepadDelegate
