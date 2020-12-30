@@ -369,7 +369,7 @@ static CGFloat CGPointDistanceToPoint(CGPoint a, CGPoint b)
     float yscale = [DPSettings shared].mouseAbsYScale;
     
     // sends the actual mouse coordinate
-    SDL_SendMouseMotion(index, 0, x*xscale, y*yscale, 0);  // note 2nd argument 'relative'=0
+    SDL_SendMouseMotion(index, 0, x, y, 0);  // note 2nd argument 'relative'=0
 }
 
 - (void)sendMouseEvent:(int)index left:(BOOL)isLeft down:(BOOL)isDown
