@@ -570,7 +570,6 @@ void Mouse_ButtonReleased(Bit8u button) {
 }
 
 static void Mouse_SetMickeyPixelRate(Bit16s px, Bit16s py){
-    printf("Mouse_SetMickeyPixelRate:%d %d\n", px, py);
 	if ((px!=0) && (py!=0)) {
 		mouse.mickeysPerPixel_x	 = (float)px/X_MICKEY;
 		mouse.mickeysPerPixel_y  = (float)py/Y_MICKEY;
@@ -932,7 +931,6 @@ static Bitu INT33_Handler(void) {
 		break;
 	case 0x26: /* Get Maximum virtual coordinates */
 		reg_bx=(mouse.enabled ? 0x0000 : 0xffff);
-        fprintf(stderr, "max vc x=%d y=%d\n", mouse.max_x, mouse.max_y);
 		reg_cx=(Bit16u)mouse.max_x;
 		reg_dx=(Bit16u)mouse.max_y;
 		break;
