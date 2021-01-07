@@ -61,9 +61,6 @@ void SDL_init_keyboard()
 @interface SDL_uikitview ()
 <UIPointerInteractionDelegate>
 {
-	double _pointerActiveTime;
-	CGPoint _lastPointerLocation;
-	BOOL _pointerActive;
 	UITouch *_primaryTouch;
 	CGPoint _primaryOrigin;
 	int _primaryHold;
@@ -98,14 +95,6 @@ void SDL_init_keyboard()
 {
 	self = [super initWithFrame: frame];
 	
-	if (@available(iOS 13.4, *)) {
-		UIPointerInteraction *pi = [[[UIPointerInteraction alloc] initWithDelegate:self] autorelease];
-		[self addInteraction:pi];
-	} else {
-		// Fallback on earlier versions
-	}
-
-
 #if SDL_IPHONE_KEYBOARD
 	[self initializeKeyboard];
     
@@ -164,22 +153,7 @@ static CGFloat CGPointDistanceToPoint(CGPoint a, CGPoint b)
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
 {
     UITouch* touch = [touches anyObject];
-    if (@available(iOS 13.4, *)) {
-        // check touch event from hw pointer
-        // directly send it as down event (e.g. drag and drop possible)
-        // Note: For right click to work, you must go to
-        // system settings -> General -> Trackpad&Mouse,
-        // and enable secondary click.
-        if (touch.type == UITouchTypeIndirectPointer) {
-            if(event.buttonMask == UIEventButtonMaskPrimary) {
-                [self sendMouseEvent:0 left:YES down:YES];
-            }
-            if(event.buttonMask == UIEventButtonMaskSecondary) {
-                [self sendMouseEvent:0 left:NO down:YES];
-            }
-            return;
-        }
-    }
+
 	if (!_primaryTouch) {
 		//NSLog(@"primary began");
 		_primaryTouch = touch;
@@ -229,21 +203,6 @@ static CGFloat CGPointDistanceToPoint(CGPoint a, CGPoint b)
 {
 	for (UITouch *touch in touches)
 	{
-        if (@available(iOS 13.4, *)) {
-            // check for hw pointer button release
-            if(touch.type == UITouchTypeIndirectPointer) {
-                // unlike touch start, we don't have button info
-                // check SDL mouse to determine button to release
-                Uint8 buttonState = SDL_GetMouse(0)->buttonstate;
-                if (buttonState & SDL_BUTTON(SDL_BUTTON_LEFT)) {
-                    [self sendMouseEvent:0 left:YES down:NO];
-                }
-                if (buttonState & SDL_BUTTON(SDL_BUTTON_RIGHT)) {
-                    [self sendMouseEvent:0 left:NO down:NO];
-                }
-                continue;
-            }
-        }
 		if (touch == _primaryTouch) {
 			
 			//NSLog(@"primary ended tap count %d", (int)[_primaryTouch tapCount]);
@@ -337,34 +296,29 @@ static CGFloat CGPointDistanceToPoint(CGPoint a, CGPoint b)
 		SDL_SelectMouse(0);
     }
 
-    // update mouse relative / absolute mode, if required
-    if(SDL_GetMouse(0)->relative_mode == SDL_TRUE &&
-       [DPSettings shared].mouseAbsEnable == YES) {
-        // mouse is currently in relative mode, but absolute mode requested
-        SDL_SetRelativeMouseMode(0, SDL_FALSE); // update to absolute (non-relative) mode
-    }
-    if(SDL_GetMouse(0)->relative_mode == SDL_FALSE &&
-       [DPSettings shared].mouseAbsEnable == NO) {
-        // mouse is currently NOT in relative mode, but should be
-        SDL_SetRelativeMouseMode(0, SDL_TRUE);  // update to relative mode
-    }
 }
 
+// send mouse movement
 - (void)sendMouseMotion:(int)index x:(CGFloat)x y:(CGFloat)y
 {
 	[self ensureSDLMouse];
-	float mouseSpeed = [DPSettings shared].mouseSpeed;
+    float mouseSpeed = [DPSettings shared].mouseSpeed;
 	if (mouseSpeed == 0) mouseSpeed=0.5;
 	float scale = 1+2*mouseSpeed;
 	NSAssert(index==0 && SDL_GetNumMice()==1, @"Bad mouse");
+    
+    if(SDL_GetMouse(0)->relative_mode != SDL_TRUE)
+        SDL_SetRelativeMouseMode(0, SDL_TRUE);  // update to relative mode
 	SDL_SendMouseMotion(index, 1, x*scale, y*scale, 0);
 }
 
+// sends the actual mouse coordinate
 - (void)sendMouseCoordinate:(int)index x:(CGFloat)x y:(CGFloat)y
 {
     [self ensureSDLMouse];
     
-    // sends the actual mouse coordinate
+    if(SDL_GetMouse(0)->relative_mode == SDL_TRUE)
+        SDL_SetRelativeMouseMode(0, SDL_FALSE);
     SDL_SendMouseMotion(index, 0, x, y, 0);  // note 2nd argument 'relative'=0
 }
 
@@ -426,46 +380,6 @@ static CGFloat CGPointDistanceToPoint(CGPoint a, CGPoint b)
 		object:nil];
 	[self sendPendingClicks];
 }
-
-// MARK: Pointer Interaction Delegate
-
-- (UIPointerRegion *)pointerInteraction:(UIPointerInteraction *)interaction
-	regionForRequest:(UIPointerRegionRequest *)request
-	defaultRegion:(UIPointerRegion *)defaultRegion
-	API_AVAILABLE(ios(13.4))
-{
-	CFAbsoluteTime currentTime = CFAbsoluteTimeGetCurrent();
-
-	if (!_primaryTouch)
-	{
-		if (currentTime - _pointerActiveTime < 2.0)
-		{
-            if([DPSettings shared].mouseAbsEnable) {
-                // absolute coordinate mode, send coord directly
-                [self sendMouseCoordinate:0 x:request.location.x y:request.location.y];
-            }
-            else
-            {
-                CGFloat dx = request.location.x - _lastPointerLocation.x;
-                CGFloat dy = request.location.y - _lastPointerLocation.y;
-                //NSLog(@"pointer location: %f %f,  %f %f",request.location.x, request.location.y, dx, dy);
-                [self sendMouseMotion:0 x:dx y:dy];
-            }
-		}
-	}
-	
-	_lastPointerLocation = request.location;
-	_pointerActiveTime = currentTime;
-	return defaultRegion;
-}
-
-- (UIPointerStyle *)pointerInteraction:(UIPointerInteraction *)interaction
-	styleForRegion:(UIPointerRegion *)region
-	API_AVAILABLE(ios(13.4))
-{
-	return [UIPointerStyle hiddenPointerStyle];
-}
-
 
 
 /*
