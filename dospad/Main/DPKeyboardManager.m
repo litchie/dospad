@@ -93,7 +93,7 @@ API_AVAILABLE(ios(14.0)){
         [d setObject:@(SDL_SCANCODE_0) forKey:@(GCKeyCodeZero)];
         [d setObject:@(SDL_SCANCODE_RETURN) forKey:@(GCKeyCodeReturnOrEnter)];
         [d setObject:@(SDL_SCANCODE_ESCAPE) forKey:@(GCKeyCodeEscape)];
-        [d setObject:@(SDL_SCANCODE_DELETE) forKey:@(GCKeyCodeDeleteOrBackspace)];
+        [d setObject:@(SDL_SCANCODE_BACKSPACE) forKey:@(GCKeyCodeDeleteOrBackspace)];
         [d setObject:@(SDL_SCANCODE_TAB) forKey:@(GCKeyCodeTab)];
         [d setObject:@(SDL_SCANCODE_MINUS) forKey:@(GCKeyCodeHyphen)];
         [d setObject:@(SDL_SCANCODE_EQUALS) forKey:@(GCKeyCodeEqualSign)];
