@@ -49,4 +49,5 @@ typedef enum {
 -(void)updateCpuCycles:(NSString*)title;
 -(void)willResignActive;
 -(void)didBecomeActive;
+-(void)pencilInteractionDidTap:(UIPencilInteraction*)interaction API_AVAILABLE(ios(12.1));
 @end

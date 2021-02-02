@@ -67,7 +67,8 @@ static struct {
     DPMouseManagerDelegate,
     DPKeyboardManagerDelegate,
 	MfiGamepadManagerDelegate,
-	MfiGamepadMapperDelegate
+	MfiGamepadMapperDelegate,
+    UIPencilInteractionDelegate
 >
 {
 	MfiGamepadConfiguration *_mfiConfig;
@@ -569,8 +570,19 @@ static struct {
 			[sceneContainer addSubview:btn];
 		}
 	}
+    // Pencil gesture support
+    if (@available(iOS 12.1, *)) {
+        UIPencilInteraction *pencilInteraction = [[UIPencilInteraction alloc] init];
+        pencilInteraction.delegate = self;
+        [self.view addInteraction:pencilInteraction];
+    }
 	return sceneContainer;
+}
 
+- (void)pencilInteractionDidTap:(UIPencilInteraction *)interaction API_AVAILABLE(ios(12.1)){
+    //NSLog(@"Pencil double tap gesture detected");
+    [self.screenView sendMouseEvent:0 left:NO down:YES];
+    [self.screenView sendMouseEvent:0 left:NO down:NO];
 }
 
 - (void)viewWillLayoutSubviews
