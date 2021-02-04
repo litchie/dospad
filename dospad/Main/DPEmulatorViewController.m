@@ -570,12 +570,6 @@ static struct {
 			[sceneContainer addSubview:btn];
 		}
 	}
-    // Pencil gesture support
-    if (@available(iOS 12.1, *)) {
-        UIPencilInteraction *pencilInteraction = [[UIPencilInteraction alloc] init];
-        pencilInteraction.delegate = self;
-        [self.view addInteraction:pencilInteraction];
-    }
 	return sceneContainer;
 }
 
@@ -757,6 +751,13 @@ static struct {
         [self.view addSubview:self.kbdspy];
     }
 #endif
+    
+    // Pencil 2 gesture support
+    if (@available(iOS 12.1, *)) {
+        UIPencilInteraction *pencilInteraction = [[UIPencilInteraction alloc] init];
+        pencilInteraction.delegate = self;
+        [self.view addInteraction:pencilInteraction];
+    }
 
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didSettingsChanged:) name:DPFSettingsChangedNotification object:nil];
 }
