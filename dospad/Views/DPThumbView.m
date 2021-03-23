@@ -26,17 +26,24 @@
 - (void)updatePosition
 {
 	UIView *parent = self.superview;
-	CGFloat minY, maxY, minX;
+	UIView *gp = parent.superview;
+	CGFloat minY, maxY, x;
+	
+	// If the parent view controlled by us is now at the right half
+	// of screen, then we should try to stick it to the right edge
+	BOOL shouldStickToRight = (parent.frame.size.width < gp.bounds.size.width*0.8 &&
+	    parent.center.x > gp.bounds.size.width/2);
+	
 	if (_showThumbOnly) {
 		minY = - self.frame.origin.y;
-		minX = - self.frame.origin.x;
+		x = shouldStickToRight ? gp.bounds.size.width - CGRectGetMaxX(self.frame) : - self.frame.origin.x;
 	} else {
 		minY = 0;
-		minX = 0;
+		x = shouldStickToRight ?  gp.bounds.size.width - parent.frame.size.width : 0;
 	}
-	maxY = parent.superview.bounds.size.height - parent.frame.size.height;
+	maxY = gp.bounds.size.height - parent.frame.size.height;
 	CGRect frame = parent.frame;
-	frame.origin.x = minX;
+	frame.origin.x = x;
 	if (frame.origin.y < minY + 40)
 		frame.origin.y = minY;
 	if (frame.origin.y > maxY - 40)
