@@ -489,11 +489,29 @@ void Mouse_CursorMoved(float xrel,float yrel,float x,float y,bool emulate) {
 	DrawCursor();
 }
 
+#ifdef IPHONEOS
+// For iDOS direct touch.
+// It appears that no body is using this function so we can just override it.
+// x and y is normalized to be [0,1].
+void Mouse_CursorSet(float x,float y)
+{
+    if (CurMode->type == M_TEXT) {
+        mouse.x = x*CurMode->swidth;
+        mouse.y = y*CurMode->sheight * 8 / CurMode->cheight;
+    } else {
+        mouse.x = x*mouse.max_x;
+        mouse.y = y*mouse.max_y;
+    }
+    Mouse_AddEvent(MOUSE_HAS_MOVED);
+	DrawCursor();
+}
+#else
 void Mouse_CursorSet(float x,float y) {
 	mouse.x=x;
 	mouse.y=y;
 	DrawCursor();
 }
+#endif
 
 void Mouse_ButtonPressed(Bit8u button) {
 	switch (button) {

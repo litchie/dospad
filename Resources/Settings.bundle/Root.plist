@@ -113,6 +113,16 @@
 			<key>Type</key>
 			<string>PSToggleSwitchSpecifier</string>
 			<key>Title</key>
+			<string>Direct touch</string>
+			<key>Key</key>
+			<string>mouse_abs_enable</string>
+			<key>DefaultValue</key>
+			<false/>
+		</dict>
+		<dict>
+			<key>Type</key>
+			<string>PSToggleSwitchSpecifier</string>
+			<key>Title</key>
 			<string>Tap as click</string>
 			<key>Key</key>
 			<string>tap_as_click</string>

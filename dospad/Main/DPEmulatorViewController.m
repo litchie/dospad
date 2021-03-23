@@ -27,6 +27,8 @@
 #import "UIViewController+Alert.h"
 #import "MfiGamepadManager.h"
 #import "MfiGamepadMapperView.h"
+#import "DPMouseManager.h"
+#import "DPKeyboardManager.h"
 
 typedef NS_ENUM(NSInteger, DPFloatingInputType) {
 	TAG_INPUT_MIN = 1000,
@@ -62,6 +64,8 @@ static struct {
 	DOSPadEmulatorDelegate,
 	UIDocumentPickerDelegate,
 	DPGamepadDelegate,
+    DPMouseManagerDelegate,
+    DPKeyboardManagerDelegate,
 	MfiGamepadManagerDelegate,
 	MfiGamepadMapperDelegate
 >
@@ -645,6 +649,24 @@ static struct {
 	{
 		[btn addTarget:self action:@selector(mountCDDrive:) forControlEvents:UIControlEventTouchUpInside];
 	}
+	else if ([name isEqualToString:@"mouse-right"])
+	{
+        [btn addTarget:self
+                         action:@selector(onMouseRightDown)
+               forControlEvents:UIControlEventTouchDown];
+        [btn addTarget:self
+                        action:@selector(onMouseRightUp)
+              forControlEvents:UIControlEventTouchUpInside];
+	}
+	else if ([name isEqualToString:@"mouse-left"])
+	{
+        [btn addTarget:self
+                    action:@selector(onMouseLeftDown)
+          forControlEvents:UIControlEventTouchDown];
+        [btn addTarget:self
+                    action:@selector(onMouseLeftUp)
+          forControlEvents:UIControlEventTouchUpInside];
+	}
 }
 
 - (void)mountDrive:(id)sender
@@ -714,8 +736,14 @@ static struct {
 #ifdef APPSTORE
     // For non appstore builds, we should use private API to support
     // external keyboard.
-    self.kbdspy = [[KeyboardSpy alloc] initWithFrame:CGRectMake(0,0,60,40)];
-    [self.view addSubview:self.kbdspy];
+    // For iOS 14+, we use GCKeyboard
+    // Otherwise use KeyboardSpy which is a hack.
+    if (@available(iOS 14.0, *)) {
+
+    } else {
+        self.kbdspy = [[KeyboardSpy alloc] initWithFrame:CGRectMake(0,0,60,40)];
+        [self.view addSubview:self.kbdspy];
+    }
 #endif
 
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didSettingsChanged:) name:DPFSettingsChangedNotification object:nil];
@@ -723,7 +751,10 @@ static struct {
 
 - (void)didSettingsChanged:(NSNotification*)note
 {
-	[self updateScreen];
+    // May be called in background thread
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self updateScreen];
+    });
 }
 
 // MARK: DPGamepadDelegate
@@ -1112,6 +1143,27 @@ static struct {
 -(void) onKeyFunction:(KeyView *)k {
 }
 
+// MARK: GCKeyboard Manager
+
+- (void)keyboardManager:(DPKeyboardManager *)manager scancode:(int)scancode pressed:(BOOL)pressed
+{
+    SDL_SendKeyboardKey( 0, pressed?SDL_PRESSED:SDL_RELEASED, scancode);
+}
+
+// MARK: GCMouse Manager
+
+- (void)mouseManager:(DPMouseManager *)manager button:(int)index pressed:(BOOL)pressed
+{
+    [self.screenView sendMouseEvent:0 left:index==0 down:pressed];
+}
+
+- (void)mouseManager:(DPMouseManager *)manager moveX:(CGFloat)x andY:(CGFloat)y
+{
+    CGSize size1 = self.screenView.frame.size;
+    CGSize size2 = self.screenView.bounds.size;
+    [self.screenView sendMouseMotion:0 x:x/size1.width*size2.width y:-y/size1.height*size2.height];
+}
+
 // MARK: DOSEmulatorDelegate
 
 - (void)emulatorWillStart:(DOSPadEmulator *)emulator
@@ -1122,6 +1174,9 @@ static struct {
 	_mfiConfig = [[MfiGamepadConfiguration alloc] initWithConfig:emulator.mfiConfigFile];
 	_mfiManager = [MfiGamepadManager defaultManager];
 	_mfiManager.delegate = self;
+ 
+    [DPMouseManager defaultManager].delegate = self;
+    [DPKeyboardManager defaultManager].delegate = self;
 }
 
 - (void)emulator:(DOSPadEmulator *)emulator saveScreenshot:(NSString *)path
@@ -1266,5 +1321,9 @@ static struct {
 	return YES;
 }
 
+- (BOOL)prefersPointerLocked
+{
+    return YES;
+}
 
 @end

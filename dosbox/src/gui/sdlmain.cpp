@@ -1398,12 +1398,20 @@ void Mouse_AutoLock(bool enable) {
 }
 
 static void HandleMouseMotion(SDL_MouseMotionEvent * motion) {
-	if (sdl.mouse.locked || !sdl.mouse.autoenable)
-		Mouse_CursorMoved((float)motion->xrel*sdl.mouse.sensitivity/100.0f,
+    if (sdl.mouse.locked || !sdl.mouse.autoenable) {
+        if(motion->relative_mode) {
+            Mouse_CursorMoved((float)motion->xrel*sdl.mouse.sensitivity/100.0f,
 						  (float)motion->yrel*sdl.mouse.sensitivity/100.0f,
 						  (float)(motion->x-sdl.clip.x)/(sdl.clip.w-1)*sdl.mouse.sensitivity/100.0f,
 						  (float)(motion->y-sdl.clip.y)/(sdl.clip.h-1)*sdl.mouse.sensitivity/100.0f,
 						  sdl.mouse.locked);
+        } else {
+            // iDOS direct touch will try to send absolute coordinates within screen.
+            // we should normalize them and let mouse driver compute the right values.
+            Mouse_CursorSet((float)(motion->x-sdl.clip.x)/(sdl.clip.w-1),
+             (float)(motion->y-sdl.clip.y)/(sdl.clip.h-1));
+        }
+    }
 }
 
 static void HandleMouseButton(SDL_MouseButtonEvent * button) {

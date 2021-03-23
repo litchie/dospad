@@ -70,7 +70,7 @@
     
 - (void)sendMouseEvent:(int)index left:(BOOL)isLeft down:(BOOL)isDown;
 - (void)sendMouseMotion:(int)index x:(CGFloat)x y:(CGFloat)y;
-  
+- (void)sendMouseCoordinate:(int)index x:(CGFloat)x y:(CGFloat)y;
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event;
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event;
 - (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event;
