@@ -649,6 +649,7 @@ void SHELL_Init() {
 	MSG_Add("SHELL_CMD_VER_VER","DOSBox version %s. Reported DOS version %d.%02d.\n");
 #ifdef IPHONEOS
 	MSG_Add("SHELL_CMD_OPEN_HELP","Open external directory. (dospad)\n");
+	MSG_Add("SHELL_CMD_EXIT_DISABLED","Can not exit from shell. (dospad)\n");
 #endif
 	/* Regular startup */
 	call_shellstop=CALLBACK_Allocate();

@@ -296,7 +296,11 @@ void DOS_Shell::CMD_ECHO(char * args){
 
 void DOS_Shell::CMD_EXIT(char * args) {
 	HELP("EXIT");
+#ifdef IPHONEOS
+    WriteOut(MSG_Get("SHELL_CMD_EXIT_DISABLED"));
+#else
 	exit = true;
+#endif
 }
 
 void DOS_Shell::CMD_CHDIR(char * args) {
