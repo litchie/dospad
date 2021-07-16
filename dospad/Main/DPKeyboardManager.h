@@ -21,6 +21,7 @@ NS_ASSUME_NONNULL_BEGIN
 @interface DPKeyboardManager : NSObject
 @property (nonatomic, strong) id<DPKeyboardManagerDelegate> delegate;
 +(DPKeyboardManager*)defaultManager;
+- (void)willResignActive;
 @end
 
 NS_ASSUME_NONNULL_END

@@ -28,6 +28,15 @@ static DPKeyboardManager *_manager;
     return _manager;
 }
 
+// When we are switching to another app using COMMAND-TAB,
+// only COMMAND pressed down event will be received, so the
+// prefix flag will be always ON unless you press COMMAND again.
+// Let's turn off the prefix flag here.
+- (void)willResignActive
+{
+    _commandPrefix = NO;
+}
+
 - (id)init
 {
     self = [super init];
@@ -385,6 +394,7 @@ API_AVAILABLE(ios(14.0)){
 - (void)didDisconnect:(NSNotification *)note
 {
     NSLog(@"keyboard disconnected");
+    _commandPrefix = NO;
 }
 
 @end

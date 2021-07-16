@@ -926,7 +926,7 @@ static struct {
 
 -(void)willResignActive
 {
-
+    [[DPKeyboardManager defaultManager] willResignActive];
 }
 
 -(void)didBecomeActive
