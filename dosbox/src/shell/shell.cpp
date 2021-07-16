@@ -330,7 +330,7 @@ void DOS_Shell::Run(void) {
                 endp=0;
             }
             if (strlen(p) <= 0) break;
-            sprintf(input_line, "mount %c \"%s\"",disk, p);
+            sprintf(input_line, "mount %c -freesize 1000 \"%s\"",disk, p);
             ParseLine(input_line);
             disk++;
         }
