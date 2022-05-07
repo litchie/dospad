@@ -116,7 +116,7 @@ void IO_ReadHandleObject::Install(Bitu port,IO_ReadHandler * handler,Bitu mask,B
 		m_mask=mask;
 		m_range=range;
 		IO_RegisterReadHandler(port,handler,mask,range);
-	} else E_Exit("IO_readHandler allready installed port %x",port);
+	} else E_Exit("IO_readHandler already installed port %x",port);
 }
 
 IO_ReadHandleObject::~IO_ReadHandleObject(){
@@ -131,7 +131,7 @@ void IO_WriteHandleObject::Install(Bitu port,IO_WriteHandler * handler,Bitu mask
 		m_mask=mask;
 		m_range=range;
 		IO_RegisterWriteHandler(port,handler,mask,range);
-	} else E_Exit("IO_writeHandler allready installed port %x",port);
+	} else E_Exit("IO_writeHandler already installed port %x",port);
 }
 
 IO_WriteHandleObject::~IO_WriteHandleObject(){

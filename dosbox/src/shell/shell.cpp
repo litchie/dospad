@@ -50,14 +50,14 @@ typedef std::list<std::string>::iterator auto_it;
 void VFILE_Remove(const char *name);
 
 void AutoexecObject::Install(const std::string &in) {
-	if(GCC_UNLIKELY(installed)) E_Exit("autoexec: allready created %s",buf.c_str());
+	if(GCC_UNLIKELY(installed)) E_Exit("autoexec: already created %s",buf.c_str());
 	installed = true;
 	buf = in;
 	autoexec_strings.push_back(buf);
 	this->CreateAutoexec();
 
 	//autoexec.bat is normally created AUTOEXEC_Init.
-	//But if we are allready running (first_shell)
+	//But if we are already running (first_shell)
 	//we have to update the envirionment to display changes
 
 	if(first_shell)	{
@@ -78,7 +78,7 @@ void AutoexecObject::Install(const std::string &in) {
 }
 
 void AutoexecObject::InstallBefore(const std::string &in) {
-	if(GCC_UNLIKELY(installed)) E_Exit("autoexec: allready created %s",buf.c_str());
+	if(GCC_UNLIKELY(installed)) E_Exit("autoexec: already created %s",buf.c_str());
 	installed = true;
 	buf = in;
 	autoexec_strings.push_front(buf);
@@ -648,8 +648,8 @@ void SHELL_Init() {
 	MSG_Add("SHELL_CMD_VER_HELP","View and set the reported DOS version.\n");
 	MSG_Add("SHELL_CMD_VER_VER","DOSBox version %s. Reported DOS version %d.%02d.\n");
 #ifdef IPHONEOS
-	MSG_Add("SHELL_CMD_OPEN_HELP","Open external directory. (dospad)\n");
-	MSG_Add("SHELL_CMD_EXIT_DISABLED","Can not exit from shell. (dospad)\n");
+	MSG_Add("SHELL_CMD_OPEN_HELP","Open external directory (on iOS)\n");
+	MSG_Add("SHELL_CMD_EXIT_DISABLED","Cannot exit from shell. This is an iOS app.\n");
 #endif
 	/* Regular startup */
 	call_shellstop=CALLBACK_Allocate();

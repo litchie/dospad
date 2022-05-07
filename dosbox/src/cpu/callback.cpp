@@ -488,7 +488,7 @@ void CALLBACK_HandlerObject::Install(CallBack_Handler handler,Bitu type,const ch
 		m_type=SETUP;
 		m_callback=CALLBACK_Allocate();
 		CALLBACK_Setup(m_callback,handler,type,description);
-	} else E_Exit("Allready installed");
+	} else E_Exit("Already installed");
 }
 void CALLBACK_HandlerObject::Install(CallBack_Handler handler,Bitu type,PhysPt addr,const char* description){
 	if(!installed) {
@@ -496,7 +496,7 @@ void CALLBACK_HandlerObject::Install(CallBack_Handler handler,Bitu type,PhysPt a
 		m_type=SETUP;
 		m_callback=CALLBACK_Allocate();
 		CALLBACK_Setup(m_callback,handler,type,addr,description);
-	} else E_Exit("Allready installed");
+	} else E_Exit("Already installed");
 }
 
 void CALLBACK_HandlerObject::Allocate(CallBack_Handler handler,const char* description) {
@@ -506,7 +506,7 @@ void CALLBACK_HandlerObject::Allocate(CallBack_Handler handler,const char* descr
 		m_callback=CALLBACK_Allocate();
 		CALLBACK_SetDescription(m_callback,description);
 		CallBack_Handlers[m_callback]=handler;
-	} else E_Exit("Allready installed");
+	} else E_Exit("Already installed");
 }
 
 void CALLBACK_HandlerObject::Set_RealVec(Bit8u vec){
