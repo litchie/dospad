@@ -418,7 +418,7 @@ private:
 	AutoexecObject autoexec_echo;
 public:
 	AUTOEXEC(Section* configuration):Module_base(configuration) {
-		/* Register a virtual AUOEXEC.BAT file */
+		/* Register a virtual AUTOEXEC.BAT file */
 		std::string line;
 		Section_line * section=static_cast<Section_line *>(configuration);
 

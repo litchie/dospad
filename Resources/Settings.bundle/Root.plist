@@ -145,7 +145,7 @@
 			<key>Type</key>
 			<string>PSTitleValueSpecifier</string>
 			<key>DefaultValue</key>
-			<string>speed👇</string>
+			<string>Mouse speed👇</string>
 			<key>Key</key>
 			<string>mouse_speed_title</string>
 		</dict>
@@ -219,14 +219,9 @@
 		</dict>
 		<dict>
 			<key>Title</key>
-			<string>==== Credits ====</string>
+			<string>Acknowledgments</string>
 			<key>FooterText</key>
-			<string> - iDOS is based on dosbox 0.74. DOSBox is a DOS-emulator that uses the SDL-library which makes DOSBox very easy to port to different platforms. DOSBox is developed by DOSBox Team. Visit `http://www.dosbox.com&apos; for more details.
-			
- - The source code for iDOS is hosted at `https://github.com/litchie/dospad&apos;.
- 
- - Bug reports, feedbacks or BETA test requests can be sent to `idos@litchie.com&apos;.
-			</string>
+			<string>nDOS is based on DosBox 0.74 and iDOS (https://github.com/litchie/dospad). DOSBox is developed by the DOSBox team (http://www.dosbox.com). Many thanks to the DOSBox team and iDOS contributors for making this possible.</string>
 			<key>Type</key>
 			<string>PSGroupSpecifier</string>
 		</dict>

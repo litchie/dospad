@@ -2,11 +2,11 @@
     "content-type": "application/x-idostheme",
     "version": 1,
     "bgcolor": "#000000",
-	"keyboard-background":"#656165",
-	"key-color":"#3e3b3e",
+	"keyboard-background":"#BEBEBE",
+	"key-color":"#6C6C6C",
 	"key-bottom-color":"#312f31",
 	"key-text-color":"#eeeeee",
-	"key-highlight-color":"#4b484b",
+	"key-highlight-color":"#ffffff",
 	"gamepad-text-color":"#aaaaaa",
 	"gamepad-editing-text-color":"#00eee00"
 }
