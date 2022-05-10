@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2002-2010  The DOSBox Team
+ *  Copyright (C) 2002-2019  The DOSBox Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -11,12 +11,11 @@
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *  GNU General Public License for more details.
  *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *  You should have received a copy of the GNU General Public License along
+ *  with this program; if not, write to the Free Software Foundation, Inc.,
+ *  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-/* $Id: cache.h,v 1.20 2009-07-12 20:13:05 c2woody Exp $ */
 
 class CacheBlock {
 public:
@@ -74,7 +73,7 @@ public:
 	void SetupAt(Bitu _phys_page,PageHandler * _old_pagehandler) {
 		phys_page=_phys_page;
 		old_pagehandler=_old_pagehandler;
-		flags=old_pagehandler->flags|PFLAG_HASCODE;
+		flags=old_pagehandler->flags|(cpu.code.big ? PFLAG_HASCODE32:PFLAG_HASCODE16);
 		flags&=~PFLAG_WRITEABLE;
 		active_blocks=0;
 		active_count=16;
@@ -518,7 +517,7 @@ static void cache_init(bool enable) {
 
 #if (C_HAVE_MPROTECT)
 			if(mprotect(cache_code_link_blocks,CACHE_TOTAL+CACHE_MAXSIZE+PAGESIZE_TEMP,PROT_WRITE|PROT_READ|PROT_EXEC))
-				LOG_MSG("Setting excute permission on the code cache has failed!");
+				LOG_MSG("Setting execute permission on the code cache has failed!");
 #endif
 			CacheBlock * block=cache_getblock();
 			cache.block.first=block;
@@ -613,7 +612,7 @@ static void cache_reset(void) {
 
 #if (C_HAVE_MPROTECT)
 			if(mprotect(cache_code_link_blocks,CACHE_TOTAL+CACHE_MAXSIZE+PAGESIZE_TEMP,PROT_WRITE|PROT_READ|PROT_EXEC))
-				LOG_MSG("Setting excute permission on the code cache has failed!");
+				LOG_MSG("Setting execute permission on the code cache has failed!");
 #endif
 		}
 

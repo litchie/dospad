@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2002-2010  The DOSBox Team
+ *  Copyright (C) 2002-2019  The DOSBox Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -11,12 +11,11 @@
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *  GNU General Public License for more details.
  *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *  You should have received a copy of the GNU General Public License along
+ *  with this program; if not, write to the Free Software Foundation, Inc.,
+ *  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-/* $Id: vga_s3.cpp,v 1.18 2009-03-15 11:28:35 c2woody Exp $ */
 
 #include "dosbox.h"
 #include "inout.h"
@@ -342,7 +341,7 @@ void SVGA_S3_WriteCRTC(Bitu reg,Bitu val,Bitu iolen) {
 		vga.svga.bank_write = vga.svga.bank_read;
 		VGA_SetupHandlers();
 		break;
-	case 0x6b:	// BIOS scratchpad: LFB adress
+	case 0x6b:	// BIOS scratchpad: LFB address
 		vga.s3.reg_6b=(Bit8u)val;
 		break;
 	default:

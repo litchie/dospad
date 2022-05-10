@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2002-2010  The DOSBox Team
+ *  Copyright (C) 2002-2019  The DOSBox Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -11,12 +11,11 @@
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *  GNU General Public License for more details.
  *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *  You should have received a copy of the GNU General Public License along
+ *  with this program; if not, write to the Free Software Foundation, Inc.,
+ *  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-/* $Id: hardware.cpp,v 1.22 2009-04-26 18:24:36 qbix79 Exp $ */
 
 #include <string.h>
 #include <stdlib.h>
@@ -324,7 +323,7 @@ void CAPTURE_AddImage(Bitu width, Bitu height, Bitu bpp, Bitu pitch, Bitu flags,
 		/* Open the actual file */
 		FILE * fp=OpenCaptureFile("Screenshot",".png");
 		if (!fp) goto skip_shot;
-		/* First try to alloacte the png structures */
+		/* First try to allocate the png structures */
 		png_ptr = png_create_write_struct(PNG_LIBPNG_VER_STRING, NULL,NULL, NULL);
 		if (!png_ptr) goto skip_shot;
 		info_ptr = png_create_info_struct(png_ptr);
@@ -360,7 +359,23 @@ void CAPTURE_AddImage(Bitu width, Bitu height, Bitu bpp, Bitu pitch, Bitu flags,
 				8, PNG_COLOR_TYPE_RGB, PNG_INTERLACE_NONE,
 				PNG_COMPRESSION_TYPE_DEFAULT, PNG_FILTER_TYPE_DEFAULT);
 		}
+#ifdef PNG_TEXT_SUPPORTED
+		int fields = 1;
+		png_text text[1] = {};
+		const char* text_s = "DOSBox " VERSION;
+		size_t strl = strlen(text_s);
+		char* ptext_s = new char[strl + 1];
+		strcpy(ptext_s, text_s);
+		char software[9] = { 'S','o','f','t','w','a','r','e',0};
+		text[0].compression = PNG_TEXT_COMPRESSION_NONE;
+		text[0].key  = software;
+		text[0].text = ptext_s;
+		png_set_text(png_ptr, info_ptr, text, fields);
+#endif
 		png_write_info(png_ptr, info_ptr);
+#ifdef PNG_TEXT_SUPPORTED
+		delete [] ptext_s;
+#endif
 		for (i=0;i<height;i++) {
 			void *rowPointer;
 			void *srcLine;

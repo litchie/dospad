@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2002-2010  The DOSBox Team
+ *  Copyright (C) 2002-2019  The DOSBox Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -11,12 +11,11 @@
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *  GNU General Public License for more details.
  *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *  You should have received a copy of the GNU General Public License along
+ *  with this program; if not, write to the Free Software Foundation, Inc.,
+ *  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-/* $Id: core_dyn_x86.cpp,v 1.36 2009-07-20 17:55:52 c2woody Exp $ */
 
 #include "dosbox.h"
 
@@ -262,9 +261,11 @@ Bits CPU_Core_Dyn_X86_Run(void) {
 	/* Determine the linear address of CS:EIP */
 restart_core:
 	PhysPt ip_point=SegPhys(cs)+reg_eip;
-	#if C_HEAVY_DEBUG
+#if C_DEBUG
+#if C_HEAVY_DEBUG
 		if (DEBUG_HeavyIsBreakpoint()) return debugCallback;
-	#endif
+#endif
+#endif
 	CodePageHandler * chandler=0;
 	if (GCC_UNLIKELY(MakeCodePage(ip_point,chandler))) {
 		CPU_Exception(cpu.exception.which,cpu.exception.error);
@@ -295,13 +296,18 @@ restart_core:
 run_block:
 	cache.block.running=0;
 	BlockReturn ret=gen_runcode(block->cache.start);
+#if C_DEBUG
+	cycle_count += 32;
+#endif
 	switch (ret) {
 	case BR_Iret:
+#if C_DEBUG
 #if C_HEAVY_DEBUG
 		if (DEBUG_HeavyIsBreakpoint()) {
 			if (dyn_dh_fpu.state_used) DH_FPU_SAVE_REINIT
 			return debugCallback;
 		}
+#endif
 #endif
 		if (!GETFLAG(TF)) {
 			if (GETFLAG(IF) && PIC_IRQCheck) {
@@ -316,13 +322,17 @@ run_block:
 		return CBRET_NONE;
 	case BR_Normal:
 		/* Maybe check if we staying in the same page? */
+#if C_DEBUG
 #if C_HEAVY_DEBUG
 		if (DEBUG_HeavyIsBreakpoint()) return debugCallback;
 #endif
+#endif
 		goto restart_core;
 	case BR_Cycles:
+#if C_DEBUG
 #if C_HEAVY_DEBUG			
 		if (DEBUG_HeavyIsBreakpoint()) return debugCallback;
+#endif
 #endif
 		if (!dyn_dh_fpu.state_used) return CBRET_NONE;
 		DH_FPU_SAVE_REINIT
@@ -352,7 +362,7 @@ run_block:
 		{
 			Bitu temp_ip=SegPhys(cs)+reg_eip;
 			CodePageHandler * temp_handler=(CodePageHandler *)get_tlb_readhandler(temp_ip);
-			if (temp_handler->flags & PFLAG_HASCODE) {
+			if (temp_handler->flags & (cpu.code.big ? PFLAG_HASCODE32:PFLAG_HASCODE16)) {
 				block=temp_handler->FindCacheBlock(temp_ip & 4095);
 				if (!block) goto restart_core;
 				cache.block.running->LinkTo(ret==BR_Link2,block);

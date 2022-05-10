@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2002-2010  The DOSBox Team
+ *  Copyright (C) 2002-2019  The DOSBox Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -11,12 +11,11 @@
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *  GNU General Public License for more details.
  *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *  You should have received a copy of the GNU General Public License along
+ *  with this program; if not, write to the Free Software Foundation, Inc.,
+ *  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-/* $Id: midi_alsa.h,v 1.20 2009-04-27 17:33:12 qbix79 Exp $ */
 
 #define ALSA_PCM_OLD_HW_PARAMS_API
 #define ALSA_PCM_OLD_SW_PARAMS_API
@@ -95,6 +94,10 @@ public:
 			snd_seq_ev_set_noteon(&ev, chanID, msg[1], msg[2]);
 			send_event(1);
 			break;
+		case 0xA0:
+			snd_seq_ev_set_keypress(&ev, chanID, msg[1], msg[2]);
+			send_event(1);
+			break;
 		case 0xB0:
 			snd_seq_ev_set_controller(&ev, chanID, msg[1], msg[2]);
 			send_event(1);
@@ -114,7 +117,8 @@ public:
 			}
 			break;
 		default:
-			LOG(LOG_MISC,LOG_WARN)("ALSA:Unknown Command: %08lx", (long)msg);
+			//Maybe filter out FC as it leads for at least one user to crash, but the entire midi stream has not yet been checked.
+			LOG(LOG_MISC,LOG_WARN)("ALSA:Unknown Command: %02X %02X %02X", msg[0],msg[1],msg[2]);
 			send_event(1);
 			break;
 		}

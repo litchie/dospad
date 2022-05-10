@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2002-2010  The DOSBox Team
+ *  Copyright (C) 2002-2019  The DOSBox Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -11,12 +11,11 @@
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *  GNU General Public License for more details.
  *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *  You should have received a copy of the GNU General Public License along
+ *  with this program; if not, write to the Free Software Foundation, Inc.,
+ *  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-/* $Id: dosbox.h,v 1.32 2009-05-27 09:15:41 qbix79 Exp $ */
 
 #ifndef DOSBOX_DOSBOX_H
 #define DOSBOX_DOSBOX_H
@@ -25,8 +24,8 @@
 
 GCC_ATTRIBUTE(noreturn) void E_Exit(const char * message,...) GCC_ATTRIBUTE( __format__(__printf__, 1, 2));
 
-void MSG_Add(const char*,const char*); //add messages to the internal langaugefile
-const char* MSG_Get(char const *);     //get messages from the internal langaugafile
+void MSG_Add(const char*,const char*); //add messages to the internal languagefile
+const char* MSG_Get(char const *);     //get messages from the internal languagefile
 
 class Section;
 

@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2002-2010  The DOSBox Team
+ *  Copyright (C) 2002-2019  The DOSBox Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -11,12 +11,11 @@
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *  GNU General Public License for more details.
  *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *  You should have received a copy of the GNU General Public License along
+ *  with this program; if not, write to the Free Software Foundation, Inc.,
+ *  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-/* $Id: keyboard.cpp,v 1.41 2009-05-27 09:15:41 qbix79 Exp $ */
 
 #include "dosbox.h"
 #include "keyboard.h"
@@ -116,7 +115,7 @@ static void write_p60(Bitu port,Bitu val,Bitu iolen) {
 			KEYBOARD_AddBuffer(0xfa);	/* Acknowledge */
 			break;
 		case 0xee:	/* Echo */
-			KEYBOARD_AddBuffer(0xfa);	/* Acknowledge */
+			KEYBOARD_AddBuffer(0xee);	/* Echo */
 			break;
 		case 0xf2:	/* Identify keyboard */
 			/* AT's just send acknowledge */
@@ -171,9 +170,11 @@ static void write_p60(Bitu port,Bitu val,Bitu iolen) {
 	}
 }
 
+extern bool TIMER_GetOutput2(void);
 static Bit8u port_61_data = 0;
 static Bitu read_p61(Bitu port,Bitu iolen) {
-	port_61_data^=0x20;
+	if (TIMER_GetOutput2()) port_61_data|=0x20;
+	else					port_61_data&=~0x20;
 	port_61_data^=0x10;
 	return port_61_data;
 }
@@ -185,6 +186,12 @@ static void write_p61(Bitu port,Bitu val,Bitu iolen) {
 		PCSPEAKER_SetType(val & 3);
 	}
 	port_61_data = val;
+}
+
+static Bitu read_p62(Bitu port,Bitu iolen) {
+	Bit8u ret=~0x20;
+	if (TIMER_GetOutput2()) ret|=0x20;
+	return ret;
 }
 
 static void write_p64(Bitu port,Bitu val,Bitu iolen) {
@@ -340,7 +347,10 @@ void KEYBOARD_AddKey(KBD_KEYS keytype,bool pressed) {
 		KEYBOARD_AddBuffer(69|(pressed?0:0x80));
 		return;
 	case KBD_printscreen:
-		/* Not handled yet. But usuable in mapper for special events */
+		KEYBOARD_AddBuffer(0xe0);
+		KEYBOARD_AddBuffer(42|(pressed?0:0x80));
+		KEYBOARD_AddBuffer(0xe0);
+		KEYBOARD_AddBuffer(55|(pressed?0:0x80));
 		return;
 	default:
 		E_Exit("Unsupported key press");
@@ -375,6 +385,7 @@ void KEYBOARD_Init(Section* sec) {
 	IO_RegisterReadHandler(0x60,read_p60,IO_MB);
 	IO_RegisterWriteHandler(0x61,write_p61,IO_MB);
 	IO_RegisterReadHandler(0x61,read_p61,IO_MB);
+	if (machine==MCH_CGA || machine==MCH_HERC) IO_RegisterReadHandler(0x62,read_p62,IO_MB);
 	IO_RegisterWriteHandler(0x64,write_p64,IO_MB);
 	IO_RegisterReadHandler(0x64,read_p64,IO_MB);
 	TIMER_AddTickHandler(&KEYBOARD_TickHandler);

@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2002-2014  The DOSBox Team
+ *  Copyright (C) 2002-2019  The DOSBox Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -11,12 +11,11 @@
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *  GNU General Public License for more details.
  *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *  You should have received a copy of the GNU General Public License along
+ *  with this program; if not, write to the Free Software Foundation, Inc.,
+ *  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-/* $Id: sdlmain.cpp,v 1.154 2009-06-01 10:25:51 qbix79 Exp $ */
 
 #ifndef _GNU_SOURCE
 #define _GNU_SOURCE
@@ -106,7 +105,7 @@ extern char** environ;
 #define WIN32_LEAN_AND_MEAN
 #endif
 #include <windows.h>
-#if (HAVE_DDRAW_H)
+#if C_DDRAW
 #include <ddraw.h>
 struct private_hwdata {
 	LPDIRECTDRAWSURFACE3 dd_surface;
@@ -174,6 +173,8 @@ struct SDL_Block {
 		} window;
 		Bit8u bpp;
 		bool fullscreen;
+		bool lazy_fullscreen;
+		bool lazy_fullscreen_req;
 		bool doublebuf;
 		SCREEN_TYPES type;
 		SCREEN_TYPES want_type;
@@ -194,7 +195,7 @@ struct SDL_Block {
 #endif
 	struct {
 		SDL_Surface * surface;
-#if (HAVE_DDRAW_H) && defined(WIN32)
+#if C_DDRAW
 		RECT rect;
 #endif
 	} blit;
@@ -211,7 +212,8 @@ struct SDL_Block {
 		bool autoenable;
 		bool requestlock;
 		bool locked;
-		Bitu sensitivity;
+		int xsensitivity;
+		int ysensitivity;
 	} mouse;
 	SDL_Rect updateRects[1024];
 	Bitu num_joysticks;
@@ -245,7 +247,7 @@ SDL_Surface* SDL_SetVideoMode_Wrap(int width,int height,int bpp,Bit32u flags){
 #if SETMODE_SAVES_CLEAR
 		//TODO clear it.
 #if C_OPENGL
-		if ((flags & SDL_OPENGL)==0) 
+		if ((flags & SDL_OPENGL)==0)
 			SDL_FillRect(sdl.surface,NULL,SDL_MapRGB(sdl.surface->format,0,0,0));
 		else {
 			glClearColor (0.0, 0.0, 0.0, 1.0);
@@ -298,14 +300,14 @@ bool startup_state_capslock=false;
 void GFX_SetTitle(Bit32s cycles,Bits frameskip,bool paused){
 	char title[200]={0};
 	static Bit32s internal_cycles=0;
-	static Bits internal_frameskip=0;
+	static Bit32s internal_frameskip=0;
 	if(cycles != -1) internal_cycles = cycles;
 	if(frameskip != -1) internal_frameskip = frameskip;
 #ifdef IPHONEOS
 	if(CPU_CycleAutoAdjust) {
-		sprintf(title,"Cpu speed: max %3d%% cycles, Frameskip %2d",internal_cycles,internal_frameskip);
+		sprintf(title,"DOSBox %s, CPU speed: max %3d%% cycles, Frameskip %2d, Program: %8s",VERSION,internal_cycles,internal_frameskip,RunningProgram);
 	} else {
-		sprintf(title,"Cpu speed: %8d cycles, Frameskip %2d",internal_cycles,internal_frameskip);
+		sprintf(title,"DOSBox %s, CPU speed: %8d cycles, Frameskip %2d, Program: %8s",VERSION,internal_cycles,internal_frameskip,RunningProgram);
 	}
 #else
 	if(CPU_CycleAutoAdjust) {
@@ -372,7 +374,7 @@ static void PauseDOSBox(bool pressed) {
 				/* On macs, all aps exit when pressing cmd-q */
 				KillSwitch(true);
 				break;
-			} 
+			}
 #endif
 		}
 	}
@@ -397,7 +399,7 @@ check_surface:
 		else if (flags & GFX_LOVE_16) testbpp=16;
 		else if (flags & GFX_LOVE_32) testbpp=32;
 		else testbpp=0;
-#if (HAVE_DDRAW_H) && defined(WIN32)
+#if C_DDRAW
 check_gotbpp:
 #endif
 		if (sdl.desktop.fullscreen) gotbpp=SDL_VideoModeOK(640,480,testbpp,SDL_FULLSCREEN|SDL_HWSURFACE|SDL_HWPALETTE);
@@ -420,7 +422,7 @@ check_gotbpp:
 		}
 		flags |= GFX_CAN_RANDOM;
 		break;
-#if (HAVE_DDRAW_H) && defined(WIN32)
+#if C_DDRAW
 	case SCREEN_SURFACE_DDRAW:
 		if (!(flags&(GFX_CAN_15|GFX_CAN_16|GFX_CAN_32))) goto check_surface;
 		if (flags & GFX_LOVE_15) testbpp=15;
@@ -461,6 +463,16 @@ void GFX_ResetScreen(void) {
 	CPU_Reset_AutoAdjust();
 }
 
+void GFX_ForceFullscreenExit(void) {
+	if (sdl.desktop.lazy_fullscreen) {
+//		sdl.desktop.lazy_fullscreen_req=true;
+		LOG_MSG("GFX LF: invalid screen change");
+	} else {
+		sdl.desktop.fullscreen=false;
+		GFX_ResetScreen();
+	}
+}
+
 static int int_log2 (int val) {
     int log = 0;
     while ((val >>= 1) != 0)
@@ -488,13 +500,13 @@ static SDL_Surface * GFX_SetupSurfaceScaled(Bit32u sdl_flags, Bit32u bpp) {
 		if ( ratio_w < ratio_h) {
 			sdl.clip.w=fixedWidth;
 			sdl.clip.h=(Bit16u)(sdl.draw.height*sdl.draw.scaley*ratio_w + 0.1); //possible rounding issues
-		} else { 
-			/* 
+		} else {
+			/*
 			 * The 0.4 is there to correct for rounding issues.
-			 * (partly caused by the rounding issues fix in RENDER_SetSize) 
-			 */ 
+			 * (partly caused by the rounding issues fix in RENDER_SetSize)
+			 */
 			sdl.clip.w=(Bit16u)(sdl.draw.width*sdl.draw.scalex*ratio_h + 0.4);
-			sdl.clip.h=(Bit16u)fixedHeight;			
+			sdl.clip.h=(Bit16u)fixedHeight;
 		}
 		if (sdl.desktop.fullscreen)
 			sdl.surface = SDL_SetVideoMode_Wrap(fixedWidth,fixedHeight,bpp,sdl_flags);
@@ -517,6 +529,16 @@ static SDL_Surface * GFX_SetupSurfaceScaled(Bit32u sdl_flags, Bit32u bpp) {
 	}
 }
 
+void GFX_TearDown(void) {
+	if (sdl.updating)
+		GFX_EndUpdate( 0 );
+
+	if (sdl.blit.surface) {
+		SDL_FreeSurface(sdl.blit.surface);
+		sdl.blit.surface=0;
+	}
+}
+
 Bitu GFX_SetSize(Bitu width,Bitu height,Bitu flags,double scalex,double scaley,GFX_CallBack_t callback) {
 	if (sdl.updating)
 		GFX_EndUpdate( 0 );
@@ -527,7 +549,7 @@ Bitu GFX_SetSize(Bitu width,Bitu height,Bitu flags,double scalex,double scaley,G
 	sdl.draw.scalex=scalex;
 	sdl.draw.scaley=scaley;
 
-	Bitu bpp=0;
+	int bpp=0;
 	Bitu retFlags = 0;
 
 	if (sdl.blit.surface) {
@@ -558,7 +580,7 @@ dosurface:
 					SDL_FULLSCREEN | ((flags & GFX_CAN_RANDOM) ? SDL_SWSURFACE : SDL_HWSURFACE) |
 					(sdl.desktop.doublebuf ? SDL_DOUBLEBUF|SDL_ASYNCBLIT  : 0)|SDL_HWPALETTE);
 				if (sdl.surface == NULL)
-					E_Exit("Could not set fullscreen video mode %ix%i-%i: %s",width,height,bpp,SDL_GetError());
+					E_Exit("Could not set fullscreen video mode %ix%i-%i: %s",(int)width,(int)height,bpp,SDL_GetError());
 			}
 		} else {
 			sdl.clip.x=0;sdl.clip.y=0;
@@ -582,7 +604,7 @@ dosurface:
 			}
 #endif
 			if (sdl.surface == NULL)
-				E_Exit("Could not set windowed video mode %ix%i-%i: %s",width,height,bpp,SDL_GetError());
+				E_Exit("Could not set windowed video mode %ix%i-%i: %s",(int)width,(int)height,bpp,SDL_GetError());
 		}
 		if (sdl.surface) {
 			switch (sdl.surface->format->BitsPerPixel) {
@@ -613,7 +635,7 @@ dosurface:
 			}
 		}
 		break;
-#if (HAVE_DDRAW_H) && defined(WIN32)
+#if C_DDRAW
 	case SCREEN_SURFACE_DDRAW:
 		if (flags & GFX_CAN_15) bpp=15;
 		if (flags & GFX_CAN_16) bpp=16;
@@ -660,7 +682,7 @@ dosurface:
 		if (!GFX_SetupSurfaceScaled(0,0)) goto dosurface;
 		sdl.overlay=SDL_CreateYUVOverlay(width*2,height,SDL_UYVY_OVERLAY,sdl.surface);
 		if (!sdl.overlay) {
-			LOG_MSG("SDL:Failed to create overlay, switching back to surface");
+			LOG_MSG("SDL: Failed to create overlay, switching back to surface");
 			goto dosurface;
 		}
 		sdl.desktop.type=SCREEN_OVERLAY;
@@ -679,7 +701,7 @@ dosurface:
 		if (!(flags&GFX_CAN_32)) goto dosurface;
 		int texsize=2 << int_log2(width > height ? width : height);
 		if (texsize>sdl.opengl.max_texsize) {
-			LOG_MSG("SDL:OPENGL:No support for texturesize of %d, falling back to surface",texsize);
+			LOG_MSG("SDL:OPENGL: No support for texturesize of %d, falling back to surface",texsize);
 			goto dosurface;
 		}
 		SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
@@ -688,7 +710,7 @@ dosurface:
 #endif
 		GFX_SetupSurfaceScaled(SDL_OPENGL,0);
 		if (!sdl.surface || sdl.surface->format->BitsPerPixel<15) {
-			LOG_MSG("SDL:OPENGL:Can't open drawing surface, are you running in 16bpp(or higher) mode?");
+			LOG_MSG("SDL:OPENGL: Can't open drawing surface, are you running in 16bpp (or higher) mode?");
 			goto dosurface;
 		}
 		/* Create the texture and display list */
@@ -701,14 +723,14 @@ dosurface:
 			sdl.opengl.framebuf=malloc(width*height*4);		//32 bit color
 		}
 		sdl.opengl.pitch=width*4;
-//		glViewport(sdl.clip.x,sdl.clip.y,sdl.clip.w,sdl.clip.h);
+
 		if(sdl.clip.x ==0 && sdl.clip.y ==0 && sdl.desktop.fullscreen && !sdl.desktop.full.fixed && (sdl.clip.w != sdl.surface->w || sdl.clip.h != sdl.surface->h)) { 
-		//	LOG_MSG("attempting to fix the centering to %d %d %d %d",(sdl.surface->w-sdl.clip.w)/2,(sdl.surface->h-sdl.clip.h)/2,sdl.clip.w,sdl.clip.h);
+//			LOG_MSG("attempting to fix the centering to %d %d %d %d",(sdl.surface->w-sdl.clip.w)/2,(sdl.surface->h-sdl.clip.h)/2,sdl.clip.w,sdl.clip.h);
 			glViewport((sdl.surface->w-sdl.clip.w)/2,(sdl.surface->h-sdl.clip.h)/2,sdl.clip.w,sdl.clip.h);
-		}
-		else {
+		} else {
 			glViewport(sdl.clip.x,sdl.clip.y,sdl.clip.w,sdl.clip.h);
-		}
+		}		
+
 		glMatrixMode (GL_PROJECTION);
 		glDeleteTextures(1,&sdl.opengl.texture);
  		glGenTextures(1,&sdl.opengl.texture);
@@ -716,12 +738,12 @@ dosurface:
 		// No borders
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
-		if (sdl.opengl.bilinear) {
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		} else {
+		if (!sdl.opengl.bilinear || ( (sdl.clip.h % height) == 0 && (sdl.clip.w % width) == 0) ) {
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		} else {
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		}
 
 		Bit8u* emptytex = new Bit8u[texsize * texsize * 4];
@@ -788,6 +810,18 @@ void GFX_CaptureMouse(void) {
         mouselocked=sdl.mouse.locked;
 }
 
+void GFX_UpdateSDLCaptureState(void) {
+	if (sdl.mouse.locked) {
+		SDL_WM_GrabInput(SDL_GRAB_ON);
+		SDL_ShowCursor(SDL_DISABLE);
+	} else {
+		SDL_WM_GrabInput(SDL_GRAB_OFF);
+		if (sdl.mouse.autoenable || !sdl.mouse.autolock) SDL_ShowCursor(SDL_ENABLE);
+	}
+	CPU_Reset_AutoAdjust();
+	GFX_SetTitle(-1,-1,false);
+}
+
 bool mouselocked; //Global variable for mapper
 static void CaptureMouse(bool pressed) {
 	if (!pressed)
@@ -795,12 +829,40 @@ static void CaptureMouse(bool pressed) {
 	GFX_CaptureMouse();
 }
 
+#if defined (WIN32)
+STICKYKEYS stick_keys = {sizeof(STICKYKEYS), 0};
+void sticky_keys(bool restore){
+	static bool inited = false;
+	if (!inited){
+		inited = true;
+		SystemParametersInfo(SPI_GETSTICKYKEYS, sizeof(STICKYKEYS), &stick_keys, 0);
+	}
+	if (restore) {
+		SystemParametersInfo(SPI_SETSTICKYKEYS, sizeof(STICKYKEYS), &stick_keys, 0);
+		return;
+	}
+	//Get current sticky keys layout:
+	STICKYKEYS s = {sizeof(STICKYKEYS), 0};
+	SystemParametersInfo(SPI_GETSTICKYKEYS, sizeof(STICKYKEYS), &s, 0);
+	if ( !(s.dwFlags & SKF_STICKYKEYSON)) { //Not on already
+		s.dwFlags &= ~SKF_HOTKEYACTIVE;
+		SystemParametersInfo(SPI_SETSTICKYKEYS, sizeof(STICKYKEYS), &s, 0);
+	}
+}
+#endif
+
 void GFX_SwitchFullScreen(void) {
 	sdl.desktop.fullscreen=!sdl.desktop.fullscreen;
 	if (sdl.desktop.fullscreen) {
 		if (!sdl.mouse.locked) GFX_CaptureMouse();
+#if defined (WIN32)
+		sticky_keys(false); //disable sticky keys in fullscreen mode
+#endif
 	} else {
 		if (sdl.mouse.locked) GFX_CaptureMouse();
+#if defined (WIN32)
+		sticky_keys(true); //restore sticky keys to default state in windowed mode.
+#endif
 	}
 	GFX_ResetScreen();
 }
@@ -808,7 +870,32 @@ void GFX_SwitchFullScreen(void) {
 static void SwitchFullScreen(bool pressed) {
 	if (!pressed)
 		return;
-	GFX_SwitchFullScreen();
+
+	if (sdl.desktop.lazy_fullscreen) {
+//		sdl.desktop.lazy_fullscreen_req=true;
+		LOG_MSG("GFX LF: fullscreen switching not supported");
+	} else {
+		GFX_SwitchFullScreen();
+	}
+}
+
+void GFX_SwitchLazyFullscreen(bool lazy) {
+	sdl.desktop.lazy_fullscreen=lazy;
+	sdl.desktop.lazy_fullscreen_req=false;
+}
+
+void GFX_SwitchFullscreenNoReset(void) {
+	sdl.desktop.fullscreen=!sdl.desktop.fullscreen;
+}
+
+bool GFX_LazyFullscreenRequested(void) {
+	if (sdl.desktop.lazy_fullscreen) return sdl.desktop.lazy_fullscreen_req;
+	return false;
+}
+
+void GFX_RestoreMode(void) {
+	GFX_SetSize(sdl.draw.width,sdl.draw.height,sdl.draw.flags,sdl.draw.scalex,sdl.draw.scaley,sdl.draw.callback);
+	GFX_UpdateSDLCaptureState();
 }
 
 
@@ -832,7 +919,7 @@ bool GFX_StartUpdate(Bit8u * & pixels,Bitu & pitch) {
 		}
 		sdl.updating=true;
 		return true;
-#if (HAVE_DDRAW_H) && defined(WIN32)
+#if C_DDRAW
 	case SCREEN_SURFACE_DDRAW:
 		if (SDL_LockSurface(sdl.blit.surface)) {
 //			LOG_MSG("SDL Lock failed");
@@ -868,7 +955,7 @@ bool GFX_StartUpdate(Bit8u * & pixels,Bitu & pitch) {
 
 
 void GFX_EndUpdate( const Bit16u *changedLines ) {
-#if (HAVE_DDRAW_H) && defined(WIN32)
+#if C_DDRAW
 	int ret;
 #endif
 	if (!sdl.updating)
@@ -909,7 +996,7 @@ void GFX_EndUpdate( const Bit16u *changedLines ) {
 				SDL_UpdateRects( sdl.surface, rectCount, sdl.updateRects );
 		}
 		break;
-#if (HAVE_DDRAW_H) && defined(WIN32)
+#if C_DDRAW
 	case SCREEN_SURFACE_DDRAW:
 		SDL_UnlockSurface(sdl.blit.surface);
 		ret=IDirectDrawSurface3_Blt(
@@ -924,7 +1011,7 @@ void GFX_EndUpdate( const Bit16u *changedLines ) {
 			IDirectDrawSurface3_Restore(sdl.surface->hwdata->dd_surface);
 			break;
 		default:
-			LOG_MSG("DDRAW:Failed to blit, error %X",ret);
+			LOG_MSG("DDRAW: Failed to blit, error %X",ret);
 		}
 		SDL_Flip(sdl.surface);
 		break;
@@ -1105,6 +1192,8 @@ static void OutputString(Bitu x,Bitu y,const char * text,Bit32u color,Bit32u col
 #include "dosbox_splash.h"
 
 //extern void UI_Run(bool);
+void Restart(bool pressed);
+
 static void GUI_StartUp(Section * sec) {
 	sec->AddDestroyFunction(&GUI_ShutDown);
 	Section_prop * section=static_cast<Section_prop *>(sec);
@@ -1112,6 +1201,9 @@ static void GUI_StartUp(Section * sec) {
 	sdl.updating=false;
 
 	GFX_SetIcon();
+
+	sdl.desktop.lazy_fullscreen=false;
+	sdl.desktop.lazy_fullscreen_req=false;
 
 	sdl.desktop.fullscreen=section->Get_bool("fullscreen");
 	sdl.wait_on_error=section->Get_bool("waitonerror");
@@ -1189,7 +1281,7 @@ static void GUI_StartUp(Section * sec) {
 		int win_w = GetSystemMetrics(SM_CXSCREEN);
 		int win_h = GetSystemMetrics(SM_CYSCREEN);
 		if (sdl_w != win_w && sdl_h != win_h) 
-			LOG_MSG("\nWindows dpi/blurry apps scaling detected! The screen might be too large or not\n"
+			LOG_MSG("Windows dpi/blurry apps scaling detected! The screen might be too large or not\n"
 			        "show properly, please see the DOSBox options file (fullresolution) for details.\n");
 		}
 #else
@@ -1223,7 +1315,10 @@ static void GUI_StartUp(Section * sec) {
 	sdl.mouse.autoenable=section->Get_bool("autolock");
 	if (!sdl.mouse.autoenable) SDL_ShowCursor(SDL_DISABLE);
 	sdl.mouse.autolock=false;
-	sdl.mouse.sensitivity=section->Get_int("sensitivity");
+
+	Prop_multival* p3 = section->Get_multival("sensitivity");
+	sdl.mouse.xsensitivity = p3->GetSection()->Get_int("xsens");
+	sdl.mouse.ysensitivity = p3->GetSection()->Get_int("ysens");
 	std::string output=section->Get_string("output");
 
 	/* Setup Mouse correctly if fullscreen */
@@ -1235,7 +1330,7 @@ static void GUI_StartUp(Section * sec) {
 
 	if (output == "surface") {
 		sdl.desktop.want_type=SCREEN_SURFACE;
-#if (HAVE_DDRAW_H) && defined(WIN32)
+#if C_DDRAW
 	} else if (output == "ddraw") {
 		sdl.desktop.want_type=SCREEN_SURFACE_DDRAW;
 #endif
@@ -1250,7 +1345,7 @@ static void GUI_StartUp(Section * sec) {
 		sdl.opengl.bilinear=false;
 #endif
 	} else {
-		LOG_MSG("SDL:Unsupported output device %s, switching back to surface",output.c_str());
+		LOG_MSG("SDL: Unsupported output device %s, switching back to surface",output.c_str());
 		sdl.desktop.want_type=SCREEN_SURFACE;//SHOULDN'T BE POSSIBLE anymore
 	}
 
@@ -1296,7 +1391,7 @@ static void GUI_StartUp(Section * sec) {
 	if (sdl.surface == NULL) E_Exit("Could not initialize video: %s",SDL_GetError());
 	sdl.desktop.bpp=sdl.surface->format->BitsPerPixel;
 	if (sdl.desktop.bpp==24) {
-		LOG_MSG("SDL:You are running in 24 bpp mode, this will slow down things!");
+		LOG_MSG("SDL: You are running in 24 bpp mode, this will slow down things!");
 	}
 	GFX_Stop();
 	SDL_WM_SetCaption("DOSBox",VERSION);
@@ -1377,10 +1472,11 @@ static void GUI_StartUp(Section * sec) {
 	MAPPER_AddHandler(KillSwitch,MK_f9,MMOD1,"shutdown","ShutDown");
 	MAPPER_AddHandler(CaptureMouse,MK_f10,MMOD1,"capmouse","Cap Mouse");
 	MAPPER_AddHandler(SwitchFullScreen,MK_return,MMOD2,"fullscr","Fullscreen");
+	MAPPER_AddHandler(Restart,MK_home,MMOD1|MMOD2,"restart","Restart");
 #if C_DEBUG
 	/* Pause binds with activate-debugger */
 #else
-	MAPPER_AddHandler(&PauseDOSBox, MK_pause, MMOD2, "pause", "Pause");
+	MAPPER_AddHandler(&PauseDOSBox, MK_pause, MMOD2, "pause", "Pause DBox");
 #endif
 	/* Get Keyboard state of numlock and capslock */
 	SDLMod keystate = SDL_GetModState();
@@ -1397,13 +1493,13 @@ void Mouse_AutoLock(bool enable) {
 	}
 }
 
-static void HandleMouseMotion(SDL_MouseMotionEvent * motion) {
+static void HandleMouseMotion(SDL_MouseMotionEvent * motion)
+{
     if (sdl.mouse.locked || !sdl.mouse.autoenable) {
-        if(motion->relative_mode) {
-            Mouse_CursorMoved((float)motion->xrel*sdl.mouse.sensitivity/100.0f,
-						  (float)motion->yrel*sdl.mouse.sensitivity/100.0f,
-						  (float)(motion->x-sdl.clip.x)/(sdl.clip.w-1)*sdl.mouse.sensitivity/100.0f,
-						  (float)(motion->y-sdl.clip.y)/(sdl.clip.h-1)*sdl.mouse.sensitivity/100.0f,
+		Mouse_CursorMoved((float)motion->xrel*sdl.mouse.xsensitivity/100.0f,
+						  (float)motion->yrel*sdl.mouse.ysensitivity/100.0f,
+						  (float)(motion->x-sdl.clip.x)/(sdl.clip.w-1)*sdl.mouse.xsensitivity/100.0f,
+						  (float)(motion->y-sdl.clip.y)/(sdl.clip.h-1)*sdl.mouse.ysensitivity/100.0f,
 						  sdl.mouse.locked);
         } else {
             // iDOS direct touch will try to send absolute coordinates within screen.
@@ -1411,7 +1507,6 @@ static void HandleMouseMotion(SDL_MouseMotionEvent * motion) {
             Mouse_CursorSet((float)(motion->x-sdl.clip.x)/(sdl.clip.w-1),
              (float)(motion->y-sdl.clip.y)/(sdl.clip.h-1));
         }
-    }
 }
 
 static void HandleMouseButton(SDL_MouseButtonEvent * button) {
@@ -1419,7 +1514,7 @@ static void HandleMouseButton(SDL_MouseButtonEvent * button) {
 	case SDL_PRESSED:
 		if (sdl.mouse.requestlock && !sdl.mouse.locked) {
 			GFX_CaptureMouse();
-			// Dont pass klick to mouse handler
+			// Don't pass click to mouse handler
 			break;
 		}
 		if (!sdl.mouse.autoenable && sdl.mouse.autolock && button->button == SDL_BUTTON_MIDDLE) {
@@ -1458,6 +1553,10 @@ void GFX_LosingFocus(void) {
 	sdl.laltstate=SDL_KEYUP;
 	sdl.raltstate=SDL_KEYUP;
 	MAPPER_LosingFocus();
+}
+
+bool GFX_IsFullscreen(void) {
+	return sdl.desktop.fullscreen;
 }
 
 #if defined(MACOSX)
@@ -1528,8 +1627,7 @@ void GFX_Events() {
 #ifdef WIN32
 						if (sdl.desktop.fullscreen) {
 							VGA_KillDrawing();
-							sdl.desktop.fullscreen=false;
-							GFX_ResetScreen();
+							GFX_ForceFullscreenExit();
 						}
 #endif
 						GFX_CaptureMouse();
@@ -1616,14 +1714,14 @@ void GFX_Events() {
 			// ignore tab events that arrive just after regaining focus. (likely the result of alt-tab)
 			if ((event.key.keysym.sym == SDLK_TAB) && (GetTicks() - sdl.focus_ticks < 2)) break;
 #endif
-#if defined (MACOSX)			
+#if defined (MACOSX)
 		case SDL_KEYDOWN:
 		case SDL_KEYUP:
 			/* On macs CMD-Q is the default key to close an application */
 			if (event.key.keysym.sym == SDLK_q && (event.key.keysym.mod == KMOD_RMETA || event.key.keysym.mod == KMOD_LMETA) ) {
 				KillSwitch(true);
 				break;
-			} 
+			}
 #endif
 		default:
 			void MAPPER_CheckEvent(SDL_Event * event);
@@ -1673,26 +1771,27 @@ void Config_Add_SDL() {
 
 	Pbool = sdl_sec->Add_bool("fullscreen",Property::Changeable::Always,false);
 	Pbool->Set_help("Start dosbox directly in fullscreen. (Press ALT-Enter to go back)");
-     
+
 	Pbool = sdl_sec->Add_bool("fulldouble",Property::Changeable::Always,false);
 	Pbool->Set_help("Use double buffering in fullscreen. It can reduce screen flickering, but it can also result in a slow DOSBox.");
 
 	Pstring = sdl_sec->Add_string("fullresolution",Property::Changeable::Always,"original");
-	Pstring->Set_help("What resolution to use for fullscreen: original, desktop or fixed size (e.g. 1024x768).\n"
-	                  "  Using your monitor's native resolution (desktop) with aspect=true might give the best results.\n"
-			  "  If you end up with small window on a large screen, try an output different from surface.\n"
-	                  "  On Windows 10 with display scaling (Scale and layout) set to a value above 100%, it is recommended\n"
-	                  "  to use a lower full/windowresolution, in order to avoid window size problems.");
+	Pstring->Set_help("What resolution to use for fullscreen: original, desktop or a fixed size (e.g. 1024x768).\n"
+	                  "Using your monitor's native resolution with aspect=true might give the best results.\n"
+			  "If you end up with small window on a large screen, try an output different from surface."
+	                  "On Windows 10 with display scaling (Scale and layout) set to a value above 100%, it is recommended\n"
+	                  "to use a lower full/windowresolution, in order to avoid window size problems.");
+
 	Pstring = sdl_sec->Add_string("windowresolution",Property::Changeable::Always,"original");
 	Pstring->Set_help("Scale the window to this size IF the output device supports hardware scaling.\n"
-	                  "  (output=surface does not!)");
+	                  "(output=surface does not!)");
 
 	const char* outputs[] = {
 		"surface", "overlay",
 #if C_OPENGL
 		"opengl", "openglnb",
 #endif
-#if (HAVE_DDRAW_H) && defined(WIN32)
+#if C_DDRAW
 		"ddraw",
 #endif
 		0 };
@@ -1707,9 +1806,13 @@ void Config_Add_SDL() {
 	Pbool = sdl_sec->Add_bool("autolock",Property::Changeable::Always,true);
 	Pbool->Set_help("Mouse will automatically lock, if you click on the screen. (Press CTRL-F10 to unlock)");
 
-	Pint = sdl_sec->Add_int("sensitivity",Property::Changeable::Always,100);
-	Pint->SetMinMax(1,1000);
-	Pint->Set_help("Mouse sensitivity.");
+	Pmulti = sdl_sec->Add_multi("sensitivity",Property::Changeable::Always, ",");
+	Pmulti->Set_help("Mouse sensitivity. The optional second parameter specifies vertical sensitivity (e.g. 100,-50).");
+	Pmulti->SetValue("100");
+	Pint = Pmulti->GetSection()->Add_int("xsens",Property::Changeable::Always,100);
+	Pint->SetMinMax(-1000,1000);
+	Pint = Pmulti->GetSection()->Add_int("ysens",Property::Changeable::Always,100);
+	Pint->SetMinMax(-1000,1000);
 
 	Pbool = sdl_sec->Add_bool("waitonerror",Property::Changeable::Always, true);
 	Pbool->Set_help("Wait before closing the console if dosbox has an error.");
@@ -1717,7 +1820,7 @@ void Config_Add_SDL() {
 	Pmulti = sdl_sec->Add_multi("priority", Property::Changeable::Always, ",");
 	Pmulti->SetValue("higher,normal");
 	Pmulti->Set_help("Priority levels for dosbox. Second entry behind the comma is for when dosbox is not focused/minimized.\n"
-	                 "  pause is only valid for the second entry.");
+	                 "pause is only valid for the second entry.");
 
 	const char* actt[] = { "lowest", "lower", "normal", "higher", "highest", "pause", 0};
 	Pstring = Pmulti->GetSection()->Add_string("active",Property::Changeable::Always,"higher");
@@ -1728,7 +1831,7 @@ void Config_Add_SDL() {
 	Pstring->Set_values(inactt);
 
 	Pstring = sdl_sec->Add_path("mapperfile",Property::Changeable::Always,MAPPERFILE);
-	Pstring->Set_help("File used to load/save the key/event mappings from. Resetmapper only works with the defaul value.");
+	Pstring->Set_help("File used to load/save the key/event mappings from. Resetmapper only works with the default value.");
 
 	Pbool = sdl_sec->Add_bool("usescancodes",Property::Changeable::Always,true);
 	Pbool->Set_help("Avoid usage of symkeys, might not work on all operating systems.");
@@ -1741,7 +1844,7 @@ static void show_warning(char const * const message) {
 	if ( !sdl.inited && SDL_Init(SDL_INIT_VIDEO|SDL_INIT_NOPARACHUTE) < 0 ) textonly = true;
 	sdl.inited = true;
 #endif
-	printf("%s", message);
+	printf("%s",message);
 	if(textonly) return;
 	if(!sdl.surface) sdl.surface = SDL_SetVideoMode_Wrap(640,400,0,0);
 	if(!sdl.surface) return;
@@ -1751,7 +1854,7 @@ static void show_warning(char const * const message) {
 	Bit32u bmask = 0x0000ff00;
 #else
 	Bit32u rmask = 0x000000ff;
-	Bit32u gmask = 0x0000ff00;                    
+	Bit32u gmask = 0x0000ff00;
 	Bit32u bmask = 0x00ff0000;
 #endif
 	SDL_Surface* splash_surf = SDL_CreateRGBSurface(SDL_SWSURFACE, 640, 400, 32, rmask, gmask, bmask, 0);
@@ -1760,22 +1863,22 @@ static void show_warning(char const * const message) {
 	int x = 120,y = 20;
 	std::string m(message),m2;
 	std::string::size_type a,b,c,d;
-   
+
 	while(m.size()) { //Max 50 characters. break on space before or on a newline
 		c = m.find('\n');
 		d = m.rfind(' ',50);
 		if(c>d) a=b=d; else a=b=c;
-		if( a != std::string::npos) b++; 
+		if( a != std::string::npos) b++;
 		m2 = m.substr(0,a); m.erase(0,b);
 		OutputString(x,y,m2.c_str(),0xffffffff,0,splash_surf);
 		y += 20;
 	}
-   
+
 	SDL_BlitSurface(splash_surf, NULL, sdl.surface, NULL);
 	SDL_Flip(sdl.surface);
 	SDL_Delay(12000);
 }
-   
+
 static void launcheditor() {
 	std::string path,file;
 	Cross::CreatePlatformConfigDir(path);
@@ -1798,6 +1901,43 @@ static void launcheditor() {
 	printf("can't find editor(s) specified at the command line.\n");
 	exit(1);
 }
+#if C_DEBUG
+extern void DEBUG_ShutDown(Section * /*sec*/);
+#endif
+
+void restart_program(std::vector<std::string> & parameters) {
+	char** newargs = new char* [parameters.size()+1];
+	// parameter 0 is the executable path
+	// contents of the vector follow
+	// last one is NULL
+	for(Bitu i = 0; i < parameters.size(); i++) newargs[i]=(char*)parameters[i].c_str();
+	newargs[parameters.size()] = NULL;
+	SDL_CloseAudio();
+	SDL_Delay(50);
+	SDL_Quit();
+#if C_DEBUG
+	// shutdown curses
+	DEBUG_ShutDown(NULL);
+#endif
+
+	if(execvp(newargs[0], newargs) == -1) {
+#ifdef WIN32
+		if(newargs[0][0] == '\"') {
+			//everything specifies quotes around it if it contains a space, however my system disagrees
+			std::string edit = parameters[0];
+			edit.erase(0,1);edit.erase(edit.length() - 1,1);
+			//However keep the first argument of the passed argv (newargs) with quotes, as else repeated restarts go wrong.
+			if(execvp(edit.c_str(), newargs) == -1) E_Exit("Restarting failed");
+		}
+#endif
+		E_Exit("Restarting failed");
+	}
+	free(newargs);
+}
+void Restart(bool pressed) { // mapper handler
+	restart_program(control->startup_params);
+}
+
 static void launchcaptures(std::string const& edit) {
 	std::string path,file;
 	Section* t = control->GetSection("dosbox");
@@ -1830,7 +1970,7 @@ static void printconfiglocation() {
 	Cross::CreatePlatformConfigDir(path);
 	Cross::GetPlatformConfigName(file);
 	path += file;
-     
+
 	FILE* f = fopen(path.c_str(),"r");
 	if(!f && !control->PrintConfig(path.c_str())) {
 		printf("tried creating %s. but failed",path.c_str());
@@ -1875,7 +2015,6 @@ static void erasemapperfile() {
 	unlink(path.c_str());
 	exit(0);
 }
-
 
 
 //extern void UI_Init(void);
@@ -1962,7 +2101,7 @@ int main(int argc, char* argv[]) {
 #ifdef IPHONEOS
 	if ( SDL_Init( SDL_INIT_AUDIO|SDL_INIT_VIDEO|SDL_INIT_TIMER
 #else
-	if ( SDL_Init( SDL_INIT_AUDIO|SDL_INIT_VIDEO|SDL_INIT_TIMER|SDL_INIT_CDROM
+	if ( SDL_Init( SDL_INIT_AUDIO|SDL_INIT_VIDEO | /*SDL_INIT_TIMER |*/ SDL_INIT_CDROM
 #endif                       
 		|SDL_INIT_NOPARACHUTE
 		) < 0 ) E_Exit("Can't init SDL %s",SDL_GetError());
@@ -2013,49 +2152,52 @@ int main(int argc, char* argv[]) {
 	sdl.num_joysticks=SDL_NumJoysticks();
 
 	/* Parse configuration files */
-	std::string config_file,config_path;
-	bool parsed_anyconfigfile = false;
-	//First Parse -userconf
+	std::string config_file, config_path, config_combined;
+	Cross::GetPlatformConfigDir(config_path);
+
+	//First parse -userconf
 	if(control->cmdline->FindExist("-userconf",true)){
 		config_file.clear();
 		Cross::GetPlatformConfigDir(config_path);
 		Cross::GetPlatformConfigName(config_file);
-		config_path += config_file;
-		if(control->ParseConfigFile(config_path.c_str())) parsed_anyconfigfile = true;
-		if(!parsed_anyconfigfile) {
+		config_combined = config_path + config_file;
+		control->ParseConfigFile(config_combined.c_str());
+		if(!control->configfiles.size()) {
 			//Try to create the userlevel configfile.
 			config_file.clear();
 			Cross::CreatePlatformConfigDir(config_path);
 			Cross::GetPlatformConfigName(config_file);
-			config_path += config_file;
-			if(control->PrintConfig(config_path.c_str())) {
-				LOG_MSG("CONFIG: Generating default configuration.\nWriting it to %s",config_path.c_str());
+			config_combined = config_path + config_file;
+			if(control->PrintConfig(config_combined.c_str())) {
+				LOG_MSG("CONFIG: Generating default configuration.\nWriting it to %s",config_combined.c_str());
 				//Load them as well. Makes relative paths much easier
-				if(control->ParseConfigFile(config_path.c_str())) parsed_anyconfigfile = true;
+				control->ParseConfigFile(config_combined.c_str());
 			}
 		}
 	}
 
-	//Second parse -conf entries
-	while(control->cmdline->FindString("-conf",config_file,true))
-		if (control->ParseConfigFile(config_file.c_str())) parsed_anyconfigfile = true;
+	//Second parse -conf switches
+	while(control->cmdline->FindString("-conf",config_file,true)) {
+		if (!control->ParseConfigFile(config_file.c_str())) {
+			// try to load it from the user directory
+			if (!control->ParseConfigFile((config_path + config_file).c_str())) {
+				LOG_MSG("CONFIG: Can't open specified config file: %s",config_file.c_str());
+			}
+		}
+	}
+	// if none found => parse localdir conf
+	if(!control->configfiles.size()) control->ParseConfigFile("dosbox.conf");
 
-	//if none found => parse localdir conf
-	config_file = "dosbox.conf";
-	if (!parsed_anyconfigfile && control->ParseConfigFile(config_file.c_str())) parsed_anyconfigfile = true;
-
-	//if none found => parse userlevel conf
-	if(!parsed_anyconfigfile) {
+	// if none found => parse userlevel conf
+	if(!control->configfiles.size()) {
 		config_file.clear();
-		Cross::GetPlatformConfigDir(config_path);
 		Cross::GetPlatformConfigName(config_file);
-		config_path += config_file;
-		if(control->ParseConfigFile(config_path.c_str())) parsed_anyconfigfile = true;
+		control->ParseConfigFile((config_path + config_file).c_str());
 	}
                   
 #ifdef IPHONEOS
 	// Try upper case filename
-      if(!parsed_anyconfigfile) {
+      if(!control->configfiles.size()) {
           config_file.clear();
           Cross::GetPlatformConfigDir(config_path);
           Cross::GetPlatformConfigName(config_file);
@@ -2063,26 +2205,25 @@ int main(int argc, char* argv[]) {
               config_file[i] = toupper(config_file[i]);
           }
           config_path += config_file;
-          if(control->ParseConfigFile(config_path.c_str())) parsed_anyconfigfile = true;
+          control->ParseConfigFile((config_path + config_file).c_str());
       }                  
 #endif
 
-#ifndef IPHONEOS  // Don't create config file
-	if(!parsed_anyconfigfile) {
+	if(!control->configfiles.size()) {
 		//Try to create the userlevel configfile.
 		config_file.clear();
 		Cross::CreatePlatformConfigDir(config_path);
 		Cross::GetPlatformConfigName(config_file);
-		config_path += config_file;
-		if(control->PrintConfig(config_path.c_str())) {
-			LOG_MSG("CONFIG: Generating default configuration.\nWriting it to %s",config_path.c_str());
+		config_combined = config_path + config_file;
+		if(control->PrintConfig(config_combined.c_str())) {
+			LOG_MSG("CONFIG: Generating default configuration.\nWriting it to %s",config_combined.c_str());
 			//Load them as well. Makes relative paths much easier
-			control->ParseConfigFile(config_path.c_str());
+			control->ParseConfigFile(config_combined.c_str());
 		} else {
 			LOG_MSG("CONFIG: Using default settings. Create a configfile to change them");
 		}
 	}
-#endif
+
 
 #if (ENVIRON_LINKED)
 		control->ParseEnv(environ);
@@ -2107,6 +2248,9 @@ int main(int argc, char* argv[]) {
 		control->StartUp();
 		/* Shutdown everything */
 	} catch (char * error) {
+#if defined (WIN32)
+		sticky_keys(true);
+#endif
 		GFX_ShowMsg("Exit to error: %s",error);
 		fflush(NULL);
 		if(sdl.wait_on_error) {
@@ -2122,14 +2266,14 @@ int main(int argc, char* argv[]) {
 
 	}
 	catch (int){
-		;//nothing pressed killswitch
+		; //nothing, pressed killswitch
 	}
 	catch(...){
-		//Force visible mouse to end user. Somehow this sometimes doesn't happen
-		SDL_WM_GrabInput(SDL_GRAB_OFF);
-		SDL_ShowCursor(SDL_ENABLE);
-		throw;//dunno what happened. rethrow for sdl to catch
+		; // Unknown error, let's just exit.
 	}
+#if defined (WIN32)
+	sticky_keys(true); //Might not be needed if the shutdown function switches to windowed mode, but it doesn't hurt
+#endif
 	//Force visible mouse to end user. Somehow this sometimes doesn't happen
 	SDL_WM_GrabInput(SDL_GRAB_OFF);
 	SDL_ShowCursor(SDL_ENABLE);

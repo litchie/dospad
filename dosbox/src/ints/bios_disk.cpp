@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2002-2010  The DOSBox Team
+ *  Copyright (C) 2002-2019  The DOSBox Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -11,16 +11,16 @@
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *  GNU General Public License for more details.
  *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *  You should have received a copy of the GNU General Public License along
+ *  with this program; if not, write to the Free Software Foundation, Inc.,
+ *  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-/* $Id: bios_disk.cpp,v 1.40 2009-08-23 17:24:54 c2woody Exp $ */
 
 #include "dosbox.h"
 #include "callback.h"
 #include "bios.h"
+#include "bios_disk.h"
 #include "regs.h"
 #include "mem.h"
 #include "dos_inc.h" /* for Drives[] */
@@ -58,7 +58,7 @@ void CMOS_SetRegister(Bitu regNr, Bit8u val); //For setting equipment word
 /* 2 floppys and 2 harddrives, max */
 imageDisk *imageDiskList[MAX_DISK_IMAGES];
 imageDisk *diskSwap[MAX_SWAPPABLE_DISKS];
-Bits swapPosition;
+Bit32s swapPosition;
 
 void updateDPT(void) {
 	Bit32u tmpheads, tmpcyl, tmpsect, tmpsize;
@@ -86,13 +86,26 @@ void updateDPT(void) {
 	}
 }
 
+void incrementFDD(void) {
+	Bit16u equipment=mem_readw(BIOS_CONFIGURATION);
+	if(equipment&1) {
+		Bitu numofdisks = (equipment>>6)&3;
+		numofdisks++;
+		if(numofdisks > 1) numofdisks=1;//max 2 floppies at the moment
+		equipment&=~0x00C0;
+		equipment|=(numofdisks<<6);
+	} else equipment|=1;
+	mem_writew(BIOS_CONFIGURATION,equipment);
+	CMOS_SetRegister(0x14, (Bit8u)(equipment&0xff));
+}
+
 void swapInDisks(void) {
 	bool allNull = true;
-	Bits diskcount = 0;
-	Bits swapPos = swapPosition;
-	int i;
+	Bit32s diskcount = 0;
+	Bit32s swapPos = swapPosition;
+	Bit32s i;
 
-	/* Check to make sure there's atleast one setup image */
+	/* Check to make sure that  there is at least one setup image */
 	for(i=0;i<MAX_SWAPPABLE_DISKS;i++) {
 		if(diskSwap[i]!=NULL) {
 			allNull = false;
@@ -150,8 +163,10 @@ Bit8u imageDisk::Read_AbsoluteSector(Bit32u sectnum, void * data) {
 
 	bytenum = sectnum * sector_size;
 
-	fseek(diskimg,bytenum,SEEK_SET);
-	fread(data, 1, sector_size, diskimg);
+	if (last_action==WRITE || bytenum!=current_fpos) fseek(diskimg,bytenum,SEEK_SET);
+	size_t ret=fread(data, 1, sector_size, diskimg);
+	current_fpos=bytenum+ret;
+	last_action=READ;
 
 	return 0x00;
 }
@@ -162,7 +177,6 @@ Bit8u imageDisk::Write_Sector(Bit32u head,Bit32u cylinder,Bit32u sector,void * d
 	sectnum = ( (cylinder * heads + head) * sectors ) + sector - 1L;
 
 	return Write_AbsoluteSector(sectnum, data);
-
 }
 
 
@@ -173,8 +187,10 @@ Bit8u imageDisk::Write_AbsoluteSector(Bit32u sectnum, void *data) {
 
 	//LOG_MSG("Writing sectors to %ld at bytenum %d", sectnum, bytenum);
 
-	fseek(diskimg,bytenum,SEEK_SET);
-	size_t ret=fwrite(data, sector_size, 1, diskimg);
+	if (last_action==READ || bytenum!=current_fpos) fseek(diskimg,bytenum,SEEK_SET);
+	size_t ret=fwrite(data, 1, sector_size, diskimg);
+	current_fpos=bytenum+ret;
+	last_action=WRITE;
 
 	return ((ret>0)?0x00:0x05);
 
@@ -185,7 +201,10 @@ imageDisk::imageDisk(FILE *imgFile, Bit8u *imgName, Bit32u imgSizeK, bool isHard
 	cylinders = 0;
 	sectors = 0;
 	sector_size = 512;
+	current_fpos = 0;
+	last_action = NONE;
 	diskimg = imgFile;
+	fseek(diskimg,0,SEEK_SET);
 	
 	memset(diskname,0,512);
 	if(strlen((const char *)imgName) > 511) {
@@ -217,16 +236,7 @@ imageDisk::imageDisk(FILE *imgFile, Bit8u *imgName, Bit32u imgSizeK, bool isHard
 		if(!founddisk) {
 			active = false;
 		} else {
-			Bit16u equipment=mem_readw(BIOS_CONFIGURATION);
-			if(equipment&1) {
-				Bitu numofdisks = (equipment>>6)&3;
-				numofdisks++;
-				if(numofdisks > 1) numofdisks=1;//max 2 floppies at the moment
-				equipment&=~0x00C0;
-				equipment|=(numofdisks<<6);
-			} else equipment|=1;
-			mem_writew(BIOS_CONFIGURATION,equipment);
-			CMOS_SetRegister(0x14, (Bit8u)(equipment&0xff));
+			incrementFDD();
 		}
 	}
 }
@@ -256,7 +266,7 @@ Bit32u imageDisk::getSectSize(void) {
 	return sector_size;
 }
 
-static Bitu GetDosDriveNumber(Bitu biosNum) {
+static Bit8u GetDosDriveNumber(Bit8u biosNum) {
 	switch(biosNum) {
 		case 0x0:
 			return 0x0;
@@ -275,7 +285,7 @@ static Bitu GetDosDriveNumber(Bitu biosNum) {
 	}
 }
 
-static bool driveInactive(Bitu driveNum) {
+static bool driveInactive(Bit8u driveNum) {
 	if(driveNum>=(2 + MAX_HDD_IMAGES)) {
 		LOG(LOG_BIOS,LOG_ERROR)("Disk %d non-existant", driveNum);
 		last_status = 0x01;
@@ -301,7 +311,7 @@ static bool driveInactive(Bitu driveNum) {
 static Bitu INT13_DiskHandler(void) {
 	Bit16u segat, bufptr;
 	Bit8u sectbuf[512];
-	Bitu  drivenum;
+	Bit8u  drivenum;
 	Bitu  i,t;
 	last_drive = reg_dl;
 	drivenum = GetDosDriveNumber(reg_dl);
@@ -315,6 +325,8 @@ static Bitu INT13_DiskHandler(void) {
 
 	//drivenum = 0;
 	//LOG_MSG("INT13: Function %x called on drive %x (dos drive %d)", reg_ah,  reg_dl, drivenum);
+
+	// NOTE: the 0xff error code returned in some cases is questionable; 0x01 seems more correct
 	switch(reg_ah) {
 	case 0x0: /* Reset disk */
 		{
@@ -327,12 +339,14 @@ static Bitu INT13_DiskHandler(void) {
 				if ((machine==MCH_CGA) || (machine==MCH_PCJR)) {
 					/* those bioses call floppy drive reset for invalid drive values */
 					if (((imageDiskList[0]) && (imageDiskList[0]->active)) || ((imageDiskList[1]) && (imageDiskList[1]->active))) {
+						if (machine!=MCH_PCJR && reg_dl<0x80) reg_ip++;
 						last_status = 0x00;
 						CALLBACK_SCF(false);
 					}
 				}
 				return CBRET_NONE;
 			}
+			if (machine!=MCH_PCJR && reg_dl<0x80) reg_ip++;
 			last_status = 0x00;
 			CALLBACK_SCF(false);
 		}
@@ -354,8 +368,19 @@ static Bitu INT13_DiskHandler(void) {
 			return CBRET_NONE;
 		}
 		if (!any_images) {
-			// Inherit the Earth cdrom (uses it as disk test)
+			if (drivenum >= DOS_DRIVES || !Drives[drivenum] || Drives[drivenum]->isRemovable()) {
+				reg_ah = 0x01;
+				CALLBACK_SCF(true);
+				return CBRET_NONE;
+			}
+			// Inherit the Earth cdrom and Amberstar use it as a disk test
 			if (((reg_dl&0x80)==0x80) && (reg_dh==0) && ((reg_cl&0x3f)==1)) {
+				if (reg_ch==0) {
+					PhysPt ptr = PhysMake(SegValue(es),reg_bx);
+					// write some MBR data into buffer for Amberstar installer
+					mem_writeb(ptr+0x1be,0x80); // first partition is active
+					mem_writeb(ptr+0x1c2,0x06); // first partition is FAT16B
+				}
 				reg_ah = 0;
 				CALLBACK_SCF(false);
 				return CBRET_NONE;
@@ -417,7 +442,10 @@ static Bitu INT13_DiskHandler(void) {
 			CALLBACK_SCF(true);
 			return CBRET_NONE;
 		}
-		if(driveInactive(drivenum)) return CBRET_NONE;
+		if(driveInactive(drivenum)) {
+			reg_ah = last_status;
+			return CBRET_NONE;
+		}
 
 		/* TODO: Finish coding this section */
 		/*
@@ -441,6 +469,15 @@ static Bitu INT13_DiskHandler(void) {
 		//reg_al = 0x00; /* CRC verify succeeded */
 		CALLBACK_SCF(false);
           
+		break;
+	case 0x05: /* Format track */
+		if (driveInactive(drivenum)) {
+			reg_ah = 0xff;
+			CALLBACK_SCF(true);
+			return CBRET_NONE;
+		}
+		reg_ah = 0x00;
+		CALLBACK_SCF(false);
 		break;
 	case 0x08: /* Get drive parameters */
 		if(driveInactive(drivenum)) {
@@ -476,6 +513,48 @@ static Bitu INT13_DiskHandler(void) {
 		reg_ah = 0x00;
 		CALLBACK_SCF(false);
 		break;
+	case 0x15: /* Get disk type */
+		/* Korean Powerdolls uses this to detect harddrives */
+		LOG(LOG_BIOS,LOG_WARN)("INT13: Get disktype used!");
+		if (any_images) {
+			if(driveInactive(drivenum)) {
+				last_status = 0x07;
+				reg_ah = last_status;
+				CALLBACK_SCF(true);
+				return CBRET_NONE;
+			}
+			Bit32u tmpheads, tmpcyl, tmpsect, tmpsize;
+			imageDiskList[drivenum]->Get_Geometry(&tmpheads, &tmpcyl, &tmpsect, &tmpsize);
+			Bit64u largesize = tmpheads*tmpcyl*tmpsect*tmpsize;
+			largesize/=512;
+			Bit32u ts = static_cast<Bit32u>(largesize);
+			reg_ah = (drivenum <2)?1:3; //With 2 for floppy MSDOS starts calling int 13 ah 16
+			if(reg_ah == 3) {
+				reg_cx = static_cast<Bit16u>(ts >>16);
+				reg_dx = static_cast<Bit16u>(ts & 0xffff);
+			}
+			CALLBACK_SCF(false);
+		} else {
+			if (drivenum <DOS_DRIVES && (Drives[drivenum] != 0 || drivenum <2)) {
+				if (drivenum <2) {
+					//TODO use actual size (using 1.44 for now).
+					reg_ah = 0x1; // type
+//					reg_cx = 0;
+//					reg_dx = 2880; //Only set size for harddrives.
+				} else {
+					//TODO use actual size (using 105 mb for now).
+					reg_ah = 0x3; // type
+					reg_cx = 3;
+					reg_dx = 0x4800;
+				}
+				CALLBACK_SCF(false);
+			} else { 
+				LOG(LOG_BIOS,LOG_WARN)("INT13: no images, but invalid drive for call 15");
+				reg_ah=0xff;
+				CALLBACK_SCF(true);
+			}
+		}
+		break;
 	case 0x17: /* Set disk type for format */
 		/* Pirates! needs this to load */
 		killRead = true;
@@ -494,7 +573,7 @@ static Bitu INT13_DiskHandler(void) {
 void BIOS_SetupDisks(void) {
 /* TODO Start the time correctly */
 	call_int13=CALLBACK_Allocate();	
-	CALLBACK_Setup(call_int13,&INT13_DiskHandler,CB_IRET,"Int 13 Bios disk");
+	CALLBACK_Setup(call_int13,&INT13_DiskHandler,CB_INT13,"Int 13 Bios disk");
 	RealSetVec(0x13,CALLBACK_RealPointer(call_int13));
 	int i;
 	for(i=0;i<4;i++) {

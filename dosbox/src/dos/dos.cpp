@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2002-2010  The DOSBox Team
+ *  Copyright (C) 2002-2019  The DOSBox Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -11,17 +11,15 @@
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *  GNU General Public License for more details.
  *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *  You should have received a copy of the GNU General Public License along
+ *  with this program; if not, write to the Free Software Foundation, Inc.,
+ *  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-/* $Id: dos.cpp,v 1.121 2009-10-28 21:45:12 qbix79 Exp $ */
 
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
-#include <time.h>
 #include "dosbox.h"
 #include "bios.h"
 #include "mem.h"
@@ -40,6 +38,34 @@ Bit8u dos_copybuf[DOS_COPYBUFSIZE];
 
 void DOS_SetError(Bit16u code) {
 	dos.errorcode=code;
+}
+
+const Bit8u DOS_DATE_months[] = {
+	0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31
+};
+
+static void DOS_AddDays(Bitu days) {
+	dos.date.day += days;
+	Bit8u monthlimit = DOS_DATE_months[dos.date.month];
+
+	if(dos.date.day > monthlimit) {
+		if((dos.date.year %4 == 0) && (dos.date.month==2)) {
+			// leap year
+			if(dos.date.day > 29) {
+				dos.date.month++;
+				dos.date.day -= 29;
+			}
+		} else {
+			//not leap year
+			dos.date.month++;
+			dos.date.day -= monthlimit;
+		}
+		if(dos.date.month > 12) {
+			// year over
+			dos.date.month = 1;
+			dos.date.year++;
+		}
+	}
 }
 
 #define DATA_TRANSFERS_TAKE_CYCLES 1
@@ -86,6 +112,8 @@ static Bitu DOS_21Handler(void) {
 
 	char name1[DOSNAMEBUF+2+DOS_NAMELENGTH_ASCII];
 	char name2[DOSNAMEBUF+2+DOS_NAMELENGTH_ASCII];
+	
+	static Bitu time_start = 0; //For emulating temporary time changes.
 
 	switch (reg_ah) {
 	case 0x00:		/* Terminate Program */
@@ -105,7 +133,7 @@ static Bitu DOS_21Handler(void) {
 			Bit8u c=reg_dl;Bit16u n=1;
 			DOS_WriteFile(STDOUT,&c,&n);
 			//Not in the official specs, but happens nonetheless. (last written character)
-			reg_al = c;// reg_al=(c==9)?0x20:c; //Officially: tab to spaces
+			reg_al=(c==9)?0x20:c; //strangely, tab conversion to spaces is reflected here
 		}
 		break;
 	case 0x03:		/* Read character from STDAUX */
@@ -156,8 +184,10 @@ static Bitu DOS_21Handler(void) {
 		default:
 			{
 				Bit8u c = reg_dl;Bit16u n = 1;
+				dos.direct_output=true;
 				DOS_WriteFile(STDOUT,&c,&n);
-				reg_al = reg_dl;
+				dos.direct_output=false;
+				reg_al=c;
 			}
 			break;
 		};
@@ -183,6 +213,7 @@ static Bitu DOS_21Handler(void) {
 			while ((c=mem_readb(buf++))!='$') {
 				DOS_WriteFile(STDOUT,&c,&n);
 			}
+			reg_al=c;
 		}
 		break;
 	case 0x0a:		/* Buffered Input */
@@ -192,8 +223,13 @@ static Bitu DOS_21Handler(void) {
 			Bit8u free=mem_readb(data);
 			Bit8u read=0;Bit8u c;Bit16u n=1;
 			if (!free) break;
+			free--;
 			for(;;) {
 				DOS_ReadFile(STDIN,&c,&n);
+				if (n == 0)				// End of file
+					E_Exit("DOS:0x0a:Redirected input reached EOF");
+				if (c == 10)			// Line feed
+					continue;
 				if (c == 8) {			// Backspace
 					if (read) {	//Something to backspace.
 						// STDOUT treats backspace as non-destructive.
@@ -204,7 +240,7 @@ static Bitu DOS_21Handler(void) {
 					}
 					continue;
 				}
-				if (read >= free) {		// Keyboard buffer full
+				if (read == free && c != 13) {		// Keyboard buffer full
 					Bit8u bell = 7;
 					DOS_WriteFile(STDOUT, &bell, &n);
 					continue;
@@ -227,10 +263,13 @@ static Bitu DOS_21Handler(void) {
 		break;
 	case 0x0c:		/* Flush Buffer and read STDIN call */
 		{
-			/* flush STDIN-buffer */
-			Bit8u c;Bit16u n;
-			while (DOS_GetSTDINStatus()) {
-				n=1;	DOS_ReadFile(STDIN,&c,&n);
+			/* flush buffer if STDIN is CON */
+			Bit8u handle=RealHandle(STDIN);
+			if (handle!=0xFF && Files[handle] && Files[handle]->IsName("CON")) {
+				Bit8u c;Bit16u n;
+				while (DOS_GetSTDINStatus()) {
+					n=1;	DOS_ReadFile(STDIN,&c,&n);
+				}
 			}
 			switch (reg_al) {
 			case 0x1:
@@ -316,11 +355,17 @@ static Bitu DOS_21Handler(void) {
 		if (!DOS_GetAllocationInfo(reg_dl,&reg_cx,&reg_al,&reg_dx)) reg_al=0xff;
 		break;
 	case 0x21:		/* Read random record from FCB */
-		reg_al = DOS_FCBRandomRead(SegValue(ds),reg_dx,1,true);
+		{
+			Bit16u toread=1;
+			reg_al = DOS_FCBRandomRead(SegValue(ds),reg_dx,&toread,true);
+		}
 		LOG(LOG_FCB,LOG_NORMAL)("DOS:0x21 FCB-Random read used, result:al=%d",reg_al);
 		break;
 	case 0x22:		/* Write random record to FCB */
-		reg_al=DOS_FCBRandomWrite(SegValue(ds),reg_dx,1,true);
+		{
+			Bit16u towrite=1;
+			reg_al=DOS_FCBRandomWrite(SegValue(ds),reg_dx,&towrite,true);
+		}
 		LOG(LOG_FCB,LOG_NORMAL)("DOS:0x22 FCB-Random write used, result:al=%d",reg_al);
 		break;
 	case 0x23:		/* Get file size for FCB */
@@ -331,11 +376,11 @@ static Bitu DOS_21Handler(void) {
 		DOS_FCBSetRandomRecord(SegValue(ds),reg_dx);
 		break;
 	case 0x27:		/* Random block read from FCB */
-		reg_al = DOS_FCBRandomRead(SegValue(ds),reg_dx,reg_cx,false);
+		reg_al = DOS_FCBRandomRead(SegValue(ds),reg_dx,&reg_cx,false);
 		LOG(LOG_FCB,LOG_NORMAL)("DOS:0x27 FCB-Random(block) read used, result:al=%d",reg_al);
 		break;
 	case 0x28:		/* Random Block write to FCB */
-		reg_al=DOS_FCBRandomWrite(SegValue(ds),reg_dx,reg_cx,false);
+		reg_al=DOS_FCBRandomWrite(SegValue(ds),reg_dx,&reg_cx,false);
 		LOG(LOG_FCB,LOG_NORMAL)("DOS:0x28 FCB-Random(block) write used, result:al=%d",reg_al);
 		break;
 	case 0x29:		/* Parse filename into FCB */
@@ -359,9 +404,13 @@ static Bitu DOS_21Handler(void) {
 		break;
 	case 0x26:		/* Create new PSP */
 		DOS_NewPSP(reg_dx,DOS_PSP(dos.psp()).GetSize());
+		reg_al=0xf0;	/* al destroyed */		
 		break;
 	case 0x2a:		/* Get System Date */
 		{
+			reg_ax=0; // get time
+			CALLBACK_RunRealInt(0x1a);
+			if(reg_al) DOS_AddDays(reg_al);
 			int a = (14 - dos.date.month)/12;
 			int y = dos.date.year - a;
 			int m = dos.date.month + 12*a - 2;
@@ -374,34 +423,49 @@ static Bitu DOS_21Handler(void) {
 	case 0x2b:		/* Set System Date */
 		if (reg_cx<1980) { reg_al=0xff;break;}
 		if ((reg_dh>12) || (reg_dh==0))	{ reg_al=0xff;break;}
-		if ((reg_dl>31) || (reg_dl==0))	{ reg_al=0xff;break;}
+		if (reg_dl==0) { reg_al=0xff;break;}
+ 		if (reg_dl>DOS_DATE_months[reg_dh]) {
+			if(!((reg_dh==2)&&(reg_cx%4 == 0)&&(reg_dl==29))) // february pass
+			{ reg_al=0xff;break; }
+		}
 		dos.date.year=reg_cx;
 		dos.date.month=reg_dh;
 		dos.date.day=reg_dl;
 		reg_al=0;
 		break;
-	case 0x2c:		/* Get System Time */
-//TODO Get time through bios calls date is fixed
-		{
-/*	Calculate how many miliseconds have passed */
-			Bitu ticks=5*mem_readd(BIOS_TIMER);
-			ticks = ((ticks / 59659u) << 16) + ((ticks % 59659u) << 16) / 59659u;
-			Bitu seconds=(ticks/100);
-			reg_ch=(Bit8u)(seconds/3600);
-			reg_cl=(Bit8u)((seconds % 3600)/60);
-			reg_dh=(Bit8u)(seconds % 60);
-			reg_dl=(Bit8u)(ticks % 100);
-		}
+	case 0x2c: {	/* Get System Time */
+		reg_ax=0; // get time
+		CALLBACK_RunRealInt(0x1a);
+		if(reg_al) DOS_AddDays(reg_al);
+		reg_ah=0x2c;
+
+		Bitu ticks=((Bitu)reg_cx<<16)|reg_dx;
+		if(time_start<=ticks) ticks-=time_start;
+		Bitu time=(Bitu)((100.0/((double)PIT_TICK_RATE/65536.0)) * (double)ticks);
+
+		reg_dl=(Bit8u)((Bitu)time % 100); // 1/100 seconds
+		time/=100;
+		reg_dh=(Bit8u)((Bitu)time % 60); // seconds
+		time/=60;
+		reg_cl=(Bit8u)((Bitu)time % 60); // minutes
+		time/=60;
+		reg_ch=(Bit8u)((Bitu)time % 24); // hours
+
 		//Simulate DOS overhead for timing-sensitive games
-        	//Robomaze 2
+        //Robomaze 2
 		overhead();
 		break;
+	}
 	case 0x2d:		/* Set System Time */
 		LOG(LOG_DOSMISC,LOG_ERROR)("DOS:Set System Time not supported");
 		//Check input parameters nonetheless
 		if( reg_ch > 23 || reg_cl > 59 || reg_dh > 59 || reg_dl > 99 )
 			reg_al = 0xff; 
-		else reg_al = 0;
+		else { //Allow time to be set to zero. Restore the orginal time for all other parameters. (QuickBasic)
+			if (reg_cx == 0 && reg_dx == 0) {time_start = mem_readd(BIOS_TIMER);LOG_MSG("Warning: game messes with DOS time!");}
+			else time_start = 0;
+			reg_al = 0;
+		}
 		break;
 	case 0x2e:		/* Set Verify flag */
 		dos.verify=(reg_al==1);
@@ -430,10 +494,10 @@ static Bitu DOS_21Handler(void) {
 			Bit8u drive=reg_dl;
 			if (!drive || reg_ah==0x1f) drive = DOS_GetDefaultDrive();
 			else drive--;
-			if (Drives[drive]) {
+			if (drive < DOS_DRIVES && Drives[drive] && !Drives[drive]->isRemovable()) {
 				reg_al = 0x00;
 				SegSet16(ds,dos.tables.dpb);
-				reg_bx = drive;//Faking only the first entry (that is the driveletter)
+				reg_bx = drive*9;
 				LOG(LOG_DOSMISC,LOG_ERROR)("Get drive parameter block.");
 			} else {
 				reg_al=0xff;
@@ -458,7 +522,9 @@ static Bitu DOS_21Handler(void) {
 				reg_dh=0x10;								/* Dos in HMA */
 				break;
 			default:
-				E_Exit("DOS:Illegal 0x33 Call %2X",reg_al);					
+				LOG(LOG_DOSMISC,LOG_ERROR)("Weird 0x33 call %2X",reg_al);
+				reg_al =0xff;
+				break;
 		}
 		break;
 	case 0x34:		/* Get INDos Flag */
@@ -520,6 +586,7 @@ static Bitu DOS_21Handler(void) {
 	case 0x39:		/* MKDIR Create directory */
 		MEM_StrCopy(SegPhys(ds)+reg_dx,name1,DOSNAMEBUF);
 		if (DOS_MakeDir(name1)) {
+			reg_ax=0x05;	/* ax destroyed */
 			CALLBACK_SCF(false);
 		} else {
 			reg_ax=dos.errorcode;
@@ -529,6 +596,7 @@ static Bitu DOS_21Handler(void) {
 	case 0x3a:		/* RMDIR Remove directory */
 		MEM_StrCopy(SegPhys(ds)+reg_dx,name1,DOSNAMEBUF);
 		if  (DOS_RemoveDir(name1)) {
+			reg_ax=0x05;	/* ax destroyed */
 			CALLBACK_SCF(false);
 		} else {
 			reg_ax=dos.errorcode;
@@ -539,6 +607,7 @@ static Bitu DOS_21Handler(void) {
 	case 0x3b:		/* CHDIR Set current directory */
 		MEM_StrCopy(SegPhys(ds)+reg_dx,name1,DOSNAMEBUF);
 		if  (DOS_ChangeDir(name1)) {
+			reg_ax=0x00;	/* ax destroyed */
 			CALLBACK_SCF(false);
 		} else {
 			reg_ax=dos.errorcode;
@@ -565,6 +634,7 @@ static Bitu DOS_21Handler(void) {
 		break;
 	case 0x3e:		/* CLOSE Close file */
 		if (DOS_CloseFile(reg_bx)) {
+//			reg_al=0x01;	/* al destroyed. Refcount */
 			CALLBACK_SCF(false);
 		} else {
 			reg_ax=dos.errorcode;
@@ -770,6 +840,9 @@ static Bitu DOS_21Handler(void) {
 		reg_bx=dos.psp();
 		break;
 	case 0x52: {				/* Get list of lists */
+		Bit8u count=2; // floppy drives always counted
+		while (count<DOS_DRIVES && Drives[count] && !Drives[count]->isRemovable()) count++;
+		dos_infoblock.SetBlockDevices(count);
 		RealPt addr=dos_infoblock.GetPointer();
 		SegSet16(es,RealSeg(addr));
 		reg_bx=RealOff(addr);
@@ -786,6 +859,7 @@ static Bitu DOS_21Handler(void) {
 	case 0x55:					/* Create Child PSP*/
 		DOS_ChildPSP(reg_dx,reg_si);
 		dos.psp(reg_dx);
+		reg_al=0xf0;	/* al destroyed */
 		break;
 	case 0x56:					/* RENAME Rename file */
 		MEM_StrCopy(SegPhys(ds)+reg_dx,name1,DOSNAMEBUF);
@@ -1032,16 +1106,23 @@ static Bitu DOS_21Handler(void) {
 		break;
 	case 0x69:					/* Get/Set disk serial number */
 		{
+			Bit16u old_cx=reg_cx;
 			switch(reg_al)		{
 			case 0x00:				/* Get */
-				LOG(LOG_DOSMISC,LOG_ERROR)("DOS:Get Disk serial number");
-				CALLBACK_SCF(true);
+				LOG(LOG_DOSMISC,LOG_WARN)("DOS:Get Disk serial number");
+				reg_cl=0x66;// IOCTL function
 				break;
-			case 0x01:
-				LOG(LOG_DOSMISC,LOG_ERROR)("DOS:Set Disk serial number");
+			case 0x01:				/* Set */
+				LOG(LOG_DOSMISC,LOG_WARN)("DOS:Set Disk serial number");
+				reg_cl=0x46;// IOCTL function
+				break;
 			default:
 				E_Exit("DOS:Illegal Get Serial Number call %2X",reg_al);
 			}	
+			reg_ch=0x08;	// IOCTL category: disk drive
+			reg_ax=0x440d;	// Generic block device request
+			DOS_21Handler();
+			reg_cx=old_cx;
 			break;
 		} 
 	case 0x6c:					/* Extended Open/Create */
@@ -1056,7 +1137,7 @@ static Bitu DOS_21Handler(void) {
 
 	case 0x71:					/* Unknown probably 4dos detection */
 		reg_ax=0x7100;
-		CALLBACK_SCF(true);
+		CALLBACK_SCF(true); //Check this! What needs this ? See default case
 		LOG(LOG_DOSMISC,LOG_NORMAL)("DOS:Windows long file name support call %2X",reg_al);
 		break;
 
@@ -1070,7 +1151,7 @@ static Bitu DOS_21Handler(void) {
 	case 0xEF:                  /* Used in Ancient Art Of War CGA */
 	case 0x5e:					/* More Network Functions */
 	default:
-		LOG(LOG_DOSMISC,LOG_ERROR)("DOS:Unhandled call %02X al=%02X. Set al to default of 0",reg_ah,reg_al);
+		if (reg_ah < 0x6d) LOG(LOG_DOSMISC,LOG_ERROR)("DOS:Unhandled call %02X al=%02X. Set al to default of 0",reg_ah,reg_al); //Less errors. above 0x6c the functions are simply always skipped, only al is zeroed, all other registers untouched
 		reg_al=0x00; /* default value */
 		break;
 	};
@@ -1093,26 +1174,32 @@ static Bitu DOS_27Handler(void) {
 }
 
 static Bitu DOS_25Handler(void) {
-	if(Drives[reg_al]==0){
-		reg_ax=0x8002;
+	if (reg_al >= DOS_DRIVES || !Drives[reg_al] || Drives[reg_al]->isRemovable()) {
+		reg_ax = 0x8002;
 		SETFLAGBIT(CF,true);
-	}else{
+	} else {
+		if (reg_cx == 1 && reg_dx == 0) {
+			if (reg_al >= 2) {
+				PhysPt ptr = PhysMake(SegValue(ds),reg_bx);
+				// write some BPB data into buffer for MicroProse installers
+				mem_writew(ptr+0x1c,0x3f); // hidden sectors
+			}
+		} else {
+			LOG(LOG_DOSMISC,LOG_NORMAL)("int 25 called but not as disk detection drive %u",reg_al);
+		}
 		SETFLAGBIT(CF,false);
-		if((reg_cx != 1) ||(reg_dx != 1))
-			LOG(LOG_DOSMISC,LOG_NORMAL)("int 25 called but not as diskdetection drive %X",reg_al);
-
-	   reg_ax=0;
+		reg_ax = 0;
 	}
     return CBRET_NONE;
 }
 static Bitu DOS_26Handler(void) {
 	LOG(LOG_DOSMISC,LOG_NORMAL)("int 26 called: hope for the best!");
-	if(Drives[reg_al]==0){
-		reg_ax=0x8002;
+	if (reg_al >= DOS_DRIVES || !Drives[reg_al] || Drives[reg_al]->isRemovable()) {	
+		reg_ax = 0x8002;
 		SETFLAGBIT(CF,true);
-	}else{
+	} else {
 		SETFLAGBIT(CF,false);
-		reg_ax=0;
+		reg_ax = 0;
 	}
     return CBRET_NONE;
 }
@@ -1134,10 +1221,10 @@ public:
 	// iret
 	// retf  <- int 21 4c jumps here to mimic a retf Cyber
 
-		callback[2].Install(DOS_25Handler,CB_RETF,"DOS Int 25");
+		callback[2].Install(DOS_25Handler,CB_RETF_STI,"DOS Int 25");
 		callback[2].Set_RealVec(0x25);
 
-		callback[3].Install(DOS_26Handler,CB_RETF,"DOS Int 26");
+		callback[3].Install(DOS_26Handler,CB_RETF_STI,"DOS Int 26");
 		callback[3].Set_RealVec(0x26);
 
 		callback[4].Install(DOS_27Handler,CB_IRET,"DOS Int 27");
@@ -1166,16 +1253,8 @@ public:
 	
 		dos.version.major=5;
 		dos.version.minor=0;
-	
-		/* Setup time and date */
-		time_t curtime;struct tm *loctime;
-		curtime = time (NULL);loctime = localtime (&curtime);
-	
-		dos.date.day=(Bit8u)loctime->tm_mday;
-		dos.date.month=(Bit8u)loctime->tm_mon+1;
-		dos.date.year=(Bit16u)loctime->tm_year+1900;
-		Bit32u ticks=(Bit32u)((loctime->tm_hour*3600+loctime->tm_min*60+loctime->tm_sec)*(float)PIT_TICK_RATE/65536.0);
-		mem_writed(BIOS_TIMER,ticks);
+		dos.direct_output=false;
+		dos.internal_output=false;
 	}
 	~DOS(){
 		for (Bit16u i=0;i<DOS_DRIVES;i++) delete Drives[i];

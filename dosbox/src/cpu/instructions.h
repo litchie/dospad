@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2002-2010  The DOSBox Team
+ *  Copyright (C) 2002-2019  The DOSBox Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -11,9 +11,9 @@
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *  GNU General Public License for more details.
  *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *  You should have received a copy of the GNU General Public License along
+ *  with this program; if not, write to the Free Software Foundation, Inc.,
+ *  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
 /* Jumps */
@@ -679,6 +679,7 @@
 	if (quo>0xff) EXCEPTION(0);								\
 	reg_ah=rem;												\
 	reg_al=quo8;											\
+	SETFLAGBIT(OF,false);									\
 }
 
 
@@ -693,6 +694,7 @@
 	if (quo!=(Bit32u)quo16) EXCEPTION(0);					\
 	reg_dx=rem;												\
 	reg_ax=quo16;											\
+	SETFLAGBIT(OF,false);									\
 }
 
 #define DIVD(op1,load,save)									\
@@ -706,6 +708,7 @@
 	if (quo!=(Bit64u)quo32) EXCEPTION(0);					\
 	reg_edx=rem;											\
 	reg_eax=quo32;											\
+	SETFLAGBIT(OF,false);									\
 }
 
 
@@ -719,6 +722,7 @@
 	if (quo!=(Bit16s)quo8s) EXCEPTION(0);					\
 	reg_ah=rem;												\
 	reg_al=quo8s;											\
+	SETFLAGBIT(OF,false);									\
 }
 
 
@@ -733,6 +737,7 @@
 	if (quo!=(Bit32s)quo16s) EXCEPTION(0);					\
 	reg_dx=rem;												\
 	reg_ax=quo16s;											\
+	SETFLAGBIT(OF,false);									\
 }
 
 #define IDIVD(op1,load,save)								\
@@ -746,12 +751,15 @@
 	if (quo!=(Bit64s)quo32s) EXCEPTION(0);					\
 	reg_edx=rem;											\
 	reg_eax=quo32s;											\
+	SETFLAGBIT(OF,false);									\
 }
 
 #define IMULB(op1,load,save)								\
 {															\
 	reg_ax=((Bit8s)reg_al) * ((Bit8s)(load(op1)));			\
 	FillFlagsNoCFOF();										\
+	SETFLAGBIT(ZF,reg_al == 0);								\
+	SETFLAGBIT(SF,reg_al & 0x80);							\
 	if ((reg_ax & 0xff80)==0xff80 ||						\
 		(reg_ax & 0xff80)==0x0000) {						\
 		SETFLAGBIT(CF,false);SETFLAGBIT(OF,false);			\
@@ -767,6 +775,8 @@
 	reg_ax=(Bit16s)(temps);									\
 	reg_dx=(Bit16s)(temps >> 16);							\
 	FillFlagsNoCFOF();										\
+	SETFLAGBIT(ZF,reg_ax == 0);								\
+	SETFLAGBIT(SF,reg_ax & 0x8000);							\
 	if (((temps & 0xffff8000)==0xffff8000 ||				\
 		(temps & 0xffff8000)==0x0000)) {					\
 		SETFLAGBIT(CF,false);SETFLAGBIT(OF,false);			\
@@ -782,6 +792,8 @@
 	reg_eax=(Bit32u)(temps);								\
 	reg_edx=(Bit32u)(temps >> 32);							\
 	FillFlagsNoCFOF();										\
+	SETFLAGBIT(ZF,reg_eax == 0);							\
+	SETFLAGBIT(SF,reg_eax & 0x80000000);					\
 	if ((reg_edx==0xffffffff) &&							\
 		(reg_eax & 0x80000000) ) {							\
 		SETFLAGBIT(CF,false);SETFLAGBIT(OF,false);			\
@@ -798,7 +810,7 @@
 	Bits res=((Bit16s)op2) * ((Bit16s)op3);					\
 	save(op1,res & 0xffff);									\
 	FillFlagsNoCFOF();										\
-	if ((res> -32768)  && (res<32767)) {					\
+	if ((res>= -32768)  && (res<=32767)) {					\
 		SETFLAGBIT(CF,false);SETFLAGBIT(OF,false);			\
 	} else {												\
 		SETFLAGBIT(CF,true);SETFLAGBIT(OF,true);			\
@@ -810,8 +822,8 @@
 	Bit64s res=((Bit64s)((Bit32s)op2))*((Bit64s)((Bit32s)op3));	\
 	save(op1,(Bit32s)res);									\
 	FillFlagsNoCFOF();										\
-	if ((res>-((Bit64s)(2147483647)+1)) &&					\
-		(res<(Bit64s)2147483647)) {							\
+	if ((res>=-((Bit64s)(2147483647)+1)) &&					\
+		(res<=(Bit64s)2147483647)) {						\
 		SETFLAGBIT(CF,false);SETFLAGBIT(OF,false);			\
 	} else {												\
 		SETFLAGBIT(CF,true);SETFLAGBIT(OF,true);			\

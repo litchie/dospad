@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2002-2010  The DOSBox Team
+ *  Copyright (C) 2002-2019  The DOSBox Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -11,12 +11,11 @@
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *  GNU General Public License for more details.
  *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *  You should have received a copy of the GNU General Public License along
+ *  with this program; if not, write to the Free Software Foundation, Inc.,
+ *  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-/* $Id: dosbox.cpp,v 1.150 2009-11-03 20:17:42 qbix79 Exp $ */
 
 #include <stdlib.h>
 #include <stdarg.h>
@@ -42,6 +41,7 @@
 #include "mapper.h"
 #include "ints/int10.h"
 #include "render.h"
+#include "pci_bus.h"
 
 Config * control;
 MachineType machine;
@@ -74,6 +74,10 @@ void MIXER_Init(Section*);
 void MIDI_Init(Section*);
 void HARDWARE_Init(Section*);
 
+#if defined(PCI_FUNCTIONALITY_ENABLED)
+void PCI_Init(Section*);
+#endif
+
 
 void KEYBOARD_Init(Section*);	//TODO This should setup INT 16 too but ok ;)
 void JOYSTICK_Init(Section*);
@@ -84,7 +88,7 @@ void MPU401_Init(Section*);
 void PCSPEAKER_Init(Section*);
 void TANDYSOUND_Init(Section*);
 void DISNEY_Init(Section*);
-void SERIAL_Init(Section*); 
+void SERIAL_Init(Section*);
 
 
 #if C_IPX
@@ -356,7 +360,7 @@ static void DOSBOX_RealInit(Section * sec) {
 	}
 
 	std::string mtype(section->Get_string("machine"));
-	svgaCard = SVGA_None; 
+	svgaCard = SVGA_None;
 	machine = MCH_VGA;
 	int10.vesa_nolfb = false;
 	int10.vesa_oldvbe = false;
@@ -405,7 +409,7 @@ void DOSBOX_Init(void) {
 	const char* machines[] = {
 		"hercules", "cga", "tandy", "pcjr", "ega",
 		"vgaonly", "svga_s3", "svga_et3000", "svga_et4000",
-		 "svga_paradise", "vesa_nolfb", "vesa_oldvbe", 0 };
+		"svga_paradise", "vesa_nolfb", "vesa_oldvbe", 0 };
 	secprop=control->AddSection_prop("dosbox",&DOSBOX_RealInit);
 	Pstring = secprop->Add_path("language",Property::Changeable::Always,"");
 	Pstring->Set_help("Select another language file.");
@@ -417,10 +421,10 @@ void DOSBOX_Init(void) {
 	Pstring = secprop->Add_path("captures",Property::Changeable::Always,"capture");
 	Pstring->Set_help("Directory where things like wave, midi, screenshot get captured.");
 
-#if C_DEBUG	
+#if C_DEBUG
 	LOG_StartUp();
 #endif
-	
+
 	secprop->AddInitFunction(&IO_Init);//done
 	secprop->AddInitFunction(&PAGING_Init);//done
 	secprop->AddInitFunction(&MEM_Init);//done
@@ -429,9 +433,9 @@ void DOSBOX_Init(void) {
 	Pint->SetMinMax(1,63);
 	Pint->Set_help(
 		"Amount of memory DOSBox has in megabytes.\n"
-		"  This value is best left at its default to avoid problems with some games,\n"
-		"  though few games might require a higher value.\n"
-		"  There is generally no speed advantage when raising this value.");
+		"This value is best left at its default to avoid problems with some games,\n"
+		"though few games might require a higher value.\n"
+		"There is generally no speed advantage when raising this value.");
 	secprop->AddInitFunction(&CALLBACK_Init);
 	secprop->AddInitFunction(&PIC_Init);//done
 	secprop->AddInitFunction(&PROGRAMS_Init);
@@ -449,12 +453,12 @@ void DOSBOX_Init(void) {
 	Pmulti = secprop->Add_multi("scaler",Property::Changeable::Always," ");
 	Pmulti->SetValue("normal2x");
 	Pmulti->Set_help("Scaler used to enlarge/enhance low resolution modes. If 'forced' is appended,\n"
-	                 "  then the scaler will be used even if the result might not be desired.\n"
-	                 "  To fit a scaler in the resolution used at full screen may require a border or side bars,\n"
-	                 "  to fill the screen entirely, depending on your hardware, a different scaler/fullresolution might work.");
+	                 "then the scaler will be used even if the result might not be desired.\n"
+					 "To fit a scaler in the resolution used at full screen may require a border or side bars,\n"
+					 "to fill the screen entirely, depending on your hardware, a different scaler/fullresolution might work.");
 	Pstring = Pmulti->GetSection()->Add_string("type",Property::Changeable::Always,"normal2x");
 
-	const char *scalers[] = { 
+	const char *scalers[] = {
 		"none", "normal2x", "normal3x",
 #if RENDER_USE_ADVANCED_SCALERS>2
 		"advmame2x", "advmame3x", "advinterp2x", "advinterp3x", "hq2x", "hq3x", "2xsai", "super2xsai", "supereagle",
@@ -478,7 +482,7 @@ void DOSBOX_Init(void) {
 	Pstring = secprop->Add_string("core",Property::Changeable::WhenIdle,"auto");
 	Pstring->Set_values(cores);
 	Pstring->Set_help("CPU Core used in emulation. auto will switch to dynamic if available and\n"
-	                  "appropriate.");
+		"appropriate.");
 
 	const char* cputype_values[] = { "auto", "386", "386_slow", "486_slow", "pentium_slow", "386_prefetch", 0};
 	Pstring = secprop->Add_string("cputype",Property::Changeable::Always,"auto");
@@ -493,10 +497,10 @@ void DOSBOX_Init(void) {
 		"Cycles can be set in 3 ways:\n"
 		"  'auto'          tries to guess what a game needs.\n"
 		"                  It usually works, but can fail for certain games.\n"
-		"  'fixed #number' will set a fixed amount of cycles. This is what you usually\n" 
-	        "                  need if 'auto' fails. (Example: fixed 4000).\n"
-		"  'max'           will allocate as much cycles as your computer is able to\n" 
-	        "                  handle.");
+		"  'fixed #number' will set a fixed amount of cycles. This is what you usually\n"
+		"                  need if 'auto' fails (Example: fixed 4000).\n"
+		"  'max'           will allocate as much cycles as your computer is able to\n"
+		"                  handle.");
 
 	const char* cyclest[] = { "auto","fixed","max","%u",0 };
 	Pstring = Pmulti_remain->GetSection()->Add_string("type",Property::Changeable::Always,"auto");
@@ -504,7 +508,7 @@ void DOSBOX_Init(void) {
 	Pstring->Set_values(cyclest);
 
 	Pstring = Pmulti_remain->GetSection()->Add_string("parameters",Property::Changeable::Always,"");
-	
+
 	Pint = secprop->Add_int("cycleup",Property::Changeable::Always,10);
 	Pint->SetMinMax(1,1000000);
 	Pint->Set_help("Amount of cycles to decrease/increase with keycombos.(CTRL-F11/CTRL-F12)");
@@ -512,13 +516,19 @@ void DOSBOX_Init(void) {
 	Pint = secprop->Add_int("cycledown",Property::Changeable::Always,20);
 	Pint->SetMinMax(1,1000000);
 	Pint->Set_help("Setting it lower than 100 will be a percentage.");
-		
+
 #if C_FPU
 	secprop->AddInitFunction(&FPU_Init);
 #endif
 	secprop->AddInitFunction(&DMA_Init);//done
 	secprop->AddInitFunction(&VGA_Init);
 	secprop->AddInitFunction(&KEYBOARD_Init);
+
+
+#if defined(PCI_FUNCTIONALITY_ENABLED)
+	secprop=control->AddSection_prop("pci",&PCI_Init,false); //PCI bus
+#endif
+
 
 	secprop=control->AddSection_prop("mixer",&MIXER_Init);
 	Pbool = secprop->Add_bool("nosound",Property::Changeable::OnlyAtStart,false);
@@ -540,10 +550,10 @@ void DOSBOX_Init(void) {
 
 	secprop=control->AddSection_prop("midi",&MIDI_Init,true);//done
 	secprop->AddInitFunction(&MPU401_Init,true);//done
-	
+
 	const char* mputypes[] = { "intelligent", "uart", "none",0};
 	// FIXME: add some way to offer the actually available choices.
-	const char *devices[] = { "default", "win32", "alsa", "oss", "coreaudio", "coremidi", "mt32", "none", 0};
+	const char *devices[] = { "default", "win32", "alsa", "oss", "coreaudio", "coremidi","none", 0};
 	Pstring = secprop->Add_string("mpu401",Property::Changeable::WhenIdle,"intelligent");
 	Pstring->Set_values(mputypes);
 	Pstring->Set_help("Type of MPU-401 to emulate.");
@@ -553,19 +563,18 @@ void DOSBOX_Init(void) {
 	Pstring->Set_help("Device that will receive the MIDI data from MPU-401.");
 
 	Pstring = secprop->Add_string("midiconfig",Property::Changeable::WhenIdle,"");
-	Pstring->Set_help("Special configuration options for the device driver. This is usually the id of the device you want to use\n"
-	                  "  (find the id with mixer/listmidi).\n"
-	                  "  Or in the case of coreaudio, you can specify a soundfont here.\n"
-	                  "  See the README/Manual for more details.");
-
-#include "mt32options.h"
+	Pstring->Set_help("Special configuration options for the device driver. This is usually the id or part of the name of the device you want to use (find the id/name with mixer/listmidi).\n"
+	                  "Or in the case of coreaudio, you can specify a soundfont here.\n"
+	                  "When using a Roland MT-32 rev. 0 as midi output device, some games may require a delay in order to prevent 'buffer overflow' issues.\n"
+	                  "In that case, add 'delaysysex', for example: midiconfig=2 delaysysex\n"
+	                  "See the README/Manual for more details.");
 
 #if C_DEBUG
 	secprop=control->AddSection_prop("debug",&DEBUG_Init);
 #endif
 
 	secprop=control->AddSection_prop("sblaster",&SBLASTER_Init,true);//done
-	
+
 	const char* sbtypes[] = { "sb1", "sb2", "sbpro1", "sbpro2", "sb16", "gb", "none", 0 };
 	Pstring = secprop->Add_string("sbtype",Property::Changeable::WhenIdle,"sb16");
 	Pstring->Set_values(sbtypes);
@@ -590,12 +599,12 @@ void DOSBOX_Init(void) {
 	Pbool = secprop->Add_bool("sbmixer",Property::Changeable::WhenIdle,true);
 	Pbool->Set_help("Allow the soundblaster mixer to modify the DOSBox mixer.");
 
-	const char* oplmodes[]={ "auto", "cms", "opl2", "dualopl2", "opl3", "none", 0};
+	const char* oplmodes[]={ "auto", "cms", "opl2", "dualopl2", "opl3", "opl3gold", "none", 0};
 	Pstring = secprop->Add_string("oplmode",Property::Changeable::WhenIdle,"auto");
 	Pstring->Set_values(oplmodes);
 	Pstring->Set_help("Type of OPL emulation. On 'auto' the mode is determined by sblaster type. All OPL modes are Adlib-compatible, except for 'cms'.");
 
-	const char* oplemus[]={ "default", "compat", "fast", 0};
+	const char* oplemus[]={ "default", "compat", "fast", "mame", 0};
 	Pstring = secprop->Add_string("oplemu",Property::Changeable::WhenIdle,"default");
 	Pstring->Set_values(oplemus);
 	Pstring->Set_help("Provider for the OPL emulation. compat might provide better quality (see oplrate as well).");
@@ -606,7 +615,7 @@ void DOSBOX_Init(void) {
 
 
 	secprop=control->AddSection_prop("gus",&GUS_Init,true); //done
-	Pbool = secprop->Add_bool("gus",Property::Changeable::WhenIdle,false); 	
+	Pbool = secprop->Add_bool("gus",Property::Changeable::WhenIdle,false);
 	Pbool->Set_help("Enable the Gravis Ultrasound emulation.");
 
 	Pint = secprop->Add_int("gusrate",Property::Changeable::WhenIdle,44100);
@@ -645,20 +654,20 @@ void DOSBOX_Init(void) {
 	Pstring = secprop->Add_string("tandy",Property::Changeable::WhenIdle,"auto");
 	Pstring->Set_values(tandys);
 	Pstring->Set_help("Enable Tandy Sound System emulation. For 'auto', emulation is present only if machine is set to 'tandy'.");
-	
+
 	Pint = secprop->Add_int("tandyrate",Property::Changeable::WhenIdle,44100);
 	Pint->Set_values(rates);
 	Pint->Set_help("Sample rate of the Tandy 3-Voice generation.");
 
 	secprop->AddInitFunction(&DISNEY_Init,true);//done
-	
+
 	Pbool = secprop->Add_bool("disney",Property::Changeable::WhenIdle,true);
 	Pbool->Set_help("Enable Disney Sound Source emulation. (Covox Voice Master and Speech Thing compatible).");
 
 	secprop=control->AddSection_prop("joystick",&BIOS_Init,false);//done
 	secprop->AddInitFunction(&INT10_Init);
 	secprop->AddInitFunction(&MOUSE_Init); //Must be after int10 as it uses CurMode
-	secprop->AddInitFunction(&JOYSTICK_Init);
+	secprop->AddInitFunction(&JOYSTICK_Init,true);
 	const char* joytypes[] = { "auto", "2axis", "4axis", "4axis_2", "fcs", "ch", "none",0};
 	Pstring = secprop->Add_string("joysticktype",Property::Changeable::WhenIdle,"auto");
 	Pstring->Set_values(joytypes);
@@ -677,17 +686,25 @@ void DOSBOX_Init(void) {
 
 	Pbool = secprop->Add_bool("autofire",Property::Changeable::WhenIdle,false);
 	Pbool->Set_help("continuously fires as long as you keep the button pressed.");
-	
+
 	Pbool = secprop->Add_bool("swap34",Property::Changeable::WhenIdle,false);
 	Pbool->Set_help("swap the 3rd and the 4th axis. Can be useful for certain joysticks.");
 
 	Pbool = secprop->Add_bool("buttonwrap",Property::Changeable::WhenIdle,false);
 	Pbool->Set_help("enable button wrapping at the number of emulated buttons.");
+	
+	Pbool = secprop->Add_bool("circularinput",Property::Changeable::WhenIdle,false);
+	Pbool->Set_help("enable translation of circular input to square output.\n"
+	                "Try enabling this if your left analog stick can only move in a circle.");
+
+	Pint = secprop->Add_int("deadzone",Property::Changeable::WhenIdle,10);
+	Pint->SetMinMax(0,100);
+	Pint->Set_help("the percentage of motion to ignore. 100 turns the stick into a digital one.");
 
 	secprop=control->AddSection_prop("serial",&SERIAL_Init,true);
 	const char* serials[] = { "dummy", "disabled", "modem", "nullmodem",
 	                          "directserial",0 };
-   
+
 	Pmulti_remain = secprop->Add_multiremain("serial1",Property::Changeable::WhenIdle," ");
 	Pstring = Pmulti_remain->GetSection()->Add_string("type",Property::Changeable::WhenIdle,"dummy");
 	Pmulti_remain->SetValue("dummy");
@@ -734,8 +751,13 @@ void DOSBOX_Init(void) {
 	Pbool->Set_help("Enable XMS support.");
 
 	secprop->AddInitFunction(&EMS_Init,true);//done
-	Pbool = secprop->Add_bool("ems",Property::Changeable::WhenIdle,true);
-	Pbool->Set_help("Enable EMS support.");
+	const char* ems_settings[] = { "true", "emsboard", "emm386", "false", 0};
+	Pstring = secprop->Add_string("ems",Property::Changeable::WhenIdle,"true");
+	Pstring->Set_values(ems_settings);
+	Pstring->Set_help("Enable EMS support. The default (=true) provides the best\n"
+		"compatibility but certain applications may run better with\n"
+		"other choices, or require EMS support to be disabled (=false)\n"
+		"to work at all.");
 
 	Pbool = secprop->Add_bool("umb",Property::Changeable::WhenIdle,true);
 	Pbool->Set_help("Enable UMB support.");

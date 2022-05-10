@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2002-2018  The DOSBox Team
+ *  Copyright (C) 2002-2019  The DOSBox Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -11,9 +11,9 @@
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *  GNU General Public License for more details.
  *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *  You should have received a copy of the GNU General Public License along
+ *  with this program; if not, write to the Free Software Foundation, Inc.,
+ *  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
 /* 
@@ -279,9 +279,6 @@ public:
 		//Select the correct tandy chip implementation
 		if (machine == MCH_PCJR) activeDevice = &device_sn76496;
 		else activeDevice = &device_ncr8496;
-
-		//0.74 has the ncr8496 for all machines.
-		activeDevice = &device_ncr8496;
 
 		real_writeb(0x40,0xd4,0x00);
 		if (IS_TANDY_ARCH) {

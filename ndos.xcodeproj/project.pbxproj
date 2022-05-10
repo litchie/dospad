@@ -53,6 +53,15 @@
 		04EC8B521025D12900431D42 /* SDL_config_iphoneos.h in Headers */ = {isa = PBXBuildFile; fileRef = 04EC8B501025D12900431D42 /* SDL_config_iphoneos.h */; };
 		04F2AF541104ABC300D6DDF7 /* SDL_assert.h in Headers */ = {isa = PBXBuildFile; fileRef = 04F2AF531104ABC300D6DDF7 /* SDL_assert.h */; };
 		04F2AF561104ABD200D6DDF7 /* SDL_assert.c in Sources */ = {isa = PBXBuildFile; fileRef = 04F2AF551104ABD200D6DDF7 /* SDL_assert.c */; };
+		09CAF193282B044A00333400 /* midi.h in Headers */ = {isa = PBXBuildFile; fileRef = 09CAF191282B044A00333400 /* midi.h */; };
+		09CAF194282B044A00333400 /* pci_bus.h in Headers */ = {isa = PBXBuildFile; fileRef = 09CAF192282B044A00333400 /* pci_bus.h */; };
+		09CAF196282B05FA00333400 /* ymf262.h in Headers */ = {isa = PBXBuildFile; fileRef = 09CAF195282B05FA00333400 /* ymf262.h */; };
+		09CAF198282B060C00333400 /* ymf262.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 09CAF197282B060C00333400 /* ymf262.cpp */; };
+		09CAF19A282B063800333400 /* fmopl.h in Headers */ = {isa = PBXBuildFile; fileRef = 09CAF199282B063800333400 /* fmopl.h */; };
+		09CAF19E282B064700333400 /* ymdeltat.h in Headers */ = {isa = PBXBuildFile; fileRef = 09CAF19B282B064700333400 /* ymdeltat.h */; };
+		09CAF19F282B064700333400 /* ymdeltat.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 09CAF19C282B064700333400 /* ymdeltat.cpp */; };
+		09CAF1A0282B064700333400 /* fmopl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 09CAF19D282B064700333400 /* fmopl.cpp */; };
+		09CAF1A2282B068200333400 /* drive_overlay.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 09CAF1A1282B068200333400 /* drive_overlay.cpp */; };
 		2A4546F917D2809F00D18563 /* CoreMIDI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E7F2A9CD12CD99EC0091B859 /* CoreMIDI.framework */; };
 		2A4546FA17D2812100D18563 /* PianoKeyboard.m in Sources */ = {isa = PBXBuildFile; fileRef = E794F3FE12DB4F0E00427836 /* PianoKeyboard.m */; };
 		9222DD561CC44A9F00B321B9 /* GameController.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9222DD551CC44A9F00B321B9 /* GameController.framework */; };
@@ -756,6 +765,15 @@
 		04EC8B501025D12900431D42 /* SDL_config_iphoneos.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SDL_config_iphoneos.h; path = SDL/include/SDL_config_iphoneos.h; sourceTree = SOURCE_ROOT; };
 		04F2AF531104ABC300D6DDF7 /* SDL_assert.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SDL_assert.h; path = SDL/include/SDL_assert.h; sourceTree = SOURCE_ROOT; };
 		04F2AF551104ABD200D6DDF7 /* SDL_assert.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = SDL_assert.c; path = SDL/src/SDL_assert.c; sourceTree = SOURCE_ROOT; };
+		09CAF191282B044A00333400 /* midi.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = midi.h; sourceTree = "<group>"; };
+		09CAF192282B044A00333400 /* pci_bus.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = pci_bus.h; sourceTree = "<group>"; };
+		09CAF195282B05FA00333400 /* ymf262.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ymf262.h; sourceTree = "<group>"; };
+		09CAF197282B060C00333400 /* ymf262.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ymf262.cpp; sourceTree = "<group>"; };
+		09CAF199282B063800333400 /* fmopl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = fmopl.h; sourceTree = "<group>"; };
+		09CAF19B282B064700333400 /* ymdeltat.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ymdeltat.h; sourceTree = "<group>"; };
+		09CAF19C282B064700333400 /* ymdeltat.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ymdeltat.cpp; sourceTree = "<group>"; };
+		09CAF19D282B064700333400 /* fmopl.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = fmopl.cpp; sourceTree = "<group>"; };
+		09CAF1A1282B068200333400 /* drive_overlay.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = drive_overlay.cpp; sourceTree = "<group>"; };
 		1D30AB110D05D00D00671497 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		1D3623EB0D0F72F000981E51 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		1DF5F4DF0D08C38300B7A737 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
@@ -1713,6 +1731,8 @@
 		E71E60F411B550FD00EC5A05 /* include */ = {
 			isa = PBXGroup;
 			children = (
+				09CAF191282B044A00333400 /* midi.h */,
+				09CAF192282B044A00333400 /* pci_bus.h */,
 				E71E60F511B550FD00EC5A05 /* bios.h */,
 				E71E60F611B550FD00EC5A05 /* bios_disk.h */,
 				E71E60F711B550FD00EC5A05 /* callback.h */,
@@ -1863,6 +1883,7 @@
 		E71E615611B550FD00EC5A05 /* dos */ = {
 			isa = PBXGroup;
 			children = (
+				09CAF1A1282B068200333400 /* drive_overlay.cpp */,
 				E71E615711B550FD00EC5A05 /* cdrom.cpp */,
 				E71E615811B550FD00EC5A05 /* cdrom.h */,
 				E71E615911B550FD00EC5A05 /* cdrom_aspi_win32.cpp */,
@@ -2522,6 +2543,12 @@
 		E7E30FE3251E34D10021D10D /* mame */ = {
 			isa = PBXGroup;
 			children = (
+				09CAF19D282B064700333400 /* fmopl.cpp */,
+				09CAF19C282B064700333400 /* ymdeltat.cpp */,
+				09CAF19B282B064700333400 /* ymdeltat.h */,
+				09CAF199282B063800333400 /* fmopl.h */,
+				09CAF197282B060C00333400 /* ymf262.cpp */,
+				09CAF195282B05FA00333400 /* ymf262.h */,
 				E7E30FE4251E34D10021D10D /* sn76496.h */,
 				E7E30FE6251E34D10021D10D /* emu.h */,
 				E7E30FE7251E34D10021D10D /* saa1099.cpp */,
@@ -2919,6 +2946,7 @@
 				E71E621C11B550FD00EC5A05 /* video.h in Headers */,
 				E71E621F11B550FD00EC5A05 /* cache.h in Headers */,
 				E71E622011B550FD00EC5A05 /* decoder.h in Headers */,
+				09CAF194282B044A00333400 /* pci_bus.h in Headers */,
 				E71E622111B550FD00EC5A05 /* dyn_fpu.h in Headers */,
 				E71E622211B550FD00EC5A05 /* dyn_fpu_dh.h in Headers */,
 				E71E622311B550FD00EC5A05 /* helpers.h in Headers */,
@@ -2928,6 +2956,7 @@
 				E71E622911B550FD00EC5A05 /* decoder_basic.h in Headers */,
 				E71E622A11B550FD00EC5A05 /* decoder_opcodes.h in Headers */,
 				E71E622B11B550FD00EC5A05 /* dyn_fpu.h in Headers */,
+				09CAF196282B05FA00333400 /* ymf262.h in Headers */,
 				E71E622C11B550FD00EC5A05 /* operators.h in Headers */,
 				E71E622D11B550FD00EC5A05 /* risc_armv4le-common.h in Headers */,
 				E71E622E11B550FD00EC5A05 /* risc_armv4le-o3.h in Headers */,
@@ -2969,12 +2998,15 @@
 				E71E627711B550FD00EC5A05 /* fpu_instructions_x86.h in Headers */,
 				E71E627911B550FD00EC5A05 /* dosbox_logo.h in Headers */,
 				E71E627A11B550FD00EC5A05 /* dosbox_splash.h in Headers */,
+				09CAF19E282B064700333400 /* ymdeltat.h in Headers */,
 				E71E627D11B550FD00EC5A05 /* midi_alsa.h in Headers */,
+				09CAF193282B044A00333400 /* midi.h in Headers */,
 				E71E627E11B550FD00EC5A05 /* midi_coreaudio.h in Headers */,
 				E71E627F11B550FD00EC5A05 /* midi_coremidi.h in Headers */,
 				E71E628011B550FD00EC5A05 /* midi_oss.h in Headers */,
 				E71E628111B550FD00EC5A05 /* midi_win32.h in Headers */,
 				E71E628311B550FD00EC5A05 /* render_loops.h in Headers */,
+				09CAF19A282B063800333400 /* fmopl.h in Headers */,
 				E71E628511B550FD00EC5A05 /* render_scalers.h in Headers */,
 				E71E628611B550FD00EC5A05 /* render_simple.h in Headers */,
 				E71E628711B550FD00EC5A05 /* render_templates.h in Headers */,
@@ -3239,13 +3271,14 @@
 			};
 			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "ndos" */;
 			compatibilityVersion = "Xcode 13.0";
-			developmentRegion = English;
+			developmentRegion = en;
 			hasScannedForEncodings = 1;
 			knownRegions = (
-				English,
-				Japanese,
-				French,
-				German,
+				Base,
+				fr,
+				de,
+				en,
+				ja,
 			);
 			mainGroup = 29B97314FDCFA39411CA2CEA /* CustomTemplate */;
 			projectDirPath = "";
@@ -3482,6 +3515,7 @@
 				E71E628C11B550FD00EC5A05 /* sdl_gui.cpp in Sources */,
 				E71E628D11B550FD00EC5A05 /* sdl_mapper.cpp in Sources */,
 				E71E628E11B550FD00EC5A05 /* sdlmain.cpp in Sources */,
+				09CAF1A0282B064700333400 /* fmopl.cpp in Sources */,
 				E71E628F11B550FD00EC5A05 /* adlib.cpp in Sources */,
 				E71E629111B550FD00EC5A05 /* cmos.cpp in Sources */,
 				E7E30FEE251E34D20021D10D /* sn76496.cpp in Sources */,
@@ -3497,6 +3531,7 @@
 				E71E629C11B550FD00EC5A05 /* joystick.cpp in Sources */,
 				E71E629D11B550FD00EC5A05 /* keyboard.cpp in Sources */,
 				E71E629F11B550FD00EC5A05 /* memory.cpp in Sources */,
+				09CAF19F282B064700333400 /* ymdeltat.cpp in Sources */,
 				E71E62A011B550FD00EC5A05 /* mixer.cpp in Sources */,
 				E71E62A111B550FD00EC5A05 /* mpu401.cpp in Sources */,
 				E71E62A211B550FD00EC5A05 /* opl.cpp in Sources */,
@@ -3511,10 +3546,12 @@
 				E71E62B111B550FD00EC5A05 /* serialport.cpp in Sources */,
 				E71E62B211B550FD00EC5A05 /* softmodem.cpp in Sources */,
 				E71E62B411B550FD00EC5A05 /* tandy_sound.cpp in Sources */,
+				09CAF198282B060C00333400 /* ymf262.cpp in Sources */,
 				E71E62B511B550FD00EC5A05 /* timer.cpp in Sources */,
 				E71E62B611B550FD00EC5A05 /* vga.cpp in Sources */,
 				E71E62B711B550FD00EC5A05 /* vga_attr.cpp in Sources */,
 				E71E62B811B550FD00EC5A05 /* vga_crtc.cpp in Sources */,
+				09CAF1A2282B068200333400 /* drive_overlay.cpp in Sources */,
 				E71E62B911B550FD00EC5A05 /* vga_dac.cpp in Sources */,
 				E71E62BA11B550FD00EC5A05 /* vga_draw.cpp in Sources */,
 				E71E62BB11B550FD00EC5A05 /* vga_gfx.cpp in Sources */,

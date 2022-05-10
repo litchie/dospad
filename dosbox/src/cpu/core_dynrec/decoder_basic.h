@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2002-2010  The DOSBox Team
+ *  Copyright (C) 2002-2019  The DOSBox Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -11,12 +11,11 @@
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *  GNU General Public License for more details.
  *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *  You should have received a copy of the GNU General Public License along
+ *  with this program; if not, write to the Free Software Foundation, Inc.,
+ *  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-/* $Id: decoder_basic.h,v 1.16 2009-10-08 20:01:31 c2woody Exp $ */
 
 
 /*
@@ -121,7 +120,7 @@ static struct DynDecode {
 
 	// modrm state of the current instruction (if used)
 	struct {
-		Bitu val;
+//		Bitu val;
 		Bitu mod;
 		Bitu rm;
 		Bitu reg;
@@ -131,21 +130,30 @@ static struct DynDecode {
 
 static bool MakeCodePage(Bitu lin_addr,CodePageHandlerDynRec * &cph) {
 	Bit8u rdval;
+	const Bitu cflag = cpu.code.big ? PFLAG_HASCODE32:PFLAG_HASCODE16;
 	//Ensure page contains memory:
 	if (GCC_UNLIKELY(mem_readb_checked(lin_addr,&rdval))) return true;
 
 	PageHandler * handler=get_tlb_readhandler(lin_addr);
 	if (handler->flags & PFLAG_HASCODE) {
-		// this is a codepage handler, and the one that we're looking for
+		// this is a codepage handler, make sure it matches current code size
 		cph=(CodePageHandlerDynRec *)handler;
-		return false;
+		if (handler->flags & cflag) return false;
+		// wrong code size/stale dynamic code, drop it
+		cph->ClearRelease();
+		cph=0;
+		// handler was changed, refresh
+		handler=get_tlb_readhandler(lin_addr);
 	}
 	if (handler->flags & PFLAG_NOCODE) {
 		if (PAGING_ForcePageInit(lin_addr)) {
 			handler=get_tlb_readhandler(lin_addr);
 			if (handler->flags & PFLAG_HASCODE) {
 				cph=(CodePageHandlerDynRec *)handler;
-				return false;
+				if (handler->flags & cflag) return false;
+				cph->ClearRelease();
+				cph=0;
+				handler=get_tlb_readhandler(lin_addr);
 			}
 		}
 		if (handler->flags & PFLAG_NOCODE) {
@@ -373,10 +381,10 @@ static bool decode_fetchd_imm(Bitu & val) {
 
 // modrm decoding helper
 static void INLINE dyn_get_modrm(void) {
-	decode.modrm.val=decode_fetchb();
-	decode.modrm.mod=(decode.modrm.val >> 6) & 3;
-	decode.modrm.reg=(decode.modrm.val >> 3) & 7;
-	decode.modrm.rm=(decode.modrm.val & 7);
+	Bitu val=decode_fetchb();
+	decode.modrm.mod=(val >> 6) & 3;
+	decode.modrm.reg=(val >> 3) & 7;
+	decode.modrm.rm=(val & 7);
 }
 
 

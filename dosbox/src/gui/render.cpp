@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2002-2010  The DOSBox Team
+ *  Copyright (C) 2002-2019  The DOSBox Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -11,12 +11,11 @@
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *  GNU General Public License for more details.
  *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *  You should have received a copy of the GNU General Public License along
+ *  with this program; if not, write to the Free Software Foundation, Inc.,
+ *  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-/* $Id: render.cpp,v 1.60 2009-04-26 19:14:50 harekiet Exp $ */
 
 #include <sys/types.h>
 #include <assert.h>
@@ -582,9 +581,9 @@ void RENDER_Init(Section * sec) {
 	std::string cline;
 	std::string scaler;
 	//Check for commandline paramters and parse them through the configclass so they get checked against allowed values
-	if (control->cmdline->FindString("-scaler",cline,false)) {
+	if (control->cmdline->FindString("-scaler",cline,true)) {
 		section->HandleInputline(std::string("scaler=") + cline);
-	} else if (control->cmdline->FindString("-forcescaler",cline,false)) {
+	} else if (control->cmdline->FindString("-forcescaler",cline,true)) {
 		section->HandleInputline(std::string("scaler=") + cline + " forced");
 	}
 	   

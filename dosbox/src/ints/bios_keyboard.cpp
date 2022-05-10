@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2002-2010  The DOSBox Team
+ *  Copyright (C) 2002-2019  The DOSBox Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -11,12 +11,11 @@
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *  GNU General Public License for more details.
  *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *  You should have received a copy of the GNU General Public License along
+ *  with this program; if not, write to the Free Software Foundation, Inc.,
+ *  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-/* $Id: bios_keyboard.cpp,v 1.36 2009-06-11 16:05:17 c2woody Exp $ */
 
 #include "dosbox.h"
 #include "callback.h"
@@ -285,6 +284,13 @@ static Bitu IRQ1_Handler(void) {
 	case 0xb6:						/* Right Shift Released */
 		flags1 &=~0x01;
 		break;
+	case 0x37:						/* Keypad * or PrtSc Pressed */
+		if (!(flags3 &0x02)) goto normal_key;
+		reg_ip+=7; // call int 5
+		break;
+	case 0xb7:						/* Keypad * or PrtSc Released */
+		if (!(flags3 &0x02)) goto normal_key;
+		break;
 	case 0x38:						/* Alt Pressed */
 		flags1 |=0x08;
 		if (flags3 &0x02) flags3 |=0x08;
@@ -383,7 +389,7 @@ static Bitu IRQ1_Handler(void) {
 				add_key(scan_to_scanascii[scancode].normal+0x5000);
 			} else if (flags1 &0x04) {
 				add_key((scan_to_scanascii[scancode].control&0xff00)|0xe0);
-			} else if( ((flags1 &0x3) != 0) || ((flags1 &0x20) != 0) ) {
+			} else if( ((flags1 &0x3) != 0) || ((flags1 &0x20) != 0) ) { //Due to |0xe0 results are identical. 
 				add_key((scan_to_scanascii[scancode].shift&0xff00)|0xe0);
 			} else add_key((scan_to_scanascii[scancode].normal&0xff00)|0xe0);
 			break;
@@ -394,12 +400,13 @@ static Bitu IRQ1_Handler(void) {
 			mem_writeb(BIOS_KEYBOARD_TOKEN,token);
 		} else if (flags1 &0x04) {
 			add_key(scan_to_scanascii[scancode].control);
-		} else if( ((flags1 &0x3) != 0) || ((flags1 &0x20) != 0) ) {
+		} else if( ((flags1 &0x3) != 0) ^ ((flags1 &0x20) != 0) ) { //Xor shift and numlock (both means off)
 			add_key(scan_to_scanascii[scancode].shift);
 		} else add_key(scan_to_scanascii[scancode].normal);
 		break;
 
 	default: /* Normal Key */
+normal_key:
 		Bit16u asciiscan;
 		/* Now Handle the releasing of keys and see if they match up for a code */
 		/* Handle the actual scancode */
@@ -515,7 +522,7 @@ static Bitu INT16_Handler(void) {
 		break;
 	case 0x01: /* CHECK FOR KEYSTROKE */
 		// enable interrupt-flag after IRET of this int16
-		mem_writew(SegPhys(ss)+reg_sp+4,(mem_readw(SegPhys(ss)+reg_sp+4) | FLAG_IF));
+		CALLBACK_SIF(true);
 		for (;;) {
 			if (check_key(temp)) {
 				if (!IsEnhancedKey(temp)) {
@@ -536,6 +543,8 @@ static Bitu INT16_Handler(void) {
 		}
 		break;
 	case 0x11: /* CHECK FOR KEYSTROKE (enhanced keyboards only) */
+		// enable interrupt-flag after IRET of this int16
+		CALLBACK_SIF(true);
 		if (!check_key(temp)) {
 			CALLBACK_SZF(true);
 		} else {
@@ -547,7 +556,7 @@ static Bitu INT16_Handler(void) {
 			reg_ax=temp;
 		}
 		break;
-	case 0x02:	/* GET SHIFT FlAGS */
+	case 0x02:	/* GET SHIFT FLAGS */
 		reg_al=mem_readb(BIOS_KEYBOARD_FLAGS1);
 		break;
 	case 0x03:	/* SET TYPEMATIC RATE AND DELAY */
@@ -566,8 +575,10 @@ static Bitu INT16_Handler(void) {
 		else reg_al=1;
 		break;
 	case 0x12: /* GET EXTENDED SHIFT STATES */
-		reg_al=mem_readb(BIOS_KEYBOARD_FLAGS1);
-		reg_ah=mem_readb(BIOS_KEYBOARD_FLAGS2);		
+		reg_al = mem_readb(BIOS_KEYBOARD_FLAGS1);
+		reg_ah = (mem_readb(BIOS_KEYBOARD_FLAGS2)&0x73)   |
+		         ((mem_readb(BIOS_KEYBOARD_FLAGS2)&4)<<5) | // SysReq pressed, bit 7
+		         (mem_readb(BIOS_KEYBOARD_FLAGS3)&0x0c);    // Right Ctrl/Alt pressed, bits 2,3
 		break;
 	case 0x55:
 		/* Weird call used by some dos apps */
@@ -593,7 +604,7 @@ static void InitBiosSegment(void) {
 	mem_writew(BIOS_KEYBOARD_BUFFER_HEAD,0x1e);
 	mem_writew(BIOS_KEYBOARD_BUFFER_TAIL,0x1e);
 	Bit8u flag1 = 0;
-	Bit8u leds = 16; /* Ack recieved */
+	Bit8u leds = 16; /* Ack received */
 
 #if SDL_VERSION_ATLEAST(1, 2, 14)
 //Nothing, mapper handles all.
@@ -635,6 +646,14 @@ void BIOS_SetupKeyboard(void) {
 	//	out 0x20, al
 	//	pop ax
 	//	iret
+	//	cli
+	//	mov al, 0x20
+	//	out 0x20, al
+	//	push bp
+	//	int 0x05
+	//	pop bp
+	//	pop ax
+	//	iret
 
 	if (machine==MCH_PCJR) {
 		call_irq6=CALLBACK_Allocate();
@@ -645,7 +664,11 @@ void BIOS_SetupKeyboard(void) {
 		//	in al, 0x60
 		//	cmp al, 0xe0
 		//	je skip
+		//	push ds
+		//	push 0x40
+		//	pop ds
 		//	int 0x09
+		//	pop ds
 		//	label skip:
 		//	cli
 		//	mov al, 0x20

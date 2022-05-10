@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2002-2010  The DOSBox Team
+ *  Copyright (C) 2002-2019  The DOSBox Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -11,12 +11,11 @@
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *  GNU General Public License for more details.
  *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *  You should have received a copy of the GNU General Public License along
+ *  with this program; if not, write to the Free Software Foundation, Inc.,
+ *  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-/* $Id: drive_local.cpp,v 1.82 2009-07-18 18:42:55 c2woody Exp $ */
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -30,22 +29,6 @@
 #include "support.h"
 #include "cross.h"
 #include "inout.h"
-
-class localFile : public DOS_File {
-public:
-	localFile(const char* name, FILE * handle);
-	bool Read(Bit8u * data,Bit16u * size);
-	bool Write(Bit8u * data,Bit16u * size);
-	bool Seek(Bit32u * pos,Bit32u type);
-	bool Close();
-	Bit16u GetInformation(void);
-	bool UpdateDateTimeFromHost(void);   
-	void FlagReadOnlyMedium(void);
-private:
-	FILE * fhandle;
-	bool read_only_medium;
-	enum { NONE,READ,WRITE } last_action;
-};
 
 
 bool localDrive::FileCreate(DOS_File * * file,char * name,Bit16u /*attributes*/) {
@@ -82,9 +65,10 @@ bool localDrive::FileCreate(DOS_File * * file,char * name,Bit16u /*attributes*/)
 bool localDrive::FileOpen(DOS_File * * file,char * name,Bit32u flags) {
 	const char* type;
 	switch (flags&0xf) {
-	case OPEN_READ:type="rb"; break;
-	case OPEN_WRITE:type="rb+"; break;
-	case OPEN_READWRITE:type="rb+"; break;
+	case OPEN_READ:        type = "rb" ; break;
+	case OPEN_WRITE:       type = "rb+"; break;
+	case OPEN_READWRITE:   type = "rb+"; break;
+	case OPEN_READ_NO_MOD: type = "rb" ; break; //No modification of dates. LORD4.07 uses this
 	default:
 		DOS_SetError(DOSERR_ACCESS_CODE_INVALID);
 		return false;
@@ -94,6 +78,22 @@ bool localDrive::FileOpen(DOS_File * * file,char * name,Bit32u flags) {
 	strcat(newname,name);
 	CROSS_FILENAME(newname);
 	dirCache.ExpandName(newname);
+
+	//Flush the buffer of handles for the same file. (Betrayal in Antara)
+	Bit8u i,drive=DOS_DRIVES;
+	localFile *lfp;
+	for (i=0;i<DOS_DRIVES;i++) {
+		if (Drives[i]==this) {
+			drive=i;
+			break;
+		}
+	}
+	for (i=0;i<DOS_FILES;i++) {
+		if (Files[i] && Files[i]->IsOpen() && Files[i]->GetDrive()==drive && Files[i]->IsName(name)) {
+			lfp=dynamic_cast<localFile*>(Files[i]);
+			if (lfp) lfp->Flush();
+		}
+	}
 
 	FILE * hand = fopen_wrap(newname,type);
 //	Bit32u err=errno;
@@ -362,8 +362,6 @@ bool localDrive::Rename(char * oldname,char * newname) {
 }
 
 bool localDrive::AllocationInfo(Bit16u * _bytes_sector,Bit8u * _sectors_cluster,Bit16u * _total_clusters,Bit16u * _free_clusters) {
-	/* Always report 100 mb free should be enough */
-	/* Total size is always 1 gb */
 	*_bytes_sector=allocation.bytes_sector;
 	*_sectors_cluster=allocation.sectors_cluster;
 	*_total_clusters=allocation.total_clusters;
@@ -377,9 +375,9 @@ bool localDrive::FileExists(const char* name) {
 	strcat(newname,name);
 	CROSS_FILENAME(newname);
 	dirCache.ExpandName(newname);
-	FILE* Temp=fopen(newname,"rb"); //No reading done, so no wrapping for 0.74-3 (later code uses different calls)
-	if(Temp==NULL) return false;
-	fclose(Temp);
+	struct stat temp_stat;
+	if(stat(newname,&temp_stat)!=0) return false;
+	if(temp_stat.st_mode & S_IFDIR) return false;
 	return true;
 }
 
@@ -452,7 +450,8 @@ bool localFile::Read(Bit8u * data,Bit16u * size) {
 }
 
 bool localFile::Write(Bit8u * data,Bit16u * size) {
-	if ((this->flags & 0xf) == OPEN_READ) {	// check if file opened in read-only mode
+	Bit32u lastflags = this->flags & 0xf;
+	if (lastflags == OPEN_READ || lastflags == OPEN_READ_NO_MOD) {	// check if file opened in read-only mode
 		DOS_SetError(DOSERR_ACCESS_DENIED);
 		return false;
 	}
@@ -539,6 +538,13 @@ bool localFile::UpdateDateTimeFromHost(void) {
 		time=1;date=1;
 	}
 	return true;
+}
+
+void localFile::Flush(void) {
+	if (last_action==WRITE) {
+		fseek(fhandle,ftell(fhandle),SEEK_SET);
+		last_action=NONE;
+	}
 }
 
 

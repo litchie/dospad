@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2002-2010  The DOSBox Team
+ *  Copyright (C) 2002-2019  The DOSBox Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -11,12 +11,11 @@
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *  GNU General Public License for more details.
  *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *  You should have received a copy of the GNU General Public License along
+ *  with this program; if not, write to the Free Software Foundation, Inc.,
+ *  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-/* $Id: decoder.h,v 1.8 2009-10-18 17:52:10 c2woody Exp $ */
 
 
 #include "decoder_basic.h"
@@ -27,7 +26,7 @@
 
 /*
 	The function CreateCacheBlock translates the instruction stream
-	until either an unhandled instruction is found, the maximal
+	until either an unhandled instruction is found, the maximum
 	number of translated instructions is reached or some critical
 	instruction is encountered.
 */
@@ -447,7 +446,9 @@ restart_prefix:
 		case 0xcb:dyn_ret_far(0);goto finish_block;
 
 		// int/iret
+#if !(C_DEBUG)
 		case 0xcd:dyn_interrupt(decode_fetchb());goto finish_block;
+#endif
 		case 0xcf:dyn_iret();goto finish_block;
 
 //		case 0xd4: AAM missing
@@ -587,7 +588,7 @@ restart_prefix:
 			goto illegalopcode;
 		}
 	}
-	// link to next block because the maximal number of opcodes has been reached
+	// link to next block because the maximum number of opcodes has been reached
 	dyn_set_eip_end();
 	dyn_reduce_cycles();
 	gen_jmp_ptr(&decode.block->link[0].to,offsetof(CacheBlockDynRec,cache.start));

@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2002-2010  The DOSBox Team
+ *  Copyright (C) 2002-2019  The DOSBox Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -11,15 +11,15 @@
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *  GNU General Public License for more details.
  *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *  You should have received a copy of the GNU General Public License along
+ *  with this program; if not, write to the Free Software Foundation, Inc.,
+ *  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-/* $Id: cpu.cpp,v 1.116 2009-03-16 18:10:08 c2woody Exp $ */
 
 #include <assert.h>
 #include <sstream>
+#include <stddef.h>
 #include "dosbox.h"
 #include "cpu.h"
 #include "memory.h"
@@ -64,7 +64,7 @@ Bitu CPU_AutoDetermineMode = 0;
 
 Bitu CPU_ArchitectureType = CPU_ARCHTYPE_MIXED;
 
-Bitu CPU_flag_id_toggle=0;
+Bitu CPU_extflags_toggle=0;	// ID and AC flags may be toggled depending on emulated CPU architecture
 
 Bitu CPU_PrefetchQueueSize=0;
 
@@ -170,7 +170,7 @@ PhysPt SelBase(Bitu sel) {
 
 
 void CPU_SetFlags(Bitu word,Bitu mask) {
-	mask|=CPU_flag_id_toggle;	// ID-flag can be toggled on cpuid-supporting CPUs
+	mask|=CPU_extflags_toggle;	// ID-flag and AC-flag can be toggled on CPUID-supporting CPUs
 	reg_flags=(reg_flags & ~mask)|(word & mask)|2;
 	cpu.direction=1-((reg_flags & FLAG_DF) >> 9);
 }
@@ -228,44 +228,48 @@ bool CPU_PUSHF(Bitu use32) {
 }
 
 void CPU_CheckSegments(void) {
-	bool needs_invalidation=false;
+	bool needs_invalidation = false;
 	Descriptor desc;
-	if (!cpu.gdt.GetDescriptor(SegValue(es),desc)) needs_invalidation=true;
+	if (!cpu.gdt.GetDescriptor(SegValue(es),desc)) needs_invalidation = true;
 	else switch (desc.Type()) {
 		case DESC_DATA_EU_RO_NA:	case DESC_DATA_EU_RO_A:	case DESC_DATA_EU_RW_NA:	case DESC_DATA_EU_RW_A:
 		case DESC_DATA_ED_RO_NA:	case DESC_DATA_ED_RO_A:	case DESC_DATA_ED_RW_NA:	case DESC_DATA_ED_RW_A:
-		case DESC_CODE_N_NC_A:	case DESC_CODE_N_NC_NA:	case DESC_CODE_R_NC_A:	case DESC_CODE_R_NC_NA:
-			if (cpu.cpl>desc.DPL()) needs_invalidation=true; break;
+		case DESC_CODE_N_NC_A:  	case DESC_CODE_N_NC_NA:	case DESC_CODE_R_NC_A:  	case DESC_CODE_R_NC_NA:
+			if (cpu.cpl > desc.DPL()) needs_invalidation = true; 
+			break;
 		default: break;	}
 	if (needs_invalidation) CPU_SetSegGeneral(es,0);
 
-	needs_invalidation=false;
-	if (!cpu.gdt.GetDescriptor(SegValue(ds),desc)) needs_invalidation=true;
+	needs_invalidation = false;
+	if (!cpu.gdt.GetDescriptor(SegValue(ds),desc)) needs_invalidation = true;
 	else switch (desc.Type()) {
 		case DESC_DATA_EU_RO_NA:	case DESC_DATA_EU_RO_A:	case DESC_DATA_EU_RW_NA:	case DESC_DATA_EU_RW_A:
 		case DESC_DATA_ED_RO_NA:	case DESC_DATA_ED_RO_A:	case DESC_DATA_ED_RW_NA:	case DESC_DATA_ED_RW_A:
-		case DESC_CODE_N_NC_A:	case DESC_CODE_N_NC_NA:	case DESC_CODE_R_NC_A:	case DESC_CODE_R_NC_NA:
-			if (cpu.cpl>desc.DPL()) needs_invalidation=true; break;
+		case DESC_CODE_N_NC_A:  	case DESC_CODE_N_NC_NA:	case DESC_CODE_R_NC_A:  	case DESC_CODE_R_NC_NA:
+			if (cpu.cpl > desc.DPL()) needs_invalidation = true;
+			break;
 		default: break;	}
 	if (needs_invalidation) CPU_SetSegGeneral(ds,0);
 
-	needs_invalidation=false;
-	if (!cpu.gdt.GetDescriptor(SegValue(fs),desc)) needs_invalidation=true;
+	needs_invalidation = false;
+	if (!cpu.gdt.GetDescriptor(SegValue(fs),desc)) needs_invalidation = true;
 	else switch (desc.Type()) {
 		case DESC_DATA_EU_RO_NA:	case DESC_DATA_EU_RO_A:	case DESC_DATA_EU_RW_NA:	case DESC_DATA_EU_RW_A:
 		case DESC_DATA_ED_RO_NA:	case DESC_DATA_ED_RO_A:	case DESC_DATA_ED_RW_NA:	case DESC_DATA_ED_RW_A:
-		case DESC_CODE_N_NC_A:	case DESC_CODE_N_NC_NA:	case DESC_CODE_R_NC_A:	case DESC_CODE_R_NC_NA:
-			if (cpu.cpl>desc.DPL()) needs_invalidation=true; break;
+		case DESC_CODE_N_NC_A:  	case DESC_CODE_N_NC_NA:	case DESC_CODE_R_NC_A:  	case DESC_CODE_R_NC_NA:
+			if (cpu.cpl > desc.DPL()) needs_invalidation = true;
+			break;
 		default: break;	}
 	if (needs_invalidation) CPU_SetSegGeneral(fs,0);
 
-	needs_invalidation=false;
-	if (!cpu.gdt.GetDescriptor(SegValue(gs),desc)) needs_invalidation=true;
+	needs_invalidation = false;
+	if (!cpu.gdt.GetDescriptor(SegValue(gs),desc)) needs_invalidation = true;
 	else switch (desc.Type()) {
 		case DESC_DATA_EU_RO_NA:	case DESC_DATA_EU_RO_A:	case DESC_DATA_EU_RW_NA:	case DESC_DATA_EU_RW_A:
 		case DESC_DATA_ED_RO_NA:	case DESC_DATA_ED_RO_A:	case DESC_DATA_ED_RW_NA:	case DESC_DATA_ED_RW_A:
-		case DESC_CODE_N_NC_A:	case DESC_CODE_N_NC_NA:	case DESC_CODE_R_NC_A:	case DESC_CODE_R_NC_NA:
-			if (cpu.cpl>desc.DPL()) needs_invalidation=true; break;
+		case DESC_CODE_N_NC_A:  	case DESC_CODE_N_NC_NA:	case DESC_CODE_R_NC_A:  	case DESC_CODE_R_NC_NA:
+			if (cpu.cpl > desc.DPL()) needs_invalidation = true;
+			break;
 		default: break;	}
 	if (needs_invalidation) CPU_SetSegGeneral(gs,0);
 }
@@ -551,8 +555,8 @@ void CPU_Interrupt(Bitu num,Bitu type,Bitu oldeip) {
 	case 0xcd:
 #if C_HEAVY_DEBUG
  		LOG(LOG_CPU,LOG_ERROR)("Call to interrupt 0xCD this is BAD");
-		DEBUG_HeavyWriteLogInstruction();
-		E_Exit("Call to interrupt 0xCD this is BAD");
+//		DEBUG_HeavyWriteLogInstruction();
+//		E_Exit("Call to interrupt 0xCD this is BAD");
 #endif
 		break;
 	case 0x03:
@@ -1547,6 +1551,7 @@ void CPU_SET_CRX(Bitu cr,Bitu value) {
 	switch (cr) {
 	case 0:
 		{
+			value|=CR0_FPUPRESENT;
 			Bitu changed=cpu.cr0 ^ value;
 			if (!changed) return;
 			cpu.cr0=value;
@@ -1565,7 +1570,7 @@ void CPU_SET_CRX(Bitu cr,Bitu value) {
 					GFX_SetTitle(CPU_CyclePercUsed,-1,false);
 					if(!printed_cycles_auto_info) {
 						printed_cycles_auto_info = true;
-						LOG_MSG("DOSBox switched to max cycles, because of the setting: cycles=auto. If the game runs too fast try a fixed cycles amount in DOSBox's options.");
+						LOG_MSG("DOSBox has switched to max cycles, because of the setting: cycles=auto.\nIf the game runs too fast, try a fixed cycles amount in DOSBox's options.");
 					}
 				} else {
 					GFX_SetTitle(-1,-1,false);
@@ -2048,6 +2053,7 @@ static Bits HLT_Decode(void) {
 	if (reg_eip!=cpu.hlt.eip || SegValue(cs) != cpu.hlt.cs) {
 		cpudecoder=cpu.hlt.old_decoder;
 	} else {
+		CPU_IODelayRemoved += CPU_Cycles;
 		CPU_Cycles=0;
 	}
 	return 0;
@@ -2055,6 +2061,7 @@ static Bits HLT_Decode(void) {
 
 void CPU_HLT(Bitu oldeip) {
 	reg_eip=oldeip;
+	CPU_IODelayRemoved += CPU_Cycles;
 	CPU_Cycles=0;
 	cpu.hlt.cs=SegValue(cs);
 	cpu.hlt.eip=reg_eip;
@@ -2387,8 +2394,9 @@ public:
 			CPU_ArchitectureType = CPU_ARCHTYPE_PENTIUMSLOW;
 		}
 
-		if (CPU_ArchitectureType>=CPU_ARCHTYPE_486NEWSLOW) CPU_flag_id_toggle=FLAG_ID;
-		else CPU_flag_id_toggle=0;
+		if (CPU_ArchitectureType>=CPU_ARCHTYPE_486NEWSLOW) CPU_extflags_toggle=(FLAG_ID|FLAG_AC);
+		else if (CPU_ArchitectureType>=CPU_ARCHTYPE_486OLDSLOW) CPU_extflags_toggle=(FLAG_AC);
+		else CPU_extflags_toggle=0;
 
 
 		if(CPU_CycleMax <= 0) CPU_CycleMax = 3000;

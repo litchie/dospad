@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2002-2010  The DOSBox Team
+ *  Copyright (C) 2002-2019  The DOSBox Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -11,9 +11,9 @@
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *  GNU General Public License for more details.
  *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *  You should have received a copy of the GNU General Public License along
+ *  with this program; if not, write to the Free Software Foundation, Inc.,
+ *  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
 #include <stdio.h>
@@ -101,7 +101,7 @@ bool Virtual_File::Read(Bit8u * data,Bit16u * size) {
 }
 
 bool Virtual_File::Write(Bit8u * data,Bit16u * size){
-/* Not really writeable */
+	/* Not really writable */
 	return false;
 }
 
@@ -205,11 +205,11 @@ bool Virtual_Drive::FindFirst(char * _dir,DOS_DTA & dta,bool fcb_findfirst) {
 	Bit8u attr;char pattern[DOS_NAMELENGTH_ASCII];
 	dta.GetSearchParams(attr,pattern);
 	if (attr == DOS_ATTR_VOLUME) {
-		dta.SetResult("DOSBOX",0,0,0,DOS_ATTR_VOLUME);
+		dta.SetResult(GetLabel(),0,0,0,DOS_ATTR_VOLUME);
 		return true;
 	} else if ((attr & DOS_ATTR_VOLUME) && !fcb_findfirst) {
-		if (WildFileCmp("DOSBOX",pattern)) {
-			dta.SetResult("DOSBOX",0,0,0,DOS_ATTR_VOLUME);
+		if (WildFileCmp(GetLabel(),pattern)) {
+			dta.SetResult(GetLabel(),0,0,0,DOS_ATTR_VOLUME);
 			return true;
 		}
 	}
@@ -248,12 +248,10 @@ bool Virtual_Drive::Rename(char * oldname,char * newname) {
 }
 
 bool Virtual_Drive::AllocationInfo(Bit16u * _bytes_sector,Bit8u * _sectors_cluster,Bit16u * _total_clusters,Bit16u * _free_clusters) {
-	/* Always report 100 mb free should be enough */
-	/* Total size is always 1 gb */
 	*_bytes_sector=512;
-	*_sectors_cluster=127;
-	*_total_clusters=16513;
-	*_free_clusters=00;
+	*_sectors_cluster=32;
+	*_total_clusters=32765;	// total size is always 500 mb
+	*_free_clusters=0;		// nothing free here
 	return true;
 }
 
@@ -271,5 +269,9 @@ bool Virtual_Drive::isRemovable(void) {
 
 Bits Virtual_Drive::UnMount(void) {
 	return 1;
+}
+
+char const* Virtual_Drive::GetLabel(void) {
+	return "DOSBOX";
 }
 
