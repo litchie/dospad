@@ -37,7 +37,7 @@
 
 - (void)drawRect:(CGRect)rect
 {
-    UIImage *image = (ISIPAD() ? [UIImage imageNamed:@"landbarblank~iPad"] :
+    UIImage *image = ([UIDevice.currentDevice.model isEqual:@"iPad"] ? [UIImage imageNamed:@"landbarblank~iPad"] :
                       [UIImage imageNamed:@"landbarblank"]);
     
     [image drawInRect:rect];
@@ -72,7 +72,7 @@
         contentView.center = CGPointMake(pt.x, pt.y - contentView.frame.size.height);
         autoHide = YES;
         
-        if (ISIPAD())
+        if ([UIDevice.currentDevice.model isEqual:@"iPad"])
         {
             btnAutoHide = [[UIButton alloc] initWithFrame:CGRectMake(0,0,48,24)];
             [btnAutoHide setImage:[UIImage imageNamed:@"unsticky~ipad"] forState:UIControlStateNormal];
@@ -114,8 +114,8 @@
 
 - (void)setItems:(NSArray*)itemArray
 {
-    float marginx = (ISIPAD()?95:66);
-    float marginy_bot = (ISIPAD()?10:7);
+    float marginx = ([UIDevice.currentDevice.model isEqual:@"iPad"] ? 95 : 66);
+    float marginy_bot = ([UIDevice.currentDevice.model isEqual:@"iPad"] ? 10 : 7);
  
     float w = (contentView.frame.size.width-marginx*2) / ([itemArray count]);
     float h = contentView.frame.size.height - marginy_bot;
@@ -147,13 +147,13 @@
     autoHide = b;
     if (b)
     {
-        [btnAutoHide setImage:[UIImage imageNamed:ISIPAD()?@"unsticky~ipad.png":@"unsticky.png"]
+        [btnAutoHide setImage:[UIImage imageNamed:[UIDevice.currentDevice.model isEqual:@"iPad"] ? @"unsticky~ipad.png" : @"unsticky.png"]
                      forState:UIControlStateNormal];
         [self performSelector:@selector(hideContent) withObject:nil afterDelay:autoHideInterval];
     }
     else
     {
-        [btnAutoHide setImage:[UIImage imageNamed:ISIPAD()?@"sticky~ipad.png":@"sticky.png"]
+        [btnAutoHide setImage:[UIImage imageNamed:[UIDevice.currentDevice.model isEqual:@"iPad"] ? @"sticky~ipad.png" : @"sticky.png"]
                      forState:UIControlStateNormal]; 
         [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(hideContent) object:nil];
     }

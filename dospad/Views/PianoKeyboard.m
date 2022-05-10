@@ -182,7 +182,7 @@ extern int SDL_SendKeyboardKey(int index, Uint8 state, SDL_scancode scancode);
 {
     if (i >= 25) return CGRectZero;
     
-    if (ISIPAD()) 
+    if ([UIDevice.currentDevice.model isEqual:@"iPad"])
     {
         if (i < 15) 
         {
@@ -215,7 +215,7 @@ extern int SDL_SendKeyboardKey(int index, Uint8 state, SDL_scancode scancode);
 
 - (CGRect)rectForGrid:(int)i
 {
-    if (ISIPAD()) {
+    if ([UIDevice.currentDevice.model isEqual:@"iPad"]) {
         static float xpos[] = {685, 740, 795, 850, 905, 960};
         static float ypos[] = {2, 56, 110, 166};
         return i < 24 ? CGRectMake(xpos[i%6], ypos[i/6], 49, 47) : CGRectZero;
@@ -226,7 +226,7 @@ extern int SDL_SendKeyboardKey(int index, Uint8 state, SDL_scancode scancode);
 
 - (CGRect)rectForKeyboard
 {
-    if (ISIPAD()) {
+    if ([UIDevice.currentDevice.model isEqual:@"iPad"]) {
         return CGRectMake(0, 548, 1024, 220);
     } else {
         return CGRectMake(0, 160, 480, 160);
@@ -342,7 +342,7 @@ extern int SDL_SendKeyboardKey(int index, Uint8 state, SDL_scancode scancode);
 // Only override drawRect: if you perform custom drawing.
 // An empty implementation adversely affects performance during animation.
 - (void)drawRect:(CGRect)rect {
-    if (ISIPAD()) {
+    if ([UIDevice.currentDevice.model isEqual:@"iPad"]) {
         UIImage *image = [UIImage imageNamed:@"25-Keys-with-6x4-grid.png"];
         [image drawInRect:rect];
     } else {

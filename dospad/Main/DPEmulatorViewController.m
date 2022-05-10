@@ -346,7 +346,7 @@ static struct {
 
 - (void)createPCKeyboard
 {
-	const CGFloat keyboardHeight = ISIPAD() ? 250 : 175;
+    const CGFloat keyboardHeight = [UIDevice.currentDevice.model  isEqual: @"iPad"] ? 250 : 175;
 	CGRect rect = CGRectMake(0,
 		_rootContainer.bounds.size.height-keyboardHeight,
 		_rootContainer.bounds.size.width,
@@ -362,7 +362,7 @@ static struct {
 {
 	DPThemeScene *scn = [_currentTheme findSceneByName:(NSString*)[_currentScene getAttribute:@"gamepad"]];
 	CGFloat height = 240;
-	if (ISIPAD()) {
+	if ([UIDevice.currentDevice.model isEqual:@"iPad"]) {
 		height = _rootContainer.bounds.size.width*0.3;
 	}
 	CGRect rect = CGRectMake(0, CGRectGetMaxY(_rootContainer.bounds)-height,
@@ -405,7 +405,7 @@ static struct {
 	{
 		if (shouldShrinkScreen)
 		{
-			if (ISIPAD()) {
+			if ([UIDevice.currentDevice.model isEqual:@"iPad"]) {
 				viewRect.size.height -= 250;
 				[self putScreen:viewRect scaleMode:[DPSettings shared].screenScaleMode];
 			} else {
@@ -457,7 +457,7 @@ static struct {
 	}
 	else
 	{
-		if (ISIPAD()) {
+		if ([UIDevice.currentDevice.model isEqual:@"iPad"]) {
 			return [_currentTheme findSceneByName:@"ipad-landscape"];
 		}
 		if (size.width <= 480) { // iPhone 4S
@@ -526,12 +526,12 @@ static struct {
 		{
 			// FIXME: A dirty fix, FloatPanel has certain sizing requirements
 			// Ignore the frame settings
-			CGSize barSize = ISIPAD() ? CGSizeMake(700, 47): CGSizeMake(480, 32);
+			CGSize barSize = [UIDevice.currentDevice.model isEqual:@"iPad"] ? CGSizeMake(700, 47): CGSizeMake(480, 32);
 			frame = CGRectMake((rootRect.size.width-barSize.width)/2, 0, barSize.width, barSize.height);
 			UIButton *btnExitFS;
 			
 			fullscreenPanel = [[FloatPanel alloc] initWithFrame:frame];
-			if (ISIPAD()) {
+			if ([UIDevice.currentDevice.model isEqual:@"iPad"]) {
 				btnExitFS = [[UIButton alloc] initWithFrame:CGRectMake(0,0,72,36)];
 			    btnExitFS.center=CGPointMake(63, 18);
 			    [btnExitFS setImage:[UIImage imageNamed:@"exitfull~ipad"] forState:UIControlStateNormal];
@@ -695,7 +695,7 @@ static struct {
 		}]];
 
 	// iPad has a dedicated CDROM drive button for this
-	if (!ISIPAD())
+	if (![UIDevice.currentDevice.model isEqual:@"iPad"])
 	{
 		[actions addObject:[UIAlertAction
 			actionWithTitle:@"CD Images"
@@ -771,7 +771,7 @@ static struct {
 			ed.gamepadConfig = _gamepadConfig;
 			ed.title = [DPGamepad buttonIdForIndex:buttonIndex].uppercaseString;
 			ed.completionHandler = ^{
-				[gamepad applyConfiguration:_gamepadConfig];
+                [gamepad applyConfiguration:self->_gamepadConfig];
 			};
 			UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:ed];
 			nav.modalPresentationStyle = UIModalPresentationFormSheet;
@@ -917,7 +917,7 @@ static struct {
 - (void)viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear:animated];
-    if (ISIPAD() && !_currentScene.isPortrait)
+    if ([UIDevice.currentDevice.model isEqual:@"iPad"] && !_currentScene.isPortrait)
     {
         self.screenView.alpha = 0; // Try to fix reboot problem on iPad 3.2.x
     }
@@ -974,7 +974,7 @@ static struct {
 		holdIndicator.center=pt2;
 		[self.view bringSubviewToFront:holdIndicator];
 		[UIView animateWithDuration:0.3 animations:^{
-			holdIndicator.alpha = 1;
+            self->holdIndicator.alpha = 1;
 		}];
 	}
 }
