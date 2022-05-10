@@ -185,7 +185,7 @@
 #define PACKAGE_NAME "dosbox"
 
 /* Define to the full name and version of this package. */
-#define PACKAGE_STRING "dosbox 0.74-3"
+#define PACKAGE_STRING "dosbox SVN"
 
 /* Define to the one symbol short name of this package. */
 #define PACKAGE_TARNAME "dosbox"
@@ -194,7 +194,7 @@
 #define PACKAGE_URL ""
 
 /* Define to the version of this package. */
-#define PACKAGE_VERSION "0.74-3"
+#define PACKAGE_VERSION "SVN"
 
 /* The size of `int *', as computed by sizeof. */
 #ifdef __LP64__
@@ -229,7 +229,8 @@
 /* #undef TM_IN_SYS_TIME */
 
 /* Version number of package */
-#define VERSION "0.74-3"
+//#define VERSION "0.74-3"
+#define VERSION "SVN"
 
 /* Define WORDS_BIGENDIAN to 1 if your processor stores words with the most
    significant byte first (like Motorola and SPARC, unlike Intel). */
