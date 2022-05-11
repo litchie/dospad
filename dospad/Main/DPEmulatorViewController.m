@@ -1008,7 +1008,7 @@ static struct {
 						 options:@{} completionHandler:nil];
 					} else {
 						[[UIApplication sharedApplication]
-						 openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString]];
+                         openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString] options:@{} completionHandler:nil];
 					}
                 }]
 		]

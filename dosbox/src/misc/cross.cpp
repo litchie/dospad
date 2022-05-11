@@ -26,7 +26,7 @@
 
 #ifdef IPHONEOS
 
-extern "C" const char *dospad_config_dir();
+extern "C" const char *dospad_config_dir(void);
 
 #endif
 

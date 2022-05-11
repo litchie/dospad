@@ -238,9 +238,9 @@ const CGFloat kIPhoneLandscapeKeyboardHeight = 200.0;// : 288
 {
 	if (_prevAlpha > 0) {
 		[UIView animateWithDuration:0.1 animations:^{
-			self.alpha = _prevAlpha;
+            self.alpha = self->_prevAlpha;
 			//self.backgroundColor = [UIColor clearColor];
-			_prevAlpha = 0;
+            self->_prevAlpha = 0;
 		}];
 	}
 }
@@ -249,7 +249,7 @@ const CGFloat kIPhoneLandscapeKeyboardHeight = 200.0;// : 288
 {
 	if (self.alpha != 1) {
 		[UIView animateWithDuration:0.1 animations:^{
-			_prevAlpha = self.alpha;
+            self->_prevAlpha = self.alpha;
 			self.alpha = 1;
 			//self.backgroundColor = [UIColor blackColor];
 		}];

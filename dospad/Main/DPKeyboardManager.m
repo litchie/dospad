@@ -364,11 +364,11 @@ API_AVAILABLE(ios(14.0)){
         //NSLog(@"KEYBOARD %@ pressed=%d", [self getKeyName:keyCode], pressed);
         if (keyCode == GCKeyCodeLeftGUI||keyCode==GCKeyCodeRightGUI) {
             // Command key
-            _commandPrefix = pressed;
+            self->_commandPrefix = pressed;
             return;
         }
         if (self.delegate) {
-            if (_commandPrefix)
+            if (self->_commandPrefix)
             {
                 [self.delegate keyboardManager:self scancode:[self translateCommandPrefixCode:keyCode] pressed:pressed];
             }

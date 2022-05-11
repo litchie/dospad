@@ -73,8 +73,8 @@
 
 #define MAX_HISTORY_ITEMS 20
 
-void dospad_pause();
-void dospad_resume();
+void dospad_pause(void);
+void dospad_resume(void);
 extern int SDL_SendKeyboardKey(int index, Uint8 state, SDL_scancode scancode);
 extern int dospad_should_launch_game;
 extern int dospad_command_line_ready;

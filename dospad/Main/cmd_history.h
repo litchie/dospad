@@ -23,8 +23,8 @@ typedef struct cmd_entry_t{
     char cmd[256];
     struct cmd_entry_t *next;
 } cmd_entry;
-void dospad_save_history();
-void dospad_init_history();
+void dospad_save_history(void);
+void dospad_init_history(void);
 
 extern cmd_entry *cmd_list;
 extern int cmd_count;

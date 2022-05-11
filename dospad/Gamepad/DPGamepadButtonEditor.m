@@ -197,8 +197,8 @@
 		[self alert:@"Type a text command" message:@"auto appending enter" options:@{}
 		  prompt:^(NSString *text) {
 			if (text) {
-				_titleTextField.text = text;
-				_textCommand = [text stringByAppendingString:@"\n"];
+				self->_titleTextField.text = text;
+				self->_textCommand = [text stringByAppendingString:@"\n"];
 				self.navigationItem.rightBarButtonItem.enabled = YES;
 				[self updateBindingLabel];
 			}
@@ -207,8 +207,8 @@
 		[self alert:@"Enter text" message:nil options:@{}
 		  prompt:^(NSString *text) {
 			if (text) {
-				_titleTextField.text = text;
-				_textCommand = text;
+				self->_titleTextField.text = text;
+				self->_textCommand = text;
 				self.navigationItem.rightBarButtonItem.enabled = YES;
 				[self updateBindingLabel];
 			}

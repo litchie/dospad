@@ -184,7 +184,7 @@ static DOSPadEmulator* _sharedInstance;
 {
 	if (self.delegate)
 	{
-		[self.delegate emulator:self saveScreenshot:[self.diskcDirectory stringByAppendingPathComponent:@"scrnshot.png"]];
+		[self.delegate emulator:self saveScreenshot:[self.diskcDirectory stringByAppendingPathComponent:@"dosbox-screenshot.png"]];
 	}
 }
 
@@ -312,22 +312,22 @@ static DOSPadEmulator* _sharedInstance;
 ////////////////////////////////////////////////////////////
 // DOSBOX Interface
 
-const char *dospad_config_dir()
+const char *dospad_config_dir(void)
 {
     return [_sharedInstance dospadConfigFile].stringByDeletingLastPathComponent.UTF8String;
 }
 
-void dospad_pause()
+void dospad_pause(void)
 {
     dospad_pause_flag = 1;
 }
 
-void dospad_resume()
+void dospad_resume(void)
 {
     dospad_pause_flag = 0;
 }
 
-void dospad_command_done()
+void dospad_command_done(void)
 {
 	[_sharedInstance performSelectorOnMainThread:@selector(didCommandDone) withObject:nil waitUntilDone:NO];
 }
@@ -335,11 +335,12 @@ void dospad_command_done()
 static int strcmp_case_insensitive(const char *cs, const char *ct)
 {
     while (*cs && *ct) {
-        if (toupper(*cs) < toupper(*ct))
+        if (toupper(*cs) < toupper(*ct)) {
             return -1;
-        else if (toupper(*cs) > toupper(*ct))
+        } else if (toupper(*cs) > toupper(*ct)) {
             return 1;
-        cs++, ct++;
+        }
+        (void)(cs++), ct++;
     }
     if (*cs == 0 && *ct == 0) return 0;
     else if (*cs) return 1;
@@ -421,7 +422,7 @@ void dospad_init_history()
     fclose(fp);
 }
 
-void dospad_should_pause()
+void dospad_should_pause(void)
 {
     while (dospad_pause_flag)
     {

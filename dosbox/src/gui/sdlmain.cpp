@@ -23,7 +23,7 @@
 #ifdef IPHONEOS
 extern "C" {
     extern void SDL_init_keyboard();
-    extern void dospad_should_pause();
+    extern void dospad_should_pause(void);
 }
 #endif
 
