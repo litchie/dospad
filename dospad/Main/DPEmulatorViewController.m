@@ -1004,8 +1004,7 @@ static struct {
 	 			handler:^(UIAlertAction * _Nonnull action) {
 					if (@available(iOS 10.0, *)) {
 						[[UIApplication sharedApplication]
-						 openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString]
-						 options:@{} completionHandler:nil];
+						 openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString] options:@{} completionHandler:nil];
 					} else {
 						[[UIApplication sharedApplication]
                          openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString] options:@{} completionHandler:nil];
@@ -1298,9 +1297,15 @@ static struct {
 	return YES;
 }
 
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
+// Deprecated
+//- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
+//{
+//    return YES;
+//}
+
+- (BOOL)shouldAutorotate
 {
-    return YES;
+    return true;
 }
 
 - (UIInterfaceOrientationMask)supportedInterfaceOrientations
