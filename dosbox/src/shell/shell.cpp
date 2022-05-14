@@ -393,7 +393,8 @@ void DOS_Shell::Run(void) {
         } else if (automount_path[0]) {
                 automount_path[0] = 0;
                 if (echo && !bf) WriteOut_NoParsing("\n");
-                sprintf(input_line, "cls");
+                //Clear the screen
+                //sprintf(input_line, "cls");
                 ParseLine(input_line);
 #endif
 		} else {
