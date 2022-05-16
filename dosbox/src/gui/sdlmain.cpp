@@ -250,7 +250,7 @@ SDL_Surface* SDL_SetVideoMode_Wrap(int width,int height,int bpp,Bit32u flags){
 		if ((flags & SDL_OPENGL)==0)
 			SDL_FillRect(sdl.surface,NULL,SDL_MapRGB(sdl.surface->format,0,0,0));
 		else {
-			glClearColor (0.0, 0.0, 0.0, 1.0);
+			glClearColor (0.0f, 0.0f, 0.0f, 1.0f);
 			glClear(GL_COLOR_BUFFER_BIT);
 			SDL_GL_SwapBuffers();
 		}
@@ -751,7 +751,7 @@ dosurface:
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, texsize, texsize, 0, GL_BGRA_EXT, GL_UNSIGNED_BYTE, (const GLvoid*)emptytex);
 		delete [] emptytex;
 
-		glClearColor (0.0, 0.0, 0.0, 1.0);
+		glClearColor (0.0f, 0.0f, 0.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 		SDL_GL_SwapBuffers();
 		glClear(GL_COLOR_BUFFER_BIT);
@@ -1024,7 +1024,7 @@ void GFX_EndUpdate( const Bit16u *changedLines ) {
 	case SCREEN_OPENGL:
 		// Clear drawing area. Some drivers (on Linux) have more than 2 buffers and the screen might
 		// be dirty because of other programs.
-		glClearColor (0.0, 0.0, 0.0, 1.0);
+		glClearColor (0.0f, 0.0f, 0.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 		if (sdl.opengl.pixel_buffer_object) {
 			glUnmapBufferARB(GL_PIXEL_UNPACK_BUFFER_EXT);
@@ -1493,8 +1493,7 @@ void Mouse_AutoLock(bool enable) {
 	}
 }
 
-static void HandleMouseMotion(SDL_MouseMotionEvent * motion)
-{
+static void HandleMouseMotion(SDL_MouseMotionEvent * motion) {
     if (sdl.mouse.locked || !sdl.mouse.autoenable) {
 		Mouse_CursorMoved((float)motion->xrel*sdl.mouse.xsensitivity/100.0f,
 						  (float)motion->yrel*sdl.mouse.ysensitivity/100.0f,
@@ -1906,11 +1905,11 @@ extern void DEBUG_ShutDown(Section * /*sec*/);
 #endif
 
 void restart_program(std::vector<std::string> & parameters) {
-	char** newargs = new char* [parameters.size()+1];
+	char** newargs = new char* [parameters.size() + 1];
 	// parameter 0 is the executable path
 	// contents of the vector follow
 	// last one is NULL
-	for(Bitu i = 0; i < parameters.size(); i++) newargs[i]=(char*)parameters[i].c_str();
+	for(Bitu i = 0; i < parameters.size(); i++) newargs[i] = (char*)parameters[i].c_str();
 	newargs[parameters.size()] = NULL;
 	SDL_CloseAudio();
 	SDL_Delay(50);
@@ -1932,7 +1931,7 @@ void restart_program(std::vector<std::string> & parameters) {
 #endif
 		E_Exit("Restarting failed");
 	}
-	free(newargs);
+	delete [] newargs;
 }
 void Restart(bool pressed) { // mapper handler
 	restart_program(control->startup_params);

@@ -375,7 +375,6 @@ void DOS_Shell::Run(void) {
 	} else {
 		WriteOut(MSG_Get("SHELL_STARTUP_SUB"),VERSION);
 	}
-    
 	do {
 		if (bf){
 			if(bf->ReadLine(input_line)) {

@@ -367,7 +367,7 @@ typedef char assert_right_size [MAX_SCANCODES == (sizeof(sdlkey_map)/sizeof(sdlk
 #define MAX_SCANCODES 512
 static SDLKey sdlkey_map[MAX_SCANCODES];
 #else
-#define MAX_SCANCODES 212
+#define MAX_SCANCODES 0xdf
 static SDLKey sdlkey_map[MAX_SCANCODES]={SDLK_UNKNOWN,SDLK_ESCAPE,
 	SDLK_1,SDLK_2,SDLK_3,SDLK_4,SDLK_5,SDLK_6,SDLK_7,SDLK_8,SDLK_9,SDLK_0,
 	/* 0x0c: */

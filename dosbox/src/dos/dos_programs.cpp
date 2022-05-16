@@ -1024,6 +1024,64 @@ static void LOADROM_ProgramStart(Program * * make) {
 	*make=new LOADROM;
 }
 
+#if C_DEBUG
+class BIOSTEST : public Program {
+public:
+	void Run(void) {
+		if (!(cmd->FindCommand(1, temp_line))) {
+			WriteOut("Must specify BIOS file to load.\n");
+			return;
+		}
+
+		Bit8u drive;
+		char fullname[DOS_PATHLENGTH];
+		localDrive* ldp = 0;
+		if (!DOS_MakeName((char *)temp_line.c_str(), fullname, &drive)) return;
+
+		try {
+			/* try to read ROM file into buffer */
+			ldp = dynamic_cast<localDrive*>(Drives[drive]);
+			if (!ldp) return;
+
+			FILE *tmpfile = ldp->GetSystemFilePtr(fullname, "rb");
+			if (tmpfile == NULL) {
+				WriteOut("Can't open a file");
+				return;
+			}
+			fseek(tmpfile, 0L, SEEK_END);
+			if (ftell(tmpfile) > 64 * 1024) {
+				WriteOut("BIOS File too large");
+				fclose(tmpfile);
+				return;
+			}
+			fseek(tmpfile, 0L, SEEK_SET);
+			Bit8u buffer[64*1024];
+			Bitu data_read = fread(buffer, 1, sizeof( buffer), tmpfile);
+			fclose(tmpfile);
+
+			Bit32u rom_base = PhysMake(0xf000, 0); // override regular dosbox bios
+			/* write buffer into ROM */
+			for (Bitu i = 0; i < data_read; i++) phys_writeb(rom_base + i, buffer[i]);
+
+			//Start executing this bios
+			memset(&cpu_regs, 0, sizeof(cpu_regs));
+			memset(&Segs, 0, sizeof(Segs));
+
+			
+			SegSet16(cs, 0xf000);
+			reg_eip = 0xfff0;
+		}
+		catch (...) {
+			return;
+		}
+	}
+};
+
+static void BIOSTEST_ProgramStart(Program * * make) {
+	*make = new BIOSTEST;
+}
+
+#endif
 
 // LOADFIX
 
@@ -1361,10 +1419,73 @@ public:
 					LOG_MSG("autosized image file: %d:%d:%d:%d",sizes[0],sizes[1],sizes[2],sizes[3]);
 				}
 
-				newdrive=new fatDrive(temp_line.c_str(),sizes[0],sizes[1],sizes[2],sizes[3],0);
-				if(!(dynamic_cast<fatDrive*>(newdrive))->created_successfully) {
-					delete newdrive;
-					newdrive = 0;
+				if (Drives[drive-'A']) {
+					WriteOut(MSG_Get("PROGRAM_IMGMOUNT_ALREADY_MOUNTED"));
+					return;
+				}
+
+				std::vector<DOS_Drive*> imgDisks;
+				std::vector<std::string>::size_type i;
+				std::vector<DOS_Drive*>::size_type ct;
+				
+				for (i = 0; i < paths.size(); i++) {
+					DOS_Drive* newDrive = new fatDrive(paths[i].c_str(),sizes[0],sizes[1],sizes[2],sizes[3],0);
+					imgDisks.push_back(newDrive);
+					if(!(dynamic_cast<fatDrive*>(newDrive))->created_successfully) {
+						WriteOut(MSG_Get("PROGRAM_IMGMOUNT_CANT_CREATE"));
+						for(ct = 0; ct < imgDisks.size(); ct++) {
+							delete imgDisks[ct];
+						}
+						return;
+					}
+				}
+
+				// Update DriveManager
+				for(ct = 0; ct < imgDisks.size(); ct++) {
+					DriveManager::AppendDisk(drive - 'A', imgDisks[ct]);
+				}
+				DriveManager::InitializeDrive(drive - 'A');
+
+				// Set the correct media byte in the table 
+				mem_writeb(Real2Phys(dos.tables.mediaid) + (drive - 'A') * 9, mediaid);
+				
+				/* Command uses dta so set it to our internal dta */
+				RealPt save_dta = dos.dta();
+				dos.dta(dos.tables.tempdta);
+
+				for(ct = 0; ct < imgDisks.size(); ct++) {
+					DriveManager::CycleDisks(drive - 'A', (ct == (imgDisks.size() - 1)));
+
+					char root[7] = {drive,':','\\','*','.','*',0};
+					DOS_FindFirst(root, DOS_ATTR_VOLUME); // force obtaining the label and saving it in dirCache
+				}
+				dos.dta(save_dta);
+
+				std::string tmp(paths[0]);
+				for (i = 1; i < paths.size(); i++) {
+					tmp += "; " + paths[i];
+				}
+				WriteOut(MSG_Get("PROGRAM_MOUNT_STATUS_2"), drive, tmp.c_str());
+
+				if (paths.size() == 1) {
+					newdrive = imgDisks[0];
+					switch (drive - 'A') {
+					case 0:
+					case 1:
+						if(!((fatDrive *)newdrive)->loadedDisk->hardDrive) {
+							if(imageDiskList[drive - 'A'] != NULL) delete imageDiskList[drive - 'A'];
+							imageDiskList[drive - 'A'] = ((fatDrive *)newdrive)->loadedDisk;
+						}
+						break;
+					case 2:
+					case 3:
+						if(((fatDrive *)newdrive)->loadedDisk->hardDrive) {
+							if(imageDiskList[drive - 'A'] != NULL) delete imageDiskList[drive - 'A'];
+							imageDiskList[drive - 'A'] = ((fatDrive *)newdrive)->loadedDisk;
+							updateDPT();
+						}
+						break;
+					}
 				}
 			} else if (fstype=="iso") {
 
@@ -1736,7 +1857,11 @@ void DOS_SetupPrograms(void) {
 	PROGRAMS_MakeFile("RESCAN.COM",RESCAN_ProgramStart);
 	PROGRAMS_MakeFile("INTRO.COM",INTRO_ProgramStart);
 	PROGRAMS_MakeFile("BOOT.COM",BOOT_ProgramStart);
+#if C_DEBUG
+	PROGRAMS_MakeFile("BIOSTEST.COM", BIOSTEST_ProgramStart);
+#endif
 	PROGRAMS_MakeFile("LOADROM.COM", LOADROM_ProgramStart);
 	PROGRAMS_MakeFile("IMGMOUNT.COM", IMGMOUNT_ProgramStart);
 	PROGRAMS_MakeFile("KEYB.COM", KEYB_ProgramStart);
+
 }
