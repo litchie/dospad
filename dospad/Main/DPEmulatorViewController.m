@@ -246,7 +246,7 @@ static struct {
     [items addObject:btnOption];
     
     UIButton *btnRemap = [[UIButton alloc] initWithFrame:CGRectMake(340,0,20,24)];
-    [btnRemap setImage:[UIImage imageNamed:@"ic_bluetooth_white_18pt"] forState:UIControlStateNormal];
+    [btnRemap setImage:[UIImage imageNamed:@"ic_bluetooth_black_18pt"] forState:UIControlStateNormal];
     [btnRemap addTarget:self action:@selector(openMfiMapper:) forControlEvents:UIControlEventTouchUpInside];
     [items addObject:btnRemap];
     
@@ -534,7 +534,7 @@ static struct {
 			if ([UIDevice.currentDevice.model isEqual:@"iPad"]) {
 				btnExitFS = [[UIButton alloc] initWithFrame:CGRectMake(0,0,72,36)];
 			    btnExitFS.center=CGPointMake(63, 18);
-			    [btnExitFS setImage:[UIImage imageNamed:@"exitfull~ipad"] forState:UIControlStateNormal];
+			    [btnExitFS setImage:[UIImage imageNamed:@"exitfull-black-ipad"] forState:UIControlStateNormal];
 			} else {
 				btnExitFS = [[UIButton alloc] initWithFrame:CGRectMake(0,0,48,24)];
 				btnExitFS.center=CGPointMake(44, 13);

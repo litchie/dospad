@@ -53,6 +53,12 @@
 		04EC8B521025D12900431D42 /* SDL_config_iphoneos.h in Headers */ = {isa = PBXBuildFile; fileRef = 04EC8B501025D12900431D42 /* SDL_config_iphoneos.h */; };
 		04F2AF541104ABC300D6DDF7 /* SDL_assert.h in Headers */ = {isa = PBXBuildFile; fileRef = 04F2AF531104ABC300D6DDF7 /* SDL_assert.h */; };
 		04F2AF561104ABD200D6DDF7 /* SDL_assert.c in Sources */ = {isa = PBXBuildFile; fileRef = 04F2AF551104ABD200D6DDF7 /* SDL_assert.c */; };
+		090066E828304540000654D3 /* landbarblank-white~iPad.png in Resources */ = {isa = PBXBuildFile; fileRef = 090066E728304540000654D3 /* landbarblank-white~iPad.png */; };
+		090066EB28304E36000654D3 /* pin-down.png in Resources */ = {isa = PBXBuildFile; fileRef = 090066E928304E36000654D3 /* pin-down.png */; };
+		090066EC28304E36000654D3 /* pin-up.png in Resources */ = {isa = PBXBuildFile; fileRef = 090066EA28304E36000654D3 /* pin-up.png */; };
+		090066EF28304FA9000654D3 /* pin-down-ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 090066ED28304FA9000654D3 /* pin-down-ipad.png */; };
+		090066F028304FA9000654D3 /* pin-up-ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 090066EE28304FA9000654D3 /* pin-up-ipad.png */; };
+		090066F22832DDC1000654D3 /* exitfull-black-ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 090066F12832DDC1000654D3 /* exitfull-black-ipad.png */; };
 		09CAF193282B044A00333400 /* midi.h in Headers */ = {isa = PBXBuildFile; fileRef = 09CAF191282B044A00333400 /* midi.h */; };
 		09CAF194282B044A00333400 /* pci_bus.h in Headers */ = {isa = PBXBuildFile; fileRef = 09CAF192282B044A00333400 /* pci_bus.h */; };
 		09CAF196282B05FA00333400 /* ymf262.h in Headers */ = {isa = PBXBuildFile; fileRef = 09CAF195282B05FA00333400 /* ymf262.h */; };
@@ -765,6 +771,12 @@
 		04EC8B501025D12900431D42 /* SDL_config_iphoneos.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SDL_config_iphoneos.h; path = SDL/include/SDL_config_iphoneos.h; sourceTree = SOURCE_ROOT; };
 		04F2AF531104ABC300D6DDF7 /* SDL_assert.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SDL_assert.h; path = SDL/include/SDL_assert.h; sourceTree = SOURCE_ROOT; };
 		04F2AF551104ABD200D6DDF7 /* SDL_assert.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = SDL_assert.c; path = SDL/src/SDL_assert.c; sourceTree = SOURCE_ROOT; };
+		090066E728304540000654D3 /* landbarblank-white~iPad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "landbarblank-white~iPad.png"; sourceTree = "<group>"; };
+		090066E928304E36000654D3 /* pin-down.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "pin-down.png"; sourceTree = "<group>"; };
+		090066EA28304E36000654D3 /* pin-up.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "pin-up.png"; sourceTree = "<group>"; };
+		090066ED28304FA9000654D3 /* pin-down-ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "pin-down-ipad.png"; sourceTree = "<group>"; };
+		090066EE28304FA9000654D3 /* pin-up-ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "pin-up-ipad.png"; sourceTree = "<group>"; };
+		090066F12832DDC1000654D3 /* exitfull-black-ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "exitfull-black-ipad.png"; sourceTree = "<group>"; };
 		09CAF191282B044A00333400 /* midi.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = midi.h; sourceTree = "<group>"; };
 		09CAF192282B044A00333400 /* pci_bus.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = pci_bus.h; sourceTree = "<group>"; };
 		09CAF195282B05FA00333400 /* ymf262.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ymf262.h; sourceTree = "<group>"; };
@@ -1628,6 +1640,12 @@
 		E7107146129A8E5A00B21291 /* floatpanel-res */ = {
 			isa = PBXGroup;
 			children = (
+				090066F12832DDC1000654D3 /* exitfull-black-ipad.png */,
+				090066ED28304FA9000654D3 /* pin-down-ipad.png */,
+				090066EE28304FA9000654D3 /* pin-up-ipad.png */,
+				090066E928304E36000654D3 /* pin-down.png */,
+				090066EA28304E36000654D3 /* pin-up.png */,
+				090066E728304540000654D3 /* landbarblank-white~iPad.png */,
 				E794F3E012DB4C1B00427836 /* modepiano.png */,
 				E794F3E112DB4C1B00427836 /* modepiano@2x.png */,
 				E794F3E212DB4C1B00427836 /* modepiano~ipad.png */,
@@ -3328,12 +3346,16 @@
 				E7BE12E3128BF31A0046990B /* dpad@2x.png in Resources */,
 				E7BE12E4128BF31A0046990B /* dpadpressed.png in Resources */,
 				E72BE74212911E2B009DC46A /* bar-portrait-iphone.png in Resources */,
+				090066F028304FA9000654D3 /* pin-up-ipad.png in Resources */,
+				090066EB28304E36000654D3 /* pin-down.png in Resources */,
 				E72BE74312911E2B009DC46A /* bar-portrait-iphone@2x.png in Resources */,
 				E72BE74412911E2B009DC46A /* bar.png in Resources */,
 				E7A482461FF733E400AE7DB6 /* LaunchScreen.storyboard in Resources */,
 				E77E08532548007C00B5B11D /* default.idostheme in Resources */,
+				090066EC28304E36000654D3 /* pin-up.png in Resources */,
 				E7A01EFC1CC9C1C80036A4CF /* buttonpressed.png in Resources */,
 				E72BE74812911E2B009DC46A /* gear.png in Resources */,
+				090066F22832DDC1000654D3 /* exitfull-black-ipad.png in Resources */,
 				E7B2BBEA2525728600490083 /* screenshot_bg.png in Resources */,
 				E72BE74C12911E2B009DC46A /* keyboard.png in Resources */,
 				E72BE74D12911E2B009DC46A /* leftmouse.png in Resources */,
@@ -3385,6 +3407,7 @@
 				E729BDFC129B506E002B05B2 /* cpuwindow~ipad.png in Resources */,
 				E729BDFD129B506E002B05B2 /* exitfull~ipad.png in Resources */,
 				E729BDFE129B506E002B05B2 /* modejoy~ipad.png in Resources */,
+				090066E828304540000654D3 /* landbarblank-white~iPad.png in Resources */,
 				E729BDFF129B506E002B05B2 /* modejoypressed~ipad.png in Resources */,
 				E729BE00129B506E002B05B2 /* modenumpad~ipad.png in Resources */,
 				E729BE01129B506E002B05B2 /* modenumpadpressed~ipad.png in Resources */,
@@ -3413,6 +3436,7 @@
 				E7123FF1129D0D470021237F /* glass-west.png in Resources */,
 				E7D98C691CCA067400A17CFC /* modepianopressed@2x.png in Resources */,
 				E7D78A65129E19380020D4A7 /* btn.png in Resources */,
+				090066EF28304FA9000654D3 /* pin-down-ipad.png in Resources */,
 				E7D78A67129E19380020D4A7 /* btnpressed.png in Resources */,
 				E7D78AC6129E98480020D4A7 /* fire.png in Resources */,
 				E7D78AC7129E98480020D4A7 /* firepressed.png in Resources */,
