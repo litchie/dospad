@@ -371,6 +371,9 @@ void DOS_Shell::Run(void) {
 		if (machine == MCH_CGA) WriteOut(MSG_Get("SHELL_STARTUP_CGA"));
 		if (machine == MCH_HERC) WriteOut(MSG_Get("SHELL_STARTUP_HERC"));
 		WriteOut(MSG_Get("SHELL_STARTUP_END"));
+#ifdef IPHONEOS
+        WriteOut(MSG_Get("SHELL_STARTUP_IOS_BUILD"));
+#endif
 
 		strcpy(input_line,line.c_str());
 		line.erase();
@@ -758,6 +761,17 @@ void SHELL_Init() {
 #ifdef IPHONEOS
     MSG_Add("SHELL_CMD_OPEN_HELP","Open external directory. (dospad)\n");
     MSG_Add("SHELL_CMD_EXIT_DISABLED","Can not exit from shell. (dospad)\n");
+    MSG_Add("SHELL_STARTUP_IOS_BUILD",
+            "\n\033[46;1m\xC9\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD"
+            "\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD"
+            "\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xBB\n"
+            "\xBA \033[37mDOSBox SVN build for iOS/iPadOS\033[37m                                    \xBA\n"
+            "\xBA \033[37mnDOS is forked from iDOS/Dospad with updated DOSBox SVN code       \xBA\n"
+            "\xBA \033[37mSpecial thanks to the \033[33m@dosbox\033[37m team and \033[33m@litchiedev\033[37m!                \xBA\n"
+            "\xC8\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD"
+            "\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD"
+            "\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xBC\033[0m\n"
+            "\n");
 #endif
 
 	/* Regular startup */
