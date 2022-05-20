@@ -30,7 +30,6 @@ extern "C" const char *dospad_config_dir(void);
 
 #endif
 
-
 #ifdef WIN32
 #ifndef _WIN32_IE
 #define _WIN32_IE 0x0400

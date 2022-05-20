@@ -297,12 +297,12 @@ extern bool CPU_CycleAutoAdjust;
 bool startup_state_numlock=false;
 bool startup_state_capslock=false;
 
-void GFX_SetTitle(Bit32s cycles,Bits frameskip,bool paused){
-	char title[200]={0};
-	static Bit32s internal_cycles=0;
-	static Bit32s internal_frameskip=0;
-	if(cycles != -1) internal_cycles = cycles;
-	if(frameskip != -1) internal_frameskip = frameskip;
+void GFX_SetTitle(Bit32s cycles,int frameskip,bool paused){
+	char title[200] = { 0 };
+	static Bit32s internal_cycles = 0;
+	static int internal_frameskip = 0;
+	if (cycles != -1) internal_cycles = cycles;
+	if (frameskip != -1) internal_frameskip = frameskip;
 #ifdef IPHONEOS
 	if(CPU_CycleAutoAdjust) {
 		sprintf(title,"CPU speed: max %3d%% cycles, Frameskip %2d",internal_cycles,internal_frameskip);
@@ -316,7 +316,7 @@ void GFX_SetTitle(Bit32s cycles,Bits frameskip,bool paused){
 		sprintf(title,"DOSBox %s, CPU speed: %8d cycles, Frameskip %2d, Program: %8s",VERSION,internal_cycles,internal_frameskip,RunningProgram);
 	}
 #endif
-	if(paused) strcat(title," PAUSED");
+	if (paused) strcat(title," PAUSED");
 	SDL_WM_SetCaption(title,VERSION);
 }
 
@@ -770,16 +770,16 @@ dosurface:
 		sdl.opengl.displaylist = glGenLists(1);
 		glNewList(sdl.opengl.displaylist, GL_COMPILE);
 		glBindTexture(GL_TEXTURE_2D, sdl.opengl.texture);
-		glBegin(GL_QUADS);
-		// lower left
-		glTexCoord2f(0,tex_height); glVertex2f(-1.0f,-1.0f);
-		// lower right
-		glTexCoord2f(tex_width,tex_height); glVertex2f(1.0f, -1.0f);
-		// upper right
-		glTexCoord2f(tex_width,0); glVertex2f(1.0f, 1.0f);
+
+		glBegin(GL_TRIANGLES);
 		// upper left
 		glTexCoord2f(0,0); glVertex2f(-1.0f, 1.0f);
+		// lower left
+		glTexCoord2f(0,tex_height*2); glVertex2f(-1.0f,-3.0f);
+		// upper right
+		glTexCoord2f(tex_width*2,0); glVertex2f(3.0f, 1.0f);
 		glEnd();
+
 		glEndList();
 		sdl.desktop.type=SCREEN_OPENGL;
 		retFlags = GFX_CAN_32 | GFX_SCALING;
