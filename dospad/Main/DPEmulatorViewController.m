@@ -154,33 +154,47 @@ static struct {
 
 - (void)createFloatingInput:(DPFloatingInputType)type
 {
-	for (UIView *v in _rootContainer.subviews)
+    // Remove currently active controls as new control is toggled
+    // Not triggered when control is manually removed from screen via panel button
+	for (UIView* v in _rootContainer.subviews)
 	{
-		if (v.tag > TAG_INPUT_MIN && v.tag < TAG_INPUT_MAX)
-			[v removeFromSuperview];
+        if (v.tag > TAG_INPUT_MIN && v.tag < TAG_INPUT_MAX) {
+            if(![DPSettings shared].mouseNumpadMultiToggle ||
+               (type == TAG_INPUT_GAMEPAD || type == TAG_INPUT_KEYBOARD || type == TAG_INPUT_JOYSTICK || type == TAG_INPUT_PIANO_KEYBOARD) ||
+               ([DPSettings shared].mouseNumpadMultiToggle && (type == TAG_INPUT_MOUSE_BUTTONS && v.tag != TAG_INPUT_NUMPAD)) ||
+               ([DPSettings shared].mouseNumpadMultiToggle && (type == TAG_INPUT_NUMPAD && v.tag != TAG_INPUT_MOUSE_BUTTONS))) {
+                [v removeFromSuperview];
+            }
+        }
+        
+        //UILabel *mouseButtons = (UILabel *)[_rootContainer viewWithTag:TAG_INPUT_MOUSE_BUTTONS];
+        //UILabel *numpadButtons = (UILabel *)[self.view viewWithTag:TAG_INPUT_NUMPAD];
+        //if (v.tag > TAG_INPUT_MIN && v.tag < TAG_INPUT_MAX) {
+        //    v.hidden = true;
+        //}
 	}
 	
 	switch (type) {
-	case TAG_INPUT_NUMPAD:
-		[self createNumpad];
-		break;
-	case TAG_INPUT_KEYBOARD:
-		[self createPCKeyboard];
-		break;
-	case TAG_INPUT_PIANO_KEYBOARD:
-		[self createPianoKeyboard];
-		break;
-	case TAG_INPUT_GAMEPAD:
-		[self createGamepad];
-		break;
-	case TAG_INPUT_JOYSTICK:
-		[self createJoystick];
-		break;
-	case TAG_INPUT_MOUSE_BUTTONS:
-		[self createMouseButtons];
-		break;
-	default:
-		break;
+        case TAG_INPUT_NUMPAD:
+            [self createNumpad];
+            break;
+        case TAG_INPUT_KEYBOARD:
+            [self createPCKeyboard];
+            break;
+        case TAG_INPUT_PIANO_KEYBOARD:
+            [self createPianoKeyboard];
+            break;
+        case TAG_INPUT_GAMEPAD:
+            [self createGamepad];
+            break;
+        case TAG_INPUT_JOYSTICK:
+            [self createJoystick];
+            break;
+        case TAG_INPUT_MOUSE_BUTTONS:
+            [self createMouseButtons];
+            break;
+        default:
+            break;
 	}
 
     [self refreshFullscreenPanel];
@@ -213,7 +227,7 @@ static struct {
         labCycles2 = [[UILabel alloc] initWithFrame:CGRectMake(1,8,43,12)];
         labCycles2.backgroundColor = [UIColor clearColor];
         labCycles2.textColor=[UIColor colorWithRed:74/255.0 green:1 blue:55/255.0 alpha:1];
-        labCycles2.font=[UIFont fontWithName:@"DBLCDTempBlack" size:12];
+        labCycles2.font=[UIFont fontWithName:@"DBLCDTempBlack" size:13];
         labCycles2.text=[self currentCycles];
         labCycles2.textAlignment= NSTextAlignmentCenter;
         labCycles2.baselineAdjustment=UIBaselineAdjustmentAlignCenters;
@@ -330,7 +344,7 @@ static struct {
 
 - (void)createNumpad
 {
-	KeyboardView *numpad = [[KeyboardView alloc] initWithFrame:CGRectMake(_rootContainer.bounds.size.width-160,120,160,200)
+	KeyboardView *numpad = [[KeyboardView alloc] initWithFrame:CGRectMake(_rootContainer.bounds.size.width-160,450,160,200)
 	layout:@"kpad4x5"];
 	numpad.alpha = [DPSettings shared].floatAlpha;
 	numpad.tag = TAG_INPUT_NUMPAD;

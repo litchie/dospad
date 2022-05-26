@@ -18,6 +18,7 @@
 #define kAutoOpenLast          @"auto_open_last"
 #define kPixelatedScaling      @"screen_pixelated"
 #define kMouseAbsEnable        @"mouse_abs_enable"
+#define kMouseNumpadMultiToggle  @"mouse_numpad_multi_toggle"
 
 static DPSettings *s_settings;
 
@@ -89,6 +90,7 @@ static DPSettings *s_settings;
 	_autoOpenLastPackage = [defs boolForKey:kAutoOpenLast];
 	_pixelatedScaling = [defs boolForKey:kPixelatedScaling];
     _mouseAbsEnable = [defs boolForKey:kMouseAbsEnable];
+    _mouseNumpadMultiToggle = [defs boolForKey:kMouseNumpadMultiToggle];
 }
 
 @end
