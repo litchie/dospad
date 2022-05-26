@@ -34,6 +34,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (readonly) BOOL autoOpenLastPackage;
 @property (readonly) BOOL pixelatedScaling;
 @property (readonly) BOOL mouseAbsEnable;
+// Allow mouse and numpad to be toggled at the same time
+@property (readonly) BOOL mouseNumpadMultiToggle;
 
 + (DPSettings*)shared;
 
