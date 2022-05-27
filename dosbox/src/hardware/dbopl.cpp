@@ -37,6 +37,7 @@
 #include <math.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stddef.h>
 #include "dosbox.h"
 #include "dbopl.h"
 
@@ -1085,14 +1086,14 @@ void Chip::WriteBD( Bit8u val ) {
 #define REGOP( _FUNC_ )															\
 	index = ( ( reg >> 3) & 0x20 ) | ( reg & 0x1f );								\
 	if ( OpOffsetTable[ index ] ) {													\
-		Operator* regOp = (Operator*)( ((char *)this ) + OpOffsetTable[ index ] );	\
+		Operator* regOp = (Operator*)( ((char *)this ) + OpOffsetTable[ index ]-1 );	\
 		regOp->_FUNC_( this, val );													\
 	}
 
 #define REGCHAN( _FUNC_ )																\
 	index = ( ( reg >> 4) & 0x10 ) | ( reg & 0xf );										\
 	if ( ChanOffsetTable[ index ] ) {													\
-		Channel* regChan = (Channel*)( ((char *)this ) + ChanOffsetTable[ index ] );	\
+		Channel* regChan = (Channel*)( ((char *)this ) + ChanOffsetTable[ index ]-1 );	\
 		regChan->_FUNC_( this, val );													\
 	}
 
@@ -1430,7 +1431,6 @@ void InitTables( void ) {
 		TremoloTable[TREMOLO_TABLE - 1 - i] = val;
 	}
 	//Create a table with offsets of the channels from the start of the chip
-	DBOPL::Chip* chip = 0;
 	for ( Bitu i = 0; i < 32; i++ ) {
 		Bitu index = i & 0xf;
 		if ( index >= 9 ) {
@@ -1444,8 +1444,7 @@ void InitTables( void ) {
 		//Add back the bits for highest ones
 		if ( i >= 16 )
 			index += 9;
-		Bitu blah = reinterpret_cast<Bitu>( &(chip->chan[ index ]) );
-		ChanOffsetTable[i] = blah;
+		ChanOffsetTable[i] = 1+(Bit16u)(index*sizeof(DBOPL::Channel));
 	}
 	//Same for operators
 	for ( Bitu i = 0; i < 64; i++ ) {
@@ -1458,16 +1457,15 @@ void InitTables( void ) {
 		if ( chNum >= 12 )
 			chNum += 16 - 12;
 		Bitu opNum = ( i % 8 ) / 3;
-		DBOPL::Channel* chan = 0;
-		Bitu blah = reinterpret_cast<Bitu>( &(chan->op[opNum]) );
-		OpOffsetTable[i] = ChanOffsetTable[ chNum ] + blah;
+		OpOffsetTable[i] = ChanOffsetTable[chNum]+(Bit16u)(opNum*sizeof(DBOPL::Operator));
 	}
 #if 0
+	DBOPL::Chip* chip = 0;
 	//Stupid checks if table's are correct
 	for ( Bitu i = 0; i < 18; i++ ) {
 		Bit32u find = (Bit16u)( &(chip->chan[ i ]) );
 		for ( Bitu c = 0; c < 32; c++ ) {
-			if ( ChanOffsetTable[c] == find ) {
+			if ( ChanOffsetTable[c] == find+1 ) {
 				find = 0;
 				break;
 			}
@@ -1479,7 +1477,7 @@ void InitTables( void ) {
 	for ( Bitu i = 0; i < 36; i++ ) {
 		Bit32u find = (Bit16u)( &(chip->chan[ i / 2 ].op[i % 2]) );
 		for ( Bitu c = 0; c < 64; c++ ) {
-			if ( OpOffsetTable[c] == find ) {
+			if ( OpOffsetTable[c] == find+1 ) {
 				find = 0;
 				break;
 			}

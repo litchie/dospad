@@ -1,23 +1,21 @@
-dospad
-======
+nDOS
+====
+nDOS is a DOSBox port for iOS and iPadOS, allowing you to run old MS-DOS games and programs. nDOS is forked from the original iDOS/DOSPad project but updated to use the latest code from the DOSBox SVN source tree. It also contains additional patches and customizations. 
 
-dosbox port for iOS, aka iDOS, based on dosbox v0.74-3 and SDL1.2.
+Purpose
+====
+I'm a fan of retro gaming, especially from the MS-DOS and Windows 3.1 era. I'm also a fan of Apple products, especially the iPad. Being able to play old DOS/Windows games on a touchscreen device like an iPad brings old memories back to life using modern gear. 
 
-This is an all-in-one project, so the build process is just one simple click in xcode.
+I also wanted to take on a coding project that would be fun while learning about the Apple SDKs and developing in the iOS ecosystem (even if the project is using an older Objective-C base).
 
-The Documents folder within app sandbox is automatically mounted as disk c. You can access this folder either on "Files app -> On My iPad/iPhone".
-On macOS catalina, you can find it in "Finder->Locations->Your iDevice->Files" tab.
+Patches/Customizations
+====
+TBD
 
-## iDOS Package
+Acknowledgements
+====
+Special thanks to the @dosbox team for creating a great platform to relive DOS gaming memories
 
-You can launch iDOS by tapping on an *.idos package.
-The package is actually a folder, and will be mounted as disk c.
-The package should include a dospad.cfg with all dosbox settings.
+Special thanks to @litchiedev for building a version of DOSBox that works on iOS/iPadOS. 
 
-If the package contains a `cover.png` or `scrnshot.png`, it will be used to generate thumbnails for Files app.
 
-## License
-
-All the source code is released under GPLv2. See `LICENSE`.
-
-All assets, including images and audios, are copyrighted and provided for your personal use only. Do not redistribute without a written permission.
