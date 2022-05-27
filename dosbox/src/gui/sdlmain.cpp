@@ -1384,9 +1384,9 @@ static void GUI_StartUp(Section * sec) {
 #endif	//OPENGL
 	/* Initialize screen for first time */
 #ifdef IPHONEOS
-	sdl.surface=SDL_SetVideoMode(640,400,16,0);
+	sdl.surface=SDL_SetVideoMode_Wrap(640,400,16,0);
 #else
-	sdl.surface=SDL_SetVideoMode(640,400,0,0);
+	sdl.surface=SDL_SetVideoMode_Wrap(640,400,0,0);
 #endif
 	if (sdl.surface == NULL) E_Exit("Could not initialize video: %s",SDL_GetError());
 	sdl.desktop.bpp=sdl.surface->format->BitsPerPixel;
@@ -1494,7 +1494,7 @@ void Mouse_AutoLock(bool enable) {
 }
 
 static void HandleMouseMotion(SDL_MouseMotionEvent * motion) {
-    if (sdl.mouse.locked || !sdl.mouse.autoenable) {
+	if (sdl.mouse.locked || !sdl.mouse.autoenable) {
 		Mouse_CursorMoved((float)motion->xrel*sdl.mouse.xsensitivity/100.0f,
 						  (float)motion->yrel*sdl.mouse.ysensitivity/100.0f,
 						  (float)(motion->x-sdl.clip.x)/(sdl.clip.w-1)*sdl.mouse.xsensitivity/100.0f,
@@ -1751,12 +1751,14 @@ static BOOL WINAPI ConsoleEventHandler(DWORD event) {
 static bool no_stdout = false;
 void GFX_ShowMsg(char const* format,...) {
 	char buf[512];
+
 	va_list msg;
 	va_start(msg,format);
-	vsprintf(buf,format,msg);
-        strcat(buf,"\n");
+	vsnprintf(buf,sizeof(buf),format,msg);
 	va_end(msg);
-	if(!no_stdout) printf("%s",buf); //Else buf is parsed again.
+
+	buf[sizeof(buf) - 1] = '\0';
+	if (!no_stdout) puts(buf); //Else buf is parsed again. (puts adds end of line)
 }
 
 
@@ -2115,7 +2117,6 @@ int main(int argc, char* argv[]) {
 #ifdef IPHONEOS
         SDL_init_keyboard(); // We need to create a fake keyboard
 #endif
-
 	sdl.laltstate = SDL_KEYUP;
 	sdl.raltstate = SDL_KEYUP;
 

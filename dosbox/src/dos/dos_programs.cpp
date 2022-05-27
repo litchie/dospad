@@ -202,6 +202,7 @@ public:
 			Move_Z(newz[0]);
 			return;
 		}
+
 		/* Show list of cdroms */
 		if (cmd->FindExist("-cd",false)) {
 #ifndef IPHONEOS

@@ -573,4 +573,3 @@ static void cache_close(void) {
 	cache_code_link_blocks = NULL;
 	cache_initialized = false; */
 }
-

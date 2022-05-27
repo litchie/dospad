@@ -274,4 +274,3 @@ Bits Virtual_Drive::UnMount(void) {
 char const* Virtual_Drive::GetLabel(void) {
 	return "DOSBOX";
 }
-
