@@ -49,28 +49,38 @@
 
 - (void)show
 {
-    [UIView beginAnimations:@"ShowFloating" context:nil];
+    //Deprecated
+    /*[UIView beginAnimations:@"ShowFloating" context:nil];
     [UIView setAnimationDuration:0.5];
     self.alpha=1;
-    [UIView commitAnimations];
+    [UIView commitAnimations];*/
+    
+    [UIView animateWithDuration:0.5 animations:^{
+        self.alpha = 1;
+    }];
 }
 
-- (void)animationDidStop:(NSString *)animationID finished:(NSNumber *)finished context:(void *)context
+/*- (void)animationDidStop:(NSString *)animationID finished:(NSNumber *)finished context:(void *)context
 {
     if (delegate) {
         [delegate didFloatingView:self];
     }
     [self removeFromSuperview];
-}
+}*/
 
 - (void)dismiss
 {
-    [UIView beginAnimations:@"DismissFloating" context:nil];
+    // Deprecated
+    /*[UIView beginAnimations:@"DismissFloating" context:nil];
     [UIView setAnimationDelegate:self];
     [UIView setAnimationDidStopSelector:@selector(animationDidStop:finished:context:)];
     [UIView setAnimationDuration:0.5];
     self.alpha=0;
-    [UIView commitAnimations];    
+    [UIView commitAnimations];*/
+    
+    [UIView animateWithDuration:0.5 animations:^{
+        self.alpha = 0;
+    }];
 }
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event

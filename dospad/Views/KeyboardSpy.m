@@ -162,7 +162,11 @@
 
 - (void)registerCommandPrefix:(NSString*)keyInput title:(NSString*)title
 {
-	UIKeyCommand *cmd = [UIKeyCommand keyCommandWithInput:keyInput modifierFlags:UIKeyModifierCommand action:@selector(onCommandPrefix:) discoverabilityTitle:title];
+    // Remove discoverabilityTitle since this init is deprecated. The titles are not used anyway since
+    // were not invoking a discoverability layover with the 'command' key like in other apps
+	//UIKeyCommand *cmd = [UIKeyCommand keyCommandWithInput:keyInput modifierFlags:UIKeyModifierCommand action:@selector(onCommandPrefix:) discoverabilityTitle:title];
+    
+    UIKeyCommand *cmd = [UIKeyCommand keyCommandWithInput:keyInput modifierFlags:UIKeyModifierCommand action:@selector(onCommandPrefix:)];
 	[_keyCommands addObject:cmd];
 }
 
