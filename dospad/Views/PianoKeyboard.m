@@ -106,8 +106,6 @@ extern int SDL_SendKeyboardKey(int index, Uint8 state, SDL_scancode scancode);
 
 - (void)drawRect:(CGRect)rect 
 {
-
-    
     if (type == PianoKeyGrid)
     {
         if (title)
@@ -125,11 +123,11 @@ extern int SDL_SendKeyboardKey(int index, Uint8 state, SDL_scancode scancode);
             float fontSize = MIN(14, rect.size.height/4);
             color = [textColor colorWithAlphaComponent:(pressed?1:0.3)];
             UIFont *fnt = [UIFont systemFontOfSize:fontSize];
-            CGSize size = [title sizeWithFont:fnt];
+            CGSize size = [title sizeWithAttributes:@{NSFontAttributeName: fnt}];
             [color set];
-            [title drawInRect:CGRectMake((rect.size.width-size.width)/2, 
+            [title drawInRect:CGRectMake((rect.size.width-size.width)/2,
                                          (rect.size.height-size.height)/2,
-                                         size.width, size.height) withFont:fnt];
+                                         size.width, size.height) withAttributes:@{NSFontAttributeName: fnt}];
         }
     }
     else if (pressed)

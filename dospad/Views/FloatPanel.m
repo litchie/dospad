@@ -159,17 +159,20 @@
     }
 }
 
+// Hide landbar content
 - (void)hideContent
 {
     if (!isContentShowing)
         return;
     isContentShowing = NO;
-    [UIView beginAnimations:nil context:nil];
-    CGPoint pt = contentView.center;
-    contentView.center = CGPointMake(pt.x, pt.y - contentView.frame.size.height);
-    [UIView commitAnimations];    
+    
+    CGPoint ptOrig = contentView.center;
+    [UIView animateWithDuration:0.5 animations:^{
+        self->contentView.center = CGPointMake(ptOrig.x, ptOrig.y - self->contentView.frame.size.height);
+    }];
 }
 
+// Show landbar content
 - (void)showContent
 {
     [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(hideContent) object:nil];
@@ -180,10 +183,10 @@
     if (!isContentShowing)
     {
         isContentShowing = YES;
-        [UIView beginAnimations:nil context:nil];
-        CGPoint pt = contentView.center;
-        contentView.center = CGPointMake(pt.x, pt.y + contentView.frame.size.height);
-        [UIView commitAnimations];
+        CGPoint ptOrig = contentView.center;
+        [UIView animateWithDuration:0.5 animations:^{
+            self->contentView.center = CGPointMake(ptOrig.x, ptOrig.y + self->contentView.frame.size.height);
+        }];
     }
 }
 

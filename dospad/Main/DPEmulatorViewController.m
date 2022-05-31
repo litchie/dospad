@@ -349,14 +349,12 @@ static struct {
 	numpad.alpha = [DPSettings shared].floatAlpha;
 	numpad.tag = TAG_INPUT_NUMPAD;
 	[_rootContainer addSubview:numpad];
-	
-	CGPoint ptOld = numpad.center;
-	numpad.center = CGPointMake(ptOld.x, ptOld.y+numpad.frame.size.height);
-	[UIView beginAnimations:nil context:NULL];
-	numpad.center = ptOld;
-	[UIView commitAnimations];
+    
+    CGPoint ptOrig = numpad.center;
+    [UIView animateWithDuration:0.3 animations:^{
+        numpad.center = CGPointMake(ptOrig.x, ptOrig.y-numpad.frame.size.height);
+    }];
 }
-
 
 - (void)createPCKeyboard
 {
@@ -1202,52 +1200,67 @@ static struct {
 
 -(void)openDriveMountPicker:(DriveMountType)mountType
 {
-	NSArray *utis = nil;
+	NSArray<UTType *> *utis = nil;
 	switch (mountType) {
 		case DriveMount_Default:
 			utis = @[
-				@"public.folder",
-				@"com.litchie.idos-package",
-				@"com.litchie.idos-cdimage",
-				@"com.litchie.idos-diskimage"
+                [UTType typeWithIdentifier:@"public.folder"],
+				[UTType typeWithIdentifier:@"com.litchie.idos-package"],
+				[UTType typeWithIdentifier:@"com.litchie.idos-cdimage"],
+				[UTType typeWithIdentifier:@"com.litchie.idos-diskimage"]
 			];
 			break;
 		case DriveMount_Folder:
-			utis = @[@"public.folder"];
+			utis = @[
+                [UTType typeWithIdentifier:@"public.folder"]
+            ];
 			break;
 		case DriveMount_Packages:
 			utis = @[
-				@"com.litchie.idos-package"
+				[UTType typeWithIdentifier:@"com.litchie.idos-package"]
 			];
 			break;
 		case DriveMount_DiskImage:
 			utis = @[
-				@"com.litchie.idos-diskimage"
+				[UTType typeWithIdentifier:@"com.litchie.idos-diskimage"]
 			];
 			break;
 		case DriveMount_CDImage:
 			utis = @[
-				@"com.litchie.idos-cdimage"
+				[UTType typeWithIdentifier:@"com.litchie.idos-cdimage"]
 			];
 			break;
 		default:
 			break;
 	}
-	
-	UIDocumentPickerViewController *picker;
-	picker = [[UIDocumentPickerViewController alloc]
+    
+    /*NSArray<UTType*> * contentTypes = @[[UTType typeWithFilenameExtension: @"p8"
+                                                         conformingToType: UTTypeData]];
+    UIDocumentPickerViewController *documentPicker = nil;
+    documentPicker = [[UIDocumentPickerViewController alloc] initForOpeningContentTypes: contentTypes];*/
+    
+	/*picker = [[UIDocumentPickerViewController alloc]
 		initWithDocumentTypes:utis
-		inMode:UIDocumentPickerModeOpen];
+		inMode:UIDocumentPickerModeOpen];*/
+    
+    //Examples
+    //UTType *type = [UTType typeWithFilenameExtension:@"pdf" conformingToType: UTTypeData];
+    //UTType *type = [UTType typeWithIdentifier:@"public.folder"];
+    /*NSArray<UTType*> * contentTypes = @[[UTType typeWithFilenameExtension:@"pdf"
+                                                         conformingToType: UTTypeData]];*/
+    
+    UIDocumentPickerViewController *picker;
+    picker = [[UIDocumentPickerViewController alloc]initForOpeningContentTypes:utis];
 	picker.delegate = self;
+    
 	if (@available(iOS 13.0, *)) {
 		picker.shouldShowFileExtensions = YES;
 	}
 	if (@available(iOS 11.0, *)) {
 		picker.allowsMultipleSelection = YES;
 	}
-	[self presentViewController:picker
-		animated:YES
-		completion:nil];
+    
+	[self presentViewController:picker animated:YES completion:nil];
 }
 
 - (void)emulator:(DOSPadEmulator *)emulator open:(NSString*)path

@@ -28,6 +28,7 @@
 #import "PianoKeyboard.h"
 #import "KeyboardSpy.h"
 #import "DPSettings.h"
+#import <UniformTypeIdentifiers/UniformTypeIdentifiers.h>
 
 typedef enum {
 	DriveMount_Default,

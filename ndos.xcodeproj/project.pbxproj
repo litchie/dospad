@@ -4455,6 +4455,8 @@
 					Foundation,
 					"-framework",
 					UIKit,
+					"-framework",
+					UniformTypeIdentifiers,
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = io.turley.ndos;
 				PRODUCT_NAME = iDOS;
@@ -4490,6 +4492,8 @@
 					Foundation,
 					"-framework",
 					UIKit,
+					"-framework",
+					UniformTypeIdentifiers,
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = io.turley.ndos;
 				PRODUCT_NAME = iDOS;
@@ -4639,6 +4643,8 @@
 					Foundation,
 					"-framework",
 					UIKit,
+					"-framework",
+					UniformTypeIdentifiers,
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = io.turley.ndos;
 				PRODUCT_NAME = iDOS;
