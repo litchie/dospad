@@ -311,16 +311,16 @@ static void gen_load_host(void * data,DynReg * dr1,Bitu size) {
 	dr1->flags|=DYNFLG_CHANGED;
 }
 
-static void gen_mov_host(void * data,DynReg * dr1,Bitu size,Bit8u di1=0) {
+static void gen_mov_host(void * data,DynReg * dr1,Bitu size,Bitu di1=0) {
 	GenReg * gr1=FindDynReg(dr1,(size==4));
 	switch (size) {
 	case 1:cache_addb(0x8a);break;	//mov byte
 	case 2:cache_addb(0x66);		//mov word
 	case 4:cache_addb(0x8b);break;	//mov
 	default:
-		IllegalOption("gen_load_host");
+		IllegalOption("gen_mov_host");
 	}
-	cache_addb(0x5+((gr1->index+(di1?4:0))<<3));
+	cache_addb(0x5+((gr1->index+di1)<<3));
 	cache_addd((Bit32u)data);
 	dr1->flags|=DYNFLG_CHANGED;
 }
@@ -340,7 +340,8 @@ static void gen_dop_byte(DualOps op,DynReg * dr1,Bit8u di1,DynReg * dr2,Bit8u di
 	case DOP_OR:	tmp=0x0a; if ((dr1==dr2) && (di1==di2)) goto nochange; break;
 	case DOP_TEST:	tmp=0x84; goto nochange;
 	case DOP_MOV:	if ((dr1==dr2) && (di1==di2)) return; tmp=0x8a; break;
-	case DOP_XCHG:	tmp=0x86; dr2->flags|=DYNFLG_CHANGED; break;
+	case DOP_XCHG:	if ((dr1==dr2) && (di1==di2)) return;
+		tmp=0x86; dr2->flags|=DYNFLG_CHANGED; break;
 	default:
 		IllegalOption("gen_dop_byte");
 	}
@@ -507,7 +508,7 @@ static void gen_dop_word(DualOps op,bool dword,DynReg * dr1,DynReg * dr2) {
 	case DOP_OR:	tmp=0x0b; if (dr1==dr2) goto nochange; break;
 	case DOP_TEST:	tmp=0x85; goto nochange;
 	case DOP_MOV:	if (dr1==dr2) return; tmp=0x8b; break;
-	case DOP_XCHG:
+	case DOP_XCHG:	if (dr1==dr2) return;
 		dr2->flags|=DYNFLG_CHANGED;
 		if (dword && !((dr1->flags&DYNFLG_HAS8) ^ (dr2->flags&DYNFLG_HAS8))) {
 			dr1->genreg=gr2;dr1->genreg->dynreg=dr1;

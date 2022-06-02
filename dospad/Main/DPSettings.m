@@ -19,6 +19,7 @@
 #define kPixelatedScaling      @"screen_pixelated"
 #define kMouseAbsEnable        @"mouse_abs_enable"
 #define kMouseNumpadMultiToggle  @"mouse_numpad_multi_toggle"
+#define kLandbarToggleBottonScreen @"landbar_toggle_bottom_screen"
 
 static DPSettings *s_settings;
 
@@ -43,6 +44,10 @@ static DPSettings *s_settings;
     		selector:@selector(defaultsDidChange:)
     		name:NSUserDefaultsDidChangeNotification
     		object:nil];
+        
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        [defaults addObserver:self forKeyPath:@"landbar_toggle_bottom_screen" options:NSKeyValueObservingOptionNew context:NULL];
+        
 		[self loadDefaults];
 	}
 	return self;
@@ -76,6 +81,10 @@ static DPSettings *s_settings;
 		notificationWithName:DPFSettingsChangedNotification object:nil]];
 }
 
+-(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
+    NSLog(@"KVO: %@ changed property %@ to value %@", object, keyPath, change);
+}
+
 - (void)loadDefaults
 {
 	NSUserDefaults *defs = [NSUserDefaults standardUserDefaults];
@@ -91,6 +100,7 @@ static DPSettings *s_settings;
 	_pixelatedScaling = [defs boolForKey:kPixelatedScaling];
     _mouseAbsEnable = [defs boolForKey:kMouseAbsEnable];
     _mouseNumpadMultiToggle = [defs boolForKey:kMouseNumpadMultiToggle];
+    _landbarToggleBottomScreen = [defs boolForKey:kLandbarToggleBottonScreen];
 }
 
 @end

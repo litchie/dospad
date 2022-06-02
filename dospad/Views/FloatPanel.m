@@ -41,6 +41,7 @@
                       [UIImage imageNamed:@"landbarblank"]);
     
     [image drawInRect:rect];
+    
     /*
     CGContextRef c = UIGraphicsGetCurrentContext();
     [[UIColor grayColor] set];
@@ -52,7 +53,6 @@
 }
 
 @end
-
 
 @implementation FloatPanel
 @synthesize contentView;
@@ -92,7 +92,9 @@
             btnAutoHide.center = CGPointMake(432, 12);
             [contentView addSubview:btnAutoHide];
         }
-        autoHideInterval=3;
+        
+        // Seconds before hiding the control bar
+        autoHideInterval = 3;
     }
     return self;
 }
@@ -202,7 +204,5 @@
     // Drawing code
 }
 */
-
-
 
 @end
