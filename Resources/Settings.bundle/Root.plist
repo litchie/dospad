@@ -78,6 +78,16 @@
 		</dict>
 		<dict>
 			<key>Type</key>
+			<string>PSToggleSwitchSpecifier</string>
+			<key>Title</key>
+			<string>Landbar Bottom of Screen (only in landscape mode)</string>
+			<key>Key</key>
+			<string>landbar_toggle_bottom_screen</string>
+			<key>DefaultValue</key>
+			<false/>
+		</dict>
+		<dict>
+			<key>Type</key>
 			<string>PSGroupSpecifier</string>
 			<key>Title</key>
 			<string>Screen</string>

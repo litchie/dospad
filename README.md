@@ -10,7 +10,9 @@ I also wanted to take on a coding project that would be fun while learning about
 
 Patches/Customizations
 ====
-TBD
+* Latest DOSBox SVN source revisions merged from the community
+* Updates to the code to utilize non-deprecated functions and methods. Eliminates deprecated iOS warnings for the original dospad code. Does not fix DOSBox source warnings.
+* UI tweaks for improved experience with some games (e.g. Civilization 1).
 
 Acknowledgements
 ====

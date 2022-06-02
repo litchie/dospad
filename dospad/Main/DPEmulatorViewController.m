@@ -304,7 +304,7 @@ static struct {
 {
     CGFloat vw = _rootContainer.bounds.size.width;
     CGFloat vh = _rootContainer.bounds.size.height;
-	UIView *container = [[UIView alloc] initWithFrame:CGRectMake(0, vh-40, 200, 40)];
+	UIView *container = [[UIView alloc] initWithFrame:CGRectMake(0, 450, 200, 40)];
     // Transparency
     container.tag = TAG_INPUT_MOUSE_BUTTONS;
     container.alpha = [DPSettings shared].floatAlpha;
@@ -339,6 +339,12 @@ static struct {
                     action:@selector(onMouseRightUp)
           forControlEvents:UIControlEventTouchUpInside];
 	[container addSubview:btnMouseRight];
+    
+    // Animate the mouse control to position
+    CGPoint ptOrig = container.center;
+    [UIView animateWithDuration:0.3 animations:^{
+        container.center = CGPointMake(ptOrig.x, ptOrig.y-container.frame.size.height);
+    }];
 }
 
 
@@ -491,8 +497,10 @@ static struct {
 
 	UIImageView *sceneContainer = [[UIImageView alloc] initWithFrame:rootRect];
 	sceneContainer.userInteractionEnabled = YES;
-	if (scene.backgroundImageURL)
+    if (scene.backgroundImageURL) {
 		sceneContainer.image = [UIImage imageWithContentsOfFile:scene.backgroundImageURL.path];
+    }
+    
 	for (NSDictionary *x in scene.nodes)
 	{
 		CGRect frame = CGRectZero;
@@ -538,8 +546,15 @@ static struct {
 		{
 			// FIXME: A dirty fix, FloatPanel has certain sizing requirements
 			// Ignore the frame settings
-			CGSize barSize = [UIDevice.currentDevice.model isEqual:@"iPad"] ? CGSizeMake(700, 47): CGSizeMake(480, 32);
-			frame = CGRectMake((rootRect.size.width-barSize.width)/2, 0, barSize.width, barSize.height);
+			CGSize barSize = [UIDevice.currentDevice.model isEqual:@"iPad"] ? CGSizeMake(700, 47) : CGSizeMake(480, 32);
+            
+            // Set location and size of landbar
+            if([DPSettings shared].landbarToggleBottomScreen) {
+                frame = CGRectMake((rootRect.size.width-barSize.width)/2, rootRect.size.height-barSize.height/2, barSize.width, barSize.height);
+            } else {
+                frame = CGRectMake((rootRect.size.width-barSize.width)/2, 0, barSize.width, barSize.height);
+            }
+
 			UIButton *btnExitFS;
 			
 			fullscreenPanel = [[FloatPanel alloc] initWithFrame:frame];
@@ -766,6 +781,10 @@ static struct {
     // May be called in background thread
     dispatch_async(dispatch_get_main_queue(), ^{
         [self updateScreen];
+        // None of these work
+        //[self->fullscreenPanel removeFromSuperview];
+        //[self.view addSubview:self->fullscreenPanel];
+        //[self refreshFullscreenPanel];
     });
 }
 
@@ -773,7 +792,7 @@ static struct {
 
 - (void)gamepad:(DPGamepad*)gamepad buttonIndex:(DPGamepadButtonIndex)buttonIndex pressed:(BOOL)pressed
 {
-	//NSLog(@"gamepad %@ %@", [DPGamepad buttonIdForIndex:buttonIndex], pressed?@"DOWN":@"UP");
+	// NSLog(@"gamepad %@ %@", [DPGamepad buttonIdForIndex:buttonIndex], pressed?@"DOWN":@"UP");
 	
 	if (gamepad.editing)
 	{
