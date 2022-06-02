@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2002-2019  The DOSBox Team
+ *  Copyright (C) 2002-2020  The DOSBox Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -559,9 +559,9 @@ static bool mem_readd_checked_dcx86(PhysPt address) {
 			core_dyn.readdata=host_readd(tlb_addr+address);
 			return false;
 		} else {
-			return get_tlb_readhandler(address)->readd_checked(address, &core_dyn.readdata);
+			return get_tlb_readhandler(address)->readd_checked(address, (Bit32u*)&core_dyn.readdata);
 		}
-	} else return mem_unalignedreadd_checked(address, &core_dyn.readdata);
+	} else return mem_unalignedreadd_checked(address, (Bit32u*)&core_dyn.readdata);
 }
 
 static bool mem_readw_checked_dcx86(PhysPt address) {
@@ -1043,6 +1043,7 @@ static void dyn_pop(DynReg * dynreg,bool checked=true) {
 		gen_dop_word_var(DOP_AND,true,DREG(STACK),&cpu.stack.mask);
 		gen_dop_word_var(DOP_AND,true,DREG(ESP),&cpu.stack.notmask);
 		gen_dop_word(DOP_OR,true,DREG(ESP),DREG(STACK));
+		gen_releasereg(DREG(STACK));
 	}
 }
 
@@ -1150,6 +1151,7 @@ skip_extend_word:
 								gen_lea(DREG(EA),DREG(EA),scaled,scale,0);
 								gen_lea(reg_ea,DREG(EA),*seg,0,0);
 							}
+							if (reg_ea!=DREG(EA)) gen_releasereg(DREG(EA));
 							return;
 						}
 						imm=(Bit32s)val;
@@ -1193,6 +1195,7 @@ skip_extend_word:
 						gen_lea(reg_ea,DREG(EA),decode.segprefix ? decode.segprefix : segbase,0,0);
 					}
 				}
+				if (reg_ea!=DREG(EA)) gen_releasereg(DREG(EA));
 				return;
 			}
 			
@@ -1209,6 +1212,7 @@ skip_extend_word:
 			else {
 				gen_lea(DREG(EA),base,scaled,scale,imm);
 				gen_lea(reg_ea,DREG(EA),decode.segprefix ? decode.segprefix : segbase,0,0);
+				if (reg_ea!=DREG(EA)) gen_releasereg(DREG(EA));
 			}
 		}
 	}
@@ -1762,6 +1766,7 @@ static void dyn_load_seg_off_ea(SegNames seg) {
 		dyn_read_word_release(DREG(EA),DREG(TMPW),decode.big_op);
 		dyn_load_seg(seg,DREG(TMPB));gen_releasereg(DREG(TMPB));
 		gen_dop_word(DOP_MOV,decode.big_op,&DynRegs[decode.modrm.reg],DREG(TMPW));
+		gen_releasereg(DREG(TMPW));
 	} else {
 		IllegalOption("dyn_load_seg_off_ea");
 	}
@@ -1899,48 +1904,55 @@ enum LoopTypes {
 };
 
 static void dyn_loop(LoopTypes type) {
-	dyn_reduce_cycles();
 	Bits eip_add=(Bit8s)decode_fetchb();
-	Bitu eip_base=decode.code-decode.code_start;
 	Bit8u * branch1=0;Bit8u * branch2=0;
-	dyn_save_critical_regs();
+	gen_preloadreg(DREG(ECX));
+	gen_preloadreg(DREG(CYCLES));
+	gen_preloadreg(DREG(EIP));
 	switch (type) {
 	case LOOP_E:
 		gen_needflags();
+		gen_protectflags();
 		branch1=gen_create_branch(BR_NZ);
 		break;
 	case LOOP_NE:
 		gen_needflags();
+		gen_protectflags();
 		branch1=gen_create_branch(BR_Z);
 		break;
+	default:
+		gen_protectflags();
 	}
-	gen_protectflags();
 	switch (type) {
 	case LOOP_E:
 	case LOOP_NE:
 	case LOOP_NONE:
 		gen_sop_word(SOP_DEC,decode.big_addr,DREG(ECX));
-		gen_releasereg(DREG(ECX));
 		branch2=gen_create_branch(BR_Z);
 		break;
 	case LOOP_JCXZ:
 		gen_dop_word(DOP_TEST,decode.big_addr,DREG(ECX),DREG(ECX));
-		gen_releasereg(DREG(ECX));
 		branch2=gen_create_branch(BR_NZ);
 		break;
 	}
-	gen_lea(DREG(EIP),DREG(EIP),0,0,eip_base+eip_add);
-	gen_releasereg(DREG(EIP));
+	/* Branch taken */
+	dyn_reduce_cycles();
+	dyn_set_eip_end();
+	gen_dop_word_imm(DOP_ADD,decode.big_op,DREG(EIP),eip_add);
+	DynState st;
+	dyn_savestate(&st);
+	dyn_save_critical_regs();
 	gen_jmp_ptr(&decode.block->link[0].to,offsetof(CacheBlock,cache.start));
+	dyn_loadstate(&st);
 	if (branch1) {
 		gen_fill_branch(branch1);
 		gen_sop_word(SOP_DEC,decode.big_addr,DREG(ECX));
-		gen_releasereg(DREG(ECX));
 	}
-	/* Branch taken */
+	/* Branch not taken */
 	gen_fill_branch(branch2);
-	gen_lea(DREG(EIP),DREG(EIP),0,0,eip_base);
-	gen_releasereg(DREG(EIP));
+	dyn_reduce_cycles();
+	dyn_set_eip_end();
+	dyn_save_critical_regs();
 	gen_jmp_ptr(&decode.block->link[1].to,offsetof(CacheBlock,cache.start));
 	dyn_closeblock();
 }
@@ -2040,6 +2052,51 @@ static void dyn_add_iocheck_var(Bit8u accessed_port,Bitu access_size) {
 	dyn_check_bool_exception_al();
 }
 
+static void dyn_xlat(void) {
+	gen_extend_byte(false,true,DREG(TMPW),DREG(EAX),0);
+	gen_lea(DREG(TMPW),DREG(TMPW),DREG(EBX),0,0);
+	if (!decode.big_addr) gen_extend_word(false,DREG(TMPW),DREG(TMPW));
+	gen_lea(DREG(TMPW),DREG(TMPW),decode.segprefix ? decode.segprefix : DREG(DS),0,0);
+	dyn_read_byte_release(DREG(TMPW),DREG(EAX),false);
+}
+
+static void dyn_larlsl(bool islar) {
+	dyn_get_modrm();
+	gen_protectflags();
+	// 32-bit code = protected mode, no need to check
+	if (!cpu.code.big) {
+		// LAR/LSL is undefined in real/v86 mode
+		gen_load_host(&cpu.pmode,DREG(TMPW),1);
+		gen_dop_word_imm(DOP_SUB,true,DREG(TMPW),1); // tmpw = cpu.pmode ? 0:0xffffffff
+		gen_dop_word(DOP_OR,true,DREG(TMPW),DREG(FLAGS));
+		gen_dop_word_imm(DOP_TEST,true,DREG(TMPW),FLAG_VM);
+		gen_releasereg(DREG(TMPW));
+		DynState s;
+		dyn_savestate(&s);
+		Bit8u *is_pmode = gen_create_branch(BR_Z);
+		gen_call_function((void*)CPU_PrepareException,"%Id%Id",EXCEPTION_UD,0);
+		dyn_check_bool_exception_al();
+		gen_fill_branch(is_pmode);
+		dyn_loadstate(&s);
+	}
+	void *func = islar ? (void*)CPU_LAR : (void*)CPU_LSL;
+	if (decode.modrm.mod<3) {
+		dyn_fill_ea();
+		dyn_read_word_release(DREG(EA),DREG(TMPW),false);
+		dyn_flags_gen_to_host();
+		gen_call_function(func,"%Drw%Ip",DREG(TMPW),&core_dyn.readdata);
+	} else {
+		dyn_flags_gen_to_host();
+		gen_call_function(func,"%Dw%Ip",&DynRegs[decode.modrm.rm],&core_dyn.readdata);
+	}
+	dyn_flags_host_to_gen();
+	gen_needflags();
+	gen_preloadreg(&DynRegs[decode.modrm.reg]);
+	Bit8u *br = gen_create_branch(BR_NZ);
+	gen_mov_host(&core_dyn.readdata, &DynRegs[decode.modrm.reg], decode.big_op?4:2);
+	gen_fill_branch(br);
+}
+
 #ifdef X86_DYNFPU_DH_ENABLED
 #include "dyn_fpu_dh.h"
 #define dh_fpu_startup() {		\
@@ -2132,6 +2189,10 @@ restart_prefix:
 		{
 			Bitu dual_code=decode_fetchb();
 			switch (dual_code) {
+			/* LAR */
+			case 0x02: dyn_larlsl(true);break;
+			/* LSL */
+			case 0x03: dyn_larlsl(false);break;
 			/* Short conditional jumps */
 			case 0x80:case 0x81:case 0x82:case 0x83:case 0x84:case 0x85:case 0x86:case 0x87:	
 			case 0x88:case 0x89:case 0x8a:case 0x8b:case 0x8c:case 0x8d:case 0x8e:case 0x8f:	
@@ -2454,6 +2515,10 @@ restart_prefix:
 		//GRP2 Eb/Ev,CL
 		case 0xd2:dyn_grp2_eb(grp2_cl);break;
 		case 0xd3:dyn_grp2_ev(grp2_cl);break;
+		// SALC
+		case 0xd6:gen_needflags();gen_protectflags();gen_dop_byte(DOP_SBB,DREG(EAX),0,DREG(EAX),0);break;
+		// XLAT
+		case 0xd7:dyn_xlat();break;
 		//FPU
 #ifdef CPU_FPU
 		case 0xd8:
@@ -2553,7 +2618,9 @@ restart_prefix:
 			dyn_fpu_esc7();
 			break;
 #endif
-		//Loops 
+		//Loops
+		case 0xe0:dyn_loop(LOOP_NE);goto finish_block;
+		case 0xe1:dyn_loop(LOOP_E);goto finish_block;
 		case 0xe2:dyn_loop(LOOP_NONE);goto finish_block;
 		case 0xe3:dyn_loop(LOOP_JCXZ);goto finish_block;
 		//IN AL/AX,imm
@@ -2624,7 +2691,7 @@ restart_prefix:
 			}
 			break;
 		case 0xf0:		//LOCK
-			break;
+			goto restart_prefix;
 		case 0xf2:		//REPNE/NZ
 			decode.rep=REP_NZ;
 			goto restart_prefix;
@@ -2738,6 +2805,7 @@ restart_prefix:
 			case 0x6:		/* PUSH Ev */
 				gen_releasereg(DREG(EA));
 				dyn_push(src);
+				gen_releasereg(DREG(TMPW));
 				break;
 			default:
 				LOG(LOG_CPU,LOG_ERROR)("CPU:GRP5:Illegal opcode 0xff");

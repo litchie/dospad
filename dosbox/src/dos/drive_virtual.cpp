@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2002-2019  The DOSBox Team
+ *  Copyright (C) 2002-2020  The DOSBox Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -160,6 +160,7 @@ bool Virtual_Drive::FileCreate(DOS_File * * file,char * name,Bit16u attributes) 
 }
 
 bool Virtual_Drive::FileUnlink(char * name) {
+	DOS_SetError(DOSERR_ACCESS_DENIED);
 	return false;
 }
 

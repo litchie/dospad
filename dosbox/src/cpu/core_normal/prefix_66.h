@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2002-2019  The DOSBox Team
+ *  Copyright (C) 2002-2020  The DOSBox Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -603,9 +603,11 @@
 			continue;
 		}
 	CASE_D(0xed)												/* IN EAX,DX */
+		if (CPU_IO_Exception(reg_dx,4)) RUNEXCEPTION();
 		reg_eax=IO_ReadD(reg_dx);
 		break;
 	CASE_D(0xef)												/* OUT DX,EAX */
+		if (CPU_IO_Exception(reg_dx,4)) RUNEXCEPTION();
 		IO_WriteD(reg_dx,reg_eax);
 		break;
 	CASE_D(0xf7)												/* GRP3 Ed(,Id) */

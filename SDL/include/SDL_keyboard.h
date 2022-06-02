@@ -48,7 +48,7 @@ typedef struct SDL_keysym
 {
     SDL_scancode scancode;      /**< SDL physical key code - see ::SDL_scancode for details */
     SDLKey sym;                 /**< SDL virtual key code - see ::SDLKey for details */
-    Uint16 mod;                 /**< current key modifiers */
+    SDLMod mod;                 /**< current key modifiers */
     Uint32 unicode;             /**< \deprecated use SDL_TextInputEvent instead */
 } SDL_keysym;
 

@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2002-2019  The DOSBox Team
+ *  Copyright (C) 2002-2020  The DOSBox Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -148,7 +148,7 @@ foundit:
 	VideoModeBlock * mblock=&ModeList_VGA[i];
 	switch (mblock->type) {
 	case M_LIN4:
-		pageSize = mblock->sheight * mblock->swidth/2;
+		pageSize = mblock->sheight * mblock->swidth/8;
 		var_write(&minfo.BytesPerScanLine,mblock->swidth/8);
 		var_write(&minfo.NumberOfPlanes,0x4);
 		var_write(&minfo.BitsPerPixel,4);
@@ -359,6 +359,8 @@ Bit8u VESA_ScanLineLength(Bit8u subcall,Bit16u val, Bit16u & bytes,Bit16u & pixe
 		break;
 	case M_LIN4:
 		pixels_per_offset = 16;
+		bytes_per_offset = 2;
+		vmemsize /= 4; // planar mode
 		break;
 	case M_LIN8:
 		pixels_per_offset = 8;

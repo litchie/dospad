@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2002-2019  The DOSBox Team
+ *  Copyright (C) 2002-2020  The DOSBox Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -322,9 +322,6 @@ void CONFIG::Run(void) {
 				restart_params.push_back(control->cmdline->GetFileName());
 				for(size_t i = 0; i < pvars.size(); i++) {
 					restart_params.push_back(pvars[i]);
-					if (pvars[i].find(' ') != std::string::npos) {
-						pvars[i] = "\""+pvars[i]+"\""; // add back spaces
-					}
 				}
 				// the rest on the commandline, too
 				cmd->FillVector(restart_params);

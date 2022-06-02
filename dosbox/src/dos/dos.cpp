@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2002-2019  The DOSBox Team
+ *  Copyright (C) 2002-2020  The DOSBox Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -66,6 +66,18 @@ static void DOS_AddDays(Bitu days) {
 			dos.date.year++;
 		}
 	}
+}
+
+static Bit16u DOS_GetAmount(void) {
+	Bit16u amount = reg_cx;
+	if (amount > 0xfff1) {
+		Bit16u overflow = (amount & 0xf) + (reg_dx & 0xf);
+		if (overflow > 0x10) {
+			amount -= (overflow & 0xf);
+			LOG(LOG_DOSMISC,LOG_WARN)("DOS:0x%X:Amount reduced from %X to %X",reg_ah,reg_cx,amount);
+		}
+	}
+	return amount;
 }
 
 #define DATA_TRANSFERS_TAKE_CYCLES 1
@@ -633,8 +645,8 @@ static Bitu DOS_21Handler(void) {
 		}
 		break;
 	case 0x3e:		/* CLOSE Close file */
-		if (DOS_CloseFile(reg_bx)) {
-//			reg_al=0x01;	/* al destroyed. Refcount */
+		if (DOS_CloseFile(reg_bx,false,&reg_al)) {
+			/* al destroyed with pre-close refcount from sft */
 			CALLBACK_SCF(false);
 		} else {
 			reg_ax=dos.errorcode;
@@ -643,7 +655,7 @@ static Bitu DOS_21Handler(void) {
 		break;
 	case 0x3f:		/* READ Read from file or device */
 		{ 
-			Bit16u toread=reg_cx;
+			Bit16u toread=DOS_GetAmount();
 			dos.echo=true;
 			if (DOS_ReadFile(reg_bx,dos_copybuf,&toread)) {
 				MEM_BlockWrite(SegPhys(ds)+reg_dx,dos_copybuf,toread);
@@ -659,7 +671,7 @@ static Bitu DOS_21Handler(void) {
 		}
 	case 0x40:					/* WRITE Write to file or device */
 		{
-			Bit16u towrite=reg_cx;
+			Bit16u towrite=DOS_GetAmount();
 			MEM_BlockRead(SegPhys(ds)+reg_dx,dos_copybuf,towrite);
 			if (DOS_WriteFile(reg_bx,dos_copybuf,&towrite)) {
 				reg_ax=towrite;

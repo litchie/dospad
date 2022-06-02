@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2002-2019  The DOSBox Team
+ *  Copyright (C) 2002-2020  The DOSBox Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -96,6 +96,7 @@ void incrementFDD(void) {
 		equipment|=(numofdisks<<6);
 	} else equipment|=1;
 	mem_writew(BIOS_CONFIGURATION,equipment);
+	if (IS_EGAVGA_ARCH) equipment &= ~0x30; //EGA/VGA startup display mode differs in CMOS
 	CMOS_SetRegister(0x14, (Bit8u)(equipment&0xff));
 }
 
