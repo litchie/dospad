@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2002-2019  The DOSBox Team
+ *  Copyright (C) 2002-2020  The DOSBox Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -133,7 +133,6 @@ enum BlockReturn {
 #define DYNFLG_ACTIVE		0x20	//Register has an active value
 
 class GenReg;
-class CodePageHandler;
 
 struct DynReg {
 	Bitu flags;
@@ -160,11 +159,14 @@ static struct {
 
 #define IllegalOption(msg) E_Exit("DYNX86: illegal option in " msg)
 
-#include "core_dyn_x86/cache.h" 
+#define dyn_return(a,b) gen_return(a)
+#include "dyn_cache.h"
+typedef CacheBlockDynRec CacheBlock;
+typedef CodePageHandlerDynRec CodePageHandler;
 
 static struct {
 	Bitu callback;
-	Bit32u readdata;
+	Bitu readdata;
 } core_dyn;
 
 #if defined(X86_DYNFPU_DH_ENABLED)

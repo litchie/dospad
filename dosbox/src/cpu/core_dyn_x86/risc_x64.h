@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2002-2019  The DOSBox Team
+ *  Copyright (C) 2002-2020  The DOSBox Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -124,7 +124,7 @@ private:
 					else { // try 32-bit absolute address
 						if ((Bit32s)offset != offset) IllegalOption("opcode::Emit: bad RIP address");
 						// change emitted modrm base from 5 to 4 (use sib)
-						cache.pos[-1] -= 1; 
+						cache_addb(modrm-1,cache.pos-1);
 						cache_addb(0x25); // sib: [none+1*none+simm32]
 					}
 				} else if ((modrm&7)!=4 || (sib&7)!=5)
@@ -1020,6 +1020,9 @@ static void gen_call_ptr(void *func=NULL, Bit8u ptr=0) {
 	x64gen.regs[X64_REG_R9]->Clear();
 	x64gen.regs[X64_REG_R10]->Clear();
 	x64gen.regs[X64_REG_R11]->Clear();
+	/* Make sure reg_esp is current */
+	if (DynRegs[G_ESP].flags & DYNFLG_CHANGED)
+		DynRegs[G_ESP].genreg->Save();
 
 	/* Do the actual call to the procedure */
 	if (func!=NULL) {
@@ -1135,7 +1138,7 @@ static void gen_fill_branch(Bit8u * data,Bit8u * from=cache.pos) {
 	Bits len=from-data-1;
 	if (len<0) len=~len;
 	if (len>127)
-		LOG_MSG("Big jump %d",len);
+		LOG_MSG("Big jump %" sBitfs(d),len);
 #endif
 	*data=(Bit8u)(from-data-1);
 }
@@ -1171,7 +1174,7 @@ static void gen_fill_short_jump(Bit8u * data, Bit8u * to=cache.pos) {
 	Bits len=to-data-1;
 	if (len<0) len=~len;
 	if (len>127)
-		LOG_MSG("Big jump %d",len);
+		LOG_MSG("Big jump %" sBitfs(d),len);
 #endif
 	data[0] = (Bit8u)(to-data-1);
 }

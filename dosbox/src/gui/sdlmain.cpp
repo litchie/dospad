@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2002-2019  The DOSBox Team
+ *  Copyright (C) 2002-2020  The DOSBox Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -513,9 +513,10 @@ static void KillSwitch(bool pressed) {
 static void PauseDOSBox(bool pressed) {
 	if (!pressed)
 		return;
+	SDLMod inkeymod = SDL_GetModState();
+
 	GFX_SetTitle(-1,-1,true);
 	bool paused = true;
-	KEYBOARD_ClrBuffer();
 	SDL_Delay(500);
 	SDL_Event event;
 	while (SDL_PollEvent(&event)) {
@@ -530,7 +531,15 @@ static void PauseDOSBox(bool pressed) {
 			case SDL_KEYDOWN:   // Must use Pause/Break Key to resume.
 			case SDL_KEYUP:
 			if(event.key.keysym.sym == SDLK_PAUSE) {
-
+				//SDLMod outkeymod = (event.key.keysym.mod);
+                SDLMod outkeymod = (event.key.keysym.mod);
+				if (inkeymod != outkeymod) {
+					KEYBOARD_ClrBuffer();
+					MAPPER_LosingFocus();
+					//Not perfect if the pressed alt key is switched, but then we have to 
+					//insert the keys into the mapper or create/rewrite the event and push it.
+					//Which is tricky due to possible use of scancodes.
+				}
 				paused = false;
 				GFX_SetTitle(-1,-1,false);
 				break;
@@ -1552,6 +1561,24 @@ static void SetPriority(PRIORITY_LEVELS level) {
 	case PRIORITY_LEVEL_HIGHEST:
 		setpriority (PRIO_PGRP, 0,PRIO_MAX-((3*PRIO_TOTAL)/4) );
 		break;
+#elif OS2
+	case PRIORITY_LEVEL_PAUSE:	// if DOSBox is paused, assume idle priority
+	case PRIORITY_LEVEL_LOWEST:
+		DosSetPriority(PRTYS_PROCESS, PRTYC_IDLETIME, 0, 0);
+		break;
+	case PRIORITY_LEVEL_LOWER:
+		DosSetPriority(PRTYS_PROCESS, PRTYC_REGULAR, -20, 0);
+		break;
+	case PRIORITY_LEVEL_NORMAL:
+		DosSetPriority(PRTYS_PROCESS, PRTYC_REGULAR, 0, 0);
+		break;
+	case PRIORITY_LEVEL_HIGHER:
+		DosSetPriority(PRTYS_PROCESS, PRTYC_REGULAR, 20, 0);
+		break;
+	case PRIORITY_LEVEL_HIGHEST:
+		DosSetPriority(PRTYS_PROCESS, PRTYC_TIMECRITICAL, 0, 0);
+		break;
+
 #endif
 	default:
 		break;
@@ -2476,8 +2503,34 @@ void Disable_OS_Scaling() {
 #endif
 }
 
+#ifdef OS2
+void os2_exit()
+{
+        PPIB pib;
+        PTIB tib;
+
+	SDL_WM_GrabInput(SDL_GRAB_OFF);
+	SDL_ShowCursor(SDL_ENABLE);
+
+	SDL_Quit();//Let's hope sdl will quit as well when it catches an exception
+        DosGetInfoBlocks(&tib, &pib);
+        if (pib->pib_ultype == 3) 
+        	pib->pib_ultype = 2;
+
+	exit(-1);
+}
+#endif
+
+
 //extern void UI_Init(void);
 int main(int argc, char* argv[]) {
+#ifdef OS2
+        PPIB pib;
+        PTIB tib;
+        
+        std::set_terminate(os2_exit);
+#endif
+
 	try {
 		Disable_OS_Scaling(); //Do this early on, maybe override it through some parameter.
 
@@ -2520,7 +2573,7 @@ int main(int argc, char* argv[]) {
 #endif  //defined(WIN32) && !(C_DEBUG)
 		if (control->cmdline->FindExist("-version") ||
 		    control->cmdline->FindExist("--version") ) {
-			printf("\nDOSBox version %s, copyright 2002-2019 DOSBox Team.\n\n",VERSION);
+			printf("\nDOSBox version %s, copyright 2002-2020 DOSBox Team.\n\n",VERSION);
 			printf("DOSBox is written by the DOSBox Team (See AUTHORS file))\n");
 			printf("DOSBox comes with ABSOLUTELY NO WARRANTY.  This is free software,\n");
 			printf("and you are welcome to redistribute it under certain conditions;\n");
@@ -2538,17 +2591,16 @@ int main(int argc, char* argv[]) {
 #endif
 
 #ifdef OS2
-        PPIB pib;
-        PTIB tib;
         DosGetInfoBlocks(&tib, &pib);
-        if (pib->pib_ultype == 2) pib->pib_ultype = 3;
+        if (pib->pib_ultype == 2) 
+        	pib->pib_ultype = 3;
         setbuf(stdout, NULL);
         setbuf(stderr, NULL);
 #endif
 
 	/* Display Welcometext in the console */
 	LOG_MSG("DOSBox version %s",VERSION);
-	LOG_MSG("Copyright 2002-2019 DOSBox Team, published under GNU GPL.");
+	LOG_MSG("Copyright 2002-2020 DOSBox Team, published under GNU GPL.");
 	LOG_MSG("---");
 
 	/* Init SDL */
@@ -2739,7 +2791,14 @@ int main(int argc, char* argv[]) {
 	SDL_ShowCursor(SDL_ENABLE);
 
 	SDL_Quit();//Let's hope sdl will quit as well when it catches an exception
+#ifdef OS2
+        DosGetInfoBlocks(&tib, &pib);
+        if (pib->pib_ultype == 3) 
+        	pib->pib_ultype = 2;
+        exit(0);
+#else	
 	return 0;
+#endif
 }
 
 void GFX_GetSize(int &width, int &height, bool &fullscreen) {

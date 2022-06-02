@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2002-2019  The DOSBox Team
+ *  Copyright (C) 2002-2020  The DOSBox Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -555,7 +555,7 @@ restart_prefix:
 		case 0xfb:		//STI
 			gen_call_function_raw((void *)&CPU_STI);
 			dyn_check_exception(FC_RETOP);
-			if (max_opcodes<=0) max_opcodes=1;		//Allow 1 extra opcode
+			max_opcodes=1;		//Allow 1 extra opcode
 			break;
 
 		case 0xfc:		//CLD

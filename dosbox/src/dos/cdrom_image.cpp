@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2002-2019  The DOSBox Team
+ *  Copyright (C) 2002-2020  The DOSBox Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -231,6 +231,7 @@ bool CDROM_Interface_Image::PlayAudioSector(unsigned long start,unsigned long le
 	// We might want to do some more checks. E.g valid start and length
 	SDL_mutexP(player.mutex);
 	player.cd = this;
+	player.bufLen = 0;
 	player.currFrame = start;
 	player.targetFrame = start + len;
 	int track = GetTrack(start) - 1;
@@ -341,7 +342,6 @@ void CDROM_Interface_Image::CDAudioCallBack(Bitu len)
 			player.isPlaying = false;
 		}
 	}
-	SDL_mutexV(player.mutex);
 	if (player.ctrlUsed) {
 		Bit16s sample0,sample1;
 		Bit16s * samples=(Bit16s *)&player.buffer;
@@ -365,6 +365,7 @@ void CDROM_Interface_Image::CDAudioCallBack(Bitu len)
 #endif
 	memmove(player.buffer, &player.buffer[len], player.bufLen - len);
 	player.bufLen -= len;
+	SDL_mutexV(player.mutex);
 }
 
 bool CDROM_Interface_Image::LoadIsoFile(char* filename)

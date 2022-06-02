@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2002-2019  The DOSBox Team
+ *  Copyright (C) 2002-2020  The DOSBox Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -153,6 +153,10 @@ static INLINE void FPU_SET_C2(Bitu C){
 static INLINE void FPU_SET_C3(Bitu C){
 	fpu.sw &= ~0x4000;
 	if(C) fpu.sw |= 0x4000;
+}
+
+static INLINE void FPU_LOG_WARN(Bitu tree, bool ea, Bitu group, Bitu sub) {
+	LOG(LOG_FPU,LOG_WARN)("ESC %" sBitfs(d) "%s:Unhandled group %" sBitfs(d) " subfunction %" sBitfs(d),tree,ea?" EA":"",group,sub);
 }
 
 #define DB_FPU_STACK_CHECK_NONE 0

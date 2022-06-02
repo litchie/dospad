@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2002-2019  The DOSBox Team
+ *  Copyright (C) 2002-2020  The DOSBox Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -842,6 +842,12 @@ void SHELL_Init() {
 	DOS_ForceDuplicateEntry(1,2);				/* STDERR */
 	DOS_OpenFile("CON",OPEN_READWRITE,&dummy);	/* STDAUX */
 	DOS_OpenFile("PRN",OPEN_READWRITE,&dummy);	/* STDPRN */
+
+	/* Create appearance of handle inheritance by first shell */
+	for (Bit16u i=0;i<5;i++) {
+		Bit8u handle=psp.GetFileHandle(i);
+		if (Files[handle]) Files[handle]->AddRef();
+	}
 
 	psp.SetParent(psp_seg);
 	/* Set the environment */

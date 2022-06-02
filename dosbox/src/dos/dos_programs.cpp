@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2002-2019  The DOSBox Team
+ *  Copyright (C) 2002-2020  The DOSBox Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -428,15 +428,10 @@ public:
 				if(temp_line == "/") WriteOut(MSG_Get("PROGRAM_MOUNT_WARNING_OTHER"));
 #endif
 				if(type == "overlay") {
-					//Ensure that the base drive exists:
-					if (!Drives[drive-'A']) { 
-						WriteOut("No basedrive mounted yet!");
-						return;
-					}
 					localDrive* ldp = dynamic_cast<localDrive*>(Drives[drive-'A']);
 					cdromDrive* cdp = dynamic_cast<cdromDrive*>(Drives[drive-'A']);
 					if (!ldp || cdp) {
-						WriteOut("Basedrive not compatible");
+						WriteOut(MSG_Get("PROGRAM_MOUNT_OVERLAY_INCOMPAT_BASE"));
 						return;
 					}
 					std::string base = ldp->getBasedir();
@@ -445,29 +440,30 @@ public:
 					//Erase old drive on success
 					if (newdrive) {
 						if (o_error) { 
-							if (o_error == 1) WriteOut("No mixing of relative and absolute paths. Overlay failed.");
-							else if (o_error == 2) WriteOut("overlay directory can not be the same as underlying file system.");
-							else WriteOut("Something went wrong");
+							if (o_error == 1) WriteOut(MSG_Get("PROGRAM_MOUNT_OVERLAY_MIXED_BASE"));
+							else if (o_error == 2) WriteOut(MSG_Get("PROGRAM_MOUNT_OVERLAY_SAME_AS_BASE"));
+							else WriteOut(MSG_Get("PROGRAM_MOUNT_OVERLAY_GENERIC_ERROR"));
 							delete newdrive;
 							return;
 						}
+
+						//Copy current directory if not marked as deleted.
+						if (newdrive->TestDir(ldp->curdir)) {
+							strcpy(newdrive->curdir,ldp->curdir);
+						}
+
 						delete Drives[drive-'A'];
 						Drives[drive-'A'] = 0;
 					} else { 
-						WriteOut("overlaydrive construction failed.");
+						WriteOut(MSG_Get("PROGRAM_MOUNT_OVERLAY_GENERIC_ERROR"));
 						return;
 					}
 				} else {
-					newdrive=new localDrive(temp_line.c_str(),sizes[0],bit8size,sizes[2],sizes[3],mediaid);
+					newdrive = new localDrive(temp_line.c_str(),sizes[0],bit8size,sizes[2],sizes[3],mediaid);
 				}
 			}
 		} else {
 			WriteOut(MSG_Get("PROGRAM_MOUNT_ILL_TYPE"),type.c_str());
-			return;
-		}
-		if (Drives[drive-'A']) {
-			WriteOut(MSG_Get("PROGRAM_MOUNT_ALREADY_MOUNTED"),drive,Drives[drive-'A']->GetInfo());
-			if (newdrive) delete newdrive;
 			return;
 		}
 		if (!newdrive) E_Exit("DOS:Can't create drive");
@@ -475,7 +471,7 @@ public:
 		/* Set the correct media byte in the table */
 		mem_writeb(Real2Phys(dos.tables.mediaid)+(drive-'A')*9,newdrive->GetMediaByte());
 		if (type != "overlay") WriteOut(MSG_Get("PROGRAM_MOUNT_STATUS_2"),drive,newdrive->GetInfo());
-		else WriteOut("Overlay %s on drive %c mounted.\n",temp_line.c_str(),drive);
+		else WriteOut(MSG_Get("PROGRAM_MOUNT_OVERLAY_STATUS"),temp_line.c_str(),drive);
 		/* check if volume label is given and don't allow it to updated in the future */
 		if (cmd->FindString("-label",label,true)) newdrive->dirCache.SetLabel(label.c_str(),iscdrom,false);
 		/* For hard drives set the label to DRIVELETTER_Drive.
@@ -1127,16 +1123,15 @@ void LOADFIX::Run(void)
 			char filename[128];
 			safe_strncpy(filename,temp_line.c_str(),128);
 			// Setup commandline
-			bool ok;
-			char args[256];
+			char args[256+1];
 			args[0] = 0;
-			do {
-				ok = cmd->FindCommand(commandNr++,temp_line);
-				if(sizeof(args)-strlen(args)-1 < temp_line.length()+1)
-					break;
+			bool found = cmd->FindCommand(commandNr++,temp_line);
+			while (found) {
+				if (strlen(args)+temp_line.length()+1>256) break;
 				strcat(args,temp_line.c_str());
-				strcat(args," ");
-			} while (ok);			
+				found = cmd->FindCommand(commandNr++,temp_line);
+				if (found) strcat(args," ");
+			}
 			// Use shell to start program
 			DOS_Shell shell;
 			shell.Execute(filename,args);
@@ -1677,6 +1672,12 @@ void DOS_SetupPrograms(void) {
 	MSG_Add("PROGRAM_MOUNT_UMOUNT_NO_VIRTUAL","Virtual Drives can not be unMOUNTed.\n");
 	MSG_Add("PROGRAM_MOUNT_WARNING_WIN","\033[31;1mMounting c:\\ is NOT recommended. Please mount a (sub)directory next time.\033[0m\n");
 	MSG_Add("PROGRAM_MOUNT_WARNING_OTHER","\033[31;1mMounting / is NOT recommended. Please mount a (sub)directory next time.\033[0m\n");
+	MSG_Add("PROGRAM_MOUNT_OVERLAY_NO_BASE","A normal directory needs to be MOUNTed first before an overlay can be added on top.\n");
+	MSG_Add("PROGRAM_MOUNT_OVERLAY_INCOMPAT_BASE","The overlay is NOT compatible with the drive that is specified.\n");
+	MSG_Add("PROGRAM_MOUNT_OVERLAY_MIXED_BASE","The overlay needs to be specified using the same addressing as the underlying drive. No mixing of relative and absolute paths.");
+	MSG_Add("PROGRAM_MOUNT_OVERLAY_SAME_AS_BASE","The overlay directory can not be the same as underlying drive.\n");
+	MSG_Add("PROGRAM_MOUNT_OVERLAY_GENERIC_ERROR","Something went wrong.\n");
+	MSG_Add("PROGRAM_MOUNT_OVERLAY_STATUS","Overlay %s on drive %c mounted.\n");
 
 	MSG_Add("PROGRAM_MEM_CONVEN","%10d Kb free conventional memory\n");
 	MSG_Add("PROGRAM_MEM_EXTEND","%10d Kb free extended memory\n");
