@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2002-2020  The DOSBox Team
+ *  Copyright (C) 2002-2021  The DOSBox Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -139,7 +139,8 @@ static Bitu INT10_Handler(void) {
 		break;
 	case 0x0F:								/* Get videomode */
 		reg_bh=real_readb(BIOSMEM_SEG,BIOSMEM_CURRENT_PAGE);
-		reg_al=real_readb(BIOSMEM_SEG,BIOSMEM_CURRENT_MODE)|(real_readb(BIOSMEM_SEG,BIOSMEM_VIDEO_CTL)&0x80);
+		reg_al=real_readb(BIOSMEM_SEG,BIOSMEM_CURRENT_MODE);
+		if (IS_EGAVGA_ARCH) reg_al|=real_readb(BIOSMEM_SEG,BIOSMEM_VIDEO_CTL)&0x80;
 		reg_ah=(Bit8u)real_readw(BIOSMEM_SEG,BIOSMEM_NB_COLS);
 		break;					
 	case 0x10:								/* Palette functions */
@@ -449,45 +450,8 @@ graphics_chars:
 		break;
 	case 0x1A:								/* Display Combination */
 		if (!IS_VGA_ARCH) break;
-		if (reg_al==0) {	// get dcc
-			// walk the tables...
-			RealPt vsavept=real_readd(BIOSMEM_SEG,BIOSMEM_VS_POINTER);
-			RealPt svstable=real_readd(RealSeg(vsavept),RealOff(vsavept)+0x10);
-			if (svstable) {
-				RealPt dcctable=real_readd(RealSeg(svstable),RealOff(svstable)+0x02);
-				Bit8u entries=real_readb(RealSeg(dcctable),RealOff(dcctable)+0x00);
-				Bit8u idx=real_readb(BIOSMEM_SEG,BIOSMEM_DCC_INDEX);
-				// check if index within range
-				if (idx<entries) {
-					Bit16u dccentry=real_readw(RealSeg(dcctable),RealOff(dcctable)+0x04+idx*2);
-					if ((dccentry&0xff)==0) reg_bx=dccentry>>8;
-					else reg_bx=dccentry;
-				} else reg_bx=0xffff;
-			} else reg_bx=0xffff;
-			reg_ax=0x1A;	// high part destroyed or zeroed depending on BIOS
-		} else if (reg_al==1) {	// set dcc
-			Bit8u newidx=0xff;
-			// walk the tables...
-			RealPt vsavept=real_readd(BIOSMEM_SEG,BIOSMEM_VS_POINTER);
-			RealPt svstable=real_readd(RealSeg(vsavept),RealOff(vsavept)+0x10);
-			if (svstable) {
-				RealPt dcctable=real_readd(RealSeg(svstable),RealOff(svstable)+0x02);
-				Bit8u entries=real_readb(RealSeg(dcctable),RealOff(dcctable)+0x00);
-				if (entries) {
-					Bitu ct;
-					Bit16u swpidx=reg_bh|(reg_bl<<8);
-					// search the ddc index in the dcc table
-					for (ct=0; ct<entries; ct++) {
-						Bit16u dccentry=real_readw(RealSeg(dcctable),RealOff(dcctable)+0x04+ct*2);
-						if ((dccentry==reg_bx) || (dccentry==swpidx)) {
-							newidx=(Bit8u)ct;
-							break;
-						}
-					}
-				}
-			}
-
-			real_writeb(BIOSMEM_SEG,BIOSMEM_DCC_INDEX,newidx);
+		if (reg_al<2) {
+			INT10_DisplayCombinationCode(&reg_bx,reg_al==1);
 			reg_ax=0x1A;	// high part destroyed or zeroed depending on BIOS
 		}
 		break;
@@ -704,18 +668,20 @@ graphics_chars:
 }
 
 static void INT10_Seg40Init(void) {
-	// the default char height
-	real_writeb(BIOSMEM_SEG,BIOSMEM_CHAR_HEIGHT,16);
-	// Clear the screen 
-	real_writeb(BIOSMEM_SEG,BIOSMEM_VIDEO_CTL,0x60);
-	// Set the basic screen we have
-	real_writeb(BIOSMEM_SEG,BIOSMEM_SWITCHES,0xF9);
-	// Set the basic modeset options
-	real_writeb(BIOSMEM_SEG,BIOSMEM_MODESET_CTL,0x51);
-	// Set the  default MSR
+	// Set the default MSR
 	real_writeb(BIOSMEM_SEG,BIOSMEM_CURRENT_MSR,0x09);
-	// Set the pointer to video save pointer table
-	real_writed(BIOSMEM_SEG,BIOSMEM_VS_POINTER,int10.rom.video_save_pointers);
+	if (IS_EGAVGA_ARCH) {
+		// Set the default char height
+		real_writeb(BIOSMEM_SEG,BIOSMEM_CHAR_HEIGHT,16);
+		// Clear the screen 
+		real_writeb(BIOSMEM_SEG,BIOSMEM_VIDEO_CTL,0x60);
+		// Set the basic screen we have
+		real_writeb(BIOSMEM_SEG,BIOSMEM_SWITCHES,0xF9);
+		// Set the basic modeset options
+		real_writeb(BIOSMEM_SEG,BIOSMEM_MODESET_CTL,0x51);
+		// Set the pointer to video save pointer table
+		real_writed(BIOSMEM_SEG,BIOSMEM_VS_POINTER,int10.rom.video_save_pointers);
+	}
 }
 
 

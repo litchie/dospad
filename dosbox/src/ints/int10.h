@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2002-2020  The DOSBox Team
+ *  Copyright (C) 2002-2021  The DOSBox Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -94,7 +94,8 @@
 #define VGAMEM_MTEXT 0xB000
 
 #define BIOS_NCOLS Bit16u ncols=real_readw(BIOSMEM_SEG,BIOSMEM_NB_COLS);
-#define BIOS_NROWS Bit16u nrows=(Bit16u)real_readb(BIOSMEM_SEG,BIOSMEM_NB_ROWS)+1;
+#define BIOS_NROWS Bit16u nrows=IS_EGAVGA_ARCH?((Bit16u)real_readb(BIOSMEM_SEG,BIOSMEM_NB_ROWS)+1):25;
+#define BIOS_CHEIGHT Bit8u cheight=IS_EGAVGA_ARCH?real_readb(BIOSMEM_SEG,BIOSMEM_CHAR_HEIGHT):8;
 
 extern Bit8u int10_font_08[256 * 8];
 extern Bit8u int10_font_14[256 * 14];
@@ -163,6 +164,7 @@ void INT10_SetCurMode(void);
 void INT10_ScrollWindow(Bit8u rul,Bit8u cul,Bit8u rlr,Bit8u clr,Bit8s nlines,Bit8u attr,Bit8u page);
 
 void INT10_SetActivePage(Bit8u page);
+void INT10_DisplayCombinationCode(Bit16u * dcc,bool set);
 void INT10_GetFuncStateInformation(PhysPt save);
 
 void INT10_SetCursorShape(Bit8u first,Bit8u last);

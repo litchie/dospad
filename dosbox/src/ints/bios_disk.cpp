@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2002-2020  The DOSBox Team
+ *  Copyright (C) 2002-2021  The DOSBox Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -30,16 +30,17 @@
 
 
 diskGeo DiskGeometryList[] = {
-	{ 160,  8, 1, 40, 0},
-	{ 180,  9, 1, 40, 0},
-	{ 200, 10, 1, 40, 0},
-	{ 320,  8, 2, 40, 1},
-	{ 360,  9, 2, 40, 1},
-	{ 400, 10, 2, 40, 1},
-	{ 720,  9, 2, 80, 3},
-	{1200, 15, 2, 80, 2},
-	{1440, 18, 2, 80, 4},
-	{2880, 36, 2, 80, 6},
+	{ 160,  8, 1, 40, 0},	// SS/DD 5.25"
+	{ 180,  9, 1, 40, 0},	// SS/DD 5.25"
+	{ 200, 10, 1, 40, 0},	// SS/DD 5.25" (booters)
+	{ 320,  8, 2, 40, 1},	// DS/DD 5.25"
+	{ 360,  9, 2, 40, 1},	// DS/DD 5.25"
+	{ 400, 10, 2, 40, 1},	// DS/DD 5.25" (booters)
+	{ 720,  9, 2, 80, 3},	// DS/DD 3.5"
+	{1200, 15, 2, 80, 2},	// DS/HD 5.25"
+	{1440, 18, 2, 80, 4},	// DS/HD 3.5"
+	{1680, 21, 2, 80, 4},	// DS/HD 3.5"  (DMF)
+	{2880, 36, 2, 80, 6},	// DS/ED 3.5"
 	{0, 0, 0, 0, 0}
 };
 
@@ -53,7 +54,7 @@ DOS_DTA *imgDTA;
 bool killRead;
 static bool swapping_requested;
 
-void CMOS_SetRegister(Bitu regNr, Bit8u val); //For setting equipment word
+void BIOS_SetEquipment(Bit16u equipment);
 
 /* 2 floppys and 2 harddrives, max */
 imageDisk *imageDiskList[MAX_DISK_IMAGES];
@@ -95,9 +96,7 @@ void incrementFDD(void) {
 		equipment&=~0x00C0;
 		equipment|=(numofdisks<<6);
 	} else equipment|=1;
-	mem_writew(BIOS_CONFIGURATION,equipment);
-	if (IS_EGAVGA_ARCH) equipment &= ~0x30; //EGA/VGA startup display mode differs in CMOS
-	CMOS_SetRegister(0x14, (Bit8u)(equipment&0xff));
+	BIOS_SetEquipment(equipment);
 }
 
 void swapInDisks(void) {
@@ -281,7 +280,7 @@ static Bit8u GetDosDriveNumber(Bit8u biosNum) {
 }
 
 static bool driveInactive(Bit8u driveNum) {
-	if(driveNum>=(2 + MAX_HDD_IMAGES)) {
+	if(driveNum>=MAX_DISK_IMAGES) {
 		LOG(LOG_BIOS,LOG_ERROR)("Disk %d non-existant", driveNum);
 		last_status = 0x01;
 		CALLBACK_SCF(true);
@@ -362,7 +361,7 @@ static Bitu INT13_DiskHandler(void) {
 			CALLBACK_SCF(true);
 			return CBRET_NONE;
 		}
-		if (!any_images) {
+		if (drivenum < MAX_DISK_IMAGES && imageDiskList[drivenum] == NULL) {
 			if (drivenum >= DOS_DRIVES || !Drives[drivenum] || Drives[drivenum]->isRemovable()) {
 				reg_ah = 0x01;
 				CALLBACK_SCF(true);
@@ -371,10 +370,9 @@ static Bitu INT13_DiskHandler(void) {
 			// Inherit the Earth cdrom and Amberstar use it as a disk test
 			if (((reg_dl&0x80)==0x80) && (reg_dh==0) && ((reg_cl&0x3f)==1)) {
 				if (reg_ch==0) {
-					PhysPt ptr = PhysMake(SegValue(es),reg_bx);
 					// write some MBR data into buffer for Amberstar installer
-					mem_writeb(ptr+0x1be,0x80); // first partition is active
-					mem_writeb(ptr+0x1c2,0x06); // first partition is FAT16B
+					real_writeb(SegValue(es),reg_bx+0x1be,0x80); // first partition is active
+					real_writeb(SegValue(es),reg_bx+0x1c2,0x06); // first partition is FAT16B
 				}
 				reg_ah = 0;
 				CALLBACK_SCF(false);

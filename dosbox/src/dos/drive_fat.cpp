@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2002-2020  The DOSBox Team
+ *  Copyright (C) 2002-2021  The DOSBox Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -165,7 +165,8 @@ bool fatFile::Write(Bit8u * data, Bit16u *size) {
 
 	if(seekpos < filelength && *size == 0) {
 		/* Truncate file to current position */
-		myDrive->deleteClustChain(firstCluster, seekpos);
+		if(firstCluster != 0) myDrive->deleteClustChain(firstCluster, seekpos);
+		if(seekpos == 0) firstCluster = 0;
 		filelength = seekpos;
 		goto finalizeWrite;
 	}
@@ -525,6 +526,13 @@ Bit8u fatDrive::writeSector(Bit32u sectnum, void * data) {
 	Bit32u head = sectnum / bootbuffer.sectorspertrack;
 	Bit32u sector = sectnum % bootbuffer.sectorspertrack + 1L;
 	return loadedDisk->Write_Sector(head, cylinder, sector, data);
+}
+
+Bit32u fatDrive::getSectorCount(void) {
+	if (bootbuffer.totalsectorcount != 0)
+		return (Bit32u)bootbuffer.totalsectorcount;
+	else
+		return bootbuffer.totalsecdword;
 }
 
 Bit32u fatDrive::getSectorSize(void) {
@@ -926,9 +934,12 @@ bool fatDrive::FileCreate(DOS_File **file, char *name, Bit16u attributes) {
 	/* Check if file already exists */
 	if(getFileDirEntry(name, &fileEntry, &dirClust, &subEntry)) {
 		/* Truncate file */
-		fileEntry.entrysize=0;
+		if(fileEntry.loFirstClust != 0) {
+			deleteClustChain(fileEntry.loFirstClust, 0);
+			fileEntry.loFirstClust = 0;
+		}
+		fileEntry.entrysize = 0;
 		directoryChange(dirClust, &fileEntry, subEntry);
-		if(fileEntry.loFirstClust != 0) deleteClustChain(fileEntry.loFirstClust, 0);
 	} else {
 		/* Can we even get the name of the file itself? */
 		if(!getEntryName(name, &dirName[0])) return false;
@@ -962,8 +973,10 @@ bool fatDrive::FileCreate(DOS_File **file, char *name, Bit16u attributes) {
 bool fatDrive::FileExists(const char *name) {
 	direntry fileEntry;
 	Bit32u dummy1, dummy2;
-	if(!getFileDirEntry(name, &fileEntry, &dummy1, &dummy2)) return false;
-	return true;
+	Bit16u save_errorcode = dos.errorcode;
+	bool found = getFileDirEntry(name, &fileEntry, &dummy1, &dummy2);
+	dos.errorcode = save_errorcode;
+	return found;
 }
 
 bool fatDrive::FileOpen(DOS_File **file, char *name, Bit32u flags) {

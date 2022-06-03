@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2002-2020  The DOSBox Team
+ *  Copyright (C) 2002-2021  The DOSBox Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -48,7 +48,7 @@ static CacheBlockDynRec * CreateCacheBlock(CodePageHandlerDynRec * codepage,Phys
 
 	// every codeblock that is run sets cache.block.running to itself
 	// so the block linking knows the last executed block
-	gen_mov_direct_ptr(&cache.block.running,(DRC_PTR_SIZE_IM)decode.block);
+	gen_mov_direct_ptr(&cache.block.running,(Bitu)decode.block);
 
 	// start with the cycles check
 	gen_mov_word_to_reg(FC_RETOP,&CPU_Cycles,true);
@@ -327,7 +327,11 @@ restart_prefix:
 		case 0x8c:dyn_mov_ev_seg();break;
 
 		// load effective address
-		case 0x8d:dyn_lea();break;
+		case 0x8d:
+			dyn_get_modrm();
+			if (GCC_UNLIKELY(decode.modrm.mod==3)) goto illegalopcode;
+			dyn_lea();
+			break;
 
 		// move a value from memory or a 16bit register into a segment register
 		case 0x8e:dyn_mov_seg_ev();break;

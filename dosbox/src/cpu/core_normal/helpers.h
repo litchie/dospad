@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2002-2020  The DOSBox Team
+ *  Copyright (C) 2002-2021  The DOSBox Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -160,3 +160,13 @@
 #define CASE_0F_B(_WHICH)						\
 	CASE_0F_W(_WHICH)							\
 	CASE_0F_D(_WHICH)
+
+#define FixEA16 do {							\
+		switch (rm & 7) {						\
+			case 6:	if (rm < 0x40) break;		\
+			case 2:								\
+			case 3:								\
+				BaseDS=BaseSS;					\
+		}										\
+		eaa=BaseDS+(Bit16u)(eaa-BaseDS);        \
+	} while(0)
