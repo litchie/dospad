@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2002-2020  The DOSBox Team
+ *  Copyright (C) 2002-2021  The DOSBox Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -252,7 +252,8 @@ static Bitu IRQ1_Handler(void) {
 //LOG_MSG("key input %d %d %d %d",scancode,flags1,flags2,flags3);
 	switch (scancode) {
 	/* First the hard ones  */
-	case 0xfa:	/* ack. Do nothing for now */
+	case 0xfa:	/* Acknowledge */
+		leds |=0x10;
 		break;
 	case 0xe1:	/* Extended key special. Only pause uses this */
 		flags3 |=0x01;

@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2002-2020  The DOSBox Team
+ *  Copyright (C) 2002-2021  The DOSBox Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -191,6 +191,7 @@
 				SETFLAGBIT(CF,(*eard & mask));
 			} else {
 				GetEAa;eaa+=(((Bit32s)*rmrd)>>5)*4;
+				if (!TEST_PREFIX_ADDR) FixEA16;
 				Bit32u old=LoadMd(eaa);
 				SETFLAGBIT(CF,(old & mask));
 			}
@@ -217,6 +218,7 @@
 				*eard|=mask;
 			} else {
 				GetEAa;eaa+=(((Bit32s)*rmrd)>>5)*4;
+				if (!TEST_PREFIX_ADDR) FixEA16;
 				Bit32u old=LoadMd(eaa);
 				SETFLAGBIT(CF,(old & mask));
 				SaveMd(eaa,old | mask);
@@ -282,6 +284,7 @@
 				*eard&= ~mask;
 			} else {
 				GetEAa;eaa+=(((Bit32s)*rmrd)>>5)*4;
+				if (!TEST_PREFIX_ADDR) FixEA16;
 				Bit32u old=LoadMd(eaa);
 				SETFLAGBIT(CF,(old & mask));
 				SaveMd(eaa,old & ~mask);
@@ -377,6 +380,7 @@
 				*eard^=mask;
 			} else {
 				GetEAa;eaa+=(((Bit32s)*rmrd)>>5)*4;
+				if (!TEST_PREFIX_ADDR) FixEA16;
 				Bit32u old=LoadMd(eaa);
 				SETFLAGBIT(CF,(old & mask));
 				SaveMd(eaa,old ^ mask);

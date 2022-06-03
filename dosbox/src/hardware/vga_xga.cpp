@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2002-2020  The DOSBox Team
+ *  Copyright (C) 2002-2021  The DOSBox Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -857,10 +857,8 @@ void XGA_DrawPattern(Bitu val) {
 
 			if(mixselect == 0x3) {
 				// TODO lots of guessing here but best results this way
-				/*if(srcdata == xga.forecolor)*/ mixmode = xga.foremix;
-				// else 
-				if(srcdata == xga.backcolor || srcdata == 0) 
-					mixmode = xga.backmix;
+				if(srcdata) mixmode = xga.foremix;
+				else mixmode = xga.backmix;
 			}
 
 			switch((mixmode >> 5) & 0x03) {

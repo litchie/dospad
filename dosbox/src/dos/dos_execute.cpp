@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2002-2020  The DOSBox Team
+ *  Copyright (C) 2002-2021  The DOSBox Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -327,7 +327,7 @@ bool DOS_Execute(char * name,PhysPt block_pt,Bit8u flags) {
 				pos=0;DOS_SeekFile(fhandle,&pos,DOS_SEEK_SET);	
 				Bit16u dataread=0x1800;
 				DOS_ReadFile(fhandle,loadbuf,&dataread);
-				if (dataread<0x1800) maxsize=dataread;
+				if (dataread<0x1800) maxsize=((dataread+0x10)>>4)+0x20;
 				if (minsize>maxsize) minsize=maxsize;
 			}
 		} else {	/* Exe size calculated from header */
@@ -347,6 +347,7 @@ bool DOS_Execute(char * name,PhysPt block_pt,Bit8u flags) {
 				DOS_CloseFile(fhandle);
 				DOS_SetError(DOSERR_INSUFFICIENT_MEMORY);
 				DOS_FreeMemory(envseg);
+				delete[] loadbuf;
 				return false;
 			}
 		}
@@ -357,6 +358,7 @@ bool DOS_Execute(char * name,PhysPt block_pt,Bit8u flags) {
 			maxsize=0xffff;
 			/* resize to full extent of memory block */
 			DOS_ResizeMemory(pspseg,&maxsize);
+			memsize=maxsize;
 		}
 		loadseg=pspseg+16;
 		if (!iscom) {
@@ -408,7 +410,12 @@ bool DOS_Execute(char * name,PhysPt block_pt,Bit8u flags) {
 		SetupCMDLine(pspseg,block);
 	};
 	CALLBACK_SCF(false);		/* Carry flag cleared for caller if successfull */
-	if (flags==OVERLAY) return true;			/* Everything done for overlays */
+	if (flags==OVERLAY) {
+		/* Changed registers */
+		reg_ax=0;
+		reg_dx=0;
+		return true;			/* Everything done for overlays */
+	}
 	RealPt csip,sssp;
 	if (iscom) {
 		csip=RealMake(pspseg,0x100);
@@ -421,6 +428,8 @@ bool DOS_Execute(char * name,PhysPt block_pt,Bit8u flags) {
 		csip=RealMake(loadseg+head.initCS,head.initIP);
 		sssp=RealMake(loadseg+head.initSS,head.initSP);
 		if (head.initSP<4) LOG(LOG_EXEC,LOG_ERROR)("stack underflow/wrap at EXEC");
+		if ((pspseg+memsize)<(RealSeg(sssp)+(RealOff(sssp)>>4)))
+			LOG(LOG_EXEC,LOG_ERROR)("stack outside memory block at EXEC");
 	}
 
 	if ((flags==LOAD) || (flags==LOADNGO)) {

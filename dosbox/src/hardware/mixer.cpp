@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2002-2020  The DOSBox Team
+ *  Copyright (C) 2002-2021  The DOSBox Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -60,7 +60,7 @@
 #define FREQ_NEXT ( 1 << FREQ_SHIFT)
 #define FREQ_MASK ( FREQ_NEXT -1 )
 
-#define TICK_SHIFT 14
+#define TICK_SHIFT 24
 #define TICK_NEXT ( 1 << TICK_SHIFT)
 #define TICK_MASK (TICK_NEXT -1)
 
@@ -225,7 +225,7 @@ void MixerChannel::AddSilence(void) {
 template<class Type,bool stereo,bool signeddata,bool nativeorder>
 inline void MixerChannel::AddSamples(Bitu len, const Type* data) {
 	last_samples_were_stereo = stereo;
-	
+
 	//Position where to write the data
 	Bitu mixpos = mixer.pos + done;
 	//Position in the incoming data
@@ -459,8 +459,8 @@ void MixerChannel::FillUp(void) {
 
 extern bool ticksLocked;
 static inline bool Mixer_irq_important(void) {
-	/* In some states correct timing of the irqs is more important then
-	 * non stuttering audo */
+	/* In some states correct timing of the irqs is more important than
+	 * non stuttering audio */
 	return (ticksLocked || (CaptureState & (CAPTURE_WAVE|CAPTURE_VIDEO)));
 }
 
@@ -532,21 +532,26 @@ static void MIXER_Mix_NoSound(void) {
 	mixer.done=0;
 }
 
-static void SDLCALL MIXER_CallBack(void * userdata, Uint8 *stream, int len) {
+
+#define INDEX_SHIFT_LOCAL 14
+
+static void SDLCALL MIXER_CallBack(void * /*userdata*/, Uint8 *stream, int len) {
 	Bitu need=(Bitu)len/MIXER_SSIZE;
 	Bit16s * output=(Bit16s *)stream;
 	Bitu reduce;
 	Bitu pos;
 	//Local resampling counter to manipulate the data when sending it off to the callback
-	Bitu index, index_add;
+	Bitu index_add = (1<<INDEX_SHIFT_LOCAL);
+	Bitu index = (index_add%need)?need:0;
+
 	Bits sample;
 	/* Enough room in the buffer ? */
 	if (mixer.done < need) {
 //		LOG_MSG("Full underrun need %d, have %d, min %d", need, mixer.done, mixer.min_needed);
-		if((need - mixer.done) > (need >>7) ) //Max 1 procent stretch.
+		if((need - mixer.done) > (need >>7) ) //Max 1 percent stretch.
 			return;
 		reduce = mixer.done;
-		index_add = (reduce << TICK_SHIFT) / need;
+		index_add = (reduce << INDEX_SHIFT_LOCAL) / need;
 		mixer.tick_add = calc_tickadd(mixer.freq+mixer.min_needed);
 	} else if (mixer.done < mixer.max_needed) {
 		Bitu left = mixer.done - need;
@@ -562,10 +567,10 @@ static void SDLCALL MIXER_CallBack(void * userdata, Uint8 *stream, int len) {
 			}
 //			LOG_MSG("needed underrun need %d, have %d, min %d, left %d", need, mixer.done, mixer.min_needed, left);
 			reduce = need - left;
-			index_add = (reduce << TICK_SHIFT) / need;
+			index_add = (reduce << INDEX_SHIFT_LOCAL) / need;
 		} else {
 			reduce = need;
-			index_add = (1 << TICK_SHIFT);
+			index_add = (1 << INDEX_SHIFT_LOCAL);
 //			LOG_MSG("regular run need %d, have %d, min %d, left %d", need, mixer.done, mixer.min_needed, left);
 
 			/* Mixer tick value being updated:
@@ -590,7 +595,7 @@ static void SDLCALL MIXER_CallBack(void * userdata, Uint8 *stream, int len) {
 			index_add = MIXER_BUFSIZE - 2*mixer.min_needed;
 		else
 			index_add = mixer.done - 2*mixer.min_needed;
-		index_add = (index_add << TICK_SHIFT) / need;
+		index_add = (index_add << INDEX_SHIFT_LOCAL) / need;
 		reduce = mixer.done - 2* mixer.min_needed;
 		mixer.tick_add = calc_tickadd(mixer.freq-(mixer.min_needed/5));
 	}
@@ -608,10 +613,9 @@ static void SDLCALL MIXER_CallBack(void * userdata, Uint8 *stream, int len) {
 	mixer.needed -= reduce;
 	pos = mixer.pos;
 	mixer.pos = (mixer.pos + reduce) & MIXER_BUFMASK;
-	index = 0;
 	if(need != reduce) {
 		while (need--) {
-			Bitu i = (pos + (index >> TICK_SHIFT )) & MIXER_BUFMASK;
+			Bitu i = (pos + (index >> INDEX_SHIFT_LOCAL )) & MIXER_BUFMASK;
 			index += index_add;
 			sample=mixer.work[i][0]>>MIXER_VOLSHIFT;
 			*output++=MIXER_CLIP(sample);
@@ -639,7 +643,9 @@ static void SDLCALL MIXER_CallBack(void * userdata, Uint8 *stream, int len) {
 	}
 }
 
-static void MIXER_Stop(Section* sec) {
+#undef INDEX_SHIFT_LOCAL
+
+static void MIXER_Stop(Section* /*sec*/) {
 }
 
 class MIXER : public Program {
@@ -766,7 +772,7 @@ void MIXER_Init(Section* sec) {
 		mixer.tick_add=calc_tickadd(mixer.freq);
 		TIMER_AddTickHandler(MIXER_Mix_NoSound);
 	} else {
-		if((mixer.freq != obtained.freq) || (mixer.blocksize != obtained.samples))
+		if ((mixer.freq != static_cast<Bit32u>(obtained.freq)) || (mixer.blocksize != obtained.samples))
 			LOG_MSG("MIXER: Got different values from SDL: freq %d, blocksize %d",obtained.freq,obtained.samples);
 		mixer.freq=obtained.freq;
 		mixer.blocksize=obtained.samples;
@@ -774,10 +780,13 @@ void MIXER_Init(Section* sec) {
 		TIMER_AddTickHandler(MIXER_Mix);
 		SDL_PauseAudio(0);
 	}
-	mixer.min_needed=section->Get_int("prebuffer");
-	if (mixer.min_needed>100) mixer.min_needed=100;
-	mixer.min_needed=(mixer.freq*mixer.min_needed)/1000;
-	mixer.max_needed=mixer.blocksize * 2 + 2*mixer.min_needed;
-	mixer.needed=mixer.min_needed+1;
+	//1000 = 8 *125
+	mixer.tick_counter = (mixer.freq%125)?TICK_NEXT:0;
+
+	mixer.min_needed = section->Get_int("prebuffer");
+	if (mixer.min_needed > 100) mixer.min_needed = 100;
+	mixer.min_needed = (mixer.freq*mixer.min_needed)/1000;
+	mixer.max_needed = mixer.blocksize * 2 + 2*mixer.min_needed;
+	mixer.needed = mixer.min_needed+1;
 	PROGRAMS_MakeFile("MIXER.COM",MIXER_ProgramStart);
 }

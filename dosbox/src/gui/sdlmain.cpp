@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2002-2020  The DOSBox Team
+ *  Copyright (C) 2002-2021  The DOSBox Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -251,6 +251,9 @@ struct SDL_Block {
 		struct {
 			Bit16u width, height;
 		} window;
+		struct {
+			Bit16u width, height;
+		} fullwrap;
 		Bit8u bpp;
 		bool fullscreen;
 		bool lazy_fullscreen;
@@ -288,7 +291,8 @@ struct SDL_Block {
 	struct {
 		SDL_Surface * surface;
 #if C_DDRAW
-		RECT rect;
+		RECT rect_dest;
+		RECT rect_src;
 #endif
 	} blit;
 	struct {
@@ -363,9 +367,13 @@ void OPENGL_ERROR(const char*) {
 #define SETMODE_SAVES 1  //Don't set Video Mode if nothing changes.
 #define SETMODE_SAVES_CLEAR 1 //Clear the screen, when the Video Mode is reused
 //Restart graphics subsystem of SDL when switching windowed and fullscreen in OPENGL
-//#define SETMODE_RESTARTS_SUBSYSTEM 1 
+//#define SETMODE_RESTARTS_SUBSYSTEM 1
 
 SDL_Surface* SDL_SetVideoMode_Wrap(int width,int height,int bpp,Bit32u flags){
+	if (flags&SDL_FULLSCREEN && sdl.desktop.fullwrap.height && sdl.desktop.fullwrap.width) {
+		width  = sdl.desktop.fullwrap.width;
+		height = sdl.desktop.fullwrap.height;
+	}
 #if SETMODE_SAVES
 	static int i_height = 0;
 	static int i_width = 0;
@@ -409,7 +417,7 @@ SDL_Surface* SDL_SetVideoMode_Wrap(int width,int height,int bpp,Bit32u flags){
 	}
 #endif //WIN32
 #endif //SETMODE_SAVES
-	
+
 
 #if C_OPENGL
 #ifdef SETMODE_RESTARTS_SUBSYSTEM
@@ -420,8 +428,8 @@ SDL_Surface* SDL_SetVideoMode_Wrap(int width,int height,int bpp,Bit32u flags){
 		if (fx & SDL_FULLSCREEN) {
 			if (!(flags & SDL_FULLSCREEN)) {
 				//RESTART FOR MACS
-				
-				//MAYBE move this above the Videomode call above and do not do the setvideomode below. 
+
+				//MAYBE move this above the Videomode call above and do not do the setvideomode below.
 				//Yes this will mess up the title bar and icon. But it is for trying...
 
 				LOG_MSG("HIT RESTART");
@@ -531,12 +539,11 @@ static void PauseDOSBox(bool pressed) {
 			case SDL_KEYDOWN:   // Must use Pause/Break Key to resume.
 			case SDL_KEYUP:
 			if(event.key.keysym.sym == SDLK_PAUSE) {
-				//SDLMod outkeymod = (event.key.keysym.mod);
-                SDLMod outkeymod = (event.key.keysym.mod);
+				SDLMod outkeymod = (event.key.keysym.mod);
 				if (inkeymod != outkeymod) {
 					KEYBOARD_ClrBuffer();
 					MAPPER_LosingFocus();
-					//Not perfect if the pressed alt key is switched, but then we have to 
+					//Not perfect if the pressed alt key is switched, but then we have to
 					//insert the keys into the mapper or create/rewrite the event and push it.
 					//Which is tricky due to possible use of scancodes.
 				}
@@ -669,12 +676,20 @@ static SDL_Surface * GFX_SetupSurfaceScaled(Bit32u sdl_flags, Bit32u bpp) {
 		fixedHeight = sdl.desktop.window.height;
 		sdl_flags |= SDL_HWSURFACE;
 	}
+
 	if (fixedWidth && fixedHeight) {
 		double ratio_w=(double)fixedWidth/(sdl.draw.width*sdl.draw.scalex);
 		double ratio_h=(double)fixedHeight/(sdl.draw.height*sdl.draw.scaley);
 		if ( ratio_w < ratio_h) {
-			sdl.clip.w=fixedWidth;
-			sdl.clip.h=(Bit16u)(sdl.draw.height*sdl.draw.scaley*ratio_w + 0.1); //possible rounding issues
+			sdl.clip.w = fixedWidth;
+			sdl.clip.h = (Bit16u)(sdl.draw.height * sdl.draw.scaley*ratio_w + 0.1); //possible rounding issues
+
+			if(sdl.desktop.want_type == SCREEN_OPENGL && ( (fixedHeight % sdl.draw.height) == 0 && (fixedWidth % sdl.draw.width) == 0))  {
+				//wanted resolution is clear multiple of input
+				//allow this resolution if aspect=true and ratio is somewhat similar to 1.33
+				float r = static_cast<float>(fixedWidth)/static_cast<float>(fixedHeight);
+				if (render.aspect&& r >1.25f && r < 1.40f) sdl.clip.h = fixedHeight;
+			}
 		} else {
 			/*
 			 * The 0.4 is there to correct for rounding issues.
@@ -683,25 +698,27 @@ static SDL_Surface * GFX_SetupSurfaceScaled(Bit32u sdl_flags, Bit32u bpp) {
 			sdl.clip.w=(Bit16u)(sdl.draw.width*sdl.draw.scalex*ratio_h + 0.4);
 			sdl.clip.h=(Bit16u)fixedHeight;
 		}
+
 		if (sdl.desktop.fullscreen)
 			sdl.surface = SDL_SetVideoMode_Wrap(fixedWidth,fixedHeight,bpp,sdl_flags);
 		else
 			sdl.surface = SDL_SetVideoMode_Wrap(sdl.clip.w,sdl.clip.h,bpp,sdl_flags);
-		if (sdl.surface && sdl.surface->flags & SDL_FULLSCREEN) {
-			sdl.clip.x=(Sint16)((sdl.surface->w-sdl.clip.w)/2);
-			sdl.clip.y=(Sint16)((sdl.surface->h-sdl.clip.h)/2);
-		} else {
-			sdl.clip.x = 0;
-			sdl.clip.y = 0;
-		}
-		return sdl.surface;
 	} else {
 		sdl.clip.x=0;sdl.clip.y=0;
 		sdl.clip.w=(Bit16u)(sdl.draw.width*sdl.draw.scalex);
 		sdl.clip.h=(Bit16u)(sdl.draw.height*sdl.draw.scaley);
 		sdl.surface=SDL_SetVideoMode_Wrap(sdl.clip.w,sdl.clip.h,bpp,sdl_flags);
-		return sdl.surface;
 	}
+
+	if (sdl.surface && sdl.surface->flags & SDL_FULLSCREEN) {
+		sdl.clip.x = (Sint16)((sdl.surface->w-sdl.clip.w)/2);
+		sdl.clip.y = (Sint16)((sdl.surface->h-sdl.clip.h)/2);
+	} else {
+		sdl.clip.x = 0;
+		sdl.clip.y = 0;
+	}
+
+	return sdl.surface;
 }
 
 void GFX_TearDown(void) {
@@ -820,6 +837,8 @@ dosurface:
 					SDL_FULLSCREEN | ((flags & GFX_CAN_RANDOM) ? SDL_SWSURFACE : SDL_HWSURFACE) |
 					(sdl.desktop.doublebuf ? SDL_DOUBLEBUF|SDL_ASYNCBLIT : 0) | SDL_HWPALETTE);
 				if (sdl.surface == NULL) E_Exit("Could not set fullscreen video mode %ix%i-%i: %s",sdl.desktop.full.width,sdl.desktop.full.height,bpp,SDL_GetError());
+				sdl.clip.x = (Sint16)((sdl.surface->w - width) / 2);
+				sdl.clip.y = (Sint16)((sdl.surface->h - height) / 2);
 			} else {
 				sdl.clip.x=0;sdl.clip.y=0;
 				sdl.surface=SDL_SetVideoMode_Wrap(width,height,bpp,
@@ -856,16 +875,16 @@ dosurface:
 			switch (sdl.surface->format->BitsPerPixel) {
 			case 8:
 				retFlags = GFX_CAN_8;
-                break;
+				break;
 			case 15:
 				retFlags = GFX_CAN_15;
 				break;
 			case 16:
 				retFlags = GFX_CAN_16;
-                break;
+				break;
 			case 32:
 				retFlags = GFX_CAN_32;
-                break;
+				break;
 			}
 			if (retFlags && (sdl.surface->flags & SDL_HWSURFACE))
 				retFlags |= GFX_HARDWARE;
@@ -887,11 +906,11 @@ dosurface:
 		if (flags & GFX_CAN_16) bpp=16;
 		if (flags & GFX_CAN_32) bpp=32;
 		if (!GFX_SetupSurfaceScaled((sdl.desktop.doublebuf && sdl.desktop.fullscreen) ? SDL_DOUBLEBUF : 0,bpp)) goto dosurface;
-		sdl.blit.rect.top=sdl.clip.y;
-		sdl.blit.rect.left=sdl.clip.x;
-		sdl.blit.rect.right=sdl.clip.x+sdl.clip.w;
-		sdl.blit.rect.bottom=sdl.clip.y+sdl.clip.h;
-		sdl.blit.surface=SDL_CreateRGBSurface(SDL_HWSURFACE,sdl.draw.width,sdl.draw.height,
+		sdl.blit.rect_dest.top    = sdl.clip.y;
+		sdl.blit.rect_dest.left   = sdl.clip.x;
+		sdl.blit.rect_dest.right  = sdl.clip.x + sdl.clip.w;
+		sdl.blit.rect_dest.bottom = sdl.clip.y + sdl.clip.h;
+		sdl.blit.surface=SDL_CreateRGBSurface(SDL_HWSURFACE,sdl.draw.width + 2,sdl.draw.height + 2,
 				sdl.surface->format->BitsPerPixel,
 				sdl.surface->format->Rmask,
 				sdl.surface->format->Gmask,
@@ -900,21 +919,27 @@ dosurface:
 		if (!sdl.blit.surface || (!sdl.blit.surface->flags&SDL_HWSURFACE)) {
 			if (sdl.blit.surface) {
 				SDL_FreeSurface(sdl.blit.surface);
-				sdl.blit.surface=0;
+				sdl.blit.surface = 0;
 			}
 			LOG_MSG("Failed to create ddraw surface, back to normal surface.");
 			goto dosurface;
 		}
+		SDL_FillRect(sdl.blit.surface,NULL,SDL_MapRGB(sdl.surface->format,0,0,0));
+		sdl.blit.rect_src.top    = 1;
+		sdl.blit.rect_src.left   = 1;
+		sdl.blit.rect_src.right  = sdl.blit.surface->w - 1;
+		sdl.blit.rect_src.bottom = sdl.blit.surface->h - 1;
+
 		switch (sdl.surface->format->BitsPerPixel) {
 		case 15:
 			retFlags = GFX_CAN_15 | GFX_SCALING | GFX_HARDWARE;
 			break;
 		case 16:
 			retFlags = GFX_CAN_16 | GFX_SCALING | GFX_HARDWARE;
-               break;
+			break;
 		case 32:
 			retFlags = GFX_CAN_32 | GFX_SCALING | GFX_HARDWARE;
-               break;
+			break;
 		}
 		sdl.desktop.type=SCREEN_SURFACE_DDRAW;
 		break;
@@ -927,7 +952,7 @@ dosurface:
 		if (!(flags & GFX_CAN_32) || (flags & GFX_RGBONLY)) goto dosurface;
 		if (!GFX_SetupSurfaceScaled(0,0)) goto dosurface;
 		sdl.overlay = SDL_CreateYUVOverlay(width * 2, height, SDL_UYVY_OVERLAY, sdl.surface);
-		
+
 		if (sdl.overlay && SDL_LockYUVOverlay(sdl.overlay) == 0) {
 			//Need to lock in order to get real pitchdata (at least on windows with dx backend)
 			if (sdl.overlay->pitches[0] < 4 * width) {
@@ -1079,12 +1104,7 @@ dosurface:
 		}
 		sdl.opengl.pitch=width*4;
 
-		if(sdl.clip.x ==0 && sdl.clip.y ==0 && sdl.desktop.fullscreen && !sdl.desktop.full.fixed && (sdl.clip.w != sdl.surface->w || sdl.clip.h != sdl.surface->h)) { 
-//			LOG_MSG("attempting to fix the centering to %d %d %d %d",(sdl.surface->w-sdl.clip.w)/2,(sdl.surface->h-sdl.clip.h)/2,sdl.clip.w,sdl.clip.h);
-			glViewport((sdl.surface->w-sdl.clip.w)/2,(sdl.surface->h-sdl.clip.h)/2,sdl.clip.w,sdl.clip.h);
-		} else {
-			glViewport(sdl.clip.x,sdl.clip.y,sdl.clip.w,sdl.clip.h);
-		}
+		glViewport(sdl.clip.x,sdl.clip.y,sdl.clip.w,sdl.clip.h);
 
 		if (sdl.opengl.texture > 0) {
 			glDeleteTextures(1,&sdl.opengl.texture);
@@ -1134,8 +1154,9 @@ dosurface:
 			if (glIsList(sdl.opengl.displaylist)) glDeleteLists(sdl.opengl.displaylist, 1);
 			sdl.opengl.displaylist = glGenLists(1);
 			glNewList(sdl.opengl.displaylist, GL_COMPILE);
-			glBindTexture(GL_TEXTURE_2D, sdl.opengl.texture);
 
+			//Create one huge triangle and only display a portion.
+			//When using a quad, there was scaling bug (certain resolutions on Nvidia chipsets) in the seam
 			glBegin(GL_TRIANGLES);
 			// upper left
 			glTexCoord2f(0,0); glVertex2f(-1.0f, 1.0f);
@@ -1307,9 +1328,10 @@ bool GFX_StartUpdate(Bit8u * & pixels,Bitu & pitch) {
 //			LOG_MSG("SDL Lock failed");
 			return false;
 		}
-		pixels=(Bit8u *)sdl.blit.surface->pixels;
-		pitch=sdl.blit.surface->pitch;
-		sdl.updating=true;
+		//Move to 1,1
+		pixels = (Bit8u *)sdl.blit.surface->pixels + sdl.blit.rect_src.left*sdl.blit.surface->format->BytesPerPixel + sdl.blit.rect_src.top*sdl.blit.surface->pitch;
+		pitch = sdl.blit.surface->pitch;
+		sdl.updating = true;
 		return true;
 #endif
 	case SCREEN_OVERLAY:
@@ -1386,8 +1408,8 @@ void GFX_EndUpdate( const Bit16u *changedLines ) {
 	case SCREEN_SURFACE_DDRAW:
 		SDL_UnlockSurface(sdl.blit.surface);
 		ret=IDirectDrawSurface3_Blt(
-			sdl.surface->hwdata->dd_writebuf,&sdl.blit.rect,
-			sdl.blit.surface->hwdata->dd_surface,0,
+			sdl.surface->hwdata->dd_writebuf,&sdl.blit.rect_dest,
+			sdl.blit.surface->hwdata->dd_surface,&sdl.blit.rect_src,
 			DDBLT_WAIT, NULL);
 		switch (ret) {
 		case DD_OK:
@@ -1423,14 +1445,12 @@ void GFX_EndUpdate( const Bit16u *changedLines ) {
 		glClear(GL_COLOR_BUFFER_BIT);
 		if (sdl.opengl.pixel_buffer_object) {
 			glUnmapBufferARB(GL_PIXEL_UNPACK_BUFFER_EXT);
-			glBindTexture(GL_TEXTURE_2D, sdl.opengl.texture);
 			glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0,
 					sdl.draw.width, sdl.draw.height, GL_BGRA_EXT,
 					GL_UNSIGNED_INT_8_8_8_8_REV, 0);
 			glBindBufferARB(GL_PIXEL_UNPACK_BUFFER_EXT, 0);
 		} else if (changedLines) {
 			Bitu y = 0, index = 0;
-			glBindTexture(GL_TEXTURE_2D, sdl.opengl.texture);
 			while (y < sdl.draw.height) {
 				if (!(index & 1)) {
 					y += changedLines[index];
@@ -1666,6 +1686,13 @@ static void GUI_StartUp(Section * sec) {
 					*height = 0;
 					sdl.desktop.full.height = (Bit16u)atoi(height+1);
 					sdl.desktop.full.width  = (Bit16u)atoi(res);
+				} else {
+					height = const_cast<char*>(strchr(fullresolution,'*'));
+					if (height && * height) {
+						*height = 0;
+						sdl.desktop.fullwrap.height = (Bit16u)atoi(height+1);
+						sdl.desktop.fullwrap.width  = (Bit16u)atoi(res);
+					}
 				}
 			}
 		}
@@ -1716,7 +1743,7 @@ static void GUI_StartUp(Section * sec) {
 			sdl.desktop.full.height = vidinfo->current_h;
 		}
 	}
-	
+
 	if (!sdl.desktop.window.width || !sdl.desktop.window.height) {
 		if (vidinfo && windowspercentage) {
 			sdl.desktop.window.width = ((vidinfo->current_w*windowspercentage)/3200)*32;
@@ -1752,6 +1779,19 @@ static void GUI_StartUp(Section * sec) {
 		sdl.desktop.full.height=768;
 #endif
 	}
+	if (sdl.desktop.fullwrap.height && sdl.desktop.fullwrap.width && sdl.desktop.full.width && sdl.desktop.full.height) {
+		//User wants to use desktop size for full resolution and the entered full resolution as window in the fullscreen.
+		//Only do it when smaller or equal
+		if (sdl.desktop.fullwrap.height <= sdl.desktop.full.height && sdl.desktop.fullwrap.width <= sdl.desktop.full.width) {
+			Bit16u tempheight = sdl.desktop.fullwrap.height;
+			sdl.desktop.fullwrap.height = sdl.desktop.full.height;
+			sdl.desktop.full.height = tempheight;
+			Bit16u tempwidth = sdl.desktop.fullwrap.width;
+			sdl.desktop.fullwrap.width = sdl.desktop.full.width;
+			sdl.desktop.full.width = tempwidth;
+		}
+	}
+
 	sdl.mouse.autoenable=section->Get_bool("autolock");
 	if (!sdl.mouse.autoenable) SDL_ShowCursor(SDL_DISABLE);
 	sdl.mouse.autolock=false;
@@ -2071,11 +2111,19 @@ void GFX_Events() {
 #if SDL_XORG_FIX
 		// Special code for broken SDL with Xorg 1.20.1, where pairs of inputfocus gain and loss events are generated
 		// when locking the mouse in windowed mode.
+		// This also seems to give wrong key up events in fullscreen mode.
+		// sdl-1.2 has a fix in hg, but this shouldn't interfere with that fix.
 		if (event.type == SDL_ACTIVEEVENT && event.active.state == SDL_APPINPUTFOCUS && event.active.gain == 0) {
 			SDL_Event test; //Check if the next event would undo this one.
 			if (SDL_PeepEvents(&test,1,SDL_PEEKEVENT,SDL_ACTIVEEVENTMASK) == 1 && test.active.state == SDL_APPINPUTFOCUS && test.active.gain == 1) {
 				// Skip both events.
 				SDL_PeepEvents(&test,1,SDL_GETEVENT,SDL_ACTIVEEVENTMASK);
+				// Look for KEY UP events and check their validity.
+				while(SDL_PeepEvents(&test,1,SDL_PEEKEVENT,SDL_KEYUPMASK) == 1) {
+					const Uint8* kstate = SDL_GetKeyState(NULL);
+					if ( kstate[test.key.keysym.sym] != SDL_PRESSED) break;
+					SDL_PeepEvents(&test,1,SDL_GETEVENT,SDL_KEYUPMASK);
+				}
 				continue;
 			}
 		}
@@ -2269,7 +2317,7 @@ void Config_Add_SDL() {
 		"ddraw",
 #endif
 		0 };
- 	
+ 
 
 #if C_OPENGL && defined(MACOSX)
 	Pstring = sdl_sec->Add_string("output",Property::Changeable::Always,"opengl");
@@ -2514,7 +2562,7 @@ void os2_exit()
 
 	SDL_Quit();//Let's hope sdl will quit as well when it catches an exception
         DosGetInfoBlocks(&tib, &pib);
-        if (pib->pib_ultype == 3) 
+        if (pib->pib_ultype == 3)
         	pib->pib_ultype = 2;
 
 	exit(-1);
@@ -2527,7 +2575,7 @@ int main(int argc, char* argv[]) {
 #ifdef OS2
         PPIB pib;
         PTIB tib;
-        
+
         std::set_terminate(os2_exit);
 #endif
 
@@ -2573,7 +2621,7 @@ int main(int argc, char* argv[]) {
 #endif  //defined(WIN32) && !(C_DEBUG)
 		if (control->cmdline->FindExist("-version") ||
 		    control->cmdline->FindExist("--version") ) {
-			printf("\nDOSBox version %s, copyright 2002-2020 DOSBox Team.\n\n",VERSION);
+			printf("\nDOSBox version %s, copyright 2002-2021 DOSBox Team.\n\n",VERSION);
 			printf("DOSBox is written by the DOSBox Team (See AUTHORS file))\n");
 			printf("DOSBox comes with ABSOLUTELY NO WARRANTY.  This is free software,\n");
 			printf("and you are welcome to redistribute it under certain conditions;\n");
@@ -2592,7 +2640,7 @@ int main(int argc, char* argv[]) {
 
 #ifdef OS2
         DosGetInfoBlocks(&tib, &pib);
-        if (pib->pib_ultype == 2) 
+        if (pib->pib_ultype == 2)
         	pib->pib_ultype = 3;
         setbuf(stdout, NULL);
         setbuf(stderr, NULL);
@@ -2600,7 +2648,7 @@ int main(int argc, char* argv[]) {
 
 	/* Display Welcometext in the console */
 	LOG_MSG("DOSBox version %s",VERSION);
-	LOG_MSG("Copyright 2002-2020 DOSBox Team, published under GNU GPL.");
+	LOG_MSG("Copyright 2002-2021 DOSBox Team, published under GNU GPL.");
 	LOG_MSG("---");
 
 	/* Init SDL */
@@ -2793,10 +2841,10 @@ int main(int argc, char* argv[]) {
 	SDL_Quit();//Let's hope sdl will quit as well when it catches an exception
 #ifdef OS2
         DosGetInfoBlocks(&tib, &pib);
-        if (pib->pib_ultype == 3) 
+        if (pib->pib_ultype == 3)
         	pib->pib_ultype = 2;
         exit(0);
-#else	
+#else
 	return 0;
 #endif
 }

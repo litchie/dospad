@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2002-2020  The DOSBox Team
+ *  Copyright (C) 2002-2021  The DOSBox Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -51,5 +51,7 @@ void CAPTURE_AddWave(Bit32u freq, Bitu len, Bit16s * data);
 #define CAPTURE_FLAG_DUPLICATE	0x4
 void CAPTURE_AddImage(Bitu width, Bitu height, Bitu bpp, Bitu pitch, Bitu flags, float fps, const Bit8u * data, const Bit8u * pal);
 void CAPTURE_AddMidi(bool sysex, Bitu len, Bit8u * data);
+void CAPTURE_VideoStart();
+void CAPTURE_VideoStop();
 
 #endif
