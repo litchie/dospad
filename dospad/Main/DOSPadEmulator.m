@@ -117,7 +117,7 @@ static DOSPadEmulator* _sharedInstance;
 	if (![fm copyItemAtPath:[bundleConfigs stringByAppendingPathComponent:name]
 			toPath:path error:&err])
 	{
-		NSLog(@"copy configuration failed: %@",err);
+		NSLog(@"Copy configuration failed: %@",err);
 		return nil;
 	}
 	return path;
@@ -314,6 +314,7 @@ static DOSPadEmulator* _sharedInstance;
 
 const char *dospad_config_dir(void)
 {
+    NSLog(@"nDOS config directory: %s", [_sharedInstance dospadConfigFile].stringByDeletingLastPathComponent.UTF8String);
     return [_sharedInstance dospadConfigFile].stringByDeletingLastPathComponent.UTF8String;
 }
 

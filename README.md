@@ -13,6 +13,7 @@ Patches/Customizations
 * Latest DOSBox SVN source revisions merged from the community
 * Updates to the code to utilize non-deprecated functions and methods. Eliminates deprecated iOS warnings for the original dospad code. Does not fix DOSBox source warnings.
 * UI tweaks for improved experience with some games (e.g. Civilization 1).
+* IMGMAKE patch allowing creation of floppy and harddisk images within DosBox. This is a convenience feature for creating images to organize software packages or install other retro operating systems under DOSBox (e.g. DOS 6.22, Windows 2.03). Reference: [imgmake](https://www.vogons.org/viewtopic.php?t=19349)
 
 Acknowledgements
 ====
