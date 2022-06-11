@@ -2764,7 +2764,6 @@ int main(int argc, char* argv[]) {
           for (int i = 0; i < config_file.length(); i++) {
               config_file[i] = toupper(config_file[i]);
           }
-          config_path += config_file;
           control->ParseConfigFile((config_path + config_file).c_str());
       }                  
 #endif
