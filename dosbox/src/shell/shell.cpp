@@ -405,7 +405,7 @@ void DOS_Shell::Run(void) {
 		} else {
 			if (echo) ShowPrompt();
 #ifdef IPHONEOS
-            dospad_command_line_ready=1;
+            dospad_command_line_ready = 1;
 #endif
 			InputCommand(input_line);
 #ifdef IPHONEOS

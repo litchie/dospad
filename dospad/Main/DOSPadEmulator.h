@@ -22,7 +22,7 @@
 
 - (void)emulatorWillStart:(DOSPadEmulator*)emulator;
 - (void)emulator:(DOSPadEmulator*)emulator saveScreenshot:(NSString*)path;
-- (void)emulator:(DOSPadEmulator *)emulator open:(NSString*)path;
+- (void)emulator:(DOSPadEmulator*)emulator open:(NSString*)path;
 
 @end
 

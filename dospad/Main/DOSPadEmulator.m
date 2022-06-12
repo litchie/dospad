@@ -40,11 +40,11 @@ extern char automount_path[];
 char dospad_error_msg[1000];
 char diskc[256];
 char diskd[256];
-cmd_entry *cmd_list=0;
-int cmd_count=0;
+cmd_entry *cmd_list = 0;
+int cmd_count = 0;
 int dospad_pause_flag = 0;
-int dospad_should_launch_game=0;
-int dospad_command_line_ready=0;
+int dospad_should_launch_game = 0;
+int dospad_command_line_ready = 0;
 char dospad_command_buffer[1024];
 
 extern int SDL_main(int argc, char *argv[]);
@@ -180,6 +180,7 @@ static DOSPadEmulator* _sharedInstance;
     }
 } 
 
+// Function takes a screenshot of the current dosbox window
 - (void)takeScreenshot
 {
 	if (self.delegate)
@@ -314,7 +315,7 @@ static DOSPadEmulator* _sharedInstance;
 
 const char *dospad_config_dir(void)
 {
-    NSLog(@"nDOS config directory: %s", [_sharedInstance dospadConfigFile].stringByDeletingLastPathComponent.UTF8String);
+    //NSLog(@"nDOS config directory: %s", [_sharedInstance dospadConfigFile].stringByDeletingLastPathComponent.UTF8String);
     return [_sharedInstance dospadConfigFile].stringByDeletingLastPathComponent.UTF8String;
 }
 
@@ -333,6 +334,7 @@ void dospad_command_done(void)
 	[_sharedInstance performSelectorOnMainThread:@selector(didCommandDone) withObject:nil waitUntilDone:NO];
 }
 
+//TODO: Necessary function? Can we use SDK instead?
 static int strcmp_case_insensitive(const char *cs, const char *ct)
 {
     while (*cs && *ct) {
@@ -431,9 +433,19 @@ void dospad_should_pause(void)
     }
 }
 
+// Open file or disk image function
 int dospad_open(const char *args)
 {
-	if (strcmp(args, "screenshot")==0)
+    [_sharedInstance performSelector:@selector(open:) withObject:nil afterDelay:0.5];
+    
+    // Args not used yet, but keep code active
+    // NSString *s = [NSString stringWithUTF8String:args];
+    // s = [s stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+           
+   /* Taking screenshots with the "open" command doesn't make sense if the option is available in the landbar.
+      Comment out this dospad code but keeping for reference
+    
+	if ([s isEqualToString:@"screenshot"]) // is this necessary?
 	{
 		[_sharedInstance performSelectorOnMainThread:@selector(takeScreenshot) withObject:nil waitUntilDone:NO];
 	}
@@ -442,12 +454,10 @@ int dospad_open(const char *args)
 		[_sharedInstance performSelector:@selector(open:) withObject:nil afterDelay:0.5];
 //		[_sharedInstance performSelectorOnMainThread:@selector(open:) withObject:nil waitUntilDone:NO];
 	}
-	else
+	else // I have no idea what this condition is for
 	{
-		NSString *s = [NSString stringWithUTF8String:args];
-		s= [s stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
-
 		[_sharedInstance performSelector:@selector(open:) withObject:s afterDelay:0.5];
-	}
+	}*/
+    
 	return 0;
 }
