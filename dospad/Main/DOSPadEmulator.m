@@ -308,6 +308,20 @@ static DOSPadEmulator* _sharedInstance;
 	NSLog(@"command done");
 }
 
+- (void)disableSDLKeyboardInput
+{
+    SDL_EventState(SDL_TEXTINPUT, SDL_DISABLE);
+    SDL_EventState(SDL_KEYDOWN, SDL_DISABLE);
+    SDL_EventState(SDL_KEYUP, SDL_DISABLE);
+}
+
+- (void)enableSDLKeyboardInput
+{
+    SDL_EventState(SDL_TEXTINPUT, SDL_ENABLE);
+    SDL_EventState(SDL_KEYDOWN, SDL_ENABLE);
+    SDL_EventState(SDL_KEYUP, SDL_ENABLE);
+}
+
 @end
 
 ////////////////////////////////////////////////////////////
@@ -436,6 +450,8 @@ void dospad_should_pause(void)
 // Open file or disk image function
 int dospad_open(const char *args)
 {
+    //[NSThread detachNewThreadSelector:@selector(open:) toTarget:_sharedInstance withObject:nil];
+
     [_sharedInstance performSelector:@selector(open:) withObject:nil afterDelay:0.5];
     
     // Args not used yet, but keep code active
@@ -457,7 +473,7 @@ int dospad_open(const char *args)
 	else // I have no idea what this condition is for
 	{
 		[_sharedInstance performSelector:@selector(open:) withObject:s afterDelay:0.5];
-	}*/
+	} */
     
 	return 0;
 }

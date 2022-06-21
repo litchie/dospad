@@ -35,6 +35,7 @@
 @property (readonly) NSString *mfiConfigFile; // External Gamepad Configuration File
 @property (readonly) BOOL started;
 @property (strong) id<DOSPadEmulatorDelegate> delegate;
+@property (strong) NSString *mountDiskLetter;
 
 + (DOSPadEmulator*)sharedInstance;
 + (void)setSharedInstance:(DOSPadEmulator*)instance;
@@ -47,5 +48,7 @@
 - (void)joystickButton:(NSInteger)buttonIndex pressed:(BOOL)pressed joystickIndex:(NSInteger)index;
 - (void)sendKey:(int)scancode pressed:(BOOL)pressed;
 - (void)sendKey:(int)scancode;
+- (void)disableSDLKeyboardInput;
+- (void)enableSDLKeyboardInput;
 
 @end
