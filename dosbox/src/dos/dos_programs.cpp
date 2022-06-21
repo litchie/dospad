@@ -1310,13 +1310,15 @@ public:
 
 		std::string type   = "hdd";
 #ifdef IMGMAKE_PATCH
-        // default to floppy for drive letters A and B and numbers 0 and 1
+        // Default to floppy for drive letters A and B and numbers 0 and 1
         if (!cmd->FindCommand(1,temp_line) || (temp_line.size() > 2) ||
             ((temp_line.size()>1) && (temp_line[1]!=':'))) {
             // drive not valid
         } else {
             Bit8u tdr = toupper(temp_line[0]);
-            if(tdr=='A'||tdr=='B'||tdr=='0'||tdr=='1') type="floppy";
+            if(tdr=='A'||tdr=='B'||tdr=='0'||tdr=='1') {
+                type="floppy";
+            }
         }
 #endif
 		std::string fstype = "fat";
@@ -1345,10 +1347,11 @@ public:
 		}
 
 		cmd->FindString("-size",str_size,true);
-		if ((type=="hdd") && (str_size.size()==0)) {
+		if ((type == "hdd") && (str_size.size() == 0)) {
 			imgsizedetect = true;
 		} else {
-			char number[21] = { 0 };const char * scan = str_size.c_str();
+			char number[21] = { 0 };
+            const char * scan = str_size.c_str();
 			Bitu index = 0;Bitu count = 0;
 			/* Parse the str_size string */
 			while (*scan && index < 20 && count < 4) {
@@ -1394,6 +1397,9 @@ public:
 		}
 
 #ifdef IPHONEOS
+        //TODO: Not sure this is needed and should be handled another way since autoinc is never removed and causes an error
+        // that image could not be found
+        
 		// Add option to auto increase drive letter
 		// if the drive is already occupied
 		if (Drives[drive-'A'] && cmd->FindExist("-autoinc",false)) {
@@ -1406,9 +1412,8 @@ public:
 		}
 #endif
 		
-		// find all file parameters, assuming that all option parameters have been removed
+		// Find all file parameters, assuming that all option parameters have been removed
 		while(cmd->FindCommand((unsigned int)(paths.size() + 2), temp_line) && temp_line.size()) {
-			
 			struct stat test;
 			if (stat(temp_line.c_str(),&test)) {
 				//See if it works if the ~ are written out
@@ -1455,7 +1460,7 @@ public:
 		if (paths.size() == 1)
 			temp_line = paths[0];
 
-		if(fstype=="fat") {
+		if(fstype == "fat") {
 			if (imgsizedetect) {
 #ifdef IMGMAKE_PATCH
                 bool yet_detected = false;
@@ -1531,7 +1536,9 @@ public:
                     WriteOut(MSG_Get("PROGRAM_IMGMOUNT_AUTODET_VALUES"),sizes[0],sizes[1],sizes[2],sizes[3]);
                     //"Image geometry auto detection: -size %u,%u,%u,%u\r\n",
                     //sizes[0],sizes[1],sizes[2],sizes[3]);
-                    return;
+                    
+                    // Don't return if you want the autosize detection to be used for the mount
+                    //return;
                 } else {
                     WriteOut(MSG_Get("PROGRAM_IMGMOUNT_INVALID_GEOMETRY"));
                     return;
@@ -1543,7 +1550,7 @@ public:
 					return;
 				}
                 sizes[0]=512;    sizes[1]=63;    sizes[2]=16;    sizes[3]=sectors;
-                LOG_MSG("autosized image file: %d:%d:%d:%d",sizes[0],sizes[1],sizes[2],sizes[3]);
+                LOG_MSG("Autosized image file: %d:%d:%d:%d",sizes[0],sizes[1],sizes[2],sizes[3]);
 #endif
 			}
 

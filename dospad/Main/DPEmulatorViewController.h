@@ -35,7 +35,8 @@ typedef enum {
 	DriveMount_Folder,
 	DriveMount_Packages,
 	DriveMount_DiskImage,
-	DriveMount_CDImage
+	DriveMount_CDImage,
+    DriveMount_FloppyImage
 } DriveMountType;
 
 @interface DPEmulatorViewController : UIViewController
