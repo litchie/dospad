@@ -430,7 +430,11 @@ void DOSBOX_Init(void) {
 	secprop->AddInitFunction(&MEM_Init);//done
 	secprop->AddInitFunction(&HARDWARE_Init);//done
 	Pint = secprop->Add_int("memsize", Property::Changeable::WhenIdle,16);
+#ifdef MAX_MEMORY_PATCH
+    Pint->SetMinMax(1,383);
+#else
 	Pint->SetMinMax(1,63);
+#endif
 	Pint->Set_help(
 		"Amount of memory DOSBox has in megabytes.\n"
 		"This value is best left at its default to avoid problems with some games,\n"

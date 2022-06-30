@@ -27,6 +27,9 @@
 /* IMGMAKE Patch for nDOS */
 #define IMGMAKE_PATCH 1
 
+/* Max memory patch */
+#define MAX_MEMORY_PATCH 1
+
 /* Define if building universal (internal helper macro) */
 /* #undef AC_APPLE_UNIVERSAL_BUILD */
 
