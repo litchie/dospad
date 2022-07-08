@@ -15,6 +15,7 @@ Patches/Customizations
 * UI tweaks for improved experience with some games (e.g. Civilization 1).
 * IMGMAKE patch allowing creation of floppy and harddisk images within DosBox. This is a convenience feature for creating images to organize software packages or install other retro operating systems under DOSBox (e.g. DOS 6.22, Windows 2.03). Reference: [imgmake](https://www.vogons.org/viewtopic.php?t=19349)
 * Patched to support max memory of 383MB. This can be used for running Win9x (although not tested)
+* Apple Pencil gesture support
 
 Acknowledgements
 ====

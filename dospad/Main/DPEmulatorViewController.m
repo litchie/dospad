@@ -73,7 +73,8 @@ static struct {
     DPMouseManagerDelegate,
     DPKeyboardManagerDelegate,
 	MfiGamepadManagerDelegate,
-	MfiGamepadMapperDelegate
+	MfiGamepadMapperDelegate,
+    UIPencilInteractionDelegate
 >
 {
 	MfiGamepadConfiguration *_mfiConfig;
@@ -337,6 +338,13 @@ static struct {
         [self.view addSubview:self.kbdspy];
     }
 #endif
+    
+    // Pencil 2 gesture support
+    if (@available(iOS 12.1, *)) {
+        UIPencilInteraction *pencilInteraction = [[UIPencilInteraction alloc] init];
+        pencilInteraction.delegate = self;
+        [self.view addInteraction:pencilInteraction];
+    }
 
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didSettingsChanged:) name:DPFSettingsChangedNotification object:nil];
 }
@@ -602,6 +610,13 @@ static struct {
         //[self.view addSubview:self->fullscreenPanel];
         //[self refreshFullscreenPanel];
     });
+}
+
+//MARK: - Pencil Delegates/Control
+- (void)pencilInteractionDidTap:(UIPencilInteraction *)interaction API_AVAILABLE(ios(12.1)){
+    //NSLog(@"Pencil double tap gesture detected");
+    [self.screenView sendMouseEvent:0 left:NO down:YES];
+    [self.screenView sendMouseEvent:0 left:NO down:NO];
 }
 
 //MARK: - Numpad Controls
