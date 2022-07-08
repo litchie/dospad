@@ -106,6 +106,7 @@ static struct {
 
 @implementation DPEmulatorViewController
 
+//MARK: - View Controller Support
 - (void)dealloc
 {
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
@@ -306,448 +307,6 @@ static struct {
 	}
 }
 
-- (void)createMouseButtons
-{
-    CGFloat vw = _rootContainer.bounds.size.width;
-    CGFloat vh = _rootContainer.bounds.size.height;
-	UIView *container = [[UIView alloc] initWithFrame:CGRectMake(0, 450, 200, 40)];
-    // Transparency
-    container.tag = TAG_INPUT_MOUSE_BUTTONS;
-    container.alpha = [DPSettings shared].floatAlpha;
-	[_rootContainer addSubview:container];
-	
-	// Add movable control
-	DPThumbView *thumbView = [[DPThumbView alloc] initWithFrame:CGRectMake(0, 0, 40, 40)];
-	thumbView.text = @"☰";
-	[container addSubview:thumbView];
-	
-    // Left Mouse Button
-    UIButton *btnMouseLeft = [[UIButton alloc] initWithFrame:CGRectMake(40,0,80,40)];
-	[btnMouseLeft setImage:[_currentScene getImage:@"assets/mouse-button-left.png"] forState:UIControlStateNormal];
-	[btnMouseLeft setImage:[_currentScene getImage:@"assets/mouse-button-left-pressed.png"] forState:UIControlStateHighlighted];
-    [btnMouseLeft addTarget:self
-                    action:@selector(onMouseLeftDown)
-          forControlEvents:UIControlEventTouchDown];
-    [btnMouseLeft addTarget:self
-                    action:@selector(onMouseLeftUp)
-          forControlEvents:UIControlEventTouchUpInside];
-    [container addSubview:btnMouseLeft];
-    
-    // Right Mouse Button
-    UIButton *btnMouseRight = [[UIButton alloc] initWithFrame:CGRectMake(120,0,80,40)];
-	[btnMouseRight setImage:[_currentScene getImage:@"assets/mouse-button-right.png"] forState:UIControlStateNormal];
-	[btnMouseRight setImage:[_currentScene getImage:@"assets/mouse-button-right-pressed.png"]
-		forState:UIControlStateHighlighted];
-	[btnMouseRight addTarget:self
-                     action:@selector(onMouseRightDown)
-           forControlEvents:UIControlEventTouchDown];
-    [btnMouseRight addTarget:self
-                    action:@selector(onMouseRightUp)
-          forControlEvents:UIControlEventTouchUpInside];
-	[container addSubview:btnMouseRight];
-    
-    // Animate the mouse control to position
-    CGPoint ptOrig = container.center;
-    [UIView animateWithDuration:0.3 animations:^{
-        container.center = CGPointMake(ptOrig.x, ptOrig.y-container.frame.size.height);
-    }];
-}
-
-
-- (void)createNumpad
-{
-	KeyboardView *numpad = [[KeyboardView alloc] initWithFrame:CGRectMake(_rootContainer.bounds.size.width-160,450,160,200)
-	layout:@"kpad4x5"];
-	numpad.alpha = [DPSettings shared].floatAlpha;
-	numpad.tag = TAG_INPUT_NUMPAD;
-	[_rootContainer addSubview:numpad];
-    
-    CGPoint ptOrig = numpad.center;
-    [UIView animateWithDuration:0.3 animations:^{
-        numpad.center = CGPointMake(ptOrig.x, ptOrig.y-numpad.frame.size.height);
-    }];
-}
-
-- (void)createPCKeyboard
-{
-    const CGFloat keyboardHeight = [UIDevice.currentDevice.model  isEqual: @"iPad"] ? 250 : 175;
-	CGRect rect = CGRectMake(0,
-		_rootContainer.bounds.size.height-keyboardHeight,
-		_rootContainer.bounds.size.width,
-		keyboardHeight);
-	kbd = [[KeyboardView alloc] initWithFrame:rect
-			layout:(NSString*)[_currentScene getAttribute:@"keyboard"]];
-	kbd.alpha = [DPSettings shared].floatAlpha;
-	[_rootContainer addSubview:kbd];
-	kbd.tag = TAG_INPUT_KEYBOARD;
-}
-
-- (DPGamepad*)createGamepadHelper
-{
-	DPThemeScene *scn = [_currentTheme findSceneByName:(NSString*)[_currentScene getAttribute:@"gamepad"]];
-	CGFloat height = 240;
-	if ([UIDevice.currentDevice.model isEqual:@"iPad"]) {
-		height = _rootContainer.bounds.size.width*0.3;
-	}
-	CGRect rect = CGRectMake(0, CGRectGetMaxY(_rootContainer.bounds)-height,
-		_rootContainer.bounds.size.width, height);
-	
-	DPGamepad *gamepad = [[DPGamepad alloc] initWithFrame:rect scene:scn];
-	[_rootContainer addSubview:gamepad];
-	if (_gamepadConfig) {
-		[gamepad applyConfiguration:_gamepadConfig];
-	}
-	gamepad.gamepadDelegate = self;
-	return gamepad;
-}
-
-- (void)createJoystick
-{
-	DPGamepad *gamepad = [self createGamepadHelper];
-	gamepad.tag = TAG_INPUT_JOYSTICK;
-	gamepad.alpha = [DPSettings shared].floatAlpha;
-	gamepad.stickMode = YES;
-}
-
-- (void)createGamepad
-{
-	DPGamepad *gamepad = [self createGamepadHelper];
-	gamepad.alpha = [DPSettings shared].floatAlpha;
-	gamepad.tag = TAG_INPUT_GAMEPAD;
-}
-
-
-
--(void)updateScreen
-{
-	CGRect viewRect = _rootContainer.bounds;
-	if (_currentScene.isPortrait)
-	{
-		[self fillScreen:_screenRect];
-	}
-	else
-	{
-		if (shouldShrinkScreen)
-		{
-			if ([UIDevice.currentDevice.model isEqual:@"iPad"]) {
-				viewRect.size.height -= 250;
-				[self putScreen:viewRect scaleMode:[DPSettings shared].screenScaleMode];
-			} else {
-				[self putScreen:viewRect scaleMode:DPScreenScaleModeAspectFit4x3];
-			}
-		}
-		else
-		{
-			[self putScreen:viewRect scaleMode:[DPSettings shared].screenScaleMode];
-		}
-	}
-}
-
-- (void)toggleScreenSize
-{
-    shouldShrinkScreen = !shouldShrinkScreen;
-    [self updateScreen];
-}
-
-// iPhone have many different sizes, but only 3 aspect ratios:
-// - 4:3   Original up to iPhone 4S
-// - 16:9  iPhone 5 & 6
-// - 20:9  iPhone X
-- (DPThemeScene*)findSceneForSize:(CGSize)size
-{
-	CGFloat aspectRatio = size.width / size.height;
-	
-	if (size.width < size.height)
-	{
-		if (aspectRatio < 0.52)
-		{
-			// iPhone Max
-			return [_currentTheme findSceneByName:@"iphone-portrait-tall"];
-		}
-		else if (aspectRatio < 0.6)
-		{
-			// iPhone 5,6
-			return [_currentTheme findSceneByName:@"iphone-portrait-medium"];
-		}
-		else
-		{
-			if (size.width >= 768) {
-				return [_currentTheme findSceneByName:@"ipad-portrait"];
-			} else {
-				// iPhone 4S
-				return [_currentTheme findSceneByName:@"iphone-portrait-small"];
-			}
-		}
-	}
-	else
-	{
-		if ([UIDevice.currentDevice.model isEqual:@"iPad"]) {
-			return [_currentTheme findSceneByName:@"ipad-landscape"];
-		}
-		if (size.width <= 480) { // iPhone 4S
-			return [_currentTheme findSceneByName:@"iphone-landscape-short"];
-		} else if (aspectRatio < 1.5) {
-			return [_currentTheme findSceneByName:@"iphone-landscape-short"];
-		} else if (aspectRatio < 1.92 ) {
-			return [_currentTheme findSceneByName:@"iphone-landscape-medium"];
-		} else {
-			return [_currentTheme findSceneByName:@"iphone-landscape-long"];
-		}
-	}
-}
-
-- (UIView*)createSceneView:(DPThemeScene*)scene frame:(CGRect)rootRect
-{
-	CGFloat scaleX = rootRect.size.width / scene.size.width;
-	CGFloat scaleY = rootRect.size.height / scene.size.height;
-
-	UIImageView *sceneContainer = [[UIImageView alloc] initWithFrame:rootRect];
-	sceneContainer.userInteractionEnabled = YES;
-    if (scene.backgroundImageURL) {
-		sceneContainer.image = [UIImage imageWithContentsOfFile:scene.backgroundImageURL.path];
-    }
-    
-	for (NSDictionary *x in scene.nodes)
-	{
-		CGRect frame = CGRectZero;
-		if (x[@"frame"]) {
-			NSArray *t = x[@"frame"];
-			frame.origin.x    = [t[0] floatValue] * scaleX;
-			frame.origin.y    = [t[1] floatValue] * scaleY;
-			frame.size.width  = [t[2] floatValue] * scaleX;
-			frame.size.height = [t[3] floatValue] * scaleY;
-		}
-		NSString *type = x[@"type"];
-		BOOL hidden = [x[@"hidden"] boolValue];
-		if ([type isEqualToString:@"screen"])
-		{
-			[sceneContainer addSubview:self.screenView];
-			_screenRect = frame;
-		}
-		else if ([type isEqualToString:@"cycles-label"])
-		{
-			[sceneContainer addSubview:[self cyclesLabel:frame]];
-		}
-		else if ([type isEqualToString:@"keyboard"])
-		{
-			KeyboardView* kv;
-			kv = [[KeyboardView alloc] initWithFrame:frame layout:x[@"layout"]];
-			kv.hidden = hidden;
-			[sceneContainer addSubview:kv];
-		}
-		else if ([type isEqualToString:@"gamepad"])
-		{
-			NSString *sceneName = x[@"scene"];
-			if (!sceneName) sceneName = @"gamepad";
-			DPThemeScene *scn = [_currentTheme findSceneByName:sceneName];
-			DPGamepad *gamepad = [[DPGamepad alloc] initWithFrame:frame scene:scn];
-			gamepad.gamepadDelegate = self;
-			gamepad.hidden = hidden;
-			if (_gamepadConfig) {
-				[gamepad applyConfiguration:_gamepadConfig];
-			}
-			[sceneContainer addSubview:gamepad];
-		}
-		else if ([type isEqualToString:@"landbar"])
-		{
-			// FIXME: A dirty fix, FloatPanel has certain sizing requirements
-			// Ignore the frame settings
-			CGSize barSize = [UIDevice.currentDevice.model isEqual:@"iPad"] ? CGSizeMake(700, 47) : CGSizeMake(480, 32);
-            
-            // Set location and size of landbar
-            if([DPSettings shared].landbarToggleBottomScreen) {
-                frame = CGRectMake((rootRect.size.width-barSize.width)/2, rootRect.size.height-barSize.height/2, barSize.width, barSize.height);
-            } else {
-                frame = CGRectMake((rootRect.size.width-barSize.width)/2, 0, barSize.width, barSize.height);
-            }
-
-			UIButton *btnExitFS;
-			
-			fullscreenPanel = [[FloatPanel alloc] initWithFrame:frame];
-			if ([UIDevice.currentDevice.model isEqual:@"iPad"]) {
-				btnExitFS = [[UIButton alloc] initWithFrame:CGRectMake(0,0,72,36)];
-			    btnExitFS.center=CGPointMake(63, 18);
-			    [btnExitFS setImage:[UIImage imageNamed:@"exitfull-black-ipad"] forState:UIControlStateNormal];
-			} else {
-				btnExitFS = [[UIButton alloc] initWithFrame:CGRectMake(0,0,48,24)];
-				btnExitFS.center=CGPointMake(44, 13);
-				[btnExitFS setImage:[UIImage imageNamed:@"exitfull.png"] forState:UIControlStateNormal];
-			}
-			
-			[btnExitFS addTarget:self action:@selector(toggleScreenSize) forControlEvents:UIControlEventTouchUpInside];
-			[fullscreenPanel.contentView addSubview:btnExitFS];
-			[sceneContainer addSubview:fullscreenPanel];
-			[self refreshFullscreenPanel];
-			[fullscreenPanel showContent];
-		}
-		else if ([type isEqualToString:@"image"])
-		{
-			UIImageView *iv = [[UIImageView alloc] initWithFrame:frame];
-			if (x[@"bgcolor"]) {
-				iv.backgroundColor = [UIColor hexColor:x[@"bgcolor"]];
-			}
-			if (x[@"bg"]) {
-				iv.image = [scene getImage:x[@"bg"]];
-			}
-			[sceneContainer addSubview:iv];
-		}
-		else if ([type isEqualToString:@"button"])
-		{
-			UIButton *btn = [[UIButton alloc] initWithFrame:frame];
-			[btn setImage:[scene getImage:x[@"bg"]]
-				forState:UIControlStateNormal];
-			[btn setImage:[scene getImage:x[@"bg-pressed"]]
-				forState:UIControlStateHighlighted];
-			[self registerButton:btn name:x[@"id"]];
-			[sceneContainer addSubview:btn];
-		}
-	}
-	return sceneContainer;
-
-}
-
-- (void)viewWillLayoutSubviews
-{
-	CGRect viewRect = [self safeRootRect];
-	//CGRect viewRect = CGRectMake(0,0,480,320);
-	NSLog(@"viewWillLayoutSubviews: %@", @(viewRect));
-	[super viewWillLayoutSubviews];
-	DPThemeScene *scene = [self findSceneForSize:viewRect.size];
-	NSAssert(scene != nil, @"No scene for %@", @(viewRect));
-	_currentScene = scene;
-		
-	if (_currentScene == scene && _rootContainer &&
-		CGRectEqualToRect(_rootContainer.bounds, viewRect))
-	{
-		// No change
-		return;
-	}
-	if (_rootContainer) {
-		NSLog(@"Recreate scene %@ %@, origin=%@", scene.name, @(viewRect), @(_rootContainer.bounds));
-		[_rootContainer removeFromSuperview];
-	}
-	_rootContainer = [self createSceneView:_currentScene frame:viewRect];
-	[self.view addSubview:_rootContainer];
-	[self updateScreen];
-}
-
-// Portrait mode only
-- (DPGamepad*)findGamepad
-{
-	for (UIView *v in _rootContainer.subviews) {
-		if ([v isKindOfClass:DPGamepad.class])
-			return (DPGamepad*)v;
-	}
-	return nil;
-}
-
-// Portrait mode only
-- (KeyboardView*)findKeyboard
-{
-	for (UIView *v in _rootContainer.subviews) {
-		if ([v isKindOfClass:KeyboardView.class])
-			return (KeyboardView*)v;
-	}
-	return nil;
-}
-
-- (void)toggleGamepad:(UIButton*)btn
-{
-	DPGamepad *gamepad = [self findGamepad];
-	KeyboardView *kv = [self findKeyboard];
-	if (gamepad.isHidden) {
-		gamepad.hidden = NO;
-		kv.hidden = YES;
-	} else {
-		gamepad.hidden = YES;
-		kv.hidden = NO;
-	}
-}
-
-- (void)registerButton:(UIButton*)btn name:(NSString*)name
-{
-	if ([name isEqualToString:@"power"])
-	{
-		[btn addTarget:self action:@selector(showOption:) forControlEvents:UIControlEventTouchUpInside];
-	}
-	else if ([name isEqualToString:@"gamepad-toggle"])
-	{
-		[btn addTarget:self action:@selector(toggleGamepad:) forControlEvents:UIControlEventTouchUpInside];
-	}
-	else if ([name isEqualToString:@"floppy"])
-	{
-		[btn addTarget:self action:@selector(mountDrive:) forControlEvents:UIControlEventTouchUpInside];
-	}
-	else if ([name isEqualToString:@"cdrom"])
-	{
-		[btn addTarget:self action:@selector(mountCDDrive:) forControlEvents:UIControlEventTouchUpInside];
-	}
-	else if ([name isEqualToString:@"mouse-right"])
-	{
-        [btn addTarget:self
-                         action:@selector(onMouseRightDown)
-               forControlEvents:UIControlEventTouchDown];
-        [btn addTarget:self
-                        action:@selector(onMouseRightUp)
-              forControlEvents:UIControlEventTouchUpInside];
-	}
-	else if ([name isEqualToString:@"mouse-left"])
-	{
-        [btn addTarget:self
-                    action:@selector(onMouseLeftDown)
-          forControlEvents:UIControlEventTouchDown];
-        [btn addTarget:self
-                    action:@selector(onMouseLeftUp)
-          forControlEvents:UIControlEventTouchUpInside];
-	}
-}
-
-- (void)mountDrive:(id)sender
-{
-	NSMutableArray *actions = [NSMutableArray array];
-	
-	[actions addObject:[UIAlertAction
-		actionWithTitle:@"Folder"
-		style:UIAlertActionStyleDefault
-		handler:^(UIAlertAction * _Nonnull action) {
-			[self openDriveMountPicker:DriveMount_Folder];
-		}]];
-		
-	[actions addObject:[UIAlertAction
-		actionWithTitle:@"iDOS Packages"
-		style:UIAlertActionStyleDefault
-		handler:^(UIAlertAction * _Nonnull action) {
-			[self openDriveMountPicker:DriveMount_Packages];
-		}]];
-		
-	[actions addObject:[UIAlertAction
-		actionWithTitle:@"Disk images"
-		style:UIAlertActionStyleDefault
-		handler:^(UIAlertAction * _Nonnull action) {
-			[self openDriveMountPicker:DriveMount_DiskImage];
-		}]];
-
-	// iPad has a dedicated CDROM drive button for this
-	if (![UIDevice.currentDevice.model isEqual:@"iPad"])
-	{
-		[actions addObject:[UIAlertAction
-			actionWithTitle:@"CD Images"
-			style:UIAlertActionStyleDefault
-			handler:^(UIAlertAction * _Nonnull action) {
-				[self openDriveMountPicker:DriveMount_CDImage];
-			}]];
-	}
-	
-	[self alert:@"Mount as drive" message:@"Choose an option"
-		actions:actions
-		source:sender];
-}
-
-- (void)mountCDDrive:(id)sender
-{
-	[self openDriveMountPicker:DriveMount_CDImage];
-}
-
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -769,17 +328,268 @@ static struct {
 #ifdef APPSTORE
     // For non appstore builds, we should use private API to support
     // external keyboard.
-    // For iOS 14+, we use GCKeyboard
+    // For iOS 14+, we use GCKeyboard - https://developer.apple.com/documentation/gamecontroller/gckeyboard
     // Otherwise use KeyboardSpy which is a hack.
     if (@available(iOS 14.0, *)) {
-
+        NSLog(@"GCKeyboard Selected");
     } else {
         self.kbdspy = [[KeyboardSpy alloc] initWithFrame:CGRectMake(0,0,60,40)];
         [self.view addSubview:self.kbdspy];
     }
 #endif
 
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didSettingsChanged:) name:DPFSettingsChangedNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didSettingsChanged:) name:DPFSettingsChangedNotification object:nil];
+}
+
+-(void)updateScreen
+{
+    CGRect viewRect = _rootContainer.bounds;
+    if (_currentScene.isPortrait)
+    {
+        [self fillScreen:_screenRect];
+    }
+    else
+    {
+        if (shouldShrinkScreen)
+        {
+            if ([UIDevice.currentDevice.model isEqual:@"iPad"]) {
+                viewRect.size.height -= 250;
+                [self putScreen:viewRect scaleMode:[DPSettings shared].screenScaleMode];
+            } else {
+                [self putScreen:viewRect scaleMode:DPScreenScaleModeAspectFit4x3];
+            }
+        }
+        else
+        {
+            [self putScreen:viewRect scaleMode:[DPSettings shared].screenScaleMode];
+        }
+    }
+}
+
+- (void)toggleScreenSize
+{
+    shouldShrinkScreen = !shouldShrinkScreen;
+    [self updateScreen];
+}
+
+// iPhone have many different sizes, but only 3 aspect ratios:
+// - 4:3   Original up to iPhone 4S
+// - 16:9  iPhone 5 & 6
+// - 20:9  iPhone X
+- (DPThemeScene*)findSceneForSize:(CGSize)size
+{
+    CGFloat aspectRatio = size.width / size.height;
+    
+    if (size.width < size.height)
+    {
+        if (aspectRatio < 0.52)
+        {
+            // iPhone Max
+            return [_currentTheme findSceneByName:@"iphone-portrait-tall"];
+        }
+        else if (aspectRatio < 0.6)
+        {
+            // iPhone 5,6
+            return [_currentTheme findSceneByName:@"iphone-portrait-medium"];
+        }
+        else
+        {
+            if (size.width >= 768) {
+                return [_currentTheme findSceneByName:@"ipad-portrait"];
+            } else {
+                // iPhone 4S
+                return [_currentTheme findSceneByName:@"iphone-portrait-small"];
+            }
+        }
+    }
+    else
+    {
+        if ([UIDevice.currentDevice.model isEqual:@"iPad"]) {
+            return [_currentTheme findSceneByName:@"ipad-landscape"];
+        }
+        if (size.width <= 480) { // iPhone 4S
+            return [_currentTheme findSceneByName:@"iphone-landscape-short"];
+        } else if (aspectRatio < 1.5) {
+            return [_currentTheme findSceneByName:@"iphone-landscape-short"];
+        } else if (aspectRatio < 1.92 ) {
+            return [_currentTheme findSceneByName:@"iphone-landscape-medium"];
+        } else {
+            return [_currentTheme findSceneByName:@"iphone-landscape-long"];
+        }
+    }
+}
+
+- (UIView*)createSceneView:(DPThemeScene*)scene frame:(CGRect)rootRect
+{
+    CGFloat scaleX = rootRect.size.width / scene.size.width;
+    CGFloat scaleY = rootRect.size.height / scene.size.height;
+
+    UIImageView *sceneContainer = [[UIImageView alloc] initWithFrame:rootRect];
+    sceneContainer.userInteractionEnabled = YES;
+    if (scene.backgroundImageURL) {
+        sceneContainer.image = [UIImage imageWithContentsOfFile:scene.backgroundImageURL.path];
+    }
+    
+    for (NSDictionary *x in scene.nodes)
+    {
+        CGRect frame = CGRectZero;
+        if (x[@"frame"]) {
+            NSArray *t = x[@"frame"];
+            frame.origin.x    = [t[0] floatValue] * scaleX;
+            frame.origin.y    = [t[1] floatValue] * scaleY;
+            frame.size.width  = [t[2] floatValue] * scaleX;
+            frame.size.height = [t[3] floatValue] * scaleY;
+        }
+        NSString *type = x[@"type"];
+        BOOL hidden = [x[@"hidden"] boolValue];
+        if ([type isEqualToString:@"screen"])
+        {
+            [sceneContainer addSubview:self.screenView];
+            _screenRect = frame;
+        }
+        else if ([type isEqualToString:@"cycles-label"])
+        {
+            [sceneContainer addSubview:[self cyclesLabel:frame]];
+        }
+        else if ([type isEqualToString:@"keyboard"])
+        {
+            KeyboardView* kv;
+            kv = [[KeyboardView alloc] initWithFrame:frame layout:x[@"layout"]];
+            kv.hidden = hidden;
+            [sceneContainer addSubview:kv];
+        }
+        else if ([type isEqualToString:@"gamepad"])
+        {
+            NSString *sceneName = x[@"scene"];
+            if (!sceneName) sceneName = @"gamepad";
+            DPThemeScene *scn = [_currentTheme findSceneByName:sceneName];
+            DPGamepad *gamepad = [[DPGamepad alloc] initWithFrame:frame scene:scn];
+            gamepad.gamepadDelegate = self;
+            gamepad.hidden = hidden;
+            if (_gamepadConfig) {
+                [gamepad applyConfiguration:_gamepadConfig];
+            }
+            [sceneContainer addSubview:gamepad];
+        }
+        else if ([type isEqualToString:@"landbar"])
+        {
+            // FIXME: A dirty fix, FloatPanel has certain sizing requirements
+            // Ignore the frame settings
+            CGSize barSize = [UIDevice.currentDevice.model isEqual:@"iPad"] ? CGSizeMake(700, 47) : CGSizeMake(480, 32);
+            
+            // Set location and size of landbar
+            if([DPSettings shared].landbarToggleBottomScreen) {
+                frame = CGRectMake((rootRect.size.width-barSize.width)/2, rootRect.size.height-barSize.height/2, barSize.width, barSize.height);
+            } else {
+                frame = CGRectMake((rootRect.size.width-barSize.width)/2, 0, barSize.width, barSize.height);
+            }
+
+            UIButton *btnExitFS;
+            
+            fullscreenPanel = [[FloatPanel alloc] initWithFrame:frame];
+            if ([UIDevice.currentDevice.model isEqual:@"iPad"]) {
+                btnExitFS = [[UIButton alloc] initWithFrame:CGRectMake(0,0,72,36)];
+                btnExitFS.center=CGPointMake(63, 18);
+                [btnExitFS setImage:[UIImage imageNamed:@"exitfull-black-ipad"] forState:UIControlStateNormal];
+            } else {
+                btnExitFS = [[UIButton alloc] initWithFrame:CGRectMake(0,0,48,24)];
+                btnExitFS.center=CGPointMake(44, 13);
+                [btnExitFS setImage:[UIImage imageNamed:@"exitfull.png"] forState:UIControlStateNormal];
+            }
+            
+            [btnExitFS addTarget:self action:@selector(toggleScreenSize) forControlEvents:UIControlEventTouchUpInside];
+            [fullscreenPanel.contentView addSubview:btnExitFS];
+            [sceneContainer addSubview:fullscreenPanel];
+            [self refreshFullscreenPanel];
+            [fullscreenPanel showContent];
+        }
+        else if ([type isEqualToString:@"image"])
+        {
+            UIImageView *iv = [[UIImageView alloc] initWithFrame:frame];
+            if (x[@"bgcolor"]) {
+                iv.backgroundColor = [UIColor hexColor:x[@"bgcolor"]];
+            }
+            if (x[@"bg"]) {
+                iv.image = [scene getImage:x[@"bg"]];
+            }
+            [sceneContainer addSubview:iv];
+        }
+        else if ([type isEqualToString:@"button"])
+        {
+            UIButton *btn = [[UIButton alloc] initWithFrame:frame];
+            [btn setImage:[scene getImage:x[@"bg"]]
+                forState:UIControlStateNormal];
+            [btn setImage:[scene getImage:x[@"bg-pressed"]]
+                forState:UIControlStateHighlighted];
+            [self registerButton:btn name:x[@"id"]];
+            [sceneContainer addSubview:btn];
+        }
+    }
+    return sceneContainer;
+
+}
+
+- (void)viewWillLayoutSubviews
+{
+    CGRect viewRect = [self safeRootRect];
+    //CGRect viewRect = CGRectMake(0,0,480,320);
+    NSLog(@"viewWillLayoutSubviews: %@", @(viewRect));
+    [super viewWillLayoutSubviews];
+    DPThemeScene *scene = [self findSceneForSize:viewRect.size];
+    NSAssert(scene != nil, @"No scene for %@", @(viewRect));
+    _currentScene = scene;
+        
+    if (_currentScene == scene && _rootContainer &&
+        CGRectEqualToRect(_rootContainer.bounds, viewRect))
+    {
+        // No change
+        return;
+    }
+    if (_rootContainer) {
+        NSLog(@"Recreate scene %@ %@, origin=%@", scene.name, @(viewRect), @(_rootContainer.bounds));
+        [_rootContainer removeFromSuperview];
+    }
+    _rootContainer = [self createSceneView:_currentScene frame:viewRect];
+    [self.view addSubview:_rootContainer];
+    [self updateScreen];
+}
+
+- (void)registerButton:(UIButton*)btn name:(NSString*)name
+{
+    if ([name isEqualToString:@"power"])
+    {
+        [btn addTarget:self action:@selector(showOption:) forControlEvents:UIControlEventTouchUpInside];
+    }
+    else if ([name isEqualToString:@"gamepad-toggle"])
+    {
+        [btn addTarget:self action:@selector(toggleGamepad:) forControlEvents:UIControlEventTouchUpInside];
+    }
+    else if ([name isEqualToString:@"floppy"])
+    {
+        [btn addTarget:self action:@selector(mountDrive:) forControlEvents:UIControlEventTouchUpInside];
+    }
+    else if ([name isEqualToString:@"cdrom"])
+    {
+        [btn addTarget:self action:@selector(mountCDDrive:) forControlEvents:UIControlEventTouchUpInside];
+    }
+    else if ([name isEqualToString:@"mouse-right"])
+    {
+        [btn addTarget:self
+                         action:@selector(onMouseRightDown)
+               forControlEvents:UIControlEventTouchDown];
+        [btn addTarget:self
+                        action:@selector(onMouseRightUp)
+              forControlEvents:UIControlEventTouchUpInside];
+    }
+    else if ([name isEqualToString:@"mouse-left"])
+    {
+        [btn addTarget:self
+                    action:@selector(onMouseLeftDown)
+          forControlEvents:UIControlEventTouchDown];
+        [btn addTarget:self
+                    action:@selector(onMouseLeftUp)
+          forControlEvents:UIControlEventTouchUpInside];
+    }
 }
 
 - (void)didSettingsChanged:(NSNotification*)note
@@ -794,60 +604,168 @@ static struct {
     });
 }
 
-// MARK: DPGamepadDelegate
+//MARK: - Numpad Controls
+- (void)createNumpad
+{
+	KeyboardView *numpad = [[KeyboardView alloc] initWithFrame:CGRectMake(_rootContainer.bounds.size.width-160,450,160,200)
+	layout:@"kpad4x5"];
+	numpad.alpha = [DPSettings shared].floatAlpha;
+	numpad.tag = TAG_INPUT_NUMPAD;
+	[_rootContainer addSubview:numpad];
+    
+    CGPoint ptOrig = numpad.center;
+    [UIView animateWithDuration:0.3 animations:^{
+        numpad.center = CGPointMake(ptOrig.x, ptOrig.y-numpad.frame.size.height);
+    }];
+}
+
+//MARK: - Keyboard Controls
+- (void)createPCKeyboard
+{
+    const CGFloat keyboardHeight = [UIDevice.currentDevice.model  isEqual: @"iPad"] ? 250 : 175;
+	CGRect rect = CGRectMake(0,
+		_rootContainer.bounds.size.height-keyboardHeight,
+		_rootContainer.bounds.size.width,
+		keyboardHeight);
+	kbd = [[KeyboardView alloc] initWithFrame:rect
+			layout:(NSString*)[_currentScene getAttribute:@"keyboard"]];
+	kbd.alpha = [DPSettings shared].floatAlpha;
+	[_rootContainer addSubview:kbd];
+	kbd.tag = TAG_INPUT_KEYBOARD;
+}
+
+// Portrait mode only
+- (KeyboardView*)findKeyboard
+{
+    for (UIView *v in _rootContainer.subviews) {
+        if ([v isKindOfClass:KeyboardView.class])
+            return (KeyboardView*)v;
+    }
+    return nil;
+}
+
+// MARK: GCKeyboard Manager
+
+- (void)keyboardManager:(DPKeyboardManager *)manager scancode:(int)scancode pressed:(BOOL)pressed
+{
+    SDL_SendKeyboardKey( 0, pressed?SDL_PRESSED:SDL_RELEASED, scancode);
+}
+
+
+//MARK: - Gamepad Controls/Delegates
+- (void)createGamepad
+{
+    DPGamepad *gamepad = [self createGamepadHelper];
+    gamepad.alpha = [DPSettings shared].floatAlpha;
+    gamepad.tag = TAG_INPUT_GAMEPAD;
+}
+
+- (DPGamepad*)createGamepadHelper
+{
+	DPThemeScene *scn = [_currentTheme findSceneByName:(NSString*)[_currentScene getAttribute:@"gamepad"]];
+	CGFloat height = 240;
+	if ([UIDevice.currentDevice.model isEqual:@"iPad"]) {
+		height = _rootContainer.bounds.size.width*0.3;
+	}
+	CGRect rect = CGRectMake(0, CGRectGetMaxY(_rootContainer.bounds)-height,
+		_rootContainer.bounds.size.width, height);
+	
+	DPGamepad *gamepad = [[DPGamepad alloc] initWithFrame:rect scene:scn];
+	[_rootContainer addSubview:gamepad];
+	if (_gamepadConfig) {
+		[gamepad applyConfiguration:_gamepadConfig];
+	}
+	gamepad.gamepadDelegate = self;
+	return gamepad;
+}
 
 - (void)gamepad:(DPGamepad*)gamepad buttonIndex:(DPGamepadButtonIndex)buttonIndex pressed:(BOOL)pressed
 {
-	// NSLog(@"gamepad %@ %@", [DPGamepad buttonIdForIndex:buttonIndex], pressed?@"DOWN":@"UP");
-	
-	if (gamepad.editing)
-	{
-		if (!pressed) {
-			DPGamepadButtonEditor *ed = [[DPGamepadButtonEditor alloc] init];
-			ed.buttonIndex = buttonIndex;
-			ed.gamepadConfig = _gamepadConfig;
-			ed.title = [DPGamepad buttonIdForIndex:buttonIndex].uppercaseString;
-			ed.completionHandler = ^{
+    // NSLog(@"gamepad %@ %@", [DPGamepad buttonIdForIndex:buttonIndex], pressed?@"DOWN":@"UP");
+    
+    if (gamepad.editing)
+    {
+        if (!pressed) {
+            DPGamepadButtonEditor *ed = [[DPGamepadButtonEditor alloc] init];
+            ed.buttonIndex = buttonIndex;
+            ed.gamepadConfig = _gamepadConfig;
+            ed.title = [DPGamepad buttonIdForIndex:buttonIndex].uppercaseString;
+            ed.completionHandler = ^{
                 [gamepad applyConfiguration:self->_gamepadConfig];
-			};
-			UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:ed];
-			nav.modalPresentationStyle = UIModalPresentationFormSheet;
-			[self presentViewController:nav animated:YES completion:nil];
-		}
-		return;
-	}
-	
-	if (gamepad.stickMode) {
-		if (buttonIndex == DP_GAMEPAD_BUTTON_A) {
-			[[DOSPadEmulator sharedInstance] joystickButton:0
-				pressed:pressed joystickIndex:0];
-			return;
-		} else if (buttonIndex == DP_GAMEPAD_BUTTON_X) {
-			[[DOSPadEmulator sharedInstance] joystickButton:1
-				pressed:pressed joystickIndex:0];
-			return;
-		}
-	}
-	
-	DPKeyBinding *keyBinding = [_gamepadConfig bindingForButton:buttonIndex];
-	if (keyBinding) {
-		if (keyBinding.text) {
-			if (!pressed) {
-				[[DOSPadEmulator sharedInstance] sendText:keyBinding.text];
-			}
-		} else if (keyBinding.index > 0) {
-			[[DOSPadEmulator sharedInstance] sendKey:keyBinding.index pressed:pressed];
-		}
-	}
+            };
+            UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:ed];
+            nav.modalPresentationStyle = UIModalPresentationFormSheet;
+            [self presentViewController:nav animated:YES completion:nil];
+        }
+        return;
+    }
+    
+    if (gamepad.stickMode) {
+        if (buttonIndex == DP_GAMEPAD_BUTTON_A) {
+            [[DOSPadEmulator sharedInstance] joystickButton:0
+                pressed:pressed joystickIndex:0];
+            return;
+        } else if (buttonIndex == DP_GAMEPAD_BUTTON_X) {
+            [[DOSPadEmulator sharedInstance] joystickButton:1
+                pressed:pressed joystickIndex:0];
+            return;
+        }
+    }
+    
+    DPKeyBinding *keyBinding = [_gamepadConfig bindingForButton:buttonIndex];
+    if (keyBinding) {
+        if (keyBinding.text) {
+            if (!pressed) {
+                [[DOSPadEmulator sharedInstance] sendText:keyBinding.text];
+            }
+        } else if (keyBinding.index > 0) {
+            [[DOSPadEmulator sharedInstance] sendKey:keyBinding.index pressed:pressed];
+        }
+    }
 }
 
 - (void)gamepad:(DPGamepad*)gamepad didJoystickMoveWithX:(float)x y:(float)y
 {
-	//NSLog(@"gamepad joy %f %f", x, y);
-	[[DOSPadEmulator sharedInstance] updateJoystick:0 x:x y:y];
+    //NSLog(@"gamepad joy %f %f", x, y);
+    [[DOSPadEmulator sharedInstance] updateJoystick:0 x:x y:y];
 }
 
-// MARK: opengles view delegate
+- (void)toggleGamepad:(UIButton*)btn
+{
+    DPGamepad *gamepad = [self findGamepad];
+    KeyboardView *kv = [self findKeyboard];
+    if (gamepad.isHidden) {
+        gamepad.hidden = NO;
+        kv.hidden = YES;
+    } else {
+        gamepad.hidden = YES;
+        kv.hidden = NO;
+    }
+}
+// Portrait mode only
+- (DPGamepad*)findGamepad
+{
+    for (UIView *v in _rootContainer.subviews) {
+        if ([v isKindOfClass:DPGamepad.class])
+            return (DPGamepad*)v;
+    }
+    return nil;
+}
+
+
+//MARK: - Joystick Controls/Delegates
+- (void)createJoystick
+{
+	DPGamepad *gamepad = [self createGamepadHelper];
+	gamepad.tag = TAG_INPUT_JOYSTICK;
+	gamepad.alpha = [DPSettings shared].floatAlpha;
+	gamepad.stickMode = YES;
+}
+
+
+
+
+// MARK: - OpenGLES View Delegates
 // Screen Resize
 -(void)onResize:(CGSize)sizeNew
 {
@@ -975,6 +893,54 @@ static struct {
 	}
 }
 
+//MARK: - Mouse Controls
+
+- (void)createMouseButtons
+{
+    CGFloat vw = _rootContainer.bounds.size.width;
+    CGFloat vh = _rootContainer.bounds.size.height;
+    UIView *container = [[UIView alloc] initWithFrame:CGRectMake(0, 450, 200, 40)];
+    // Transparency
+    container.tag = TAG_INPUT_MOUSE_BUTTONS;
+    container.alpha = [DPSettings shared].floatAlpha;
+    [_rootContainer addSubview:container];
+    
+    // Add movable control
+    DPThumbView *thumbView = [[DPThumbView alloc] initWithFrame:CGRectMake(0, 0, 40, 40)];
+    thumbView.text = @"☰";
+    [container addSubview:thumbView];
+    
+    // Left Mouse Button
+    UIButton *btnMouseLeft = [[UIButton alloc] initWithFrame:CGRectMake(40,0,80,40)];
+    [btnMouseLeft setImage:[_currentScene getImage:@"assets/mouse-button-left.png"] forState:UIControlStateNormal];
+    [btnMouseLeft setImage:[_currentScene getImage:@"assets/mouse-button-left-pressed.png"] forState:UIControlStateHighlighted];
+    [btnMouseLeft addTarget:self
+                    action:@selector(onMouseLeftDown)
+          forControlEvents:UIControlEventTouchDown];
+    [btnMouseLeft addTarget:self
+                    action:@selector(onMouseLeftUp)
+          forControlEvents:UIControlEventTouchUpInside];
+    [container addSubview:btnMouseLeft];
+    
+    // Right Mouse Button
+    UIButton *btnMouseRight = [[UIButton alloc] initWithFrame:CGRectMake(120,0,80,40)];
+    [btnMouseRight setImage:[_currentScene getImage:@"assets/mouse-button-right.png"] forState:UIControlStateNormal];
+    [btnMouseRight setImage:[_currentScene getImage:@"assets/mouse-button-right-pressed.png"]
+        forState:UIControlStateHighlighted];
+    [btnMouseRight addTarget:self
+                     action:@selector(onMouseRightDown)
+           forControlEvents:UIControlEventTouchDown];
+    [btnMouseRight addTarget:self
+                    action:@selector(onMouseRightUp)
+          forControlEvents:UIControlEventTouchUpInside];
+    [container addSubview:btnMouseRight];
+    
+    // Animate the mouse control to position
+    CGPoint ptOrig = container.center;
+    [UIView animateWithDuration:0.3 animations:^{
+        container.center = CGPointMake(ptOrig.x, ptOrig.y-container.frame.size.height);
+    }];
+}
 
 - (void)onMouseLeftDown
 {
@@ -1002,7 +968,6 @@ static struct {
     return NO;
 }
 
-// MARK: Mouse Hold
 -(void)onHold:(CGPoint)pt
 {
 	if ([DPSettings shared].showMouseHold)
@@ -1051,6 +1016,20 @@ static struct {
 		source:sender];
 }
 
+// MARK: GCMouse Manager
+- (void)mouseManager:(DPMouseManager *)manager button:(int)index pressed:(BOOL)pressed
+{
+    [self.screenView sendMouseEvent:0 left:index==0 down:pressed];
+}
+
+- (void)mouseManager:(DPMouseManager *)manager moveX:(CGFloat)x andY:(CGFloat)y
+{
+    CGSize size1 = self.screenView.frame.size;
+    CGSize size2 = self.screenView.bounds.size;
+    [self.screenView sendMouseMotion:0 x:x/size1.width*size2.width y:-y/size1.height*size2.height];
+}
+
+//MARK: - Piano Keyboard
 - (void)createPianoKeyboard
 {
     NSString *ui_cfg = 0;//get_temporary_merged_file(configPath, get_default_config());
@@ -1065,8 +1044,7 @@ static struct {
     }
 }
 
-#pragma mark -
-// MARK: Mfi
+// MARK: -  MFi Controller Delegates
 
 -(void) openMfiMapper:(id)sender
 {
@@ -1105,15 +1083,11 @@ static struct {
 	_mfiMapper.delegate = self;
 }
 
-// MARK: MfiGamepadMapperDelegate
-
 - (void)mfiGamepadMapperDidClose:(MfiGamepadMapperView *)mapper
 {
 	_mfiMapper = nil;
 	[self removeFloatingInput:TAG_INPUT_KEYBOARD];
 }
-
-// MARK: MfiGamepadManagerDelegate
 
 - (void)mfiButton:(MfiGamepadButtonIndex)buttonIndex pressed:(BOOL)pressed atPlayer:(NSInteger)playerIndex
 {
@@ -1161,7 +1135,6 @@ static struct {
 	}
 }
 
-# pragma - mark KeyDelegate
 -(void)onKeyDown:(KeyView*)k {
 	if (_mfiMapper && k.code > 0)
 	{
@@ -1179,28 +1152,7 @@ static struct {
 -(void) onKeyFunction:(KeyView *)k {
 }
 
-// MARK: GCKeyboard Manager
-
-- (void)keyboardManager:(DPKeyboardManager *)manager scancode:(int)scancode pressed:(BOOL)pressed
-{
-    SDL_SendKeyboardKey( 0, pressed?SDL_PRESSED:SDL_RELEASED, scancode);
-}
-
-// MARK: GCMouse Manager
-
-- (void)mouseManager:(DPMouseManager *)manager button:(int)index pressed:(BOOL)pressed
-{
-    [self.screenView sendMouseEvent:0 left:index==0 down:pressed];
-}
-
-- (void)mouseManager:(DPMouseManager *)manager moveX:(CGFloat)x andY:(CGFloat)y
-{
-    CGSize size1 = self.screenView.frame.size;
-    CGSize size2 = self.screenView.bounds.size;
-    [self.screenView sendMouseMotion:0 x:x/size1.width*size2.width y:-y/size1.height*size2.height];
-}
-
-// MARK: DOSEmulatorDelegate
+// MARK: - DOSEmulatorDelegate
 
 - (void)emulatorWillStart:(DOSPadEmulator *)emulator
 {
@@ -1396,8 +1348,6 @@ static struct {
     [self presentViewController:alertController animated:YES completion:nil];
 }
 
-#pragma mark - DocumentPickerDelegate
-
 - (void)documentPicker:(UIDocumentPickerViewController *)controller
 	didPickDocumentsAtURLs:(NSArray<NSURL *> *)urls
 {
@@ -1464,8 +1414,54 @@ static struct {
 	// Do nothing
 }
 
-#pragma mark -
-// MARK: Misc configurations
+- (void)mountDrive:(id)sender
+{
+    NSMutableArray *actions = [NSMutableArray array];
+    
+    [actions addObject:[UIAlertAction
+        actionWithTitle:@"Folder"
+        style:UIAlertActionStyleDefault
+        handler:^(UIAlertAction * _Nonnull action) {
+            [self openDriveMountPicker:DriveMount_Folder];
+        }]];
+        
+    [actions addObject:[UIAlertAction
+        actionWithTitle:@"iDOS Packages"
+        style:UIAlertActionStyleDefault
+        handler:^(UIAlertAction * _Nonnull action) {
+            [self openDriveMountPicker:DriveMount_Packages];
+        }]];
+        
+    [actions addObject:[UIAlertAction
+        actionWithTitle:@"Disk images"
+        style:UIAlertActionStyleDefault
+        handler:^(UIAlertAction * _Nonnull action) {
+            [self openDriveMountPicker:DriveMount_DiskImage];
+        }]];
+
+    // iPad has a dedicated CDROM drive button for this
+    if (![UIDevice.currentDevice.model isEqual:@"iPad"])
+    {
+        [actions addObject:[UIAlertAction
+            actionWithTitle:@"CD Images"
+            style:UIAlertActionStyleDefault
+            handler:^(UIAlertAction * _Nonnull action) {
+                [self openDriveMountPicker:DriveMount_CDImage];
+            }]];
+    }
+    
+    [self alert:@"Mount as drive" message:@"Choose an option"
+        actions:actions
+        source:sender];
+}
+
+- (void)mountCDDrive:(id)sender
+{
+    [self openDriveMountPicker:DriveMount_CDImage];
+}
+
+
+//MARK: - Misc configuration/methods
 
 - (BOOL)prefersHomeIndicatorAutoHidden
 {

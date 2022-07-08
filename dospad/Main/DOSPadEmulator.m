@@ -64,6 +64,8 @@ static DOSPadEmulator* _sharedInstance;
 @implementation DOSPadEmulator
 @synthesize started;
 
+//MARK: - Instance
+
 + (DOSPadEmulator*)sharedInstance
 {
 	if (!_sharedInstance)
@@ -78,14 +80,7 @@ static DOSPadEmulator* _sharedInstance;
 	_sharedInstance = instance;
 }
 
-- (void)dealloc
-{
-	for (int i = 0;  i < sizeof(_joystick)/sizeof(_joystick[0]); i++)
-	{
-		SDL_JoystickClose(_joystick[i]);
-	}
-}
-
+//MARK: - DOSBox Initilization
 // Use config file 'name' under <diskc>/config.
 // If not present, duplicate bundled ones.
 // The bundled one will be copied into <diskc>/config
@@ -137,7 +132,7 @@ static DOSPadEmulator* _sharedInstance;
 	return self;
 }
 
-- (void)start 
+- (void)start
 {
 	NSAssert([NSThread isMainThread], @"Not in main thread");
     
@@ -180,6 +175,7 @@ static DOSPadEmulator* _sharedInstance;
     }
 } 
 
+//MARK: - View Controller Delegates
 // Function takes a screenshot of the current dosbox window
 - (void)takeScreenshot
 {
@@ -199,6 +195,7 @@ static DOSPadEmulator* _sharedInstance;
 	});
 }
 
+//MARK: - SDL Input/Output
 - (void)sendCommand:(NSString *)cmd
 {
 	if (dospad_command_line_ready && !dospad_command_buffer[0]) {
@@ -253,6 +250,12 @@ static DOSPadEmulator* _sharedInstance;
 	SDL_SendKeyboardKey( 0, SDL_RELEASED, scancode);
 }
 
+- (void)didCommandDone
+{
+    NSLog(@"Command done");
+}
+
+//MARK: - SDL Joystick
 - (BOOL)ensureJoystick:(NSInteger)index
 {
     if (!_joystick[index])
@@ -302,12 +305,15 @@ static DOSPadEmulator* _sharedInstance;
 	SDL_PrivateJoystickButton(_joystick[index], buttonIndex, pressed?SDL_PRESSED:SDL_RELEASED);
 }
 
-
-- (void)didCommandDone
+- (void)dealloc
 {
-	NSLog(@"command done");
+    for (int i = 0;  i < sizeof(_joystick)/sizeof(_joystick[0]); i++)
+    {
+        SDL_JoystickClose(_joystick[i]);
+    }
 }
 
+//MARK: - SDL Keyboard
 - (void)disableSDLKeyboardInput
 {
     SDL_EventState(SDL_TEXTINPUT, SDL_DISABLE);
@@ -324,8 +330,7 @@ static DOSPadEmulator* _sharedInstance;
 
 @end
 
-////////////////////////////////////////////////////////////
-// DOSBOX Interface
+//MARK: - DOSBox Interface
 
 const char *dospad_config_dir(void)
 {
