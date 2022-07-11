@@ -16,11 +16,12 @@ Patches/Customizations
 * IMGMAKE patch allowing creation of floppy and harddisk images within DosBox. This is a convenience feature for creating images to organize software packages or install other retro operating systems under DOSBox (e.g. DOS 6.22, Windows 2.03). Reference: [imgmake](https://www.vogons.org/viewtopic.php?t=19349)
 * Patched to support max memory of 383MB. This can be used for running Win9x (although not tested)
 * Apple Pencil gesture support
+* Additional DOS support commands (such as XCOPY, DOSIDLE, MEM etc). See branch `vfile-additions` for more information.
 
 Acknowledgements
 ====
-Special thanks to the @dosbox team for creating a great platform to relive DOS gaming memories
+Thanks to the @dosbox team for creating a great platform to relive DOS gaming memories
 
-Special thanks to @litchiedev for building a version of DOSBox that works on iOS/iPadOS. 
+Thanks to @litchiedev for building a version of DOSBox that works on iOS/iPadOS. 
 
 
