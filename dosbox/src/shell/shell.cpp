@@ -27,6 +27,9 @@
 #include "callback.h"
 #include "support.h"
 
+#ifdef ADDITIONAL_DOS_COMMANDS_PATCH
+#include "utils.h"
+#endif
 
 Bitu call_shellstop;
 /* Larger scope so shell_del autoexec can use it to
@@ -825,6 +828,30 @@ void SHELL_Init() {
 	mem_writew(env_write,1);
 	env_write+=2;
 	MEM_BlockWrite(env_write,full_name,(Bitu)(strlen(full_name)+1));
+    
+#ifdef ADDITIONAL_DOS_COMMANDS_PATCH
+    VFILE_Register("XCOPY.EXE",util_cmd_xcopy,15538);
+    VFILE_Register("EDIT.COM",util_cmd_edit,64053);
+    VFILE_Register("MOVE.EXE",util_cmd_move,15324);
+    VFILE_Register("FIND.EXE",util_cmd_find,7714);
+    VFILE_Register("MEM.COM",util_cmd_mem,15137);
+    VFILE_Register("DOSIDLE.EXE",util_cmd_dosidle,7052);
+    VFILE_Register("BUFFERS.COM",util_cmd_buffers,2607);
+    VFILE_Register("DEVICE.COM",util_cmd_device,1608);
+    VFILE_Register("TREE.EXE",util_cmd_tree,9888);
+    VFILE_Register("APPEND.EXE",util_cmd_append,3115);
+    VFILE_Register("HEXMEM16.EXE",hexmem16_exe,sizeof(hexmem16_exe));
+    VFILE_Register("HEXMEM32.EXE",hexmem32_exe,sizeof(hexmem32_exe));
+    VFILE_Register("DOS4GW.EXE",util_cmd_dos4gw,353668);
+    VFILE_Register("DOS32A.EXE",util_cmd_dos32a,18235);
+    VFILE_Register("CWSDPMI.EXE",util_cmd_cwsdpmi,21325);
+    VFILE_Register("DEBUGX.EXE",DEBUG_COM_binary,sizeof(DEBUG_COM_binary));
+    VFILE_Register("FCBS.COM",util_cmd_fcbs,2402);
+    VFILE_Register("COPY.EXE",util_cmd_copy,12693);
+    VFILE_Register("LASTDRIV.COM",util_cmd_lastdriv,2383);
+    VFILE_Register("28.COM",screen_mode_28,8);
+    VFILE_Register("50.COM",screen_mode_50,8);
+#endif
 
 	DOS_PSP psp(psp_seg);
 	psp.MakeNew(0);

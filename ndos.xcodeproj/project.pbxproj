@@ -59,6 +59,7 @@
 		090066EF28304FA9000654D3 /* pin-down-ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 090066ED28304FA9000654D3 /* pin-down-ipad.png */; };
 		090066F028304FA9000654D3 /* pin-up-ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 090066EE28304FA9000654D3 /* pin-up-ipad.png */; };
 		090066F22832DDC1000654D3 /* exitfull-black-ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 090066F12832DDC1000654D3 /* exitfull-black-ipad.png */; };
+		0984F66D287930A4000A3D9D /* utils.h in Headers */ = {isa = PBXBuildFile; fileRef = 0984F66C287930A4000A3D9D /* utils.h */; };
 		09CAF193282B044A00333400 /* midi.h in Headers */ = {isa = PBXBuildFile; fileRef = 09CAF191282B044A00333400 /* midi.h */; };
 		09CAF194282B044A00333400 /* pci_bus.h in Headers */ = {isa = PBXBuildFile; fileRef = 09CAF192282B044A00333400 /* pci_bus.h */; };
 		09CAF196282B05FA00333400 /* ymf262.h in Headers */ = {isa = PBXBuildFile; fileRef = 09CAF195282B05FA00333400 /* ymf262.h */; };
@@ -777,6 +778,7 @@
 		090066ED28304FA9000654D3 /* pin-down-ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "pin-down-ipad.png"; sourceTree = "<group>"; };
 		090066EE28304FA9000654D3 /* pin-up-ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "pin-up-ipad.png"; sourceTree = "<group>"; };
 		090066F12832DDC1000654D3 /* exitfull-black-ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "exitfull-black-ipad.png"; sourceTree = "<group>"; };
+		0984F66C287930A4000A3D9D /* utils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = utils.h; sourceTree = "<group>"; };
 		09CAF191282B044A00333400 /* midi.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = midi.h; sourceTree = "<group>"; };
 		09CAF192282B044A00333400 /* pci_bus.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = pci_bus.h; sourceTree = "<group>"; };
 		09CAF195282B05FA00333400 /* ymf262.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ymf262.h; sourceTree = "<group>"; };
@@ -1749,6 +1751,7 @@
 		E71E60F411B550FD00EC5A05 /* include */ = {
 			isa = PBXGroup;
 			children = (
+				0984F66C287930A4000A3D9D /* utils.h */,
 				09CAF191282B044A00333400 /* midi.h */,
 				09CAF192282B044A00333400 /* pci_bus.h */,
 				E71E60F511B550FD00EC5A05 /* bios.h */,
@@ -2958,6 +2961,7 @@
 				E71E621611B550FD00EC5A05 /* serialport.h in Headers */,
 				E71E621711B550FD00EC5A05 /* setup.h in Headers */,
 				E71E621811B550FD00EC5A05 /* shell.h in Headers */,
+				0984F66D287930A4000A3D9D /* utils.h in Headers */,
 				E71E621911B550FD00EC5A05 /* support.h in Headers */,
 				E71E621A11B550FD00EC5A05 /* timer.h in Headers */,
 				E71E621B11B550FD00EC5A05 /* vga.h in Headers */,

@@ -30,6 +30,9 @@
 /* Max memory patch */
 #define MAX_MEMORY_PATCH 1
 
+/* Additional DOS commands patch */
+#define ADDITIONAL_DOS_COMMANDS_PATCH 1
+
 /* Define if building universal (internal helper macro) */
 /* #undef AC_APPLE_UNIVERSAL_BUILD */
 
