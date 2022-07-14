@@ -1,0 +1,1330 @@
+--- ./include/callback.h	2010-05-10 18:43:54 +0100
++++ ./include/callback.h	2013-01-17 18:35:19 +0000
+@@ -31,7 +31,7 @@
+ enum { CB_RETN,CB_RETF,CB_RETF8,CB_IRET,CB_IRETD,CB_IRET_STI,CB_IRET_EOI_PIC1,
+ 		CB_IRQ0,CB_IRQ1,CB_IRQ9,CB_IRQ12,CB_IRQ12_RET,CB_IRQ6_PCJR,CB_MOUSE,
+ 		CB_INT29,CB_INT16,CB_HOOKABLE,CB_TDE_IRET,CB_IPXESR,CB_IPXESR_RET,
+-		CB_INT21 };
++		CB_INT21,CB_VESA_START };
+ 
+ #define CB_MAX		128
+ #define CB_SIZE		32
+--- ./include/dosbox.h	2010-05-10 18:43:54 +0100
++++ ./include/dosbox.h	2013-01-24 13:24:25 +0000
+@@ -22,6 +22,7 @@
+ #define DOSBOX_DOSBOX_H
+ 
+ #include "config.h"
++#include "rgb24.h"
+ 
+ void E_Exit(const char * message,...) GCC_ATTRIBUTE( __format__(__printf__, 1, 2));
+ 
+--- ./include/rgb24.h	2013-01-23 22:17:38 +0000
++++ ./include/rgb24.h	2013-01-23 22:17:38 +0000
+@@ -0,0 +1,15 @@
++typedef struct rgb24
++{	
++	protected:
++	unsigned char byte[3];
++	
++	public:
++	rgb24() {}
++	rgb24(const rgb24& val) {
++		*this = val; }
++
++	operator int () const {
++		return (byte[2]<<16)|(byte[1]<<8)|(byte[0]<<0); }
++	int operator& (const rgb24& val) const	{
++		return (char)*this & (char)val; }
++} rgb24;
+--- ./include/vga.h	2010-05-10 18:43:54 +0100
++++ ./include/vga.h	2013-01-02 00:21:44 +0000
+@@ -36,7 +36,7 @@
+ enum VGAModes {
+ 	M_CGA2, M_CGA4,
+ 	M_EGA, M_VGA,
+-	M_LIN4, M_LIN8, M_LIN15, M_LIN16, M_LIN32,
++	M_LIN4, M_LIN8, M_LIN15, M_LIN16, M_LIN24, M_LIN32,
+ 	M_TEXT,
+ 	M_HERC_GFX, M_HERC_TEXT,
+ 	M_CGA16, M_TANDY2, M_TANDY4, M_TANDY16, M_TANDY_TEXT,
+@@ -59,7 +59,8 @@
+ #define S3_XGA_640		0x40
+ #define S3_XGA_800		0x80
+ #define S3_XGA_1280		0xc0
+-#define S3_XGA_WMASK	(S3_XGA_640|S3_XGA_800|S3_XGA_1024|S3_XGA_1152|S3_XGA_1280)
++#define S3_XGA_1600		0x81
++#define S3_XGA_WMASK	(S3_XGA_640|S3_XGA_800|S3_XGA_1024|S3_XGA_1152|S3_XGA_1280|S3_XGA_1600)
+ 
+ #define S3_XGA_8BPP  0x00
+ #define S3_XGA_16BPP 0x10
+--- ./src/dosbox.cpp	2010-05-10 18:43:54 +0100
++++ ./src/dosbox.cpp	2013-01-02 12:12:11 +0000
+@@ -58,6 +58,7 @@
+ //void CREDITS_Init(Section*);
+ void RENDER_Init(Section*);
+ void VGA_Init(Section*);
++void vesa_refresh_Init(Section*);
+ 
+ void DOS_Init(Section*);
+ 
+@@ -288,6 +289,7 @@
+ 	machine = MCH_VGA;
+ 	int10.vesa_nolfb = false;
+ 	int10.vesa_oldvbe = false;
++	int10.vesa_no24bpp = false;
+ 	if      (mtype == "cga")      { machine = MCH_CGA; }
+ 	else if (mtype == "tandy")    { machine = MCH_TANDY; }
+ 	else if (mtype == "pcjr")     { machine = MCH_PCJR; }
+@@ -295,7 +297,9 @@
+ 	else if (mtype == "ega")      { machine = MCH_EGA; }
+ //	else if (mtype == "vga")          { svgaCard = SVGA_S3Trio; }
+ 	else if (mtype == "svga_s3")       { svgaCard = SVGA_S3Trio; }
++	else if (mtype == "vesa_no24bpp") { svgaCard = SVGA_S3Trio; int10.vesa_no24bpp = true;}
+ 	else if (mtype == "vesa_nolfb")   { svgaCard = SVGA_S3Trio; int10.vesa_nolfb = true;}
++	else if (mtype == "vesa_nolfb_no24bpp") { svgaCard = SVGA_S3Trio; int10.vesa_nolfb = true; int10.vesa_no24bpp = true;}
+ 	else if (mtype == "vesa_oldvbe")   { svgaCard = SVGA_S3Trio; int10.vesa_oldvbe = true;}
+ 	else if (mtype == "svga_et4000")   { svgaCard = SVGA_TsengET4K; }
+ 	else if (mtype == "svga_et3000")   { svgaCard = SVGA_TsengET3K; }
+@@ -303,6 +307,8 @@
+ 	else if (mtype == "svga_paradise") { svgaCard = SVGA_ParadisePVGA1A; }
+ 	else if (mtype == "vgaonly")      { svgaCard = SVGA_None; }
+ 	else E_Exit("DOSBOX:Unknown machine type %s",mtype.c_str());
++
++	vga.vmemsize=section->Get_int("vmemsize")*1024;
+ }
+ 
+ 
+@@ -333,7 +339,7 @@
+ 	const char* machines[] = {
+ 		"hercules", "cga", "tandy", "pcjr", "ega",
+ 		"vgaonly", "svga_s3", "svga_et3000", "svga_et4000",
+-		 "svga_paradise", "vesa_nolfb", "vesa_oldvbe", 0 };
++		 "svga_paradise", "vesa_no24bpp", "vesa_nolfb", "vesa_nolfb_no24bpp", "vesa_oldvbe", 0 };
+ 	secprop=control->AddSection_prop("dosbox",&DOSBOX_RealInit);
+ 	Pstring = secprop->Add_path("language",Property::Changeable::Always,"");
+ 	Pstring->Set_help("Select another language file.");
+@@ -342,6 +348,10 @@
+ 	Pstring->Set_values(machines);
+ 	Pstring->Set_help("The type of machine tries to emulate.");
+ 
++	Pint = secprop->Add_int("vmemsize",Property::Changeable::OnlyAtStart,4096);
++	Pint->SetMinMax(0,8192);
++	Pint->Set_help("Amount of video memory in kilobytes.");
++
+ 	Pstring = secprop->Add_path("captures",Property::Changeable::Always,"capture");
+ 	Pstring->Set_help("Directory where things like wave, midi, screenshot get captured.");
+ 
+@@ -366,6 +376,36 @@
+ 	secprop->AddInitFunction(&TIMER_Init);//done
+ 	secprop->AddInitFunction(&CMOS_Init);//done
+ 
++	secprop=control->AddSection_prop("vesa_refresh",&vesa_refresh_Init,true);
++	Pint = secprop->Add_int("512x384",Property::Changeable::Always,70);
++	Pint->Set_help("Refresh rate for VESA graphics mode 512x384.");
++	Pint = secprop->Add_int("640x350",Property::Changeable::Always,70);
++	Pint->Set_help("Refresh rate for VESA graphics mode 640x350.");
++	Pint = secprop->Add_int("640x400",Property::Changeable::Always,70);
++	Pint->Set_help("Refresh rate for VESA graphics modes 640x400, 320x200 and 320x400.");
++	Pint = secprop->Add_int("640x480",Property::Changeable::Always,60);
++	Pint->Set_help("Refresh rate for VESA graphics modes 640x480, 320x240 and 320x480.");
++	Pint = secprop->Add_int("720x480",Property::Changeable::Always,60);
++	Pint->Set_help("Refresh rate for VESA text mode 80x60 (9x8 character cell).");
++	Pint = secprop->Add_int("800x600",Property::Changeable::Always,60);
++	Pint->Set_help("Refresh rate for VESA graphics modes 800x600 and 400x300.");
++	Pint = secprop->Add_int("1024x768",Property::Changeable::Always,60);
++	Pint->Set_help("Refresh rate for VESA graphics mode 1024x768.");
++	Pint = secprop->Add_int("1188x344",Property::Changeable::Always,70);
++	Pint->Set_help("Refresh rate for VESA text mode 132x43 (9x8 character cell).");
++	Pint = secprop->Add_int("1188x400",Property::Changeable::Always,70);
++	Pint->Set_help("Refresh rate for VESA text modes 132x25 and 132x50 (9x16 and 9x8 character cells).");
++	Pint = secprop->Add_int("1188x480",Property::Changeable::Always,60);
++	Pint->Set_help("Refresh rate for VESA text mode 132x60 (9x8 character cell).");
++	Pint = secprop->Add_int("1152x864",Property::Changeable::Always,60);
++	Pint->Set_help("Refresh rate for VESA graphics mode 1152x864.");
++	Pint = secprop->Add_int("1280x960",Property::Changeable::Always,60);
++	Pint->Set_help("Refresh rate for VESA graphics mode 1280x960.");
++	Pint = secprop->Add_int("1280x1024",Property::Changeable::Always,60);
++	Pint->Set_help("Refresh rate for VESA graphics mode 1280x1024.");
++	Pint = secprop->Add_int("1600x1200",Property::Changeable::Always,60);
++	Pint->Set_help("Refresh rate for VESA graphics mode 1600x1200.");
++
+ 	secprop=control->AddSection_prop("render",&RENDER_Init,true);
+ 	Pint = secprop->Add_int("frameskip",Property::Changeable::Always,0);
+ 	Pint->SetMinMax(0,10);
+--- ./src/cpu/callback.cpp	2010-05-10 18:43:54 +0100
++++ ./src/cpu/callback.cpp	2013-01-17 18:33:27 +0000
+@@ -413,6 +413,26 @@
+ 		phys_writeb(physAddress+0x0d,(Bit8u)0x1f);		// pop ds
+ 		phys_writeb(physAddress+0x0e,(Bit8u)0xcf);		//An IRET Instruction
+ 		return 0x0f; */
++	case CB_VESA_START: {	// pseudocode: if(reg_bl==0x80) while(!(inportb(0x3da)&0x8));
++		phys_writew(physAddress+0x00,(Bit16u)0x38fe);	// grp4	cb
++		phys_writew(physAddress+0x02,(Bit16u)0x9090);
++		phys_writew(physAddress+0x04,(Bit16u)0xfb80);	// cmp	bl, 0x80
++		phys_writeb(physAddress+0x06,(Bit8u)0x80);
++		phys_writew(physAddress+0x07,(Bit16u)0x1175);	// jne	novret
++		phys_writew(physAddress+0x09,(Bit16u)0x5066);	// push	ax
++		phys_writew(physAddress+0x0b,(Bit16u)0x5266);	// push	dx
++		phys_writew(physAddress+0x0d,(Bit16u)0xba66);	// mov	dx, 0x3dah
++		phys_writew(physAddress+0x0f,(Bit16u)0x03da);
++														// again:
++		phys_writeb(physAddress+0x11,(Bit8u)0xec);		// in	al,dx
++		phys_writew(physAddress+0x12,(Bit16u)0x0824);	// and	al ,8
++		phys_writew(physAddress+0x14,(Bit16u)0xfb74);	// je	again
++		phys_writew(physAddress+0x16,(Bit16u)0x5a66);	// pop	dx
++		phys_writew(physAddress+0x18,(Bit16u)0x5866);	// pop	ax
++														// novret:
++		phys_writeb(physAddress+0x1a,(Bit8u)0xc3);		// retn
++		phys_writew(physAddress+0x02,callback);			// callback number
++		return 27; }
+ 	case CB_INT21:
+ 		phys_writeb(physAddress+0x00,(Bit8u)0xFB);		//STI
+ 		if (use_cb) {
+
+--- ./src/gui/render_scalers.h	2010-05-10 18:43:54 +0100
++++ ./src/gui/render_scalers.h	2013-01-02 00:10:53 +0000
+@@ -22,8 +22,8 @@
+ //#include "render.h"
+ #include "video.h"
+ #if RENDER_USE_ADVANCED_SCALERS>0
+-#define SCALER_MAXWIDTH		1280 
+-#define SCALER_MAXHEIGHT	1024
++#define SCALER_MAXWIDTH		1600
++#define SCALER_MAXHEIGHT	1200
+ #else
+ // reduced to save some memory
+ #define SCALER_MAXWIDTH		800 
+@@ -84,7 +84,7 @@
+ #if RENDER_USE_ADVANCED_SCALERS>1
+ extern scalerChangeCache_t scalerChangeCache;
+ #endif
+-typedef ScalerLineHandler_t ScalerLineBlock_t[5][4];
++typedef ScalerLineHandler_t ScalerLineBlock_t[6][4];
+ 
+ typedef struct {
+ 	const char *name;
+--- ./src/gui/render_templates.h	2010-05-10 18:43:54 +0100
++++ ./src/gui/render_templates.h	2013-01-02 00:19:29 +0000
+@@ -116,6 +118,18 @@
+ #define SRCTYPE Bit16u
+ #endif
+ 
++#if SBPP == 24
++#define SC scalerSourceCache.b32
++#if DBPP == 15
++#define PMAKE(_VAL) (PTYPE)(((_VAL&(31<<19))>>9)|((_VAL&(31<<11))>>6)|((_VAL&(31<<3))>>3))
++#elif DBPP == 16
++#define PMAKE(_VAL) (PTYPE)(((_VAL&(31<<19))>>8)|((_VAL&(63<<10))>>4)|((_VAL&(31<<3))>>3))
++#elif DBPP == 32
++#define PMAKE(_VAL) (_VAL)
++#endif
++#define SRCTYPE rgb24
++#endif
++
+ #if SBPP == 32
+ #define SC scalerSourceCache.b32
+ #if DBPP == 15
+--- ./src/gui/render.cpp	2010-05-10 18:43:54 +0100
++++ ./src/gui/render.cpp	2013-01-01 23:48:54 +0000
+@@ -393,6 +393,11 @@
+ 			gfx_flags |= GFX_LOVE_16;
+ 			gfx_flags = (gfx_flags & ~GFX_CAN_8) | GFX_RGBONLY;
+ 			break;
++	case 24:
++			render.src.start = ( render.src.width * 3) / sizeof(Bitu);
++			gfx_flags |= GFX_LOVE_32;
++			gfx_flags = (gfx_flags & ~GFX_CAN_8) | GFX_RGBONLY;
++			break;
+ 	case 32:
+ 			render.src.start = ( render.src.width * 4) / sizeof(Bitu);
+ 			gfx_flags |= GFX_LOVE_32;
+@@ -458,7 +463,7 @@
+ 	switch (render.src.bpp) {
+ 	case 8:
+ 		render.scale.lineHandler = (*lineBlock)[0][render.scale.outMode];
+-		render.scale.linePalHandler = (*lineBlock)[4][render.scale.outMode];
++		render.scale.linePalHandler = (*lineBlock)[5][render.scale.outMode];
+ 		render.scale.inMode = scalerMode8;
+ 		render.scale.cachePitch = render.src.width * 1;
+ 		break;
+@@ -474,10 +479,16 @@
+ 		render.scale.inMode = scalerMode16;
+ 		render.scale.cachePitch = render.src.width * 2;
+ 		break;
+-	case 32:
++	case 24:
+ 		render.scale.lineHandler = (*lineBlock)[3][render.scale.outMode];
+ 		render.scale.linePalHandler = 0;
+ 		render.scale.inMode = scalerMode32;
++		render.scale.cachePitch = render.src.width * 3;
++		break;
++	case 32:
++		render.scale.lineHandler = (*lineBlock)[4][render.scale.outMode];
++		render.scale.linePalHandler = 0;
++		render.scale.inMode = scalerMode32;
+ 		render.scale.cachePitch = render.src.width * 4;
+ 		break;
+ 	default:
+--- ./src/gui/render_scalers.cpp	2010-05-10 18:43:54 +0100
++++ ./src/gui/render_scalers.cpp	2013-01-02 00:16:18 +0000
+@@ -148,6 +148,18 @@
+ #undef SBPP
+ #undef DBPP
+ 
++#define SBPP 24
++#define DBPP 15
++#include "render_templates.h"
++#undef DBPP
++#define DBPP 16
++#include "render_templates.h"
++#undef DBPP
++#define DBPP 32
++#include "render_templates.h"
++#undef SBPP
++#undef DBPP
++
+ #define SBPP 32
+ #define DBPP 15
+ #include "render_templates.h"
+@@ -166,6 +178,7 @@
+ {	Cache_8_8,	Cache_8_15 ,	Cache_8_16 ,	Cache_8_32 },
+ {	        0,	Cache_15_15,	Cache_15_16,	Cache_15_32},
+ {	        0,	Cache_16_15,	Cache_16_16,	Cache_16_32},
++{	        0,	Cache_24_15,	Cache_24_16,	Cache_24_32},
+ {	        0,	Cache_32_15,	Cache_32_16,	Cache_32_32},
+ {	Cache_8_8,	Cache_9_15 ,	Cache_9_16 ,	Cache_9_32 }
+ };
+@@ -178,12 +191,14 @@
+ {	Normal1x_8_8_L,		Normal1x_8_15_L ,	Normal1x_8_16_L ,	Normal1x_8_32_L },
+ {	             0,		Normal1x_15_15_L,	Normal1x_15_16_L,	Normal1x_15_32_L},
+ {	             0,		Normal1x_16_15_L,	Normal1x_16_16_L,	Normal1x_16_32_L},
++{	             0,		Normal1x_24_15_L,	Normal1x_24_16_L,	Normal1x_24_32_L},
+ {	             0,		Normal1x_32_15_L,	Normal1x_32_16_L,	Normal1x_32_32_L},
+ {	Normal1x_8_8_L,		Normal1x_9_15_L ,	Normal1x_9_16_L ,	Normal1x_9_32_L }
+ },{
+ {	Normal1x_8_8_R,		Normal1x_8_15_R ,	Normal1x_8_16_R ,	Normal1x_8_32_R },
+ {	             0,		Normal1x_15_15_R,	Normal1x_15_16_R,	Normal1x_15_32_R},
+ {	             0,		Normal1x_16_15_R,	Normal1x_16_16_R,	Normal1x_16_32_R},
++{	             0,		Normal1x_24_15_R,	Normal1x_24_16_R,	Normal1x_24_32_R},
+ {	             0,		Normal1x_32_15_R,	Normal1x_32_16_R,	Normal1x_32_32_R},
+ {	Normal1x_8_8_R,		Normal1x_9_15_R ,	Normal1x_9_16_R ,	Normal1x_9_32_R }
+ }};
+@@ -195,12 +210,14 @@
+ {	NormalDw_8_8_L,		NormalDw_8_15_L ,	NormalDw_8_16_L ,	NormalDw_8_32_L },
+ {	             0,		NormalDw_15_15_L,	NormalDw_15_16_L,	NormalDw_15_32_L},
+ {	             0,		NormalDw_16_15_L,	NormalDw_16_16_L,	NormalDw_16_32_L},
++{	             0,		NormalDw_24_15_L,	NormalDw_24_16_L,	NormalDw_24_32_L},
+ {	             0,		NormalDw_32_15_L,	NormalDw_32_16_L,	NormalDw_32_32_L},
+ {	NormalDw_8_8_L,		NormalDw_9_15_L ,	NormalDw_9_16_L ,	NormalDw_9_32_L }
+ },{
+ {	NormalDw_8_8_R,		NormalDw_8_15_R ,	NormalDw_8_16_R ,	NormalDw_8_32_R },
+ {	             0,		NormalDw_15_15_R,	NormalDw_15_16_R,	NormalDw_15_32_R},
+ {	             0,		NormalDw_16_15_R,	NormalDw_16_16_R,	NormalDw_16_32_R},
++{	             0,		NormalDw_24_15_R,	NormalDw_24_16_R,	NormalDw_24_32_R},
+ {	             0,		NormalDw_32_15_R,	NormalDw_32_16_R,	NormalDw_32_32_R},
+ {	NormalDw_8_8_R,		NormalDw_9_15_R ,	NormalDw_9_16_R ,	NormalDw_9_32_R }
+ }};
+@@ -212,12 +229,14 @@
+ {	NormalDh_8_8_L,		NormalDh_8_15_L ,	NormalDh_8_16_L ,	NormalDh_8_32_L },
+ {	             0,		NormalDh_15_15_L,	NormalDh_15_16_L,	NormalDh_15_32_L},
+ {	             0,		NormalDh_16_15_L,	NormalDh_16_16_L,	NormalDh_16_32_L},
++{	             0,		NormalDh_24_15_L,	NormalDh_24_16_L,	NormalDh_24_32_L},
+ {	             0,		NormalDh_32_15_L,	NormalDh_32_16_L,	NormalDh_32_32_L},
+ {	NormalDh_8_8_L,		NormalDh_9_15_L ,	NormalDh_9_16_L ,	NormalDh_9_32_L }
+ },{
+ {	NormalDh_8_8_R,		NormalDh_8_15_R ,	NormalDh_8_16_R ,	NormalDh_8_32_R },
+ {	             0,		NormalDh_15_15_R,	NormalDh_15_16_R,	NormalDh_15_32_R},
+ {	             0,		NormalDh_16_15_R,	NormalDh_16_16_R,	NormalDh_16_32_R},
++{	             0,		NormalDh_24_15_R,	NormalDh_24_16_R,	NormalDh_24_32_R},
+ {	             0,		NormalDh_32_15_R,	NormalDh_32_16_R,	NormalDh_32_32_R},
+ {	NormalDh_8_8_R,		NormalDh_9_15_R ,	NormalDh_9_16_R ,	NormalDh_9_32_R }
+ }};
+@@ -229,12 +248,14 @@
+ {	Normal2x_8_8_L,		Normal2x_8_15_L,	Normal2x_8_16_L,	Normal2x_8_32_L },
+ {	             0,		Normal2x_15_15_L,	Normal2x_15_16_L,	Normal2x_15_32_L},
+ {	             0,		Normal2x_16_15_L,	Normal2x_16_16_L,	Normal2x_16_32_L},
++{	             0,		Normal2x_24_15_L,	Normal2x_24_16_L,	Normal2x_24_32_L},
+ {	             0,		Normal2x_32_15_L,	Normal2x_32_16_L,	Normal2x_32_32_L},
+ {	Normal2x_8_8_L,		Normal2x_9_15_L ,	Normal2x_9_16_L,	Normal2x_9_32_L }
+ },{
+ {	Normal2x_8_8_R,		Normal2x_8_15_R ,	Normal2x_8_16_R,	Normal2x_8_32_R },
+ {	             0,		Normal2x_15_15_R,	Normal2x_15_16_R,	Normal2x_15_32_R},
+ {	             0,		Normal2x_16_15_R,	Normal2x_16_16_R,	Normal2x_16_32_R},
++{	             0,		Normal2x_24_15_R,	Normal2x_24_16_R,	Normal2x_24_32_R},
+ {	             0,		Normal2x_32_15_R,	Normal2x_32_16_R,	Normal2x_32_32_R},
+ {	Normal2x_8_8_R,		Normal2x_9_15_R ,	Normal2x_9_16_R,	Normal2x_9_32_R },
+ }};
+@@ -246,12 +267,14 @@
+ {	Normal3x_8_8_L,		Normal3x_8_15_L ,	Normal3x_8_16_L ,	Normal3x_8_32_L },
+ {	             0,		Normal3x_15_15_L,	Normal3x_15_16_L,	Normal3x_15_32_L},
+ {	             0,		Normal3x_16_15_L,	Normal3x_16_16_L,	Normal3x_16_32_L},
++{	             0,		Normal3x_24_15_L,	Normal3x_24_16_L,	Normal3x_24_32_L},
+ {	             0,		Normal3x_32_15_L,	Normal3x_32_16_L,	Normal3x_32_32_L},
+ {	Normal3x_8_8_L,		Normal3x_9_15_L ,	Normal3x_9_16_L ,	Normal3x_9_32_L }
+ },{
+ {	Normal3x_8_8_R,		Normal3x_8_15_R ,	Normal3x_8_16_R ,	Normal3x_8_32_R },
+ {	             0,		Normal3x_15_15_R,	Normal3x_15_16_R,	Normal3x_15_32_R},
+ {	             0,		Normal3x_16_15_R,	Normal3x_16_16_R,	Normal3x_16_32_R},
++{	             0,		Normal3x_24_15_R,	Normal3x_24_16_R,	Normal3x_24_32_R},
+ {	             0,		Normal3x_32_15_R,	Normal3x_32_16_R,	Normal3x_32_32_R},
+ {	Normal3x_8_8_R,		Normal3x_9_15_R ,	Normal3x_9_16_R ,	Normal3x_9_32_R }
+ }};
+@@ -264,12 +287,14 @@
+ {	0,		TV2x_8_15_L ,	TV2x_8_16_L ,	TV2x_8_32_L },
+ {	0,		TV2x_15_15_L,	TV2x_15_16_L,	TV2x_15_32_L},
+ {	0,		TV2x_16_15_L,	TV2x_16_16_L,	TV2x_16_32_L},
++{	0,		TV2x_24_15_L,	TV2x_24_16_L,	TV2x_24_32_L},
+ {	0,		TV2x_32_15_L,	TV2x_32_16_L,	TV2x_32_32_L},
+ {	0,		TV2x_9_15_L ,	TV2x_9_16_L ,	TV2x_9_32_L }
+ },{
+ {	0,		TV2x_8_15_R ,	TV2x_8_16_R ,	TV2x_8_32_R },
+ {	0,		TV2x_15_15_R,	TV2x_15_16_R,	TV2x_15_32_R},
+ {	0,		TV2x_16_15_R,	TV2x_16_16_R,	TV2x_16_32_R},
++{	0,		TV2x_24_15_R,	TV2x_24_16_R,	TV2x_24_32_R},
+ {	0,		TV2x_32_15_R,	TV2x_32_16_R,	TV2x_32_32_R},
+ {	0,		TV2x_9_15_R ,	TV2x_9_16_R ,	TV2x_9_32_R }
+ }};
+@@ -281,12 +306,14 @@
+ {	0,		TV3x_8_15_L ,	TV3x_8_16_L ,	TV3x_8_32_L },
+ {	0,		TV3x_15_15_L,	TV3x_15_16_L,	TV3x_15_32_L},
+ {	0,		TV3x_16_15_L,	TV3x_16_16_L,	TV3x_16_32_L},
++{	0,		TV3x_24_15_L,	TV3x_24_16_L,	TV3x_24_32_L},
+ {	0,		TV3x_32_15_L,	TV3x_32_16_L,	TV3x_32_32_L},
+ {	0,		TV3x_9_15_L ,	TV3x_9_16_L ,	TV3x_9_32_L }
+ },{
+ {	0,		TV3x_8_15_R ,	TV3x_8_16_R ,	TV3x_8_32_R },
+ {	0,		TV3x_15_15_R,	TV3x_15_16_R,	TV3x_15_32_R},
+ {	0,		TV3x_16_15_R,	TV3x_16_16_R,	TV3x_16_32_R},
++{	0,		TV3x_24_15_R,	TV3x_24_16_R,	TV3x_24_32_R},
+ {	0,		TV3x_32_15_R,	TV3x_32_16_R,	TV3x_32_32_R},
+ {	0,		TV3x_9_15_R ,	TV3x_9_16_R ,	TV3x_9_32_R }
+ }};
+@@ -298,12 +325,14 @@
+ {	0,		Scan2x_8_15_L ,	Scan2x_8_16_L ,	Scan2x_8_32_L },
+ {	0,		Scan2x_15_15_L,	Scan2x_15_16_L,	Scan2x_15_32_L},
+ {	0,		Scan2x_16_15_L,	Scan2x_16_16_L,	Scan2x_16_32_L},
++{	0,		Scan2x_24_15_L,	Scan2x_24_16_L,	Scan2x_24_32_L},
+ {	0,		Scan2x_32_15_L,	Scan2x_32_16_L,	Scan2x_32_32_L},
+ {	0,		Scan2x_9_15_L ,	Scan2x_9_16_L ,	Scan2x_9_32_L }
+ },{
+ {	0,		Scan2x_8_15_R ,	Scan2x_8_16_R ,	Scan2x_8_32_R },
+ {	0,		Scan2x_15_15_R,	Scan2x_15_16_R,	Scan2x_15_32_R},
+ {	0,		Scan2x_16_15_R,	Scan2x_16_16_R,	Scan2x_16_32_R},
++{	0,		Scan2x_24_15_R,	Scan2x_24_16_R,	Scan2x_24_32_R},
+ {	0,		Scan2x_32_15_R,	Scan2x_32_16_R,	Scan2x_32_32_R},
+ {	0,		Scan2x_9_15_R ,	Scan2x_9_16_R ,	Scan2x_9_32_R }
+ }};
+@@ -315,12 +344,14 @@
+ {	0,		Scan3x_8_15_L ,	Scan3x_8_16_L ,	Scan3x_8_32_L },
+ {	0,		Scan3x_15_15_L,	Scan3x_15_16_L,	Scan3x_15_32_L},
+ {	0,		Scan3x_16_15_L,	Scan3x_16_16_L,	Scan3x_16_32_L},
++{	0,		Scan3x_24_15_L,	Scan3x_24_16_L,	Scan3x_24_32_L},
+ {	0,		Scan3x_32_15_L,	Scan3x_32_16_L,	Scan3x_32_32_L},
+ {	0,		Scan3x_9_15_L ,	Scan3x_9_16_L ,	Scan3x_9_32_L },
+ },{
+ {	0,		Scan3x_8_15_R ,	Scan3x_8_16_R ,	Scan3x_8_32_R },
+ {	0,		Scan3x_15_15_R,	Scan3x_15_16_R,	Scan3x_15_32_R},
+ {	0,		Scan3x_16_15_R,	Scan3x_16_16_R,	Scan3x_16_32_R},
++{	0,		Scan3x_24_15_R,	Scan3x_24_16_R,	Scan3x_24_32_R},
+ {	0,		Scan3x_32_15_R,	Scan3x_32_16_R,	Scan3x_32_32_R},
+ {	0,		Scan3x_9_15_R ,	Scan3x_9_16_R ,	Scan3x_9_32_R }
+ }};
+@@ -332,12 +363,14 @@
+ {	0,		RGB2x_8_15_L ,	RGB2x_8_16_L ,	RGB2x_8_32_L },
+ {	0,		RGB2x_15_15_L,	RGB2x_15_16_L,	RGB2x_15_32_L},
+ {	0,		RGB2x_16_15_L,	RGB2x_16_16_L,	RGB2x_16_32_L},
++{	0,		RGB2x_24_15_L,	RGB2x_24_16_L,	RGB2x_24_32_L},
+ {	0,		RGB2x_32_15_L,	RGB2x_32_16_L,	RGB2x_32_32_L},
+ {	0,		RGB2x_9_15_L ,	RGB2x_9_16_L ,	RGB2x_9_32_L }
+ },{
+ {	0,		RGB2x_8_15_R ,	RGB2x_8_16_R ,	RGB2x_8_32_R },
+ {	0,		RGB2x_15_15_R,	RGB2x_15_16_R,	RGB2x_15_32_R},
+ {	0,		RGB2x_16_15_R,	RGB2x_16_16_R,	RGB2x_16_32_R},
++{	0,		RGB2x_24_15_R,	RGB2x_24_16_R,	RGB2x_24_32_R},
+ {	0,		RGB2x_32_15_R,	RGB2x_32_16_R,	RGB2x_32_32_R},
+ {	0,		RGB2x_9_15_R ,	RGB2x_9_16_R ,	RGB2x_9_32_R }
+ }};
+@@ -349,12 +382,14 @@
+ {	0,		RGB3x_8_15_L ,	RGB3x_8_16_L ,	RGB3x_8_32_L },
+ {	0,		RGB3x_15_15_L,	RGB3x_15_16_L,	RGB3x_15_32_L},
+ {	0,		RGB3x_16_15_L,	RGB3x_16_16_L,	RGB3x_16_32_L},
++{	0,		RGB3x_24_15_L,	RGB3x_24_16_L,	RGB3x_24_32_L},
+ {	0,		RGB3x_32_15_L,	RGB3x_32_16_L,	RGB3x_32_32_L},
+ {	0,		RGB3x_9_15_L ,	RGB3x_9_16_L ,	RGB3x_9_32_L }
+ },{
+ {	0,		RGB3x_8_15_R ,	RGB3x_8_16_R ,	RGB3x_8_32_R },
+ {	0,		RGB3x_15_15_R,	RGB3x_15_16_R,	RGB3x_15_32_R},
+ {	0,		RGB3x_16_15_R,	RGB3x_16_16_R,	RGB3x_16_32_R},
++{	0,		RGB3x_24_15_R,	RGB3x_24_16_R,	RGB3x_24_32_R},
+ {	0,		RGB3x_32_15_R,	RGB3x_32_16_R,	RGB3x_32_32_R},
+ {	0,		RGB3x_9_15_R ,	RGB3x_9_16_R ,	RGB3x_9_32_R }
+ }};
+--- ./src/hardware/hardware.cpp	2010-05-10 18:43:54 +0100
++++ ./src/hardware/hardware.cpp	2013-01-24 10:29:21 +0000
+@@ -424,6 +425,14 @@
+ 				}
+ 				rowPointer = doubleRow;
+ 				break;
++			case 24:
++				if (flags & CAPTURE_FLAG_DBLW) {
++					for (Bitu x=0;x<countWidth;x++) {
++						((rgb24 *)doubleRow)[x*2+0] = ((rgb24 *)doubleRow)[x*2+1] = ((rgb24 *)srcLine)[x];
++						rowPointer = doubleRow;
++					}	// There is no else statement here because rowPointer is already
++				}		// defined as srcLine above which is already 24-bit single row
++				break;
+ 			case 32:
+ 				if (flags & CAPTURE_FLAG_DBLW) {
+ 					for (Bitu x=0;x<countWidth;x++) {
+@@ -467,6 +476,7 @@
+ 		case 8:format = ZMBV_FORMAT_8BPP;break;
+ 		case 15:format = ZMBV_FORMAT_15BPP;break;
+ 		case 16:format = ZMBV_FORMAT_16BPP;break;
++		case 24:format = ZMBV_FORMAT_32BPP;break;	// 24-bit will be converted to 32-bit for compatibility
+ 		case 32:format = ZMBV_FORMAT_32BPP;break;
+ 		default:
+ 			goto skip_video;
+@@ -510,14 +520,14 @@
+ 
+ 		for (i=0;i<height;i++) {
+ 			void * rowPointer;
++			void * srcLine;
++			if (flags & CAPTURE_FLAG_DBLH)
++				srcLine=(data+(i >> 1)*pitch);
++			else
++				srcLine=(data+(i >> 0)*pitch);
+ 			if (flags & CAPTURE_FLAG_DBLW) {
+-				void *srcLine;
+ 				Bitu x;
+ 				Bitu countWidth = width >> 1;
+-				if (flags & CAPTURE_FLAG_DBLH)
+-					srcLine=(data+(i >> 1)*pitch);
+-				else
+-					srcLine=(data+(i >> 0)*pitch);
+ 				switch ( bpp) {
+ 				case 8:
+ 					for (x=0;x<countWidth;x++)
+@@ -530,6 +540,11 @@
+ 						((Bit16u *)doubleRow)[x*2+0] =
+ 						((Bit16u *)doubleRow)[x*2+1] = ((Bit16u *)srcLine)[x];
+ 					break;
++				case 24:
++					for (x=0;x<countWidth;x++)
++						((Bit32u *)doubleRow)[x*2+0] =
++						((Bit32u *)doubleRow)[x*2+1] = ((rgb24 *)srcLine)[x];
++					break;
+ 				case 32:
+ 					for (x=0;x<countWidth;x++)
+ 						((Bit32u *)doubleRow)[x*2+0] =
+@@ -538,10 +553,15 @@
+ 				}
+                 rowPointer=doubleRow;
+ 			} else {
+-				if (flags & CAPTURE_FLAG_DBLH)
+-					rowPointer=(data+(i >> 1)*pitch);
+-				else
+-					rowPointer=(data+(i >> 0)*pitch);
++				if (bpp == 24) {
++					Bitu x;
++					Bitu countWidth = width;
++					for (x=0;x<countWidth;x++)
++						((Bit32u *)doubleRow)[x] = ((rgb24 *)srcLine)[x];
++					rowPointer=doubleRow;	// Using doubleRow for this conversion when it is not actually double row!
++				} else {
++					rowPointer=srcLine;
++				}
+ 			}
+ 			capture.video.codec->CompressLines( 1, &rowPointer );
+ 		}
+--- ./src/hardware/vga.cpp	2010-05-10 18:43:54 +0100
++++ ./src/hardware/vga.cpp	2013-01-02 11:55:21 +0000
+@@ -84,6 +84,7 @@
+ 	case 1:VGA_SetMode(M_LIN8);break;
+ 	case 3:VGA_SetMode(M_LIN15);break;
+ 	case 5:VGA_SetMode(M_LIN16);break;
++	case 7:VGA_SetMode(M_LIN24);break;
+ 	case 13:VGA_SetMode(M_LIN32);break;
+ 	}
+ }
+--- ./src/hardware/vga_draw.cpp	2010-05-10 18:43:54 +0100
++++ ./src/hardware/vga_draw.cpp	2013-01-01 23:54:34 +0000
+@@ -485,7 +485,6 @@
+ 	return TempLine;
+ }
+ 
+-/*
+ static Bit8u * VGA_TEXT_Draw_Line_9(Bitu vidstart, Bitu line) {
+ 	Bits font_addr;
+ 	Bit8u * draw=(Bit8u *)TempLine;
+@@ -543,7 +542,6 @@
+ skip_cursor:
+ 	return TempLine;
+ }
+-*/
+ 
+ static Bit8u * VGA_TEXT_Xlat16_Draw_Line_9(Bitu vidstart, Bitu line) {
+ 	Bits font_addr;
+@@ -826,6 +824,7 @@
+ 		}
+ 	case M_LIN8:
+ 	case M_LIN15:
++	case M_LIN24:
+ 	case M_LIN16:
+ 	case M_LIN32:
+ 		vga.draw.byte_panning_shift = 4;
+@@ -912,6 +911,7 @@
+ 	case M_LIN8:
+ 	case M_LIN15:
+ 	case M_LIN16:
++	case M_LIN24:
+ 	case M_LIN32:
+ 		vga.draw.address_add=vga.config.scan_len*8;
+ 		break;
+@@ -1243,6 +1243,9 @@
+ 	case M_LIN16:
+ 		bpp = 16;
+ 		break;
++	case M_LIN24:
++		bpp = 24;
++		break;
+ 	case M_LIN32:
+ 		bpp = 32;
+ 		break;
+@@ -1269,6 +1272,7 @@
+ 			width >>=1;
+ 		}
+ 		// fall-through
++	case M_LIN24:
+ 	case M_LIN32:
+ 		width<<=3;
+ 		if (vga.crtc.mode_control & 0x8)
+@@ -1286,7 +1290,8 @@
+ 		VGA_ActivateHardwareCursor();
+ 		break;
+ 	case M_LIN4:
+-		doublewidth=(vga.seq.clocking_mode & 0x8) > 0;
++		if (vga.crtc.mode_control & 0x8)
++ 			doublewidth = true;
+ 		vga.draw.blocks = width;
+ 		width<<=3;
+ 		VGA_DrawLine=VGA_Draw_Linear_Line;
+@@ -1327,14 +1332,15 @@
+ 		aspect_ratio=1.0;
+ 		vga.draw.blocks=width;
+ 		doublewidth=(vga.seq.clocking_mode & 0x8) > 0;
+-		if ((IS_VGA_ARCH) && (svgaCard==SVGA_None) && !(vga.seq.clocking_mode&0x01)) {
++		if ((IS_VGA_ARCH) && !(vga.seq.clocking_mode&0x01)) {
+ 			width*=9;				/* 9 bit wide text font */
+-			VGA_DrawLine=VGA_TEXT_Xlat16_Draw_Line_9;
+-			bpp=16;
+-//			VGA_DrawLine=VGA_TEXT_Draw_Line_9;
++			if (svgaCard==SVGA_None) {
++				VGA_DrawLine=VGA_TEXT_Xlat16_Draw_Line_9;
++				bpp=16;
++			} else VGA_DrawLine=VGA_TEXT_Draw_Line_9;
+ 		} else {
+ 			width<<=3;				/* 8 bit wide text font */
+-			if ((IS_VGA_ARCH) && (svgaCard==SVGA_None)) {
++			if (svgaCard==SVGA_None) {
+ 				VGA_DrawLine=VGA_TEXT_Xlat16_Draw_Line;
+ 				bpp=16;
+ 			} else VGA_DrawLine=VGA_TEXT_Draw_Line;
+--- ./src/hardware/vga_memory.cpp	2010-05-10 18:43:54 +0100
++++ ./src/hardware/vga_memory.cpp	2013-01-01 23:55:31 +0000
+@@ -810,6 +810,7 @@
+ 		break;	
+ 	case M_LIN15:
+ 	case M_LIN16:
++	case M_LIN24:
+ 	case M_LIN32:
+ #ifdef VGA_LFB_MAPPED
+ 		newHandler = &vgaph.map;
+--- ./src/hardware/vga_s3.cpp	2010-05-10 18:43:54 +0100
++++ ./src/hardware/vga_s3.cpp	2013-01-02 10:01:23 +0000
+@@ -155,6 +155,7 @@
+ 			case S3_XGA_1152: vga.s3.xga_screen_width = 1152; break;
+ 			case S3_XGA_640:  vga.s3.xga_screen_width = 640; break;
+ 			case S3_XGA_800:  vga.s3.xga_screen_width = 800; break;
++			case S3_XGA_1600: vga.s3.xga_screen_width = 1600; break;
+ 			case S3_XGA_1280: vga.s3.xga_screen_width = 1280; break;
+ 			default:  vga.s3.xga_screen_width = 1024; break;
+ 		}
+@@ -532,7 +533,7 @@
+ 	svga.accepts_mode = &SVGA_S3_AcceptsMode;
+ 
+ 	if (vga.vmemsize == 0)
+-		vga.vmemsize = 2*1024*1024; // the most common S3 configuration
++		vga.vmemsize = 4*1024*1024;
+ 
+ 	// Set CRTC 36 to specify amount of VRAM and PCI
+ 	if (vga.vmemsize < 1024*1024) {
+@@ -541,15 +542,15 @@
+ 	} else if (vga.vmemsize < 2048*1024)	{
+ 		vga.vmemsize = 1024*1024;
+ 		vga.s3.reg_36 = 0xda;		// 1mb fast page mode
+-	} else if (vga.vmemsize < 3072*1024)	{
++	} else if (vga.vmemsize < 4096*1024)	{
+ 		vga.vmemsize = 2048*1024;
+ 		vga.s3.reg_36 = 0x9a;		// 2mb fast page mode
+-	} else if (vga.vmemsize < 4096*1024)	{
+-		vga.vmemsize = 3072*1024;
+-		vga.s3.reg_36 = 0x5a;		// 3mb fast page mode
+-	} else {	// Trio64 supported only up to 4M
++	} else if (vga.vmemsize < 8192*1024)	{
+ 		vga.vmemsize = 4096*1024;
+ 		vga.s3.reg_36 = 0x1a;		// 4mb fast page mode
++	} else {
++		vga.vmemsize = 8192*1024;
++		vga.s3.reg_36 = 0x7a;		// 8mb fast page mode
+ 	}
+ 
+ 	// S3 ROM signature
+--- ./src/ints/int10.h	2010-05-10 18:43:54 +0100
++++ ./src/ints/int10.h	2013-01-23 15:04:26 +0000
+@@ -140,7 +140,9 @@
+ 		Bit16u used;
+ 	} rom;
+ 	Bit16u vesa_setmode;
++	Bit8u vesa_refresh[14];
+ 	bool vesa_nolfb;
++	bool vesa_no24bpp;
+ 	bool vesa_oldvbe;
+ } Int10Data;
+ 
+--- ./src/ints/int10_modes.cpp	2010-05-10 18:43:54 +0100
++++ ./src/ints/int10_modes.cpp	2013-01-02 14:12:06 +0000
+@@ -26,6 +26,7 @@
+ #include "int10.h"
+ #include "mouse.h"
+ #include "vga.h"
++#include "setup.h"
+ 
+ #define _EGA_HALF_CLOCK		0x0001
+ #define _EGA_LINE_DOUBLE	0x0002
+@@ -35,35 +36,32 @@
+ #define GFX_REGS 0x09
+ #define ATT_REGS 0x15
+ 
++enum VESAResolutions {
++	_512x384, _640x350, _640x400, _640x480, _720x480,
++	_800x600, _1024x768, _1188x344, _1188x400, _1188x480,
++	_1152x864, _1280x960, _1280x1024, _1600x1200
++};
++
+ VideoModeBlock ModeList_VGA[]={
+ /* mode  ,type     ,sw  ,sh  ,tw ,th ,cw,ch ,pt,pstart  ,plength,htot,vtot,hde,vde special flags */
+-{ 0x000  ,M_TEXT   ,360 ,400 ,40 ,25 ,9 ,16 ,8 ,0xB8000 ,0x0800 ,50  ,449 ,40 ,400 ,_EGA_HALF_CLOCK	},
+-{ 0x001  ,M_TEXT   ,360 ,400 ,40 ,25 ,9 ,16 ,8 ,0xB8000 ,0x0800 ,50  ,449 ,40 ,400 ,_EGA_HALF_CLOCK	},
++{ 0x000  ,M_TEXT   ,360 ,400 ,40 ,25 ,9 ,16 ,8 ,0xB8000 ,0x0800 ,50  ,449 ,40 ,400 ,_EGA_HALF_CLOCK },
++{ 0x001  ,M_TEXT   ,360 ,400 ,40 ,25 ,9 ,16 ,8 ,0xB8000 ,0x0800 ,50  ,449 ,40 ,400 ,_EGA_HALF_CLOCK },
+ { 0x002  ,M_TEXT   ,720 ,400 ,80 ,25 ,9 ,16 ,8 ,0xB8000 ,0x1000 ,100 ,449 ,80 ,400 ,0	},
+ { 0x003  ,M_TEXT   ,720 ,400 ,80 ,25 ,9 ,16 ,8 ,0xB8000 ,0x1000 ,100 ,449 ,80 ,400 ,0	},
+-{ 0x004  ,M_CGA4   ,320 ,200 ,40 ,25 ,8 ,8  ,1 ,0xB8000 ,0x4000 ,50  ,449 ,40 ,400 ,_EGA_HALF_CLOCK	| _EGA_LINE_DOUBLE},
+-{ 0x005  ,M_CGA4   ,320 ,200 ,40 ,25 ,8 ,8  ,1 ,0xB8000 ,0x4000 ,50  ,449 ,40 ,400 ,_EGA_HALF_CLOCK	| _EGA_LINE_DOUBLE},
+-{ 0x006  ,M_CGA2   ,640 ,200 ,80 ,25 ,8 ,8  ,1 ,0xB8000 ,0x4000 ,100 ,449 ,80 ,400 ,_EGA_HALF_CLOCK	| _EGA_LINE_DOUBLE},
++{ 0x004  ,M_CGA4   ,320 ,200 ,40 ,25 ,8 ,8  ,1 ,0xB8000 ,0x4000 ,50  ,449 ,40 ,400 ,_EGA_HALF_CLOCK | _EGA_LINE_DOUBLE },
++{ 0x005  ,M_CGA4   ,320 ,200 ,40 ,25 ,8 ,8  ,1 ,0xB8000 ,0x4000 ,50  ,449 ,40 ,400 ,_EGA_HALF_CLOCK | _EGA_LINE_DOUBLE },
++{ 0x006  ,M_CGA2   ,640 ,200 ,80 ,25 ,8 ,8  ,1 ,0xB8000 ,0x4000 ,100 ,449 ,80 ,400 ,_EGA_HALF_CLOCK | _EGA_LINE_DOUBLE },
+ { 0x007  ,M_TEXT   ,720 ,400 ,80 ,25 ,9 ,16 ,8 ,0xB0000 ,0x1000 ,100 ,449 ,80 ,400 ,0	},
+-
+-{ 0x00D  ,M_EGA    ,320 ,200 ,40 ,25 ,8 ,8  ,8 ,0xA0000 ,0x2000 ,50  ,449 ,40 ,400 ,_EGA_HALF_CLOCK	| _EGA_LINE_DOUBLE	},
++{ 0x00D  ,M_EGA    ,320 ,200 ,40 ,25 ,8 ,8  ,8 ,0xA0000 ,0x2000 ,50  ,449 ,40 ,400 ,_EGA_HALF_CLOCK | _EGA_LINE_DOUBLE },
+ { 0x00E  ,M_EGA    ,640 ,200 ,80 ,25 ,8 ,8  ,4 ,0xA0000 ,0x4000 ,100 ,449 ,80 ,400 ,_EGA_LINE_DOUBLE },
+-{ 0x00F  ,M_EGA    ,640 ,350 ,80 ,25 ,8 ,14 ,2 ,0xA0000 ,0x8000 ,100 ,449 ,80 ,350 ,0	},/*was EGA_2*/
++{ 0x00F  ,M_EGA    ,640 ,350 ,80 ,25 ,8 ,14 ,2 ,0xA0000 ,0x8000 ,100 ,449 ,80 ,350 ,0	},
+ { 0x010  ,M_EGA    ,640 ,350 ,80 ,25 ,8 ,14 ,2 ,0xA0000 ,0x8000 ,100 ,449 ,80 ,350 ,0	},
+-{ 0x011  ,M_EGA    ,640 ,480 ,80 ,30 ,8 ,16 ,1 ,0xA0000 ,0xA000 ,100 ,525 ,80 ,480 ,0	},/*was EGA_2 */
++{ 0x011  ,M_EGA    ,640 ,480 ,80 ,30 ,8 ,16 ,1 ,0xA0000 ,0xA000 ,100 ,525 ,80 ,480 ,0	},
+ { 0x012  ,M_EGA    ,640 ,480 ,80 ,30 ,8 ,16 ,1 ,0xA0000 ,0xA000 ,100 ,525 ,80 ,480 ,0	},
+ { 0x013  ,M_VGA    ,320 ,200 ,40 ,25 ,8 ,8  ,1 ,0xA0000 ,0x2000 ,100 ,449 ,80 ,400 ,0   },
+ 
+-{ 0x054  ,M_TEXT   ,1056,688, 132,43, 8, 16, 1 ,0xB8000 ,0x4000, 192, 800, 132,688, 0   },
+-{ 0x055  ,M_TEXT   ,1056,400, 132,25, 8, 16, 1 ,0xB8000 ,0x2000, 192, 449, 132,400, 0   },
+-
+-/* Alias of mode 101 */
+-{ 0x069  ,M_LIN8   ,640 ,480 ,80 ,30 ,8 ,16 ,1 ,0xA0000 ,0x10000,100 ,525 ,80 ,480 ,0	},
+-/* Alias of mode 102 */
+-{ 0x06A  ,M_LIN4   ,800 ,600 ,100,37 ,8 ,16 ,1 ,0xA0000 ,0x10000,128 ,663 ,100,600 ,0	},
+-
+-/* Follow vesa 1.2 for first 0x20 */
+-{ 0x100  ,M_LIN8   ,640 ,400 ,80 ,25 ,8 ,16 ,1 ,0xA0000 ,0x10000,100 ,449 ,80 ,400 ,0   },
++/* Follow VESA 1.2 mode list from 0x100 to 0x11B */
++{ 0x100  ,M_LIN8   ,640 ,400 ,80 ,25 ,8 ,16 ,1 ,0xA0000 ,0x10000,100 ,449 ,80 ,400 ,0	},
+ { 0x101  ,M_LIN8   ,640 ,480 ,80 ,30 ,8 ,16 ,1 ,0xA0000 ,0x10000,100 ,525 ,80 ,480 ,0	},
+ { 0x102  ,M_LIN4   ,800 ,600 ,100,37 ,8 ,16 ,1 ,0xA0000 ,0x10000,132 ,628 ,100,600 ,0	},
+ { 0x103  ,M_LIN8   ,800 ,600 ,100,37 ,8 ,16 ,1 ,0xA0000 ,0x10000,132 ,628 ,100,600 ,0	},
+@@ -71,59 +69,101 @@
+ { 0x105  ,M_LIN8   ,1024,768 ,128,48 ,8 ,16 ,1 ,0xA0000 ,0x10000,168 ,806 ,128,768 ,0	},
+ { 0x106  ,M_LIN4   ,1280,1024,160,64 ,8 ,16 ,1 ,0xA0000 ,0x10000,212 ,1066,160,1024,0	},
+ { 0x107  ,M_LIN8   ,1280,1024,160,64 ,8 ,16 ,1 ,0xA0000 ,0x10000,212 ,1066,160,1024,0	},
+-
+-{ 0x10D  ,M_LIN15  ,320 ,200 ,40 ,25 ,8 ,8  ,1 ,0xA0000 ,0x10000,100 ,449 ,80 ,400 , _VGA_PIXEL_DOUBLE | _EGA_LINE_DOUBLE },
+-{ 0x10E  ,M_LIN16  ,320 ,200 ,40 ,25 ,8 ,8  ,1 ,0xA0000 ,0x10000,100 ,449 ,80 ,400 , _VGA_PIXEL_DOUBLE | _EGA_LINE_DOUBLE },
+-{ 0x10F  ,M_LIN32  ,320 ,200 ,40 ,25 ,8 ,8  ,1 ,0xA0000 ,0x10000,50  ,449 ,40 ,400 , _VGA_PIXEL_DOUBLE | _EGA_LINE_DOUBLE },
+-{ 0x110  ,M_LIN15  ,640 ,480 ,80 ,30 ,8 ,16 ,1 ,0xA0000 ,0x10000,200 ,525 ,160,480 ,0   },
+-{ 0x111  ,M_LIN16  ,640 ,480 ,80 ,30 ,8 ,16 ,1 ,0xA0000 ,0x10000,200 ,525 ,160,480 ,0   },
+-{ 0x112  ,M_LIN32  ,640 ,480 ,80 ,30 ,8 ,16 ,1 ,0xA0000 ,0x10000,100 ,525 ,80 ,480 ,0   },
+-{ 0x113  ,M_LIN15  ,800 ,600 ,100,37 ,8 ,16 ,1 ,0xA0000 ,0x10000,264 ,628 ,200,600 ,0   },
+-{ 0x114  ,M_LIN16  ,800 ,600 ,100,37 ,8 ,16 ,1 ,0xA0000 ,0x10000,264 ,628 ,200,600 ,0   },
+-{ 0x115  ,M_LIN32  ,800 ,600 ,100,37 ,8 ,16 ,1 ,0xA0000 ,0x10000,132 ,628 ,100,600 ,0   },
+-
+-{ 0x116  ,M_LIN15  ,1024,768 ,128,48 ,8 ,16 ,1 ,0xA0000 ,0x10000,336 ,806 ,256,768 ,0	},
+-{ 0x117  ,M_LIN16  ,1024,768 ,128,48 ,8 ,16 ,1 ,0xA0000 ,0x10000,336 ,806 ,256,768 ,0	},
++{ 0x108  ,M_TEXT   ,720 ,480 ,80 ,60 ,9 ,8  ,2 ,0xB8000 ,0x4000 ,100 ,525 ,80 ,480 ,0	},
++{ 0x109  ,M_TEXT   ,1188,400 ,132,25 ,9 ,16 ,1 ,0xB8000 ,0x2000 ,160 ,449 ,132,400 ,0	},
++{ 0x10A  ,M_TEXT   ,1188,344 ,132,43 ,9 ,8  ,1 ,0xB8000 ,0x4000 ,160 ,449 ,132,344 ,0	},
++{ 0x10B  ,M_TEXT   ,1188,400 ,132,50 ,9 ,8  ,1 ,0xB8000 ,0x4000 ,160 ,449 ,132,400 ,0	},
++{ 0x10C  ,M_TEXT   ,1188,480 ,132,60 ,9 ,8  ,2 ,0xB8000 ,0x4000 ,160 ,525 ,132,480 ,0	},
++{ 0x10D  ,M_LIN15  ,320 ,200 ,40 ,25 ,8 ,8  ,1 ,0xA0000 ,0x10000,100 ,449 ,80 ,400 ,_VGA_PIXEL_DOUBLE | _EGA_LINE_DOUBLE },
++{ 0x10E  ,M_LIN16  ,320 ,200 ,40 ,25 ,8 ,8  ,1 ,0xA0000 ,0x10000,100 ,449 ,80 ,400 ,_VGA_PIXEL_DOUBLE | _EGA_LINE_DOUBLE },
++{ 0x10F  ,M_LIN32  ,320 ,200 ,40 ,25 ,8 ,8  ,1 ,0xA0000 ,0x10000,100 ,449 ,40 ,400 ,_VGA_PIXEL_DOUBLE | _EGA_LINE_DOUBLE },
++{ 0x110  ,M_LIN15  ,640 ,480 ,80 ,30 ,8 ,16 ,1 ,0xA0000 ,0x10000,100 ,525 ,160,480 ,0	},
++{ 0x111  ,M_LIN16  ,640 ,480 ,80 ,30 ,8 ,16 ,1 ,0xA0000 ,0x10000,100 ,525 ,160,480 ,0	},
++{ 0x112  ,M_LIN32  ,640 ,480 ,80 ,30 ,8 ,16 ,1 ,0xA0000 ,0x10000,100 ,525 ,80 ,480 ,0	},
++{ 0x113  ,M_LIN15  ,800 ,600 ,100,37 ,8 ,16 ,1 ,0xA0000 ,0x10000,132 ,628 ,200,600 ,0	},
++{ 0x114  ,M_LIN16  ,800 ,600 ,100,37 ,8 ,16 ,1 ,0xA0000 ,0x10000,132 ,628 ,200,600 ,0	},
++{ 0x115  ,M_LIN32  ,800 ,600 ,100,37 ,8 ,16 ,1 ,0xA0000 ,0x10000,132 ,628 ,100,600 ,0	},
++{ 0x116  ,M_LIN15  ,1024,768 ,128,48 ,8 ,16 ,1 ,0xA0000 ,0x10000,168 ,806 ,256,768 ,0	},
++{ 0x117  ,M_LIN16  ,1024,768 ,128,48 ,8 ,16 ,1 ,0xA0000 ,0x10000,168 ,806 ,256,768 ,0	},
+ { 0x118  ,M_LIN32  ,1024,768 ,128,48 ,8 ,16 ,1 ,0xA0000 ,0x10000,168 ,806 ,128,768 ,0	},
+-/* those should be interlaced but ok */
+-//{ 0x119  ,M_LIN15  ,1280,1024,160,64 ,8 ,16 ,1 ,0xA0000 ,0x10000,424 ,1066,320,1024,0	},
+-//{ 0x11A  ,M_LIN16  ,1280,1024,160,64 ,8 ,16 ,1 ,0xA0000 ,0x10000,424 ,1066,320,1024,0	},
+-
+-{ 0x150  ,M_LIN8   ,320 ,200 ,40 ,25 ,8 ,8  ,1 ,0xA0000 ,0x10000,100 ,449 ,80 ,400 , _VGA_PIXEL_DOUBLE | _EGA_LINE_DOUBLE },
+-{ 0x151  ,M_LIN8   ,320 ,240 ,40 ,30 ,8 ,8  ,1 ,0xA0000 ,0x10000,100 ,525 ,80 ,480 , _VGA_PIXEL_DOUBLE | _EGA_LINE_DOUBLE },
+-{ 0x152  ,M_LIN8   ,320 ,400 ,40 ,50 ,8 ,8  ,1 ,0xA0000 ,0x10000,100 ,449 ,80 ,400 , _VGA_PIXEL_DOUBLE  },
+-{ 0x153  ,M_LIN8   ,320 ,480 ,40 ,60 ,8 ,8  ,1 ,0xA0000 ,0x10000,100 ,525 ,80 ,480 , _VGA_PIXEL_DOUBLE  },
+-
+-{ 0x160  ,M_LIN15  ,320 ,240 ,40 ,30 ,8 ,8  ,1 ,0xA0000 ,0x10000,100 ,525 , 80 ,480 , _VGA_PIXEL_DOUBLE | _EGA_LINE_DOUBLE },
+-{ 0x161  ,M_LIN15  ,320 ,400 ,40 ,50 ,8 ,8  ,1 ,0xA0000 ,0x10000,100 ,449 , 80 ,400 , _VGA_PIXEL_DOUBLE  },
+-{ 0x162  ,M_LIN15  ,320 ,480 ,40 ,60 ,8 ,8  ,1 ,0xA0000 ,0x10000,100 ,525 , 80 ,480 , _VGA_PIXEL_DOUBLE  },
+-{ 0x165  ,M_LIN15  ,640 ,400 ,80 ,25 ,8 ,16 ,1 ,0xA0000 ,0x10000,200 ,449 ,160 ,400 ,0   },
+-
+-{ 0x170  ,M_LIN16  ,320 ,240 ,40 ,30 ,8 ,8  ,1 ,0xA0000 ,0x10000,100 ,525 , 80 ,480 , _VGA_PIXEL_DOUBLE | _EGA_LINE_DOUBLE },
+-{ 0x171  ,M_LIN16  ,320 ,400 ,40 ,50 ,8 ,8  ,1 ,0xA0000 ,0x10000,100 ,449 , 80 ,400 , _VGA_PIXEL_DOUBLE  },
+-{ 0x172  ,M_LIN16  ,320 ,480 ,40 ,60 ,8 ,8  ,1 ,0xA0000 ,0x10000,100 ,525 , 80 ,480 , _VGA_PIXEL_DOUBLE  },
+-{ 0x175  ,M_LIN16  ,640 ,400 ,80 ,25 ,8 ,16 ,1 ,0xA0000 ,0x10000,200 ,449 ,160 ,400 ,0   },
+-
+-{ 0x190  ,M_LIN32  ,320 ,240 ,40 ,30 ,8 ,8  ,1 ,0xA0000 ,0x10000, 50 ,525 ,40 ,480 , _VGA_PIXEL_DOUBLE | _EGA_LINE_DOUBLE },
+-{ 0x191  ,M_LIN32  ,320 ,400 ,40 ,50 ,8 ,8  ,1 ,0xA0000 ,0x10000, 50 ,449 ,40 ,400 , _VGA_PIXEL_DOUBLE  },
+-{ 0x192  ,M_LIN32  ,320 ,480 ,40 ,60 ,8 ,8  ,1 ,0xA0000 ,0x10000, 50 ,525 ,40 ,480 , _VGA_PIXEL_DOUBLE  },
+-
+-/* S3 specific modes */
+-{ 0x207  ,M_LIN8	,1152,864,160,64 ,8 ,16 ,1 ,0xA0000 ,0x10000,182 ,948 ,144,864 ,0	},
+-{ 0x209  ,M_LIN15	,1152,864,160,64 ,8 ,16 ,1 ,0xA0000 ,0x10000,364 ,948 ,288,864 ,0	},
+-{ 0x20A  ,M_LIN16	,1152,864,160,64 ,8 ,16 ,1 ,0xA0000 ,0x10000,364 ,948 ,288,864 ,0	},
+-//{ 0x20B  ,M_LIN32	,1152,864,160,64 ,8 ,16 ,1 ,0xA0000 ,0x10000,182 ,948 ,144,864 ,0	},
+-{ 0x213  ,M_LIN32   ,640 ,400,80 ,25 ,8 ,16 ,1 ,0xA0000 ,0x10000,100 ,449 ,80 ,400 ,0	},
+-
+-/* Some custom modes */
+-//{ 0x220  ,M_LIN32  ,1280,1024,160,64 ,8 ,16 ,1 ,0xA0000 ,0x10000,212 ,1066,160,1024,0	},
+-// A nice 16:9 mode
+-{ 0x222  ,M_LIN8   ,848 ,480 ,80 ,30 ,8 ,16 ,1 ,0xA0000 ,0x10000,132 ,525 ,106 ,480 ,0	},
+-{ 0x223  ,M_LIN15  ,848 ,480 ,80 ,30 ,8 ,16 ,1 ,0xA0000 ,0x10000,264 ,525 ,212 ,480 ,0  },
+-{ 0x224  ,M_LIN16  ,848 ,480 ,80 ,30 ,8 ,16 ,1 ,0xA0000 ,0x10000,264 ,525 ,212 ,480 ,0  },
+-{ 0x225  ,M_LIN32  ,848 ,480 ,80 ,30 ,8 ,16 ,1 ,0xA0000 ,0x10000,132 ,525 ,106 ,480 ,0  },
+-
+-{0xFFFF  ,M_ERROR  ,0   ,0   ,0  ,0  ,0 ,0  ,0 ,0x00000 ,0x0000 ,0   ,0   ,0  ,0   ,0 	},
++{ 0x119  ,M_LIN15  ,1280,1024,160,64 ,8 ,16 ,1 ,0xA0000 ,0x10000,212 ,1066,320,1024,0	},
++{ 0x11A  ,M_LIN16  ,1280,1024,160,64 ,8 ,16 ,1 ,0xA0000 ,0x10000,212 ,1066,320,1024,0	},
++{ 0x11B  ,M_LIN32  ,1280,1024,160,64 ,8 ,16 ,1 ,0xA0000 ,0x10000,212 ,1066,160,1024,0	},
++
++ /* 1600x1200 S3 specific modes */
++{ 0x120  ,M_LIN8   ,1600,1200,200,75 ,8 ,16 ,1 ,0xA0000 ,0x10000,264 ,1250,200,1200,0	},
++{ 0x121  ,M_LIN15  ,1600,1200,200,75 ,8 ,16 ,1 ,0xA0000 ,0x10000,264 ,1250,400,1200,0	},
++{ 0x122  ,M_LIN16  ,1600,1200,200,75 ,8 ,16 ,1 ,0xA0000 ,0x10000,264 ,1250,400,1200,0	},
++
++/* Custom modes */
++{ 0x150  ,M_LIN4   ,320 ,200 ,40 ,25 ,8 ,8  ,1 ,0xA0000 ,0x10000,100 ,449 ,40 ,400 ,_VGA_PIXEL_DOUBLE | _EGA_LINE_DOUBLE },
++{ 0x151  ,M_LIN8   ,320 ,200 ,40 ,25 ,8 ,8  ,1 ,0xA0000 ,0x10000,100 ,449 ,80 ,400 ,_VGA_PIXEL_DOUBLE | _EGA_LINE_DOUBLE },
++{ 0x152  ,M_LIN24  ,320 ,200 ,40 ,25 ,8 ,8  ,1 ,0xA0000 ,0x10000,100 ,449 ,40 ,400 ,_VGA_PIXEL_DOUBLE | _EGA_LINE_DOUBLE },
++{ 0x153  ,M_LIN4   ,320 ,240 ,40 ,30 ,8 ,8  ,1 ,0xA0000 ,0x10000,100 ,525 ,40 ,480 ,_VGA_PIXEL_DOUBLE | _EGA_LINE_DOUBLE },
++{ 0x154  ,M_LIN8   ,320 ,240 ,40 ,30 ,8 ,8  ,1 ,0xA0000 ,0x10000,100 ,525 ,80 ,480 ,_VGA_PIXEL_DOUBLE | _EGA_LINE_DOUBLE },
++{ 0x155  ,M_LIN15  ,320 ,240 ,40 ,30 ,8 ,8  ,1 ,0xA0000 ,0x10000,100 ,525 ,80 ,480 ,_VGA_PIXEL_DOUBLE | _EGA_LINE_DOUBLE },
++{ 0x156  ,M_LIN16  ,320 ,240 ,40 ,30 ,8 ,8  ,1 ,0xA0000 ,0x10000,100 ,525 ,80 ,480 ,_VGA_PIXEL_DOUBLE | _EGA_LINE_DOUBLE },
++{ 0x157  ,M_LIN24  ,320 ,240 ,40 ,30 ,8 ,8  ,1 ,0xA0000 ,0x10000,100 ,525 ,40 ,480 ,_VGA_PIXEL_DOUBLE | _EGA_LINE_DOUBLE },
++{ 0x158  ,M_LIN32  ,320 ,240 ,40 ,30 ,8 ,8  ,1 ,0xA0000 ,0x10000,100 ,525 ,40 ,480 ,_VGA_PIXEL_DOUBLE | _EGA_LINE_DOUBLE },
++{ 0x159  ,M_LIN4   ,320 ,400 ,40 ,25 ,8 ,16 ,1 ,0xA0000 ,0x10000,100 ,449 ,40 ,400 ,_VGA_PIXEL_DOUBLE },
++{ 0x15A  ,M_LIN8   ,320 ,400 ,40 ,25 ,8 ,16 ,1 ,0xA0000 ,0x10000,100 ,449 ,80 ,400 ,_VGA_PIXEL_DOUBLE },
++{ 0x15B  ,M_LIN15  ,320 ,400 ,40 ,25 ,8 ,16 ,1 ,0xA0000 ,0x10000,100 ,449 ,80 ,400 ,_VGA_PIXEL_DOUBLE },
++{ 0x15C  ,M_LIN16  ,320 ,400 ,40 ,25 ,8 ,16 ,1 ,0xA0000 ,0x10000,100 ,449 ,80 ,400 ,_VGA_PIXEL_DOUBLE },
++{ 0x15D  ,M_LIN24  ,320 ,400 ,40 ,25 ,8 ,16 ,1 ,0xA0000 ,0x10000,100 ,449 ,40 ,400 ,_VGA_PIXEL_DOUBLE },
++{ 0x15E  ,M_LIN32  ,320 ,400 ,40 ,25 ,8 ,16 ,1 ,0xA0000 ,0x10000,100 ,449 ,40 ,400 ,_VGA_PIXEL_DOUBLE },
++{ 0x15F  ,M_LIN4   ,320 ,480 ,40 ,30 ,8 ,16 ,1 ,0xA0000 ,0x10000,100 ,525 ,40 ,480 ,_VGA_PIXEL_DOUBLE },
++{ 0x160  ,M_LIN8   ,320 ,480 ,40 ,30 ,8 ,16 ,1 ,0xA0000 ,0x10000,100 ,525 ,80 ,480 ,_VGA_PIXEL_DOUBLE },
++{ 0x161  ,M_LIN15  ,320 ,480 ,40 ,30 ,8 ,16 ,1 ,0xA0000 ,0x10000,100 ,525 ,80 ,480 ,_VGA_PIXEL_DOUBLE },
++{ 0x162  ,M_LIN16  ,320 ,480 ,40 ,30 ,8 ,16 ,1 ,0xA0000 ,0x10000,100 ,525 ,80 ,480 ,_VGA_PIXEL_DOUBLE },
++{ 0x163  ,M_LIN24  ,320 ,480 ,40 ,30 ,8 ,16 ,1 ,0xA0000 ,0x10000,100 ,525 ,40 ,480 ,_VGA_PIXEL_DOUBLE },
++{ 0x164  ,M_LIN32  ,320 ,480 ,40 ,30 ,8 ,16 ,1 ,0xA0000 ,0x10000,100 ,525 ,40 ,480 ,_VGA_PIXEL_DOUBLE },
++{ 0x165  ,M_LIN4   ,400 ,300 ,50 ,37 ,8 ,8  ,1 ,0xA0000 ,0x10000,132 ,628 ,50 ,600 ,_VGA_PIXEL_DOUBLE | _EGA_LINE_DOUBLE },
++{ 0x166  ,M_LIN8   ,400 ,300 ,50 ,37 ,8 ,8  ,1 ,0xA0000 ,0x10000,132 ,628 ,100,600 ,_VGA_PIXEL_DOUBLE | _EGA_LINE_DOUBLE },
++{ 0x167  ,M_LIN15  ,400 ,300 ,50 ,37 ,8 ,8  ,1 ,0xA0000 ,0x10000,132 ,628 ,100,600 ,_VGA_PIXEL_DOUBLE | _EGA_LINE_DOUBLE },
++{ 0x168  ,M_LIN16  ,400 ,300 ,50 ,37 ,8 ,8  ,1 ,0xA0000 ,0x10000,132 ,628 ,100,600 ,_VGA_PIXEL_DOUBLE | _EGA_LINE_DOUBLE },
++{ 0x169  ,M_LIN24  ,400 ,300 ,50 ,37 ,8 ,8  ,1 ,0xA0000 ,0x10000,132 ,628 ,50 ,600 ,_VGA_PIXEL_DOUBLE | _EGA_LINE_DOUBLE },
++{ 0x16A  ,M_LIN32  ,400 ,300 ,50 ,37 ,8 ,8  ,1 ,0xA0000 ,0x10000,132 ,628 ,50 ,600 ,_VGA_PIXEL_DOUBLE | _EGA_LINE_DOUBLE },
++{ 0x16B  ,M_LIN4   ,512 ,384 ,64 ,24 ,8 ,16 ,1 ,0xA0000 ,0x10000,80  ,449 ,64 ,384 ,0	},
++{ 0x16C  ,M_LIN24  ,512 ,384 ,64 ,24 ,8 ,16 ,1 ,0xA0000 ,0x10000,80  ,449 ,64 ,384 ,0	},
++{ 0x16D  ,M_LIN4   ,640 ,350 ,80 ,25 ,8 ,14 ,1 ,0xA0000 ,0x10000,100 ,449 ,80 ,350 ,0	},
++{ 0x16E  ,M_LIN8   ,640 ,350 ,80 ,25 ,8 ,14 ,1 ,0xA0000 ,0x10000,100 ,449 ,80 ,350 ,0	},
++{ 0x16F  ,M_LIN15  ,640 ,350 ,80 ,25 ,8 ,14 ,1 ,0xA0000 ,0x10000,100 ,449 ,160,350 ,0	},
++{ 0x170  ,M_LIN16  ,640 ,350 ,80 ,25 ,8 ,14 ,1 ,0xA0000 ,0x10000,100 ,449 ,160,350 ,0	},
++{ 0x171  ,M_LIN24  ,640 ,350 ,80 ,25 ,8 ,14 ,1 ,0xA0000 ,0x10000,100 ,449 ,80 ,350 ,0	},
++{ 0x172  ,M_LIN32  ,640 ,350 ,80 ,25 ,8 ,14 ,1 ,0xA0000 ,0x10000,100 ,449 ,80 ,350 ,0	},
++{ 0x173  ,M_LIN4   ,640 ,400 ,80 ,25 ,8 ,16 ,1 ,0xA0000 ,0x10000,100 ,449 ,80 ,400 ,0	},
++{ 0x174  ,M_LIN15  ,640 ,400 ,80 ,25 ,8 ,16 ,1 ,0xA0000 ,0x10000,100 ,449 ,160,400 ,0	},
++{ 0x175  ,M_LIN16  ,640 ,400 ,80 ,25 ,8 ,16 ,1 ,0xA0000 ,0x10000,100 ,449 ,160,400 ,0	},
++{ 0x176  ,M_LIN24  ,640 ,400 ,80 ,25 ,8 ,16 ,1 ,0xA0000 ,0x10000,100 ,449 ,80 ,400 ,0	},
++{ 0x177  ,M_LIN4   ,640 ,480 ,80 ,30 ,8 ,16 ,1 ,0xA0000 ,0x10000,100 ,525 ,80 ,480 ,0	},
++{ 0x178  ,M_LIN24  ,800 ,600 ,100,37 ,8 ,16 ,1 ,0xA0000 ,0x10000,132 ,628 ,100,600 ,0	},
++{ 0x179  ,M_LIN24  ,1024,768 ,128,48 ,8 ,16 ,1 ,0xA0000 ,0x10000,168 ,806 ,128,768 ,0	},
++{ 0x17A  ,M_LIN4   ,1152,864 ,144,54 ,8 ,16 ,1 ,0xA0000 ,0x10000,182 ,895 ,144,864 ,0	},
++{ 0x17B  ,M_LIN24  ,1152,864 ,144,54 ,8 ,16 ,1 ,0xA0000 ,0x10000,182 ,895 ,144,864 ,0	},
++{ 0x17C  ,M_LIN4   ,1280,960 ,160,60 ,8 ,16 ,1 ,0xA0000 ,0x10000,212 ,1000,160,960 ,0	},
++{ 0x17D  ,M_LIN8   ,1280,960 ,160,60 ,8 ,16 ,1 ,0xA0000 ,0x10000,212 ,1000,160,960 ,0	},
++{ 0x17E  ,M_LIN15  ,1280,960 ,160,60 ,8 ,16 ,1 ,0xA0000 ,0x10000,212 ,1000,320,960 ,0	},
++{ 0x17F  ,M_LIN16  ,1280,960 ,160,60 ,8 ,16 ,1 ,0xA0000 ,0x10000,212 ,1000,320,960 ,0	},
++{ 0x180  ,M_LIN24  ,1280,960 ,160,60 ,8 ,16 ,1 ,0xA0000 ,0x10000,212 ,1000,160,960 ,0	},
++{ 0x181  ,M_LIN32  ,1280,960 ,160,60 ,8 ,16 ,1 ,0xA0000 ,0x10000,212 ,1000,160,960 ,0	},
++{ 0x182  ,M_LIN24  ,1280,1024,160,64 ,8 ,16 ,1 ,0xA0000 ,0x10000,212 ,1066,160,1024,0	},
++{ 0x183  ,M_LIN4   ,1600,1200,200,75 ,8 ,16 ,1 ,0xA0000 ,0x10000,264 ,1250,200,1200,0	},
++{ 0x184  ,M_LIN24  ,1600,1200,200,75 ,8 ,16 ,1 ,0xA0000 ,0x10000,264 ,1250,200,1200,0	},
++{ 0x185  ,M_LIN32  ,1600,1200,200,75 ,8 ,16 ,1 ,0xA0000 ,0x10000,264 ,1250,200,1200,0	},
++
++/* Remaining S3 specific modes */
++{ 0x207  ,M_LIN8   ,1152,864 ,144,54 ,8 ,16 ,1 ,0xA0000 ,0x10000,182 ,895 ,144,864 ,0	},
++{ 0x209  ,M_LIN15  ,1152,864 ,144,54 ,8 ,16 ,1 ,0xA0000 ,0x10000,182 ,895 ,288,864 ,0	},
++{ 0x20A  ,M_LIN16  ,1152,864 ,144,54 ,8 ,16 ,1 ,0xA0000 ,0x10000,182 ,895 ,288,864 ,0	},
++{ 0x20B  ,M_LIN32  ,1152,864 ,144,54 ,8 ,16 ,1 ,0xA0000 ,0x10000,182 ,895 ,144,864 ,0	},
++{ 0x212  ,M_LIN24  ,640 ,480 ,80 ,30 ,8 ,16 ,1 ,0xA0000 ,0x10000,100 ,525 ,80 ,480 ,0	},
++{ 0x213  ,M_LIN32  ,640 ,400 ,80 ,25 ,8 ,16 ,1 ,0xA0000 ,0x10000,100 ,449 ,80 ,400 ,0	},
++{ 0x215  ,M_LIN8   ,512 ,384 ,64 ,24 ,8 ,16 ,1 ,0xA0000 ,0x10000,80  ,449 ,64 ,384 ,0	},
++{ 0x216  ,M_LIN15  ,512 ,384 ,64 ,24 ,8 ,16 ,1 ,0xA0000 ,0x10000,80  ,449 ,128,384 ,0	},
++{ 0x217  ,M_LIN16  ,512 ,384 ,64 ,24 ,8 ,16 ,1 ,0xA0000 ,0x10000,80  ,449 ,128,384 ,0	},
++{ 0x218  ,M_LIN32  ,512 ,384, 64 ,24 ,8 ,16 ,1 ,0xA0000 ,0x10000,80  ,449 ,64 ,384 ,0	},
++
++{ 0xFFFF ,M_ERROR  ,0   ,0   ,0  ,0  ,0 ,0  ,0 ,0x00000 ,0x00000,0   ,0   ,0  ,0   ,0 	},
+ };
+ 
+ VideoModeBlock ModeList_VGA_Text_200lines[]={
+@@ -363,7 +403,8 @@
+ 	while (modeblock[i].mode!=0xffff) {
+ 		if (modeblock[i].mode!=mode) i++;
+ 		else {
+-			if ((!int10.vesa_oldvbe) || (ModeList_VGA[i].mode<0x120)) {
++			if (((!int10.vesa_oldvbe) || (ModeList_VGA[i].mode<=0x11b)) &&
++				((!int10.vesa_no24bpp) || (ModeList_VGA[i].type!=M_LIN24))) {
+ 				CurMode=&modeblock[i];
+ 				return true;
+ 			}
+@@ -396,6 +437,7 @@
+ 		case M_LIN4:
+ 		case M_LIN15:
+ 		case M_LIN16:
++		case M_LIN24:
+ 		case M_LIN32:
+ 			/* Hack we just acess the memory directly */
+ 			memset(vga.mem.linear,0,vga.vmemsize);
+@@ -742,6 +784,7 @@
+ 	case M_LIN8:						//Seems to have the same reg layout from testing
+ 	case M_LIN15:
+ 	case M_LIN16:
++	case M_LIN24:
+ 	case M_LIN32:
+ 	case M_VGA:
+ 		seq_data[2]|=0xf;				//Enable all planes for writing
+@@ -887,6 +930,7 @@
+ 	case M_LIN8:
+ 	case M_LIN15:
+ 	case M_LIN16:
++	case M_LIN24:
+ 	case M_LIN32:
+ 		underline=0x60;			//Seems to enable the every 4th clock on my s3
+ 		break;
+@@ -920,6 +964,11 @@
+ 	case M_LIN16:
+ 		offset = 2 * CurMode->swidth/8;
+ 		break;
++	case M_LIN24:
++		offset = 3 * CurMode->swidth/8;
++		/* Mode 0x212 has 128 extra bytes per scan line (8 bytes per offset) for compatibility with Windows 640x480 24-bit S3 Trio drivers */
++		if (CurMode->mode==0x212) offset += 16;
++		break;
+ 	case M_LIN32:
+ 		offset = 4 * CurMode->swidth/8;
+ 		break;
+@@ -961,6 +1010,8 @@
+ 				else mode_control=0x8b;
+ 			} else {
+ 				mode_control=0xe3;
++				if (CurMode->special & _VGA_PIXEL_DOUBLE)
++					mode_control |= 0x08;
+ 			}
+ 		}
+ 		break;
+@@ -969,6 +1020,7 @@
+ 	case M_LIN8:
+ 	case M_LIN15:
+ 	case M_LIN16:
++	case M_LIN24:
+ 	case M_LIN32:
+ 		mode_control=0xa3;
+ 		if (CurMode->special & _VGA_PIXEL_DOUBLE)
+@@ -984,8 +1036,92 @@
+ 	if (svgaCard == SVGA_S3Trio) {
+ 		/* Setup the correct clock */
+ 		if (CurMode->mode>=0x100) {
+-			misc_output|=0xef;		//Select clock 3 
+-			Bitu clock=CurMode->vtotal*8*CurMode->htotal*70;
++			misc_output|=0xef;		//Select clock 3
++			Bitu clock;
++			Bit8u refresh=60;
++			switch (CurMode->swidth) {
++			case 512:
++				switch (CurMode->sheight) {
++				case 384:
++					refresh=int10.vesa_refresh[_512x384];
++					break;
++				}
++				break;
++			case 320:
++			case 640:
++				switch (CurMode->sheight) {
++				case 350:
++					refresh=int10.vesa_refresh[_640x350];
++					break;
++				case 200:
++				case 400:
++					refresh=int10.vesa_refresh[_640x400];
++					break;
++				case 240:
++				case 480:
++					refresh=int10.vesa_refresh[_640x480];
++					break;
++				}
++			case 720:
++				switch (CurMode->sheight) {
++				case 480:
++					refresh=int10.vesa_refresh[_720x480];
++					break;
++				}
++				break;
++			case 400:
++			case 800:
++				switch (CurMode->sheight) {
++				case 300:
++				case 600:
++					refresh=int10.vesa_refresh[_800x600];
++					break;
++				}
++				break;
++			case 1024:
++				switch (CurMode->sheight) {
++				case 768:
++					refresh=int10.vesa_refresh[_1024x768];
++					break;
++				}
++				break;
++			case 1152:
++				switch (CurMode->sheight) {
++				case 864:
++					refresh=int10.vesa_refresh[_1152x864];
++					break;
++				}
++				break;
++			case 1188:
++				switch (CurMode->sheight) {
++				case 344:
++					refresh=int10.vesa_refresh[_1188x344];
++					break;
++				case 400:
++					refresh=int10.vesa_refresh[_1188x400];
++					break;
++				case 480:
++					refresh=int10.vesa_refresh[_1188x480];
++					break;
++				}
++			case 1280:
++				switch (CurMode->sheight) {
++				case 960:
++					refresh=int10.vesa_refresh[_1280x960];
++					break;
++				case 1024:
++					refresh=int10.vesa_refresh[_1280x1024];
++					break;
++				}
++			case 1600:
++				switch (CurMode->sheight) {
++				case 1200:
++					refresh=int10.vesa_refresh[_1600x1200];
++					break;
++				}
++				break;
++			}
++			clock=CurMode->vtotal*CurMode->cwidth*CurMode->htotal*refresh;
+ 			VGA_SetClock(3,clock/1000);
+ 		}
+ 		Bit8u misc_control_2;
+@@ -1000,6 +1136,9 @@
+ 		case M_LIN16:
+ 			misc_control_2=0x50;
+ 			break;
++		case M_LIN24:
++			misc_control_2=0x70;
++			break;
+ 		case M_LIN32:
+ 			misc_control_2=0xd0;
+ 			break;
+@@ -1025,6 +1164,7 @@
+ 	case M_LIN8:
+ 	case M_LIN15:
+ 	case M_LIN16:
++	case M_LIN24:
+ 	case M_LIN32:
+ 	case M_VGA:
+ 		gfx_data[0x5]|=0x40;		//256 color mode
+@@ -1138,6 +1278,7 @@
+ 	case M_LIN8:
+ 	case M_LIN15:
+ 	case M_LIN16:
++	case M_LIN24:
+ 	case M_LIN32:
+ 		for (Bit8u ct=0;ct<16;ct++) att_data[ct]=ct;
+ 		att_data[0x10]=0x41;		//Color Graphics 8-bit
+@@ -1210,6 +1351,7 @@
+ 		case M_LIN8:
+ 		case M_LIN15:
+ 		case M_LIN16:
++		case M_LIN24:
+ 		case M_LIN32:
+ 			for (i=0;i<256;i++) {
+ 				IO_Write(0x3c9,vga_palette[i][0]);
+@@ -1294,6 +1436,7 @@
+ 		switch (CurMode->type) {
+ 			case M_LIN15:
+ 			case M_LIN16: reg_50|=S3_XGA_16BPP; break;
++			case M_LIN24:
+ 			case M_LIN32: reg_50|=S3_XGA_32BPP; break;
+ 			default: break;
+ 		}
+@@ -1303,6 +1446,7 @@
+ 			case 1024: reg_50|=S3_XGA_1024; break;
+ 			case 1152: reg_50|=S3_XGA_1152; break;
+ 			case 1280: reg_50|=S3_XGA_1280; break;
++			case 1600: reg_50|=S3_XGA_1600; break;
+ 			default: break;
+ 		}
+ 		IO_WriteB(crtc_base,0x50); IO_WriteB(crtc_base+1,reg_50);
+@@ -1311,6 +1455,7 @@
+ 		switch (CurMode->type) {
+ 			case M_LIN15:
+ 			case M_LIN16:
++			case M_LIN24:
+ 			case M_LIN32:
+ 				reg_3a=0x15;
+ 				break;
+@@ -1330,6 +1475,7 @@
+ 		case M_LIN8:
+ 		case M_LIN15:
+ 		case M_LIN16:
++		case M_LIN24:
+ 		case M_LIN32:
+ 			reg_31 = 9;
+ 			break;
+@@ -1405,6 +1561,8 @@
+ 		return vmodeBlock->swidth*vmodeBlock->sheight;
+ 	case M_LIN15: case M_LIN16:
+ 		return vmodeBlock->swidth*vmodeBlock->sheight*2;
++	case M_LIN24:
++		return vmodeBlock->swidth*vmodeBlock->sheight*3;
+ 	case M_LIN32:
+ 		return vmodeBlock->swidth*vmodeBlock->sheight*4;
+ 	case M_TEXT:
+@@ -1413,3 +1561,21 @@
+ 	// Return 0 for all other types, those always fit in memory
+ 	return 0;
+ }
++
++void vesa_refresh_Init(Section* sec){
++	Section_prop * section=static_cast<Section_prop *>(sec);
++	int10.vesa_refresh[_512x384] = section->Get_int("512x384");
++	int10.vesa_refresh[_640x350] = section->Get_int("640x350");
++	int10.vesa_refresh[_640x400] = section->Get_int("640x400");
++	int10.vesa_refresh[_640x480] = section->Get_int("640x480");
++	int10.vesa_refresh[_720x480] = section->Get_int("720x480");
++	int10.vesa_refresh[_800x600] = section->Get_int("800x600");
++	int10.vesa_refresh[_1024x768] = section->Get_int("1024x768");
++	int10.vesa_refresh[_1188x344] = section->Get_int("1188x344");
++	int10.vesa_refresh[_1188x400] = section->Get_int("1188x400");
++	int10.vesa_refresh[_1188x480] = section->Get_int("1188x480");
++	int10.vesa_refresh[_1152x864] = section->Get_int("1152x864");
++	int10.vesa_refresh[_1280x960] = section->Get_int("1280x960");
++	int10.vesa_refresh[_1280x1024] = section->Get_int("1280x1024");
++	int10.vesa_refresh[_1600x1200] = section->Get_int("1600x1200");
++}
+--- ./src/ints/int10_vesa.cpp	2010-05-10 18:43:54 +0100
++++ ./src/ints/int10_vesa.cpp	2013-01-02 00:08:33 +0000
+@@ -138,12 +138,12 @@
+ 	}
+ 	return 0x01;
+ foundit:
+-	if ((int10.vesa_oldvbe) && (ModeList_VGA[i].mode>=0x120)) return 0x01;
++	if (((int10.vesa_oldvbe) && (ModeList_VGA[i].mode>0x11b)) ||
++		((int10.vesa_no24bpp) && (ModeList_VGA[i].type==M_LIN24))) return 0x01;
+ 	VideoModeBlock * mblock=&ModeList_VGA[i];
+ 	switch (mblock->type) {
+ 	case M_LIN4:
+ 		pageSize = mblock->sheight * mblock->swidth/2;
+-		pageSize = (pageSize | 15) & ~ 15;
+ 		var_write(&minfo.BytesPerScanLine,mblock->swidth/8);
+ 		var_write(&minfo.NumberOfPlanes,0x4);
+ 		var_write(&minfo.BitsPerPixel,4);
+@@ -152,7 +152,6 @@
+ 		break;
+ 	case M_LIN8:
+ 		pageSize = mblock->sheight * mblock->swidth;
+-		pageSize = (pageSize | 15) & ~ 15;
+ 		var_write(&minfo.BytesPerScanLine,mblock->swidth);
+ 		var_write(&minfo.NumberOfPlanes,0x1);
+ 		var_write(&minfo.BitsPerPixel,8);
+@@ -162,7 +161,6 @@
+ 		break;
+ 	case M_LIN15:
+ 		pageSize = mblock->sheight * mblock->swidth*2;
+-		pageSize = (pageSize | 15) & ~ 15;
+ 		var_write(&minfo.BytesPerScanLine,mblock->swidth*2);
+ 		var_write(&minfo.NumberOfPlanes,0x1);
+ 		var_write(&minfo.BitsPerPixel,15);
+@@ -180,7 +178,6 @@
+ 		break;
+ 	case M_LIN16:
+ 		pageSize = mblock->sheight * mblock->swidth*2;
+-		pageSize = (pageSize | 15) & ~ 15;
+ 		var_write(&minfo.BytesPerScanLine,mblock->swidth*2);
+ 		var_write(&minfo.NumberOfPlanes,0x1);
+ 		var_write(&minfo.BitsPerPixel,16);
+@@ -194,9 +191,29 @@
+ 		modeAttributes = 0x1b;	// Color, graphics
+ 		if (!int10.vesa_nolfb) modeAttributes |= 0x80;	// linear framebuffer
+ 		break;
++	case M_LIN24:
++		if (mode==0x212)
++		{ // Mode 0x212 has 128 extra bytes per scan line for compatibility with Windows 640x480 24-bit S3 Trio drivers
++			pageSize = mblock->sheight * (mblock->swidth*3+128);
++			var_write(&minfo.BytesPerScanLine,mblock->swidth*3+128);
++		} else {
++			pageSize = mblock->sheight * (mblock->swidth*3);
++			var_write(&minfo.BytesPerScanLine,mblock->swidth*3);
++		}
++		var_write(&minfo.NumberOfPlanes,0x1);
++		var_write(&minfo.BitsPerPixel,24);
++		var_write(&minfo.MemoryModel,6);	//HiColour
++		var_write(&minfo.RedMaskSize,8);
++		var_write(&minfo.RedMaskPos,0x10);
++		var_write(&minfo.GreenMaskSize,0x8);
++		var_write(&minfo.GreenMaskPos,0x8);
++		var_write(&minfo.BlueMaskSize,0x8);
++		var_write(&minfo.BlueMaskPos,0x0);
++		modeAttributes = 0x1b;	// Color, graphics
++		if (!int10.vesa_nolfb) modeAttributes |= 0x80;	// linear framebuffer
++		break;
+ 	case M_LIN32:
+ 		pageSize = mblock->sheight * mblock->swidth*4;
+-		pageSize = (pageSize | 15) & ~ 15;
+ 		var_write(&minfo.BytesPerScanLine,mblock->swidth*4);
+ 		var_write(&minfo.NumberOfPlanes,0x1);
+ 		var_write(&minfo.BitsPerPixel,32);
+@@ -212,36 +229,33 @@
+ 		modeAttributes = 0x1b;	// Color, graphics
+ 		if (!int10.vesa_nolfb) modeAttributes |= 0x80;	// linear framebuffer
+ 		break;
+-/*	case M_TEXT:
+-		pageSize = mblock->sheight/8 * mblock->swidth*2/8;
+-		pageSize = (pageSize | 15) & ~ 15;
+-		var_write(&minfo.BytesPerScanLine,mblock->swidth*2/8);
++	case M_TEXT:
++		pageSize = mblock->sheight/8 * mblock->swidth*2/mblock->cwidth;
++		var_write(&minfo.BytesPerScanLine,mblock->swidth*2/mblock->cwidth);
+ 		var_write(&minfo.NumberOfPlanes,0x4);
+ 		var_write(&minfo.BitsPerPixel,4);
+ 		var_write(&minfo.MemoryModel,0);	//Text
+ 		modeAttributes = 0x0f;	//Color, text, bios output
+-		break; */
++		break;
+ 	default:
+ 		return 0x1;
+ 	}
+-	var_write(&minfo.WinAAttributes,0x7);	// Exists/readable/writable
+-	
+-	if(pageSize > vga.vmemsize) {
+-		// Mode not supported by current hardware configuration
+-		var_write(&minfo.ModeAttributes, modeAttributes & ~0x1);
+-		var_write(&minfo.NumberOfImagePages,0);
+-	} else {
+-		var_write(&minfo.ModeAttributes, modeAttributes);
+-		Bitu pages = (vga.vmemsize / pageSize)-1;
+-		var_write(&minfo.NumberOfImagePages,pages);
++	if (pageSize & 0xFFFF) {
++		// It is documented that many applications assume 64k-aligned page sizes
++		// VBETEST is one of them
++		pageSize += 0x10000;
++		pageSize &= ~0xFFFF;
+ 	}
+-
++	var_write(&minfo.WinAAttributes,0x7);	// Exists/readable/writable
++	var_write(&minfo.ModeAttributes, modeAttributes);
++	Bitu pages = (vga.vmemsize / pageSize)-1;
++	var_write(&minfo.NumberOfImagePages,pages);
+ 	if (mblock->type==M_TEXT) {
+ 		var_write(&minfo.WinGranularity,32);
+ 		var_write(&minfo.WinSize,32);
+ 		var_write(&minfo.WinASegment,0xb800);
+-		var_write(&minfo.XResolution,mblock->swidth/8);
+-		var_write(&minfo.YResolution,mblock->sheight/8);
++		var_write(&minfo.XResolution,mblock->swidth/mblock->cwidth);
++		var_write(&minfo.YResolution,mblock->sheight/mblock->cheight);
+ 	} else {
+ 		var_write(&minfo.WinGranularity,64);
+ 		var_write(&minfo.WinSize,64);
+@@ -344,6 +358,9 @@
+ 	case M_LIN16:
+ 		bpp=2;
+ 		break;
++	case M_LIN24:
++		bpp=3;
++		break;
+ 	case M_LIN32:
+ 		bpp=4;
+ 		break;
+@@ -412,6 +431,11 @@
+ 		start=vga.config.scan_len*8*y+x*2;
+ 		vga.config.display_start=start/4;
+ 		break;
++	case M_LIN24:
++		start=(vga.config.scan_len*8)*y+x*3;
++		start-=(x*3)%12;	// Align x to every 4 pixels to prevent color flickering when scrolling in VBETEST
++		vga.config.display_start=start/4;
++		break;
+ 	case M_LIN32:
+ 		start=vga.config.scan_len*8*y+x*4;
+ 		vga.config.display_start=start/4;
+@@ -474,7 +498,8 @@
+ 			if (svga.accepts_mode(ModeList_VGA[i].mode)) canuse_mode=true;
+ 		}
+ 		if (ModeList_VGA[i].mode>=0x100 && canuse_mode) {
+-			if ((!int10.vesa_oldvbe) || (ModeList_VGA[i].mode<0x120)) {
++			if (((!int10.vesa_oldvbe) || (ModeList_VGA[i].mode<=0x11b)) &&
++				((!int10.vesa_no24bpp) || (ModeList_VGA[i].type!=M_LIN24))) {
+ 				phys_writew(PhysMake(0xc000,int10.rom.used),ModeList_VGA[i].mode);
+ 				int10.rom.used+=2;
+ 			}
+@@ -508,7 +533,7 @@
+ 	int10.rom.pmode_interface_start = int10.rom.used - RealOff( int10.rom.pmode_interface );
+ 	phys_writew( Real2Phys(int10.rom.pmode_interface) + 2, int10.rom.pmode_interface_start);
+ 	callback.pmStart=CALLBACK_Allocate();
+-	int10.rom.used += (Bit16u)CALLBACK_Setup(callback.pmStart, VESA_PMSetStart, CB_RETN, PhysMake(0xc000,int10.rom.used), "VESA PM Set Start");
++	int10.rom.used += (Bit16u)CALLBACK_Setup(callback.pmStart, VESA_PMSetStart, CB_VESA_START, PhysMake(0xc000,int10.rom.used), "VESA PM Set Start");
+ 	/* PM Set Palette call */
+ 	int10.rom.pmode_interface_palette = int10.rom.used - RealOff( int10.rom.pmode_interface );
+ 	phys_writew( Real2Phys(int10.rom.pmode_interface) + 4, int10.rom.pmode_interface_palette);
