@@ -1,0 +1,55 @@
+diff -wBbur ../dbx/dosbox-3858/src/dosbox.cpp ./src/dosbox.cpp
+--- ../dbx/dosbox-3858/src/dosbox.cpp	2014-03-21 18:11:18 -0700
++++ ./src/dosbox.cpp	2014-03-21 17:26:23 -0700
+@@ -363,7 +363,7 @@
+ 	secprop->AddInitFunction(&MEM_Init);//done
+ 	secprop->AddInitFunction(&HARDWARE_Init);//done
+ 	Pint = secprop->Add_int("memsize", Property::Changeable::WhenIdle,16);
+-	Pint->SetMinMax(1,63);
++	Pint->SetMinMax(1,383);
+ 	Pint->Set_help(
+ 		"Amount of memory DOSBox has in megabytes.\n"
+ 		"  This value is best left at its default to avoid problems with some games,\n"
+diff -wBbur ../dbx/dosbox-3858/src/hardware/memory.cpp ./src/hardware/memory.cpp
+--- ../dbx/dosbox-3858/src/hardware/memory.cpp	2014-03-21 18:11:19 -0700
++++ ./src/hardware/memory.cpp	2014-03-21 17:26:09 -0700
+@@ -29,7 +29,7 @@
+ 
+ #define PAGES_IN_BLOCK	((1024*1024)/MEM_PAGE_SIZE)
+ #define SAFE_MEMORY	32
+-#define MAX_MEMORY	64
++#define MAX_MEMORY	384
+ #define MAX_PAGE_ENTRIES (MAX_MEMORY*1024*1024/4096)
+ #define LFB_PAGES	512
+ #define MAX_LINKS	((MAX_MEMORY*1024/4)+4096)		//Hopefully enough
+diff -wBbur ../dbx/dosbox-3858/src/ints/bios.cpp ./src/ints/bios.cpp
+--- ../dbx/dosbox-3858/src/ints/bios.cpp	2014-02-24 15:34:19 -0800
++++ ./src/ints/bios.cpp	2014-03-21 13:59:35 -0700
+@@ -940,6 +940,27 @@
+ 		LOG(LOG_BIOS,LOG_NORMAL)("INT15:Function %X called, bios mouse not supported",reg_ah);
+ 		CALLBACK_SCF(true);
+ 		break;
++	case 0xe8:
++		switch (reg_al) {
++		case 0x01: { /* E801: memory size */
++			    Bitu sz = MEM_TotalPages()*4;
++			    if (sz >= 1024) sz -= 1024;
++			    else sz = 0;
++			    reg_ax = reg_cx = (sz > 0x3C00) ? 0x3C00 : sz; /* extended memory between 1MB and 16MB in KBs */
++			    sz -= reg_ax;
++			    sz /= 64;	/* extended memory size from 16MB in 64KB blocks */
++			    if (sz > 65535) sz = 65535;
++			    reg_bx = reg_dx = sz;
++			    CALLBACK_SCF(false);
++			}
++			break;
++		default:
++			LOG(LOG_BIOS,LOG_ERROR)("INT15:Unknown call %4X",reg_ax);
++			reg_ah=0x86;
++			CALLBACK_SCF(true);
++		}
++		break;
++
+ 	default:
+ 		LOG(LOG_BIOS,LOG_ERROR)("INT15:Unknown call %4X",reg_ax);
+ 		reg_ah=0x86;

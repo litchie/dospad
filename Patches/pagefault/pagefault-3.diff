@@ -1,0 +1,81 @@
+--- dosbox2/src/dosbox.cpp	2013-07-08 01:01:09 -0400
++++ dosbox/src/dosbox.cpp	2013-08-31 01:02:01 -0400
+@@ -22,6 +22,7 @@
+ #include <stdio.h>
+ #include <string.h>
+ #include <unistd.h>
++#include <setjmp.h>
+ #include "dosbox.h"
+ #include "debug.h"
+ #include "cpu.h"
+@@ -134,6 +135,7 @@ static Bit32u ticksAdded;
+ Bit32s ticksDone;
+ Bit32u ticksScheduled;
+ bool ticksLocked;
++Bitu in_callback = 0;
+ 
+ static Bitu Normal_Loop(void) {
+ 	Bits ret;
+@@ -142,8 +144,10 @@ static Bitu Normal_Loop(void) {
+ 			ret = (*cpudecoder)();
+ 			if (GCC_UNLIKELY(ret<0)) return 1;
+ 			if (ret>0) {
++				in_callback++;
+ 				if (GCC_UNLIKELY(ret >= CB_MAX)) return 0;
+ 				Bitu blah = (*CallBack_Handlers[ret])();
++				in_callback--;
+ 				if (GCC_UNLIKELY(blah)) return blah;
+ 			}
+ #if C_DEBUG
+@@ -252,8 +256,10 @@ void DOSBOX_SetNormalLoop() {
+ 	loop=Normal_Loop;
+ }
+ 
++jmp_buf top_of_loop;
+ void DOSBOX_RunMachine(void){
+ 	Bitu ret;
++	setjmp(top_of_loop);
+ 	do {
+ 		ret=(*loop)();
+ 	} while (!ret);
+--- dosbox2/src/cpu/paging.cpp	2013-07-08 01:01:09 -0400
++++ dosbox/src/cpu/paging.cpp	2013-08-31 01:02:10 -0400
+@@ -20,6 +20,7 @@
+ #include <stdlib.h>
+ #include <assert.h>
+ #include <string.h>
++#include <setjmp.h>
+ 
+ #include "dosbox.h"
+ #include "mem.h"
+@@ -266,19 +267,29 @@ void PrintPageInfo(const char* string, P
+ }
+ */
+ 
++extern Bitu in_callback;
++extern jmp_buf top_of_loop;
++
+ // PAGING_NewPageFault
+ // lin_addr, page_addr: the linear and page address the fault happened at
+ // prepare_only: true in case the calling core handles the fault, else the PageFaultCore does
+ static void PAGING_NewPageFault(PhysPt lin_addr, Bitu page_addr,
+ 								bool prepare_only, Bitu faultcode) {
+ 	paging.cr2=lin_addr;
+-	//LOG_MSG("FAULT q%d, code %x",  pf_queue.used, faultcode);
++	LOG_MSG("FAULT q%d, code %x",  pf_queue.used, faultcode);
+ 	//PrintPageInfo("FA+",lin_addr,faultcode, prepare_only);
+ 
+ 	if (prepare_only) {
+ 		cpu.exception.which = EXCEPTION_PF;
+ 		cpu.exception.error = faultcode;
+ 	} else {
++
++	if (in_callback==0) {
++        	FillFlags();
++        	CPU_Exception(EXCEPTION_PF,faultcode);
++        	longjmp(top_of_loop, 1);
++      	}
++		
+ 		// Save the state of the cpu cores
+ 		LazyFlags old_lflags;
+ 		memcpy(&old_lflags,&lflags,sizeof(LazyFlags));

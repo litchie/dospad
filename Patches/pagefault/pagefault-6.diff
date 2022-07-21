@@ -1,0 +1,217 @@
+--- dosbox2/src/dosbox.cpp	2013-07-08 01:01:09 -0400
++++ dosbox/src/dosbox.cpp	2013-09-02 10:28:29 -0400
+@@ -22,6 +22,7 @@
+ #include <stdio.h>
+ #include <string.h>
+ #include <unistd.h>
++#include <setjmp.h>
+ #include "dosbox.h"
+ #include "debug.h"
+ #include "cpu.h"
+@@ -134,7 +135,9 @@ static Bit32u ticksAdded;
+ Bit32s ticksDone;
+ Bit32u ticksScheduled;
+ bool ticksLocked;
++Bitu in_callback = 0;
+ 
++jmp_buf top_of_loop;
+ static Bitu Normal_Loop(void) {
+ 	Bits ret;
+ 	while (1) {
+@@ -142,10 +145,13 @@ static Bitu Normal_Loop(void) {
+ 			ret = (*cpudecoder)();
+ 			if (GCC_UNLIKELY(ret<0)) return 1;
+ 			if (ret>0) {
++				in_callback++;
+ 				if (GCC_UNLIKELY(ret >= CB_MAX)) return 0;
+ 				Bitu blah = (*CallBack_Handlers[ret])();
++				in_callback--;
+ 				if (GCC_UNLIKELY(blah)) return blah;
+ 			}
++			setjmp(top_of_loop);
+ #if C_DEBUG
+ 			if (DEBUG_ExitLoop()) return 0;
+ #endif
+--- dosbox2/src/cpu/paging.cpp	2013-07-08 01:01:09 -0400
++++ dosbox/src/cpu/paging.cpp	2013-08-31 02:45:10 -0400
+@@ -20,6 +20,7 @@
+ #include <stdlib.h>
+ #include <assert.h>
+ #include <string.h>
++#include <setjmp.h>
+ 
+ #include "dosbox.h"
+ #include "mem.h"
+@@ -266,6 +267,9 @@ void PrintPageInfo(const char* string, P
+ }
+ */
+ 
++extern Bitu in_callback;
++extern jmp_buf top_of_loop;
++
+ // PAGING_NewPageFault
+ // lin_addr, page_addr: the linear and page address the fault happened at
+ // prepare_only: true in case the calling core handles the fault, else the PageFaultCore does
+@@ -279,6 +283,13 @@ static void PAGING_NewPageFault(PhysPt l
+ 		cpu.exception.which = EXCEPTION_PF;
+ 		cpu.exception.error = faultcode;
+ 	} else {
++
++	if (in_callback==0) {
++        	FillFlags();
++        	CPU_Exception(EXCEPTION_PF,faultcode);
++        	longjmp(top_of_loop, 1);
++      	}
++		
+ 		// Save the state of the cpu cores
+ 		LazyFlags old_lflags;
+ 		memcpy(&old_lflags,&lflags,sizeof(LazyFlags));
+--- dosbox2/src/cpu/core_normal/support.h	2013-01-15 07:10:03 -0500
++++ dosbox/src/cpu/core_normal/support.h	2013-09-01 00:59:31 -0400
+@@ -75,9 +75,11 @@ static INLINE Bit32s Fetchds() {
+ }
+ 
+ #define JumpCond32_d(COND) {						\
++	Bit32s i;										\
++	if (COND) i = Fetchds();								\
+ 	SAVEIP;											\
+-	if (COND) reg_eip+=Fetchds();					\
+-	reg_eip+=4;										\
++	if (COND) reg_eip+=i;						\
++	else reg_eip+=4;									\
+ 	continue;										\
+ }
+--- dosbox2/src/cpu/core_normal/prefix_none.h	2013-01-15 07:10:03 -0500
++++ dosbox/src/cpu/core_normal/prefix_none.h	2013-09-02 00:26:54 -0400
+@@ -217,8 +217,40 @@
+ 	CASE_W(0x60)												/* PUSHA */
+ 		{
+ 			Bit16u old_sp=reg_sp;
+-			Push_16(reg_ax);Push_16(reg_cx);Push_16(reg_dx);Push_16(reg_bx);
+-			Push_16(old_sp);Push_16(reg_bp);Push_16(reg_si);Push_16(reg_di);
++			Bit32u tmp=reg_esp;
++			//Push_16(reg_ax);
++			Bitu tmp2=(tmp&cpu.stack.notmask)|((tmp-2)&cpu.stack.mask);
++			mem_writew(SegPhys(ss) + (tmp2 & cpu.stack.mask) ,reg_ax);
++			tmp=tmp2;
++			//Push_16(reg_cx);
++			tmp2=(tmp&cpu.stack.notmask)|((tmp-2)&cpu.stack.mask);
++			mem_writew(SegPhys(ss) + (tmp2 & cpu.stack.mask) ,reg_cx);
++			tmp=tmp2;
++			//Push_16(reg_dx);
++			tmp2=(tmp&cpu.stack.notmask)|((tmp-2)&cpu.stack.mask);
++			mem_writew(SegPhys(ss) + (tmp2 & cpu.stack.mask) ,reg_dx);
++			tmp=tmp2;
++			//Push_16(reg_bx);
++			tmp2=(tmp&cpu.stack.notmask)|((tmp-2)&cpu.stack.mask);
++			mem_writew(SegPhys(ss) + (tmp2 & cpu.stack.mask) ,reg_bx);
++			tmp=tmp2;
++			//Push_16(old_sp);
++			tmp2=(tmp&cpu.stack.notmask)|((tmp-2)&cpu.stack.mask);
++			mem_writew(SegPhys(ss) + (tmp2 & cpu.stack.mask) ,old_sp);
++			tmp=tmp2;
++			//Push_16(reg_bp);
++			tmp2=(tmp&cpu.stack.notmask)|((tmp-2)&cpu.stack.mask);
++			mem_writew(SegPhys(ss) + (tmp2 & cpu.stack.mask) ,reg_bp);
++			tmp=tmp2;
++			//Push_16(reg_si);
++			tmp2=(tmp&cpu.stack.notmask)|((tmp-2)&cpu.stack.mask);
++			mem_writew(SegPhys(ss) + (tmp2 & cpu.stack.mask) ,reg_si);
++			tmp=tmp2;
++			//Push_16(reg_di);
++			tmp2=(tmp&cpu.stack.notmask)|((tmp-2)&cpu.stack.mask);
++			mem_writew(SegPhys(ss) + (tmp2 & cpu.stack.mask) ,reg_di);
++			tmp=tmp2;
++			reg_sp=tmp;
+ 		}
+ 		break;
+ 	CASE_W(0x61)												/* POPA */
+@@ -690,8 +722,10 @@
+ 			GetRMrw;
+ 			if (rm >= 0xc0) goto illegal_opcode;
+ 			GetEAa;
+-			if (CPU_SetSegGeneral(es,LoadMw(eaa+2))) RUNEXCEPTION();
+-			*rmrw=LoadMw(eaa);
++			Bitu j=LoadMw(eaa+2);
++			Bitu k=LoadMw(eaa);
++			if (CPU_SetSegGeneral(es,j)) RUNEXCEPTION();
++			*rmrw=k;
+ 			break;
+ 		}
+ 	CASE_W(0xc5)												/* LDS */
+@@ -699,8 +733,10 @@
+ 			GetRMrw;
+ 			if (rm >= 0xc0) goto illegal_opcode;
+ 			GetEAa;
+-			if (CPU_SetSegGeneral(ds,LoadMw(eaa+2))) RUNEXCEPTION();
+-			*rmrw=LoadMw(eaa);
++			Bitu j=LoadMw(eaa+2);
++			Bitu k=LoadMw(eaa);
++			if (CPU_SetSegGeneral(ds,j)) RUNEXCEPTION();
++			*rmrw=k;
+ 			break;
+ 		}
+ 	CASE_B(0xc6)												/* MOV Eb,Ib */
+--- dosbox2/src/cpu/core_normal/string.h	2013-01-15 07:10:03 -0500
++++ dosbox/src/cpu/core_normal/string.h	2013-09-02 04:50:22 -0400
+@@ -62,42 +62,48 @@ static void DoString(STRING_OP type) {
+ 	if (count) switch (type) {
+ 	case R_OUTSB:
+ 		for (;count>0;count--) {
+-			IO_WriteB(reg_dx,LoadMb(si_base+si_index));
+-			si_index=(si_index+add_index) & add_mask;
++			IO_WriteB(reg_dx,LoadMb(si_base+reg_esi));
++		 	reg_esi+=add_index;
++		 	if (TEST_PREFIX_REP) reg_ecx--;	
+ 		}
+ 		break;
+ 	case R_OUTSW:
+ 		add_index<<=1;
+ 		for (;count>0;count--) {
+-			IO_WriteW(reg_dx,LoadMw(si_base+si_index));
+-			si_index=(si_index+add_index) & add_mask;
++			IO_WriteW(reg_dx,LoadMw(si_base+reg_esi));
++        		reg_esi+=add_index;
++         		if (TEST_PREFIX_REP) reg_ecx--;
+ 		}
+ 		break;
+ 	case R_OUTSD:
+ 		add_index<<=2;
+ 		for (;count>0;count--) {
+-			IO_WriteD(reg_dx,LoadMd(si_base+si_index));
+-			si_index=(si_index+add_index) & add_mask;
++			IO_WriteD(reg_dx,LoadMw(si_base+reg_esi));
++        		reg_esi+=add_index;
++         		if (TEST_PREFIX_REP) reg_ecx--;
+ 		}
+ 		break;
+ 	case R_INSB:
+ 		for (;count>0;count--) {
+-			SaveMb(di_base+di_index,IO_ReadB(reg_dx));
+-			di_index=(di_index+add_index) & add_mask;
++			SaveMb(di_base+reg_edi,IO_ReadB(reg_dx));
++        		reg_edi+=add_index;
++         		if (TEST_PREFIX_REP) reg_ecx--;
+ 		}
+ 		break;
+ 	case R_INSW:
+ 		add_index<<=1;
+ 		for (;count>0;count--) {
+-			SaveMw(di_base+di_index,IO_ReadW(reg_dx));
+-			di_index=(di_index+add_index) & add_mask;
++			SaveMw(di_base+reg_edi,IO_ReadW(reg_dx));
++        		reg_edi+=add_index;
++         		if (TEST_PREFIX_REP) reg_ecx--;
+ 		}
+ 		break;
+ 	case R_INSD:
+ 		add_index<<=2;
+ 		for (;count>0;count--) {
+-			SaveMd(di_base+di_index,IO_ReadD(reg_dx));
+-			di_index=(di_index+add_index) & add_mask;
++			SaveMd(di_base+reg_edi,IO_ReadD(reg_dx));
++        		reg_edi+=add_index;
++         		if (TEST_PREFIX_REP) reg_ecx--;
+ 		}
+ 		break;
+ 	case R_STOSB:
