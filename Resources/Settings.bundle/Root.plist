@@ -166,6 +166,16 @@
 			<string>PSToggleSwitchSpecifier</string>
 		</dict>
 		<dict>
+			<key>Type</key>
+			<string>PSToggleSwitchSpecifier</string>
+			<key>Title</key>
+			<string>Auto shrink screen when keyboard toggled (portriat mode)</string>
+			<key>Key</key>
+			<string>auto_shrink_screen_keyboard_enabled</string>
+			<key>DefaultValue</key>
+			<false/>
+		</dict>
+		<dict>
 			<key>Title</key>
 			<string>Pan as mouse move</string>
 			<key>Type</key>

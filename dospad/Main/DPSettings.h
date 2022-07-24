@@ -38,6 +38,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (readonly) BOOL mouseNumpadMultiToggle;
 // Toggle landbar to move to bottom of screen
 @property (readonly) BOOL landbarToggleBottomScreen;
+// Auto shrink the screen when the SDL keyboard is toggled
+@property (readonly) BOOL autoShrinkScreenKeyboardEnabled;
 
 + (DPSettings*)shared;
 

@@ -20,6 +20,7 @@
 #define kMouseAbsEnable        @"mouse_abs_enable"
 #define kMouseNumpadMultiToggle  @"mouse_numpad_multi_toggle"
 #define kLandbarToggleBottonScreen @"landbar_toggle_bottom_screen"
+#define kAutoShrinkScreenKeyboardEnabled @"auto_shrink_screen_keyboard_enabled"
 
 static DPSettings *s_settings;
 
@@ -101,6 +102,7 @@ static DPSettings *s_settings;
     _mouseAbsEnable = [defs boolForKey:kMouseAbsEnable];
     _mouseNumpadMultiToggle = [defs boolForKey:kMouseNumpadMultiToggle];
     _landbarToggleBottomScreen = [defs boolForKey:kLandbarToggleBottonScreen];
+    _autoShrinkScreenKeyboardEnabled = [defs boolForKey:kAutoShrinkScreenKeyboardEnabled];
 }
 
 @end
