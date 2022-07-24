@@ -37,7 +37,7 @@
 
 - (void)drawRect:(CGRect)rect
 {
-    UIImage *image = ([UIDevice.currentDevice.model isEqual:@"iPad"] ? [UIImage imageNamed:@"landbarblank-white~iPad"] :
+    UIImage *image = ([UIDevice.currentDevice.model isEqual:@"iPad"] ? [UIImage imageNamed:@"landbarblank~iPad"] :
                       [UIImage imageNamed:@"landbarblank"]);
     
     [image drawInRect:rect];
@@ -75,7 +75,7 @@
         if ([UIDevice.currentDevice.model isEqual:@"iPad"])
         {
             btnAutoHide = [[UIButton alloc] initWithFrame:CGRectMake(0,0,48,24)];
-            [btnAutoHide setImage:[UIImage imageNamed:@"pin-up-ipad"] forState:UIControlStateNormal];
+            [btnAutoHide setImage:[UIImage imageNamed:@"unsticky~ipad"] forState:UIControlStateNormal];
             [btnAutoHide addTarget:self
                             action:@selector(toggleAutoHide) 
                   forControlEvents:UIControlEventTouchUpInside];
@@ -149,13 +149,13 @@
     autoHide = b;
     if (b)
     {
-        [btnAutoHide setImage:[UIImage imageNamed:[UIDevice.currentDevice.model isEqual:@"iPad"] ? @"pin-up-ipad.png" : @"unsticky.png"]
+        [btnAutoHide setImage:[UIImage imageNamed:[UIDevice.currentDevice.model isEqual:@"iPad"] ? @"unsticky~ipad.png" : @"unsticky.png"]
                      forState:UIControlStateNormal];
         [self performSelector:@selector(hideContent) withObject:nil afterDelay:autoHideInterval];
     }
     else
     {
-        [btnAutoHide setImage:[UIImage imageNamed:[UIDevice.currentDevice.model isEqual:@"iPad"] ? @"pin-down-ipad.png" : @"sticky.png"]
+        [btnAutoHide setImage:[UIImage imageNamed:[UIDevice.currentDevice.model isEqual:@"iPad"] ? @"sticky~ipad.png" : @"sticky.png"]
                      forState:UIControlStateNormal]; 
         [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(hideContent) object:nil];
     }
