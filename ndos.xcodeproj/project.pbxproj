@@ -3490,7 +3490,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "sh ./SDL/build-scripts/updaterev.sh";
+			shellScript = "sh ./SDL/build-scripts/updaterev.sh\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
