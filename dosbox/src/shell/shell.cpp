@@ -763,7 +763,7 @@ void SHELL_Init() {
 	MSG_Add("SHELL_CMD_VER_VER","DOSBox version %s. Reported DOS version %d.%02d.\n");
 #ifdef IPHONEOS
     MSG_Add("SHELL_CMD_OPEN_HELP","Open external iOS directory. (nDOS)\n");
-    MSG_Add("SHELL_CMD_EXIT_DISABLED","Not implemented. iOS apps do not allow program exits.\n");
+    MSG_Add("SHELL_CMD_EXIT_DISABLED","Not implemented. You can close the app by using the app switcher.\n");
     MSG_Add("SHELL_STARTUP_IOS_BUILD",
             "\n\033[46;1m\xC9\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD"
             "\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD"
