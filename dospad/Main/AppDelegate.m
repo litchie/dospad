@@ -184,7 +184,7 @@
 	NSError *setCategoryErr = nil;
 	NSError *activationErr  = nil;
 	[[AVAudioSession sharedInstance]
-		setCategory: AVAudioSessionCategoryPlayback
+		setCategory: AVAudioSessionCategoryAmbient
 		error: &setCategoryErr];
 	[[AVAudioSession sharedInstance]
 		setActive: YES
