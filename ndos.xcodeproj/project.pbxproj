@@ -4438,7 +4438,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 20220507;
+				CURRENT_PROJECT_VERSION = 20241211;
 				DEVELOPMENT_TEAM = B74FG76U86;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -4452,8 +4452,10 @@
 				);
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				INFOPLIST_FILE = "Resources/iDOS-Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = nDOS;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.games";
 				IPHONEOS_DEPLOYMENT_TARGET = 15.4;
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.1.0;
 				OTHER_LDFLAGS = (
 					"-framework",
 					Foundation,
@@ -4465,6 +4467,9 @@
 				PRODUCT_BUNDLE_IDENTIFIER = io.turley.ndos;
 				PRODUCT_NAME = iDOS;
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_WORKSPACE_SKIPPED_SDK_FRAMEWORKS = OpenGLES;
 			};
@@ -4478,7 +4483,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 20220507;
+				CURRENT_PROJECT_VERSION = 20241211;
 				DEVELOPMENT_TEAM = B74FG76U86;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = dospad/DPPrefix.pch;
@@ -4489,8 +4494,10 @@
 				);
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				INFOPLIST_FILE = "Resources/iDOS-Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = nDOS;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.games";
 				IPHONEOS_DEPLOYMENT_TARGET = 15.4;
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.1.0;
 				OTHER_LDFLAGS = (
 					"-framework",
 					Foundation,
@@ -4502,6 +4509,9 @@
 				PRODUCT_BUNDLE_IDENTIFIER = io.turley.ndos;
 				PRODUCT_NAME = iDOS;
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = NO;
 				VALIDATE_WORKSPACE_SKIPPED_SDK_FRAMEWORKS = OpenGLES;
@@ -4628,7 +4638,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 20220507;
+				CURRENT_PROJECT_VERSION = 20241211;
 				DEVELOPMENT_TEAM = B74FG76U86;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = dospad/DPPrefix.pch;
@@ -4640,8 +4650,10 @@
 				);
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				INFOPLIST_FILE = "Resources/iDOS-Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = nDOS;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.games";
 				IPHONEOS_DEPLOYMENT_TARGET = 15.4;
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.1.0;
 				OTHER_LDFLAGS = (
 					"-framework",
 					Foundation,
@@ -4653,6 +4665,9 @@
 				PRODUCT_BUNDLE_IDENTIFIER = io.turley.ndos;
 				PRODUCT_NAME = iDOS;
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 				VALIDATE_WORKSPACE_SKIPPED_SDK_FRAMEWORKS = OpenGLES;
