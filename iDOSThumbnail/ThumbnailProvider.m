@@ -13,22 +13,24 @@
 - (void)provideThumbnailForFileRequest:(QLFileThumbnailRequest *)request
 	completionHandler:(void (^)(QLThumbnailReply * _Nullable, NSError * _Nullable))handler
 {
+    NSFileManager *fm = [NSFileManager defaultManager];
 	NSFileCoordinator *fc = [[NSFileCoordinator alloc] init];
 	[fc coordinateReadingItemAtURL:request.fileURL
 		options:NSFileCoordinatorReadingWithoutChanges
 		error:nil
 		byAccessor:^(NSURL * _Nonnull newURL) {
-			// If there is cover.png, simply use that image.
-			NSURL *url = [newURL URLByAppendingPathComponent:@"cover.png"];
-			NSFileManager *fm = [NSFileManager defaultManager];
-			if ([fm fileExistsAtPath:url.path])
-			{
-				handler([QLThumbnailReply replyWithImageFileURL:url], nil);
-				return;
-			}
+			// If any of the images exists, simply use that image.
+            for (NSString *name in @[@"icon.png", @"cover.png"]) {
+                NSURL *url = [newURL URLByAppendingPathComponent:name];
+                if ([fm fileExistsAtPath:url.path])
+                {
+                    handler([QLThumbnailReply replyWithImageFileURL:url], nil);
+                    return;
+                }
+            }
 			
 			// If there is screenshot.png, draw it over the screen of app icon
-			url = [newURL URLByAppendingPathComponent:@"scrnshot.png"];
+			NSURL *url = [newURL URLByAppendingPathComponent:@"scrnshot.png"];
 			if ([fm fileExistsAtPath:url.path])
 			{
 				[fc coordinateReadingItemAtURL:url

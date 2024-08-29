@@ -505,6 +505,7 @@
 		E7FDFB5A254EBD5800A6DE66 /* DPGamepadConfiguration.m in Sources */ = {isa = PBXBuildFile; fileRef = E7FDFB59254EBD5800A6DE66 /* DPGamepadConfiguration.m */; };
 		E7FDFB6A255150DA00A6DE66 /* SoundEffect.m in Sources */ = {isa = PBXBuildFile; fileRef = E7FDFB69255150DA00A6DE66 /* SoundEffect.m */; };
 		E7FDFB96255A3F8300A6DE66 /* DPThumbView.m in Sources */ = {isa = PBXBuildFile; fileRef = E7FDFB95255A3F8000A6DE66 /* DPThumbView.m */; };
+		F21A87042C71763A00A5860F /* DPPackage.m in Sources */ = {isa = PBXBuildFile; fileRef = F21A87032C71763A00A5860F /* DPPackage.m */; };
 		F262CC1C25A52C6E005F21D2 /* DPMouseManager.m in Sources */ = {isa = PBXBuildFile; fileRef = F262CC1B25A52C6E005F21D2 /* DPMouseManager.m */; };
 		F262CC2625A52C85005F21D2 /* DPKeyboardManager.m in Sources */ = {isa = PBXBuildFile; fileRef = F262CC2525A52C85005F21D2 /* DPKeyboardManager.m */; };
 		F2A095812BC3B86300BD25E3 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = F2A095802BC3B86300BD25E3 /* PrivacyInfo.xcprivacy */; };
@@ -1309,6 +1310,8 @@
 		E7FDFB69255150DA00A6DE66 /* SoundEffect.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SoundEffect.m; sourceTree = "<group>"; };
 		E7FDFB94255A3F8000A6DE66 /* DPThumbView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DPThumbView.h; sourceTree = "<group>"; };
 		E7FDFB95255A3F8000A6DE66 /* DPThumbView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DPThumbView.m; sourceTree = "<group>"; };
+		F21A87032C71763A00A5860F /* DPPackage.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DPPackage.m; sourceTree = "<group>"; };
+		F21A87052C71766C00A5860F /* DPPackage.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DPPackage.h; sourceTree = "<group>"; };
 		F262CC1A25A52C6E005F21D2 /* DPMouseManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DPMouseManager.h; sourceTree = "<group>"; };
 		F262CC1B25A52C6E005F21D2 /* DPMouseManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DPMouseManager.m; sourceTree = "<group>"; };
 		F262CC2425A52C85005F21D2 /* DPKeyboardManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DPKeyboardManager.h; sourceTree = "<group>"; };
@@ -2173,6 +2176,7 @@
 		E77DAFAF11B5D83600B78E69 /* dospad */ = {
 			isa = PBXGroup;
 			children = (
+				F21A87022C71760B00A5860F /* Package */,
 				E796111B256ACA4300556B9D /* DPPrefix.pch */,
 				E77E085B2549126700B5B11D /* Gamepad */,
 				E7D98C6C1CCB228200A17CFC /* Main */,
@@ -2545,6 +2549,15 @@
 				E77E087F254C080300B5B11D /* UIColor+hexColor.m */,
 			);
 			path = Util;
+			sourceTree = "<group>";
+		};
+		F21A87022C71760B00A5860F /* Package */ = {
+			isa = PBXGroup;
+			children = (
+				F21A87032C71763A00A5860F /* DPPackage.m */,
+				F21A87052C71766C00A5860F /* DPPackage.h */,
+			);
+			path = Package;
 			sourceTree = "<group>";
 		};
 		FD3F4A6F0DEA620800C5B771 /* stdlib */ = {
@@ -3639,6 +3652,7 @@
 				E7FDFB96255A3F8300A6DE66 /* DPThumbView.m in Sources */,
 				E73A566E2534A49000E3B3FB /* MfiGamepadManager.m in Sources */,
 				E71706DC25472C20000AF482 /* DPThemeScene.m in Sources */,
+				F21A87042C71763A00A5860F /* DPPackage.m in Sources */,
 				E72BE6E412911B5C009DC46A /* AppDelegate.m in Sources */,
 				E72BE6E512911B5C009DC46A /* DOSPadEmulator.m in Sources */,
 				F262CC2625A52C85005F21D2 /* DPKeyboardManager.m in Sources */,

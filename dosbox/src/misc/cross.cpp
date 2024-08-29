@@ -28,6 +28,7 @@
 #ifdef IPHONEOS
 
 extern "C" const char *dospad_config_dir();
+extern "C" const char *dospad_config_name();
 
 #endif
 
@@ -83,7 +84,7 @@ void Cross::GetPlatformConfigName(std::string& in) {
 #ifdef WIN32
 #define DEFAULT_CONFIG_FILE "dosbox-" VERSION ".conf"
 #elif defined(IPHONEOS)
-#define DEFAULT_CONFIG_FILE "dospad.cfg"
+#define DEFAULT_CONFIG_FILE dospad_config_name()
 #elif defined(MACOSX)
 #define DEFAULT_CONFIG_FILE "DOSBox " VERSION " Preferences"
 #else /*linux freebsd*/

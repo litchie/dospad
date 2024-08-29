@@ -16,26 +16,30 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-//
-// DOSPadEmulator
+//## DOSPadEmulator
 //
 // Set up environment for the dosbox emulation.
-// - disk c
+// - workingDirectory
+//   could be the `Documents` folder
 //   By default, Documents folder is set up as diskc.
+// or the `*.idos`
 //   However, if a `*.idos` folder is imported,
-//   that folder will be mounted as diskc instead.
 //
+//
+// How autoexec section works.
+//
+//
+
 #import "DOSPadEmulator.h"
 #import "Common.h"
 #import "keys.h"
 #include "SDL.h"
 #import "SDL_keyboard_c.h"
 #import "keyinfotable.h"
+#import "DPPackage.h"
 
 extern int SDL_PrivateJoystickButton(SDL_Joystick * joystick, Uint8 button, Uint8 state);
 extern int SDL_PrivateJoystickAxis(SDL_Joystick * joystick, Uint8 axis, Sint16 value);
-
-extern char automount_path[];
 
 char dospad_error_msg[1000];
 char diskc[256];
@@ -45,7 +49,6 @@ int cmd_count=0;
 int dospad_pause_flag = 0;
 int dospad_should_launch_game=0;
 int dospad_command_line_ready=0;
-char dospad_command_buffer[1024];
 
 extern int SDL_main(int argc, char *argv[]);
 static DOSPadEmulator* _sharedInstance;
@@ -56,6 +59,8 @@ static DOSPadEmulator* _sharedInstance;
 {
     SDL_Joystick *_joystick[4];
 }
+@property (strong) NSMutableArray<NSString*>* commandList;
+@property (strong) DPPackage *package;
 
 - (void)didCommandDone;
 
@@ -95,7 +100,7 @@ static DOSPadEmulator* _sharedInstance;
 	NSFileManager *fm = [NSFileManager defaultManager];
 
 	// Make sure config directory exists under the disk c
-	NSString *configDir = [self.diskcDirectory stringByAppendingPathComponent:@"config"];
+	NSString *configDir = [self.workingDirectory.path stringByAppendingPathComponent:@"config"];
 	if (![fm fileExistsAtPath:configDir])
 	{
 		[fm createDirectoryAtPath:configDir withIntermediateDirectories:YES attributes:@{} error:nil];
@@ -129,11 +134,16 @@ static DOSPadEmulator* _sharedInstance;
 	self = [super init];
 	
 	// By default, use Documents folder in app sandbox as the
-	// disk C. It can be changed later to other location,
+	// workingDirectory. It can be changed later to other location,
 	// but it must be done before the emulation starts.
-	self.diskcDirectory = [NSSearchPathForDirectoriesInDomains(
-		NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
-	
+	self.workingDirectory = [NSURL fileURLWithPath:[
+        NSSearchPathForDirectoriesInDomains(
+		    NSDocumentDirectory, NSUserDomainMask, YES
+        )
+        lastObject
+    ]];
+    
+    self.commandList = [[NSMutableArray alloc] init];
 	return self;
 }
 
@@ -146,17 +156,82 @@ static DOSPadEmulator* _sharedInstance;
         NSLog(@"Emulator %p already started", self);
         return;
     }
+ 
+    chdir(self.workingDirectory.path.UTF8String);
     
+    self.package = [[DPPackage alloc] initWithURL:self.workingDirectory];
+    
+    // Generating automount commands
+    for (DPDrive * drive in self.package.driveList) {
+        NSString *cmd = nil;
+        switch (drive.type) {
+        case  DPDriveTypeHarddisk:
+            if (drive.sourceType == DPDriveSourceTypeImage) {
+                cmd = [NSString stringWithFormat:@"imgmount %c \"%@\" -t hdd",
+                    drive.driveLetter, drive.sourceUrl.path];
+            } else {
+                cmd = [NSString stringWithFormat:@"mount %c -freesize 1000 \"%@\"",
+                drive.driveLetter, drive.sourceUrl.path];
+            }
+            break;
+        case DPDriveTypeFloppy:
+            if (drive.sourceType == DPDriveSourceTypeImage) {
+                cmd = [NSString stringWithFormat:@"imgmount %c \"%@\" -t floppy",
+                    drive.driveLetter, drive.sourceUrl.path];
+            } else {
+                cmd = [NSString stringWithFormat:@"mount %c \"%@\" -t floppy",
+                drive.driveLetter, drive.sourceUrl.path];
+            }
+            break;
+        case DPDriveTypeCdrom:
+            if (drive.sourceType == DPDriveSourceTypeISO) {
+                cmd = [NSString stringWithFormat:@"imgmount %c \"%@\" -t iso",
+                    drive.driveLetter, drive.sourceUrl.path];
+            } else if (drive.sourceType == DPDriveSourceTypeFolder) {
+                cmd = [NSString stringWithFormat:@"mount %c \"%@\" -t cdrom",
+                    drive.driveLetter, drive.sourceUrl.path];
+            }
+            break;
+        default:
+            break;
+        }
+        if (cmd) {
+            [self.commandList addObject:cmd];
+        }
+    }
+    
+    // If this is a iDOS package or the iDOS default folder
+    // switch to drive C by default
+    if (self.package.type == DPPackageTypeIDOS || self.package.type == DPPackageTypeDefault) {
+        DPDrive *drv = [self.package findDrive:'C'];
+        if (drv) {
+            [self.commandList addObject:@"C:"];
+            
+        }
+    }
+    [self.commandList addObject:@"cls"];
+    [self.commandList addObject:@"REM END AUTOMOUNT"];
+    
+    // Go to startup program folder and run the program
+    if (self.package.defaultProgramPath) {
+        NSURL *programUrl = [self.package.baseUrl URLByAppendingPathComponent:self.package.defaultProgramPath];
+        NSString *path = [self.package findFileInDrives:programUrl];
+        NSString *startupDir = [self.package findFileInDrives:programUrl.URLByDeletingLastPathComponent];
+        NSString *programName = self.package.defaultProgramPath.lastPathComponent;
+        if (path) {
+            [self.commandList addObject:[path substringToIndex:2]];
+            if (path.length > 3) {
+                [self.commandList addObject:[NSString stringWithFormat:@"cd %@", [startupDir substringFromIndex:3]]];
+            }
+            [self.commandList addObject:programName];
+        }
+    }
+
 	_dospadConfigFile  = [self ensureConfigFile:@"dospad.cfg"];
 	_uiConfigFile      = [self ensureConfigFile:@"ui.cfg"];
 	_mfiConfigFile     = [self ensureConfigFile:@"mfi.cfg"];
 	_gamepadConfigFile = [self ensureConfigFile:@"gamepad.cfg"];
-    
-    strcpy(diskc, self.diskcDirectory.UTF8String);
-	//strcpy(diskd, "/var/mobile/Documents");
-	strcpy(automount_path, diskc);
-	
-	chdir(diskc);
+     
 	// Initalize command history
 	dospad_init_history();
 
@@ -184,7 +259,7 @@ static DOSPadEmulator* _sharedInstance;
 {
 	if (self.delegate)
 	{
-		[self.delegate emulator:self saveScreenshot:[self.diskcDirectory stringByAppendingPathComponent:@"scrnshot.png"]];
+		[self.delegate emulator:self saveScreenshot:[self.workingDirectory.path stringByAppendingPathComponent:@"scrnshot.png"]];
 	}
 }
 
@@ -198,12 +273,17 @@ static DOSPadEmulator* _sharedInstance;
 	});
 }
 
-- (void)sendCommand:(NSString *)cmd
+- (BOOL)sendCommand:(NSString *)cmd
 {
-	if (dospad_command_line_ready && !dospad_command_buffer[0]) {
-		strcpy(dospad_command_buffer, cmd.UTF8String);
+	if (dospad_command_line_ready) {
+        [self.commandList addObject:cmd];
+        // This is a hack to get dosbox shell to quit its readline
+        // and we have a chance to inject the commands
 		[self sendKey:SDL_SCANCODE_RETURN];
-	}
+        return YES;
+	} else {
+        return NO;
+    }
 }
 
 - (void)sendText:(NSString *)text
@@ -309,12 +389,30 @@ static DOSPadEmulator* _sharedInstance;
 
 @end
 
-////////////////////////////////////////////////////////////
-// DOSBOX Interface
+//-------------------------------------------------------------------
+//## DOSBOX Interface
+//
+// Calling from dosbox to fetch next shell command to execute
+// It returns the length of the command.
+// If it returns zero, it means there is no more commands to run.
+
+int dospad_get_next_command(char *buf, size_t n) {
+    if (_sharedInstance.commandList.count == 0)
+        return 0;
+    NSString *cmd = _sharedInstance.commandList.firstObject;
+    [_sharedInstance.commandList removeObjectAtIndex:0];
+    strncpy(buf, cmd.UTF8String, n);
+    return (int)strlen(buf);
+}
 
 const char *dospad_config_dir()
 {
     return [_sharedInstance dospadConfigFile].stringByDeletingLastPathComponent.UTF8String;
+}
+
+const char *dospad_config_name()
+{
+    return [_sharedInstance dospadConfigFile].lastPathComponent.UTF8String;
 }
 
 void dospad_pause()

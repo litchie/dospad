@@ -76,15 +76,15 @@
 	{
 		if ([DOSPadEmulator sharedInstance].started)
 		{
-			// TODO: show alert can not open while it's running
-			// quick first.
-			[_emulatorController alert:@"Busy"
-				message:@"Can not launch the iDOS package while emulator is running. Please terminate the app first."];
+			// TODO Should automatically terminate the current
+            // emulator thread. Not easy though
+			[_emulatorController alert:@"Sorry, iDOS is busy"
+				message:@"Can not launch game package while emulator is running. Please terminate the app first."];
 			return NO;
 		}
 		[url startAccessingSecurityScopedResource];
 		[self rememberURL:url];
-		[DOSPadEmulator sharedInstance].diskcDirectory = url.path;
+		[DOSPadEmulator sharedInstance].workingDirectory = url;
 	}
 	return YES;
 }
@@ -176,7 +176,7 @@
 	{
 		NSURL *lastUrl = [self openLastURL];
 		if (lastUrl) {
-			[DOSPadEmulator sharedInstance].diskcDirectory = lastUrl.path;
+			[DOSPadEmulator sharedInstance].workingDirectory = lastUrl;
 		}
 	}
 

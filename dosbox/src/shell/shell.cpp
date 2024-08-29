@@ -284,13 +284,13 @@ void DOS_Shell::RunInternal(void)
 }
 
 #ifdef IPHONEOS
-char automount_path[1000];
 extern "C" void dospad_add_history(const char*);
 extern "C" void dospad_command_done();
 extern int dospad_command_line_ready;
-extern char dospad_command_buffer[1000];
+extern "C" size_t dospad_get_next_command(char *cmdbuf, size_t n);
 
 #endif
+
 void DOS_Shell::Run(void) {
 	char input_line[CMD_MAXLINE] = {0};
 	std::string line;
@@ -313,39 +313,24 @@ void DOS_Shell::Run(void) {
 	if (machine == MCH_HERC) WriteOut(MSG_Get("SHELL_STARTUP_HERC"));
 	WriteOut(MSG_Get("SHELL_STARTUP_END"));
 
-#ifdef IPHONEOS                        
-    if (automount_path[0]) {
-        char *p = (char*)automount_path;
-        char *endp = p;
-        char disk = 'c';
-        LOG_MSG("DOS_Shell::Run Auto Mount");
-        
-        while (endp) {
-            for (p = endp; *endp && *endp != ';'; endp++)
-                ;
-            if (*endp == ';') {
-                *endp = 0; 
-                endp++;
-            } else {
-                endp=0;
-            }
-            if (strlen(p) <= 0) break;
-            sprintf(input_line, "mount %c -freesize 1000 \"%s\"",disk, p);
-            ParseLine(input_line);
-            disk++;
-        }
-        if (disk > 'c') {
-            sprintf(input_line, "c:");
-            ParseLine(input_line);
-        }
-    }
-#endif       
     
 	if (cmd->FindString("/INIT",line,true)) {
 		strcpy(input_line,line.c_str());
 		line.erase();
 		ParseLine(input_line);
 	}
+
+#ifdef IPHONEOS
+    // To run automount commands before we enter autoexec
+    // so that it's possible to start programs in autoexec section.
+    while (dospad_get_next_command(input_line, sizeof(input_line))) {
+        LOG_MSG("DOS_Shell::StartUp iDOS Automount: %s", input_line);
+        if (strstr(input_line, "REM END AUTOMOUNT") == input_line)
+            break;
+        ParseLine(input_line);
+    }
+#endif
+
 	do {
 		if (bf){
 			if(bf->ReadLine(input_line)) {
@@ -359,23 +344,21 @@ void DOS_Shell::Run(void) {
 				ParseLine(input_line);
 				if (echo) WriteOut("\n");
 			}
-#ifdef IPHONEOS                        
-        } else if (automount_path[0]) {
-            automount_path[0] = 0;
-            if (echo && !bf) WriteOut_NoParsing("\n");
-            sprintf(input_line, "cls");
-            ParseLine(input_line);
-#endif                    
 		} else {
 			if (echo) ShowPrompt();
 #ifdef IPHONEOS
+            while (dospad_get_next_command(input_line, sizeof(input_line))) {
+                LOG_MSG("DOS_Shell::StartUp DospadCommand: %s", input_line);
+                ParseLine(input_line);
+            }
+
+            // Signal dospad UI component that dosbox shell is
+            // ready to take command line inputs
             dospad_command_line_ready=1;
 #endif
 			InputCommand(input_line);
+			ParseLine(input_line);
 #ifdef IPHONEOS
-            dospad_add_history(input_line);
-            dospad_command_line_ready=0;
-            if (dospad_command_buffer[0])
             {
                 // Make sure we can access the new installed files
                 Bit8u drive = DOS_GetDefaultDrive();
@@ -383,26 +366,9 @@ void DOS_Shell::Run(void) {
                     Drives[drive]->EmptyCache();
                 }
                 
-                char *p = dospad_command_buffer;
-                // WriteOut("%s\n", p);
-						
-                while (*p) {
-                	char *endp = strchr(p, '\n');
-                	if (endp) {
-                		*endp = 0;
-                		ParseLine(p);
-                		p = endp + 1;
-					} else {
-						ParseLine(p);
-						break;
-					}
-				}
-				
-				dospad_command_buffer[0] = 0;
 				dospad_command_done();
             }
 #endif
-			ParseLine(input_line);
 			if (echo && !bf) WriteOut_NoParsing("\n");
 		}
 	} while (!exit);

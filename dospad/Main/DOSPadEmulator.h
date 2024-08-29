@@ -28,7 +28,7 @@
 
 @interface DOSPadEmulator : NSObject
 
-@property (strong) NSString *diskcDirectory;
+@property (strong) NSURL *workingDirectory;
 @property (readonly) NSString *dospadConfigFile;
 @property (readonly) NSString *gamepadConfigFile;
 @property (readonly) NSString *uiConfigFile;
@@ -42,7 +42,7 @@
 - (void)start;
 - (void)takeScreenshot;
 - (void)sendText:(NSString *)text;
-- (void)sendCommand:(NSString *)cmd;
+- (BOOL)sendCommand:(NSString *)cmd;
 - (void)updateJoystick:(NSInteger)index x:(float)x y:(float)y;
 - (void)joystickButton:(NSInteger)buttonIndex pressed:(BOOL)pressed joystickIndex:(NSInteger)index;
 - (void)sendKey:(int)scancode pressed:(BOOL)pressed;

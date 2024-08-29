@@ -1204,7 +1204,8 @@ static struct {
 			break;
 		case DriveMount_Packages:
 			utis = @[
-				@"com.litchie.idos-package"
+				@"com.litchie.idos-package",
+				@"net.washboardabs.boxer-game-package",
 			];
 			break;
 		case DriveMount_DiskImage:
@@ -1281,8 +1282,11 @@ static struct {
 		[self alert:@"Can not mount" message:@"Too many items"];
 		return;
 	}
-	if ([cmd length] > 0)
-		[[DOSPadEmulator sharedInstance] sendCommand:cmd];
+	if ([cmd length] > 0) {
+        if ([[DOSPadEmulator sharedInstance] sendCommand:cmd] != YES) {
+            [self alert:@"Can not mount because command line is not ready"];
+        }
+    }
 }
 
 - (void)documentPickerWasCancelled:(UIDocumentPickerViewController *)controller
