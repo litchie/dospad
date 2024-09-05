@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2002-2010  The DOSBox Team
+ *  Copyright (C) 2002-2021  The DOSBox Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -11,12 +11,11 @@
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *  GNU General Public License for more details.
  *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *  You should have received a copy of the GNU General Public License along
+ *  with this program; if not, write to the Free Software Foundation, Inc.,
+ *  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-/* $Id: bios.cpp,v 1.78 2009-10-10 13:26:46 h-a-l-9000 Exp $ */
 
 #include "dosbox.h"
 #include "mem.h"
@@ -27,11 +26,18 @@
 #include "inout.h"
 #include "pic.h"
 #include "hardware.h"
+#include "pci_bus.h"
 #include "joystick.h"
 #include "mouse.h"
 #include "setup.h"
 #include "serialport.h"
+#include <time.h>
 
+#if defined(DB_HAVE_CLOCK_GETTIME) && ! defined(WIN32)
+//time.h is already included
+#else
+#include <sys/timeb.h>
+#endif
 
 /* if mem_systems 0 then size_extended is reported as the real size else 
  * zero is reported. ems and xms can increase or decrease the other_memsystems
@@ -312,7 +318,8 @@ static Bitu INT1A_Handler(void) {
 	case 0x00:	/* Get System time */
 		{
 			Bit32u ticks=mem_readd(BIOS_TIMER);
-			reg_al=0;		/* Midnight never passes :) */
+			reg_al=mem_readb(BIOS_24_HOURS_FLAG);
+			mem_writeb(BIOS_24_HOURS_FLAG,0); // reset the "flag"
 			reg_cx=(Bit16u)(ticks >> 16);
 			reg_dx=(Bit16u)(ticks & 0xffff);
 			break;
@@ -352,8 +359,120 @@ static Bitu INT1A_Handler(void) {
 		TandyDAC_Handler(reg_ah);
 		break;
 	case 0xb1:		/* PCI Bios Calls */
-		LOG(LOG_BIOS,LOG_ERROR)("INT1A:PCI bios call %2X",reg_al);
+		LOG(LOG_BIOS,LOG_WARN)("INT1A:PCI bios call %2X",reg_al);
+#if defined(PCI_FUNCTIONALITY_ENABLED)
+		switch (reg_al) {
+			case 0x01:	// installation check
+				if (PCI_IsInitialized()) {
+					reg_ah=0x00;
+					reg_al=0x01;	// cfg space mechanism 1 supported
+					reg_bx=0x0210;	// ver 2.10
+					reg_cx=0x0000;	// only one PCI bus
+					reg_edx=0x20494350;
+					reg_edi=PCI_GetPModeInterface();
+					CALLBACK_SCF(false);
+				} else {
+					CALLBACK_SCF(true);
+				}
+				break;
+			case 0x02: {	// find device
+				Bitu devnr=0;
+				Bitu count=0x100;
+				Bit32u devicetag=(reg_cx<<16)|reg_dx;
+				Bits found=-1;
+				for (Bitu i=0; i<=count; i++) {
+					IO_WriteD(0xcf8,0x80000000|(i<<8));	// query unique device/subdevice entries
+					if (IO_ReadD(0xcfc)==devicetag) {
+						if (devnr==reg_si) {
+							found=i;
+							break;
+						} else {
+							// device found, but not the SIth device
+							devnr++;
+						}
+					}
+				}
+				if (found>=0) {
+					reg_ah=0x00;
+					reg_bh=0x00;	// bus 0
+					reg_bl=(Bit8u)(found&0xff);
+					CALLBACK_SCF(false);
+				} else {
+					reg_ah=0x86;	// device not found
+					CALLBACK_SCF(true);
+				}
+				}
+				break;
+			case 0x03: {	// find device by class code
+				Bitu devnr=0;
+				Bitu count=0x100;
+				Bit32u classtag=reg_ecx&0xffffff;
+				Bits found=-1;
+				for (Bitu i=0; i<=count; i++) {
+					IO_WriteD(0xcf8,0x80000000|(i<<8));	// query unique device/subdevice entries
+					if (IO_ReadD(0xcfc)!=0xffffffff) {
+						IO_WriteD(0xcf8,0x80000000|(i<<8)|0x08);
+						if ((IO_ReadD(0xcfc)>>8)==classtag) {
+							if (devnr==reg_si) {
+								found=i;
+								break;
+							} else {
+								// device found, but not the SIth device
+								devnr++;
+							}
+						}
+					}
+				}
+				if (found>=0) {
+					reg_ah=0x00;
+					reg_bh=0x00;	// bus 0
+					reg_bl=(Bit8u)(found&0xff);
+					CALLBACK_SCF(false);
+				} else {
+					reg_ah=0x86;	// device not found
+					CALLBACK_SCF(true);
+				}
+				}
+				break;
+			case 0x08:	// read configuration byte
+				IO_WriteD(0xcf8,0x80000000|(reg_bx<<8)|(reg_di&0xfc));
+				reg_cl=IO_ReadB(0xcfc+(reg_di&3));
+				CALLBACK_SCF(false);
+				break;
+			case 0x09:	// read configuration word
+				IO_WriteD(0xcf8,0x80000000|(reg_bx<<8)|(reg_di&0xfc));
+				reg_cx=IO_ReadW(0xcfc+(reg_di&2));
+				CALLBACK_SCF(false);
+				break;
+			case 0x0a:	// read configuration dword
+				IO_WriteD(0xcf8,0x80000000|(reg_bx<<8)|(reg_di&0xfc));
+				reg_ecx=IO_ReadD(0xcfc+(reg_di&3));
+				CALLBACK_SCF(false);
+				break;
+			case 0x0b:	// write configuration byte
+				IO_WriteD(0xcf8,0x80000000|(reg_bx<<8)|(reg_di&0xfc));
+				IO_WriteB(0xcfc+(reg_di&3),reg_cl);
+				CALLBACK_SCF(false);
+				break;
+			case 0x0c:	// write configuration word
+				IO_WriteD(0xcf8,0x80000000|(reg_bx<<8)|(reg_di&0xfc));
+				IO_WriteW(0xcfc+(reg_di&2),reg_cx);
+				CALLBACK_SCF(false);
+				break;
+			case 0x0d:	// write configuration dword
+				IO_WriteD(0xcf8,0x80000000|(reg_bx<<8)|(reg_di&0xfc));
+				IO_WriteD(0xcfc+(reg_di&3),reg_ecx);
+				CALLBACK_SCF(false);
+				break;
+			default:
+				LOG(LOG_BIOS,LOG_ERROR)("INT1A:PCI BIOS: unknown function %x (%x %x %x)",
+					reg_ax,reg_bx,reg_cx,reg_dx);
+				CALLBACK_SCF(true);
+				break;
+		}
+#else
 		CALLBACK_SCF(true);
+#endif
 		break;
 	default:
 		LOG(LOG_BIOS,LOG_ERROR)("INT1A:Undefined call %2X",reg_ah);
@@ -372,9 +491,55 @@ static Bitu INT11_Handler(void) {
 #ifndef DOSBOX_CLOCKSYNC
 #define DOSBOX_CLOCKSYNC 0
 #endif
+
+static void BIOS_HostTimeSync() {
+	Bit32u milli = 0;
+#if defined(DB_HAVE_CLOCK_GETTIME) && ! defined(WIN32)
+	struct timespec tp;
+	clock_gettime(CLOCK_REALTIME,&tp);
+	
+	struct tm *loctime;
+	loctime = localtime(&tp.tv_sec);
+	milli = (Bit32u) (tp.tv_nsec / 1000000);
+#else
+	/* Setup time and date */
+	struct timeb timebuffer;
+	ftime(&timebuffer);
+	
+	struct tm *loctime;
+	loctime = localtime (&timebuffer.time);
+	milli = (Bit32u) timebuffer.millitm;
+#endif
+	/*
+	loctime->tm_hour = 23;
+	loctime->tm_min = 59;
+	loctime->tm_sec = 45;
+	loctime->tm_mday = 28;
+	loctime->tm_mon = 2-1;
+	loctime->tm_year = 2007 - 1900;
+	*/
+
+	dos.date.day=(Bit8u)loctime->tm_mday;
+	dos.date.month=(Bit8u)loctime->tm_mon+1;
+	dos.date.year=(Bit16u)loctime->tm_year+1900;
+
+	Bit32u ticks=(Bit32u)(((double)(
+		loctime->tm_hour*3600*1000+
+		loctime->tm_min*60*1000+
+		loctime->tm_sec*1000+
+		milli))*(((double)PIT_TICK_RATE/65536.0)/1000.0));
+	mem_writed(BIOS_TIMER,ticks);
+}
+
 static Bitu INT8_Handler(void) {
 	/* Increase the bios tick counter */
 	Bit32u value = mem_readd(BIOS_TIMER) + 1;
+	if(value >= 0x1800B0) {
+		// time wrap at midnight
+		mem_writeb(BIOS_24_HOURS_FLAG,mem_readb(BIOS_24_HOURS_FLAG)+1);
+		value=0;
+	}
+
 #if DOSBOX_CLOCKSYNC
 	static bool check = false;
 	if((value %50)==0) {
@@ -397,11 +562,11 @@ static Bitu INT8_Handler(void) {
 #endif
 	mem_writed(BIOS_TIMER,value);
 
-	/* decrease floppy motor timer */
+	/* decrement FDD motor timeout counter; roll over on earlier PC, stop at zero on later PC */
 	Bit8u val = mem_readb(BIOS_DISK_MOTOR_TIMEOUT);
-	if (val) mem_writeb(BIOS_DISK_MOTOR_TIMEOUT,val-1);
-	/* and running drive */
-	mem_writeb(BIOS_DRIVE_RUNNING,mem_readb(BIOS_DRIVE_RUNNING) & 0xF0);
+	if (val || !IS_EGAVGA_ARCH) mem_writeb(BIOS_DISK_MOTOR_TIMEOUT,val-1);
+	/* clear FDD motor bits when counter reaches zero */
+	if (val == 1) mem_writeb(BIOS_DRIVE_RUNNING,mem_readb(BIOS_DRIVE_RUNNING) & 0xF0);
 	return CBRET_NONE;
 }
 #undef DOSBOX_CLOCKSYNC
@@ -426,26 +591,20 @@ static Bitu INT17_Handler(void) {
 	case 0x02:		/* PRINTER: Get Status */
 		reg_ah=0;	
 		break;
-	case 0x20:		/* Some sort of printerdriver install check*/
-		break;
-	default:
-		E_Exit("Unhandled INT 17 call %2X",reg_ah);
 	};
 	return CBRET_NONE;
 }
 
-static Bit8u INT14_Wait(Bit16u port, Bit8u mask, Bit8u timeout) {
+static bool INT14_Wait(Bit16u port, Bit8u mask, Bit8u timeout, Bit8u* retval) {
 	double starttime = PIC_FullIndex();
 	double timeout_f = timeout * 1000.0;
-	Bit8u retval;
-	while (((retval = IO_ReadB(port)) & mask) != mask) {
+	while (((*retval = IO_ReadB(port)) & mask) != mask) {
 		if (starttime < (PIC_FullIndex() - timeout_f)) {
-			retval |= 0x80;
-			break;
+			return false;
 		}
 		CALLBACK_Idle();
 	}
-	return retval;
+	return true;
 }
 
 static Bitu INT14_Handler(void) {
@@ -500,7 +659,7 @@ static Bitu INT14_Handler(void) {
 		CALLBACK_SCF(false);
 		break;
 	}
-	case 0x01: { // Transmit character
+	case 0x01: // Transmit character
 		// Parameters:				Return:
 		// AL: character			AL: unchanged
 		// AH: 0x01					AH: line status from just before the char was sent
@@ -510,20 +669,19 @@ static Bitu INT14_Handler(void) {
 
 		// set DTR & RTS on
 		IO_WriteB(port+4,0x3);
-
 		// wait for DSR & CTS
-		reg_ah = INT14_Wait(port+6, 0x30, timeout);
-		if (!(reg_ah & 0x80)) {
+		if (INT14_Wait(port+6, 0x30, timeout, &reg_ah)) {
 			// wait for TX buffer empty
-			reg_ah = INT14_Wait(port+5, 0x20, timeout);
-			if (!(reg_ah & 0x80)) {
+			if (INT14_Wait(port+5, 0x20, timeout, &reg_ah)) {
 				// fianlly send the character
 				IO_WriteB(port,reg_al);
-			}
-		} // else timed out
+			} else
+				reg_ah |= 0x80;
+		} else // timed out
+			reg_ah |= 0x80;
+
 		CALLBACK_SCF(false);
 		break;
-	}
 	case 0x02: // Read character
 		// Parameters:				Return:
 		// AH: 0x02					AL: received character
@@ -537,15 +695,16 @@ static Bitu INT14_Handler(void) {
 		IO_WriteB(port+4,0x1);
 
 		// wait for DSR
-		reg_ah = INT14_Wait(port+6, 0x20, timeout);
-		if (!(reg_ah & 0x80)) {
+		if (INT14_Wait(port+6, 0x20, timeout, &reg_ah)) {
 			// wait for character to arrive
-			reg_ah = INT14_Wait(port+5, 0x01, timeout);
-			if (!(reg_ah & 0x80)) {
+			if (INT14_Wait(port+5, 0x01, timeout, &reg_ah)) {
 				reg_ah &= 0x1E;
 				reg_al = IO_ReadB(port);
-			}
-		}
+			} else
+				reg_ah |= 0x80;
+		} else
+			reg_ah |= 0x80;
+
 		CALLBACK_SCF(false);
 		break;
 	case 0x03: // get status
@@ -561,8 +720,31 @@ static Bitu INT14_Handler(void) {
 static Bitu INT15_Handler(void) {
 	static Bit16u biosConfigSeg=0;
 	switch (reg_ah) {
-	case 0x06:
-		LOG(LOG_BIOS,LOG_NORMAL)("INT15 Unkown Function 6");
+	case 0x24:		//A20 stuff
+		switch (reg_al) {
+		case 0:	//Disable a20
+			MEM_A20_Enable(false);
+			reg_ah = 0;                   //call successful
+			CALLBACK_SCF(false);             //clear on success
+			break;
+		case 1:	//Enable a20
+			MEM_A20_Enable( true );
+			reg_ah = 0;                   //call successful
+			CALLBACK_SCF(false);             //clear on success
+			break;
+		case 2:	//Query a20
+			reg_al = MEM_A20_Enabled() ? 0x1 : 0x0;
+			reg_ah = 0;                   //call successful
+			CALLBACK_SCF(false);
+			break;
+		case 3:	//Get a20 support
+			reg_bx = 0x3;		//Bitmask, keyboard and 0x92
+			reg_ah = 0;         //call successful
+			CALLBACK_SCF(false);
+			break;
+		default:
+			goto unhandled;
+		}
 		break;
 	case 0xC0:	/* Get Configuration*/
 		{
@@ -668,16 +850,28 @@ static Bitu INT15_Handler(void) {
 				break;
 			}
 			Bit32u count=(reg_cx<<16)|reg_dx;
+			double timeout=PIC_FullIndex()+((double)count/1000.0)+1.0;
 			mem_writed(BIOS_WAIT_FLAG_POINTER,RealMake(0,BIOS_WAIT_FLAG_TEMP));
 			mem_writed(BIOS_WAIT_FLAG_COUNT,count);
 			mem_writeb(BIOS_WAIT_FLAG_ACTIVE,1);
+			/* Unmask IRQ 8 if masked */
+			Bit8u mask=IO_Read(0xa1);
+			if (mask&1) IO_Write(0xa1,mask&~1);
 			/* Reprogram RTC to start */
 			IO_Write(0x70,0xb);
 			IO_Write(0x71,IO_Read(0x71)|0x40);
 			while (mem_readd(BIOS_WAIT_FLAG_COUNT)) {
+				if (PIC_FullIndex()>timeout) {
+					/* RTC timer not working for some reason */
+					mem_writeb(BIOS_WAIT_FLAG_ACTIVE,0);
+					IO_Write(0x70,0xb);
+					IO_Write(0x71,IO_Read(0x71)&~0x40);
+					break;
+				}
 				CALLBACK_Idle();
 			}
 			CALLBACK_SCF(false);
+			break;
 		}
 	case 0x87:	/* Copy extended memory */
 		{
@@ -748,6 +942,12 @@ static Bitu INT15_Handler(void) {
 			reg_bx=0x00aa;	// mouse
 			// fall through
 		case 0x05:		// initialize
+			if ((reg_al==0x05) && (reg_bh!=0x03)) {
+				// non-standard data packet sizes not supported
+				CALLBACK_SCF(true);
+				reg_ah=2;
+				break;
+			}
 			Mouse_SetPS2State(false);
 			CALLBACK_SCF(false);
 			reg_ah=0;
@@ -791,6 +991,7 @@ static Bitu INT15_Handler(void) {
 		CALLBACK_SCF(true);
 		break;
 	default:
+	unhandled:
 		LOG(LOG_BIOS,LOG_ERROR)("INT15:Unknown call %4X",reg_ax);
 		reg_ah=0x86;
 		CALLBACK_SCF(true);
@@ -799,6 +1000,28 @@ static Bitu INT15_Handler(void) {
 			CALLBACK_SZF(false);
 		}
 	}
+	return CBRET_NONE;
+}
+
+static Bitu Default_IRQ_Handler(void) {
+	IO_WriteB(0x20,0x0b);
+	Bit8u master_isr=IO_ReadB(0x20);
+	if (master_isr) {
+		IO_WriteB(0xa0,0x0b);
+		Bit8u slave_isr=IO_ReadB(0xa0);
+		if (slave_isr) {
+			IO_WriteB(0xa1,IO_ReadB(0xa1)|slave_isr);
+			IO_WriteB(0xa0,0x20);
+		} else IO_WriteB(0x21,IO_ReadB(0x21)|(master_isr&~4));
+		IO_WriteB(0x20,0x20);
+#if C_DEBUG
+		Bit16u irq=0,isr=master_isr;
+		if (slave_isr) isr=slave_isr<<8;
+		while (isr>>=1) irq++;
+		LOG(LOG_BIOS,LOG_WARN)("Unexpected IRQ %u",irq);
+#endif
+	} else master_isr=0xff;
+	mem_writeb(BIOS_LAST_UNEXPECTED_IRQ,master_isr);
 	return CBRET_NONE;
 }
 
@@ -818,6 +1041,12 @@ static Bitu Reboot_Handler(void) {
 	while((PIC_FullIndex()-start)<3000) CALLBACK_Idle();
 	throw 1;
 	return CBRET_NONE;
+}
+
+void BIOS_SetEquipment(Bit16u equipment) {
+	mem_writew(BIOS_CONFIGURATION,equipment);
+	if (IS_EGAVGA_ARCH) equipment &= ~0x30; //EGA/VGA startup display mode differs in CMOS
+	CMOS_SetRegister(0x14,(Bit8u)(equipment&0xff)); //Should be updated on changes
 }
 
 void BIOS_ZeroExtendedSize(bool in) {
@@ -847,14 +1076,14 @@ public:
 		CALLBACK_Setup(call_irq0,INT8_Handler,CB_IRQ0,Real2Phys(BIOS_DEFAULT_IRQ0_LOCATION),"IRQ 0 Clock");
 		RealSetVec(0x08,BIOS_DEFAULT_IRQ0_LOCATION);
 		// pseudocode for CB_IRQ0:
+		//	sti
 		//	callback INT8_Handler
-		//	push ax,dx,ds
+		//	push ds,ax,dx
 		//	int 0x1c
 		//	cli
-		//	pop ds,dx
 		//	mov al, 0x20
 		//	out 0x20, al
-		//	pop ax
+		//	pop dx,ax,ds
 		//	iret
 
 		mem_writed(BIOS_TIMER,0);			//Calculate the correct time
@@ -869,7 +1098,7 @@ public:
 		if (IS_TANDY_ARCH) {
 			/* reduce reported memory size for the Tandy (32k graphics memory
 			   at the end of the conventional 640k) */
-			if (machine==MCH_TANDY) mem_writew(BIOS_MEMORY_SIZE,608);
+			if (machine==MCH_TANDY) mem_writew(BIOS_MEMORY_SIZE,624);
 			else mem_writew(BIOS_MEMORY_SIZE,640);
 			mem_writew(BIOS_TRUE_MEMORY_SIZE,640);
 		} else mem_writew(BIOS_MEMORY_SIZE,640);
@@ -909,19 +1138,49 @@ public:
 		callback[9].Set_RealVec(0x71);
 
 		/* Reboot */
+		// This handler is an exit for more than only reboots, since we
+		// don't handle these cases
 		callback[10].Install(&Reboot_Handler,CB_IRET,"reboot");
+		
+		// INT 18h: Enter BASIC
+		// Non-IBM BIOS would display "NO ROM BASIC" here
 		callback[10].Set_RealVec(0x18);
 		RealPt rptr = callback[10].Get_RealPointer();
+
+		// INT 19h: Boot function
+		// This is not a complete reboot as it happens after the POST
+		// We don't handle it, so use the reboot function as exit.
 		RealSetVec(0x19,rptr);
-		// set system BIOS entry point too
-		phys_writeb(0xFFFF0,0xEA);	// FARJMP
-		phys_writew(0xFFFF1,RealOff(rptr));	// offset
-		phys_writew(0xFFFF3,RealSeg(rptr));	// segment
+
+		// The farjump at the processor reset entry point (jumps to POST routine)
+		phys_writeb(0xFFFF0,0xEA);		// FARJMP
+		phys_writew(0xFFFF1,RealOff(BIOS_DEFAULT_RESET_LOCATION));	// offset
+		phys_writew(0xFFFF3,RealSeg(BIOS_DEFAULT_RESET_LOCATION));	// segment
+
+		// Compatible POST routine location: jump to the callback
+		phys_writeb(Real2Phys(BIOS_DEFAULT_RESET_LOCATION)+0,0xEA);				// FARJMP
+		phys_writew(Real2Phys(BIOS_DEFAULT_RESET_LOCATION)+1,RealOff(rptr));	// offset
+		phys_writew(Real2Phys(BIOS_DEFAULT_RESET_LOCATION)+3,RealSeg(rptr));	// segment
 
 		/* Irq 2 */
 		Bitu call_irq2=CALLBACK_Allocate();	
 		CALLBACK_Setup(call_irq2,NULL,CB_IRET_EOI_PIC1,Real2Phys(BIOS_DEFAULT_IRQ2_LOCATION),"irq 2 bios");
 		RealSetVec(0x0a,BIOS_DEFAULT_IRQ2_LOCATION);
+
+		/* Default IRQ handler */
+		Bitu call_irq_default=CALLBACK_Allocate();
+		CALLBACK_Setup(call_irq_default,&Default_IRQ_Handler,CB_IRET,"irq default");
+		RealSetVec(0x0b,CALLBACK_RealPointer(call_irq_default)); // IRQ 3
+		RealSetVec(0x0c,CALLBACK_RealPointer(call_irq_default)); // IRQ 4
+		RealSetVec(0x0d,CALLBACK_RealPointer(call_irq_default)); // IRQ 5
+		RealSetVec(0x0f,CALLBACK_RealPointer(call_irq_default)); // IRQ 7
+		RealSetVec(0x72,CALLBACK_RealPointer(call_irq_default)); // IRQ 10
+		RealSetVec(0x73,CALLBACK_RealPointer(call_irq_default)); // IRQ 11
+
+		// INT 05h: Print Screen
+		// IRQ1 handler calls it when PrtSc key is pressed; does nothing unless hooked
+		phys_writeb(Real2Phys(BIOS_DEFAULT_INT5_LOCATION),0xcf);
+		RealSetVec(0x05,BIOS_DEFAULT_INT5_LOCATION);
 
 		/* Some hardcoded vectors */
 		phys_writeb(Real2Phys(BIOS_DEFAULT_HANDLER_LOCATION),0xcf);	/* bios default interrupt vector location -> IRET */
@@ -1069,15 +1328,17 @@ public:
 		}
 		// PS2 mouse
 		config |= 0x04;
+		// DMA *not* supported - Ancient Art of War CGA uses this to identify PCjr
+		if (machine==MCH_PCJR) config |= 0x100;
 		// Gameport
 		config |= 0x1000;
-		mem_writew(BIOS_CONFIGURATION,config);
-		CMOS_SetRegister(0x14,(Bit8u)(config&0xff)); //Should be updated on changes
+		BIOS_SetEquipment(config);
 		/* Setup extended memory size */
 		IO_Write(0x70,0x30);
 		size_extended=IO_Read(0x71);
 		IO_Write(0x70,0x31);
 		size_extended|=(IO_Read(0x71) << 8);
+		BIOS_HostTimeSync();
 	}
 	~BIOS(){
 		/* abort DAC playing */
@@ -1124,8 +1385,7 @@ void BIOS_SetComPorts(Bit16u baseaddr[]) {
 	equipmentword = mem_readw(BIOS_CONFIGURATION);
 	equipmentword &= (~0x0E00);
 	equipmentword |= (portcount << 9);
-	mem_writew(BIOS_CONFIGURATION,equipmentword);
-	CMOS_SetRegister(0x14,(Bit8u)(equipmentword&0xff)); //Should be updated on changes
+	BIOS_SetEquipment(equipmentword);
 }
 
 

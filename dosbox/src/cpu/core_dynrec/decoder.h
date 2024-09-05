@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2002-2010  The DOSBox Team
+ *  Copyright (C) 2002-2021  The DOSBox Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -11,12 +11,11 @@
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *  GNU General Public License for more details.
  *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *  You should have received a copy of the GNU General Public License along
+ *  with this program; if not, write to the Free Software Foundation, Inc.,
+ *  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-/* $Id: decoder.h,v 1.8 2009-10-18 17:52:10 c2woody Exp $ */
 
 
 #include "decoder_basic.h"
@@ -27,7 +26,7 @@
 
 /*
 	The function CreateCacheBlock translates the instruction stream
-	until either an unhandled instruction is found, the maximal
+	until either an unhandled instruction is found, the maximum
 	number of translated instructions is reached or some critical
 	instruction is encountered.
 */
@@ -49,7 +48,7 @@ static CacheBlockDynRec * CreateCacheBlock(CodePageHandlerDynRec * codepage,Phys
 
 	// every codeblock that is run sets cache.block.running to itself
 	// so the block linking knows the last executed block
-	gen_mov_direct_ptr(&cache.block.running,(DRC_PTR_SIZE_IM)decode.block);
+	gen_mov_direct_ptr(&cache.block.running,(Bitu)decode.block);
 
 	// start with the cycles check
 	gen_mov_word_to_reg(FC_RETOP,&CPU_Cycles,true);
@@ -328,7 +327,11 @@ restart_prefix:
 		case 0x8c:dyn_mov_ev_seg();break;
 
 		// load effective address
-		case 0x8d:dyn_lea();break;
+		case 0x8d:
+			dyn_get_modrm();
+			if (GCC_UNLIKELY(decode.modrm.mod==3)) goto illegalopcode;
+			dyn_lea();
+			break;
 
 		// move a value from memory or a 16bit register into a segment register
 		case 0x8e:dyn_mov_seg_ev();break;
@@ -447,7 +450,9 @@ restart_prefix:
 		case 0xcb:dyn_ret_far(0);goto finish_block;
 
 		// int/iret
+#if !(C_DEBUG)
 		case 0xcd:dyn_interrupt(decode_fetchb());goto finish_block;
+#endif
 		case 0xcf:dyn_iret();goto finish_block;
 
 //		case 0xd4: AAM missing
@@ -554,7 +559,7 @@ restart_prefix:
 		case 0xfb:		//STI
 			gen_call_function_raw((void *)&CPU_STI);
 			dyn_check_exception(FC_RETOP);
-			if (max_opcodes<=0) max_opcodes=1;		//Allow 1 extra opcode
+			max_opcodes=1;		//Allow 1 extra opcode
 			break;
 
 		case 0xfc:		//CLD
@@ -587,7 +592,7 @@ restart_prefix:
 			goto illegalopcode;
 		}
 	}
-	// link to next block because the maximal number of opcodes has been reached
+	// link to next block because the maximum number of opcodes has been reached
 	dyn_set_eip_end();
 	dyn_reduce_cycles();
 	gen_jmp_ptr(&decode.block->link[0].to,offsetof(CacheBlockDynRec,cache.start));

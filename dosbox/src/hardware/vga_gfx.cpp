@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2002-2010  The DOSBox Team
+ *  Copyright (C) 2002-2021  The DOSBox Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -11,12 +11,11 @@
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *  GNU General Public License for more details.
  *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *  You should have received a copy of the GNU General Public License along
+ *  with this program; if not, write to the Free Software Foundation, Inc.,
+ *  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-/* $Id: vga_gfx.cpp,v 1.19 2009-05-27 09:15:41 qbix79 Exp $ */
 
 #include "dosbox.h"
 #include "inout.h"
@@ -25,15 +24,15 @@
 #define gfx(blah) vga.gfx.blah
 static bool index9warned=false;
 
-static void write_p3ce(Bitu port,Bitu val,Bitu iolen) {
+static void write_p3ce(Bitu /*port*/,Bitu val,Bitu /*iolen*/) {
 	gfx(index)=val & 0x0f;
 }
 
-static Bitu read_p3ce(Bitu port,Bitu iolen) {
+static Bitu read_p3ce(Bitu /*port*/,Bitu /*iolen*/) {
 	return gfx(index);
 }
 
-static void write_p3cf(Bitu port,Bitu val,Bitu iolen) {
+static void write_p3cf(Bitu /*port*/,Bitu val,Bitu iolen) {
 	switch (gfx(index)) {
 	case 0:	/* Set/Reset Register */
 		gfx(set_reset)=val & 0x0f;

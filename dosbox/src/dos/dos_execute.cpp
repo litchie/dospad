@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2002-2010  The DOSBox Team
+ *  Copyright (C) 2002-2021  The DOSBox Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -11,12 +11,11 @@
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *  GNU General Public License for more details.
  *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *  You should have received a copy of the GNU General Public License along
+ *  with this program; if not, write to the Free Software Foundation, Inc.,
+ *  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-/* $Id: dos_execute.cpp,v 1.68 2009-10-04 14:28:07 c2woody Exp $ */
 
 #include <string.h>
 #include <ctype.h>
@@ -62,34 +61,7 @@ struct EXE_Header {
 #define OVERLAY 3
 
 
-
-static void SaveRegisters(void) {
-	reg_sp-=18;
-	mem_writew(SegPhys(ss)+reg_sp+ 0,reg_ax);
-	mem_writew(SegPhys(ss)+reg_sp+ 2,reg_cx);
-	mem_writew(SegPhys(ss)+reg_sp+ 4,reg_dx);
-	mem_writew(SegPhys(ss)+reg_sp+ 6,reg_bx);
-	mem_writew(SegPhys(ss)+reg_sp+ 8,reg_si);
-	mem_writew(SegPhys(ss)+reg_sp+10,reg_di);
-	mem_writew(SegPhys(ss)+reg_sp+12,reg_bp);
-	mem_writew(SegPhys(ss)+reg_sp+14,SegValue(ds));
-	mem_writew(SegPhys(ss)+reg_sp+16,SegValue(es));
-}
-
-static void RestoreRegisters(void) {
-	reg_ax=mem_readw(SegPhys(ss)+reg_sp+ 0);
-	reg_cx=mem_readw(SegPhys(ss)+reg_sp+ 2);
-	reg_dx=mem_readw(SegPhys(ss)+reg_sp+ 4);
-	reg_bx=mem_readw(SegPhys(ss)+reg_sp+ 6);
-	reg_si=mem_readw(SegPhys(ss)+reg_sp+ 8);
-	reg_di=mem_readw(SegPhys(ss)+reg_sp+10);
-	reg_bp=mem_readw(SegPhys(ss)+reg_sp+12);
-	SegSet16(ds,mem_readw(SegPhys(ss)+reg_sp+14));
-	SegSet16(es,mem_readw(SegPhys(ss)+reg_sp+16));
-	reg_sp+=18;
-}
-
-extern void GFX_SetTitle(Bit32s cycles,Bits frameskip,bool paused);
+extern void GFX_SetTitle(Bit32s cycles,int frameskip,bool paused);
 void DOS_UpdatePSPName(void) {
 	DOS_MCB mcb(dos.psp()-1);
 	static char name[9];
@@ -125,14 +97,23 @@ void DOS_Terminate(Bit16u pspseg,bool tsr,Bit8u exitcode) {
 	/* Restore the SS:SP to the previous one */
 	SegSet16(ss,RealSeg(parentpsp.GetStack()));
 	reg_sp = RealOff(parentpsp.GetStack());		
-	/* Restore the old CS:IP from int 22h */
-	RestoreRegisters();
+	/* Restore registers */
+	reg_ax = real_readw(SegValue(ss),reg_sp+ 0);
+	reg_bx = real_readw(SegValue(ss),reg_sp+ 2);
+	reg_cx = real_readw(SegValue(ss),reg_sp+ 4);
+	reg_dx = real_readw(SegValue(ss),reg_sp+ 6);
+	reg_si = real_readw(SegValue(ss),reg_sp+ 8);
+	reg_di = real_readw(SegValue(ss),reg_sp+10);
+	reg_bp = real_readw(SegValue(ss),reg_sp+12);
+	SegSet16(ds,real_readw(SegValue(ss),reg_sp+14));
+	SegSet16(es,real_readw(SegValue(ss),reg_sp+16));
+	reg_sp+=18;
 	/* Set the CS:IP stored in int 0x22 back on the stack */
-	mem_writew(SegPhys(ss)+reg_sp+0,RealOff(old22));
-	mem_writew(SegPhys(ss)+reg_sp+2,RealSeg(old22));
+	real_writew(SegValue(ss),reg_sp+0,RealOff(old22));
+	real_writew(SegValue(ss),reg_sp+2,RealSeg(old22));
 	/* set IOPL=3 (Strike Commander), nested task set,
 	   interrupts enabled, test flags cleared */
-	mem_writew(SegPhys(ss)+reg_sp+4,0x7202);
+	real_writew(SegValue(ss),reg_sp+4,0x7202);
 	// Free memory owned by process
 	if (!tsr) DOS_FreeProcessMemory(pspseg);
 	DOS_UpdatePSPName();
@@ -225,6 +206,7 @@ bool DOS_ChildPSP(Bit16u segment, Bit16u size) {
 	psp.SetFCB1(RealMake(parent_psp_seg,0x5c));
 	psp.SetFCB2(RealMake(parent_psp_seg,0x6c));
 	psp.SetEnvironment(psp_parent.GetEnvironment());
+	psp.SetStack(psp_parent.GetStack());
 	psp.SetSize(size);
 	return true;
 }
@@ -312,6 +294,7 @@ bool DOS_Execute(char * name,PhysPt block_pt,Bit8u flags) {
 		envseg=block.exec.envseg;
 		if (!MakeEnv(name,&envseg)) {
 			DOS_CloseFile(fhandle);
+			delete [] loadbuf;
 			return false;
 		}
 		/* Get Memory */		
@@ -323,7 +306,7 @@ bool DOS_Execute(char * name,PhysPt block_pt,Bit8u flags) {
 				pos=0;DOS_SeekFile(fhandle,&pos,DOS_SEEK_SET);	
 				Bit16u dataread=0x1800;
 				DOS_ReadFile(fhandle,loadbuf,&dataread);
-				if (dataread<0x1800) maxsize=dataread;
+				if (dataread<0x1800) maxsize=((dataread+0x10)>>4)+0x20;
 				if (minsize>maxsize) minsize=maxsize;
 			}
 		} else {	/* Exe size calculated from header */
@@ -343,6 +326,7 @@ bool DOS_Execute(char * name,PhysPt block_pt,Bit8u flags) {
 				DOS_CloseFile(fhandle);
 				DOS_SetError(DOSERR_INSUFFICIENT_MEMORY);
 				DOS_FreeMemory(envseg);
+				delete[] loadbuf;
 				return false;
 			}
 		}
@@ -353,14 +337,7 @@ bool DOS_Execute(char * name,PhysPt block_pt,Bit8u flags) {
 			maxsize=0xffff;
 			/* resize to full extent of memory block */
 			DOS_ResizeMemory(pspseg,&maxsize);
-			/* now try to lock out memory above segment 0x2000 */
-			if ((real_readb(0x2000,0)==0x5a) && (real_readw(0x2000,1)==0) && (real_readw(0x2000,3)==0x7ffe)) {
-				/* MCB after PCJr graphics memory region is still free */
-				if (pspseg+maxsize==0x17ff) {
-					DOS_MCB cmcb((Bit16u)(pspseg-1));
-					cmcb.SetType(0x5a);		// last block
-				}
-			}
+			memsize=maxsize;
 		}
 		loadseg=pspseg+16;
 		if (!iscom) {
@@ -412,41 +389,32 @@ bool DOS_Execute(char * name,PhysPt block_pt,Bit8u flags) {
 		SetupCMDLine(pspseg,block);
 	};
 	CALLBACK_SCF(false);		/* Carry flag cleared for caller if successfull */
-	if (flags==OVERLAY) return true;			/* Everything done for overlays */
+	if (flags==OVERLAY) {
+		/* Changed registers */
+		reg_ax=0;
+		reg_dx=0;
+		return true;			/* Everything done for overlays */
+	}
 	RealPt csip,sssp;
 	if (iscom) {
 		csip=RealMake(pspseg,0x100);
-		sssp=RealMake(pspseg,0xfffe);
-		mem_writew(PhysMake(pspseg,0xfffe),0);
+		if (memsize<0x1000) {
+			LOG(LOG_EXEC,LOG_WARN)("COM format with only %X paragraphs available",memsize);
+			sssp=RealMake(pspseg,(memsize<<4)-2);
+		} else sssp=RealMake(pspseg,0xfffe);
+		mem_writew(Real2Phys(sssp),0);
 	} else {
 		csip=RealMake(loadseg+head.initCS,head.initIP);
 		sssp=RealMake(loadseg+head.initSS,head.initSP);
 		if (head.initSP<4) LOG(LOG_EXEC,LOG_ERROR)("stack underflow/wrap at EXEC");
+		if ((pspseg+memsize)<(RealSeg(sssp)+(RealOff(sssp)>>4)))
+			LOG(LOG_EXEC,LOG_ERROR)("stack outside memory block at EXEC");
 	}
 
-	if (flags==LOAD) {
-		SaveRegisters();
-		DOS_PSP callpsp(dos.psp());
-		/* Save the SS:SP on the PSP of calling program */
-		callpsp.SetStack(RealMakeSeg(ss,reg_sp));
-		reg_sp+=18;
-		/* Switch the psp's */
-		dos.psp(pspseg);
-		DOS_PSP newpsp(dos.psp());
-		dos.dta(RealMake(newpsp.GetSegment(),0x80));
-		/* First word on the stack is the value ax should contain on startup */
-		real_writew(RealSeg(sssp-2),RealOff(sssp-2),0xffff);
-		block.exec.initsssp = sssp-2;
-		block.exec.initcsip = csip;
-		block.SaveData();
-		return true;
-	}
-
-	if (flags==LOADNGO) {
-		if ((reg_sp>0xfffe) || (reg_sp<18)) LOG(LOG_EXEC,LOG_ERROR)("stack underflow/wrap at EXEC");
+	if ((flags==LOAD) || (flags==LOADNGO)) {
 		/* Get Caller's program CS:IP of the stack and set termination address to that */
-		RealSetVec(0x22,RealMake(mem_readw(SegPhys(ss)+reg_sp+2),mem_readw(SegPhys(ss)+reg_sp)));
-		SaveRegisters();
+		RealSetVec(0x22,RealMake(real_readw(SegValue(ss),reg_sp+2),real_readw(SegValue(ss),reg_sp)));
+		reg_sp-=18;
 		DOS_PSP callpsp(dos.psp());
 		/* Save the SS:SP on the PSP of calling program */
 		callpsp.SetStack(RealMakeSeg(ss,reg_sp));
@@ -459,29 +427,18 @@ bool DOS_Execute(char * name,PhysPt block_pt,Bit8u flags) {
 		/* copy fcbs */
 		newpsp.SetFCB1(block.exec.fcb1);
 		newpsp.SetFCB2(block.exec.fcb2);
-		/* Set the stack for new program */
-		SegSet16(ss,RealSeg(sssp));reg_sp=RealOff(sssp);
-		/* Add some flags and CS:IP on the stack for the IRET */
-		CPU_Push16(RealSeg(csip));
-		CPU_Push16(RealOff(csip));
-		/* DOS starts programs with a RETF, so critical flags
-		 * should not be modified (IOPL in v86 mode);
-		 * interrupt flag is set explicitly, test flags cleared */
-		reg_flags=(reg_flags&(~FMASK_TEST))|FLAG_IF;
-		//Jump to retf so that we only need to store cs:ip on the stack
-		reg_ip++;
-		/* Setup the rest of the registers */
-		reg_ax=reg_bx=0;reg_cx=0xff;
-		reg_dx=pspseg;
-		reg_si=RealOff(csip);
-		reg_di=RealOff(sssp);
-		reg_bp=0x91c;	/* DOS internal stack begin relict */
-		SegSet16(ds,pspseg);SegSet16(es,pspseg);
-#if C_DEBUG		
-		/* Started from debug.com, then set breakpoint at start */
-		DEBUG_CheckExecuteBreakpoint(RealSeg(csip),RealOff(csip));
-#endif
-		/* Add the filename to PSP and environment MCB's */
+		/* Save the SS:SP on the PSP of new program */
+		newpsp.SetStack(RealMakeSeg(ss,reg_sp));
+
+		/* Setup bx, contains a 0xff in bl and bh if the drive in the fcb is not valid */
+		DOS_FCB fcb1(RealSeg(block.exec.fcb1),RealOff(block.exec.fcb1));
+		DOS_FCB fcb2(RealSeg(block.exec.fcb2),RealOff(block.exec.fcb2));
+		Bit8u d1 = fcb1.GetDrive(); //depends on 0 giving the dos.default drive
+		if ( (d1>=DOS_DRIVES) || !Drives[d1] ) reg_bl = 0xFF; else reg_bl = 0;
+		Bit8u d2 = fcb2.GetDrive();
+		if ( (d2>=DOS_DRIVES) || !Drives[d2] ) reg_bh = 0xFF; else reg_bh = 0;
+
+		/* Write filename in new program MCB */
 		char stripname[8]= { 0 };Bitu index=0;
 		while (char chr=*name++) {
 			switch (chr) {
@@ -499,6 +456,48 @@ bool DOS_Execute(char * name,PhysPt block_pt,Bit8u flags) {
 		DOS_MCB pspmcb(dos.psp()-1);
 		pspmcb.SetFileName(stripname);
 		DOS_UpdatePSPName();
+	}
+
+	if (flags==LOAD) {
+		/* First word on the stack is the value ax should contain on startup */
+		real_writew(RealSeg(sssp-2),RealOff(sssp-2),reg_bx);
+		/* Write initial CS:IP and SS:SP in param block */
+		block.exec.initsssp = sssp-2;
+		block.exec.initcsip = csip;
+		block.SaveData();
+		/* Changed registers */
+		reg_sp+=18;
+		reg_ax=RealOff(csip);
+		reg_bx=memsize;
+		reg_dx=0;
+		return true;
+	}
+
+	if (flags==LOADNGO) {
+		if ((reg_sp>0xfffe) || (reg_sp<18)) LOG(LOG_EXEC,LOG_ERROR)("stack underflow/wrap at EXEC");
+		/* Set the stack for new program */
+		SegSet16(ss,RealSeg(sssp));reg_sp=RealOff(sssp);
+		/* Add some flags and CS:IP on the stack for the IRET */
+		CPU_Push16(RealSeg(csip));
+		CPU_Push16(RealOff(csip));
+		/* DOS starts programs with a RETF, so critical flags
+		 * should not be modified (IOPL in v86 mode);
+		 * interrupt flag is set explicitly, test flags cleared */
+		reg_flags=(reg_flags&(~FMASK_TEST))|FLAG_IF;
+		//Jump to retf so that we only need to store cs:ip on the stack
+		reg_ip++;
+		/* Setup the rest of the registers */
+		reg_ax=reg_bx;
+		reg_cx=0xff;
+		reg_dx=pspseg;
+		reg_si=RealOff(csip);
+		reg_di=RealOff(sssp);
+		reg_bp=0x91c;	/* DOS internal stack begin relict */
+		SegSet16(ds,pspseg);SegSet16(es,pspseg);
+#if C_DEBUG		
+		/* Started from debug.com, then set breakpoint at start */
+		DEBUG_CheckExecuteBreakpoint(RealSeg(csip),RealOff(csip));
+#endif
 		return true;
 	}
 	return false;

@@ -1,3 +1,21 @@
+/*
+ *  Copyright (C) 2002-2021  The DOSBox Team
+ *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License along
+ *  with this program; if not, write to the Free Software Foundation, Inc.,
+ *  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+ */
+
 /* Big ass opcode table normal,double, 66 normal, 66 double */
 static OpCode OpCodeTable[1024]={
 /* 0x00 - 0x07 */
@@ -137,7 +155,7 @@ static OpCode OpCodeTable[1024]={
 {L_Iw		,0			,S_REGw	,REGI_SI},{L_Iw	,0			,S_REGw	,REGI_DI},
 
 /* 0xc0 - 0xc7 */
-{L_MODRM	,5			,0	,M_GRP_Ib	},{L_MODRM	,6			,0	,M_GRP_Ib	},
+{L_MODRM	,5			,0	,M_SHIFT_Ib	},{L_MODRM	,6			,0	,M_SHIFT_Ib	},
 {L_POPw		,0			,S_IPIw	,0		},{L_POPw	,0			,S_IP	,0		},
 {L_MODRM	,O_SEGES	,S_SEGGw,M_Efw	},{L_MODRM	,O_SEGDS	,S_SEGGw,M_Efw	},
 {L_MODRM	,0			,S_Eb	,M_Ib	},{L_MODRM	,0			,S_Ew	,M_Iw	},
@@ -148,8 +166,8 @@ static OpCode OpCodeTable[1024]={
 {L_INTO		,O_INT		,0		,0		},{D_IRETw	,0			,0		,0		},
 
 /* 0xd0 - 0xd7 */
-{L_MODRM	,5			,0	,M_GRP_1	},{L_MODRM	,6			,0	,M_GRP_1	},
-{L_MODRM	,5			,0	,M_GRP_CL	},{L_MODRM	,6			,0	,M_GRP_CL	},
+{L_MODRM	,5			,0	,M_SHIFT_1	},{L_MODRM	,6			,0	,M_SHIFT_1	},
+{L_MODRM	,5			,0	,M_SHIFT_CL	},{L_MODRM	,6			,0	,M_SHIFT_CL	},
 {L_Ib		,O_AAM		,0		,0		},{L_Ib		,O_AAD		,0		,0		},
 {D_SETALC	,0			,0		,0		},{D_XLAT	,0			,0		,0		},
 //TODO FPU
@@ -216,7 +234,7 @@ static OpCode OpCodeTable[1024]={
 {0			,0			,0		,0		},{0		,0			,0		,0		},
 
 /* 0x130 - 0x137 */
-{0			,0			,0		,0		},{0		,0			,0		,0		},
+{0			,0			,0		,0		},{D_RDTSC	,0			,0		,0		},
 {0			,0			,0		,0		},{0		,0			,0		,0		},
 {0			,0			,0		,0		},{0		,0			,0		,0		},
 {0			,0			,0		,0		},{0		,0			,0		,0		},
@@ -428,7 +446,7 @@ static OpCode OpCodeTable[1024]={
 
 /* 0x260 - 0x267 */
 {D_PUSHAd	,0			,0		,0		},{D_POPAd	,0			,0		,0		},
-{L_MODRM	,O_BOUNDd	,0		,0		},{0		,0			,0		,0		},
+{L_MODRM	,O_BOUNDd	,0		,M_Gd	},{0		,0			,0		,0		},
 {L_PRESEG	,0			,0		,fs		},{L_PRESEG	,0			,0		,gs		},
 {L_PREOP	,0			,0		,0		},{L_PREADD	,0			,0		,0		},
 /* 0x268 - 0x26f */
@@ -493,7 +511,7 @@ static OpCode OpCodeTable[1024]={
 {L_Id		,0			,S_REGd	,REGI_SI},{L_Id	,0			,S_REGd	,REGI_DI},
 
 /* 0x2c0 - 0x2c7 */
-{L_MODRM	,5			,0	,M_GRP_Ib	},{L_MODRM	,7			,0	,M_GRP_Ib	},
+{L_MODRM	,5			,0	,M_SHIFT_Ib	},{L_MODRM	,7			,0	,M_SHIFT_Ib	},
 {L_POPd		,0			,S_IPIw	,0		},{L_POPd	,0			,S_IP	,0		},
 {L_MODRM	,O_SEGES	,S_SEGGd,M_Efd	},{L_MODRM	,O_SEGDS	,S_SEGGd,M_Efd	},
 {L_MODRM	,0			,S_Eb	,M_Ib	},{L_MODRM	,0			,S_Ed	,M_Id	},
@@ -504,8 +522,8 @@ static OpCode OpCodeTable[1024]={
 {L_INTO		,O_INT		,0		,0		},{D_IRETd	,0			,0		,0		},
 
 /* 0x2d0 - 0x2d7 */
-{L_MODRM	,5			,0	,M_GRP_1	},{L_MODRM	,7			,0	,M_GRP_1	},
-{L_MODRM	,5			,0	,M_GRP_CL	},{L_MODRM	,7			,0	,M_GRP_CL	},
+{L_MODRM	,5			,0	,M_SHIFT_1	},{L_MODRM	,7			,0	,M_SHIFT_1	},
+{L_MODRM	,5			,0	,M_SHIFT_CL	},{L_MODRM	,7			,0	,M_SHIFT_CL	},
 {L_Ib		,O_AAM		,0		,0		},{L_Ib		,O_AAD		,0		,0		},
 {D_SETALC	,0			,0		,0		},{D_XLAT	,0			,0		,0		},
 /* 0x2d8 - 0x2df */
@@ -572,7 +590,7 @@ static OpCode OpCodeTable[1024]={
 {0			,0			,0		,0		},{0		,0			,0		,0		},
 
 /* 0x330 - 0x337 */
-{0			,0			,0		,0		},{0		,0			,0		,0		},
+{0			,0			,0		,0		},{D_RDTSC	,0			,0		,0		},
 {0			,0			,0		,0		},{0		,0			,0		,0		},
 {0			,0			,0		,0		},{0		,0			,0		,0		},
 {0			,0			,0		,0		},{0		,0			,0		,0		},

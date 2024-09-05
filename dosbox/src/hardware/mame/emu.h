@@ -99,7 +99,15 @@ public:
 		return clockRate;
 	}
 
-	void logerror(const char* msg, ...) {
+	void logerror(const char* format, ...) {
+#if C_DEBUG
+		char buf[512*2];
+		va_list msg;
+		va_start(msg,format);
+		vsprintf(buf,format,msg);
+		va_end(msg);
+		LOG(LOG_MISC,LOG_NORMAL)("%s",buf);
+#endif
 	}
 
 	static int tag() {
@@ -115,6 +123,8 @@ public:
 	device_t(const machine_config &mconfig, device_type type, const char *tag, device_t *owner, u32 _clock) : clockRate( _clock ) {
 	}
 
+	virtual ~device_t() {
+	}
 };
 
 

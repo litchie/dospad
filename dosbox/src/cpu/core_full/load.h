@@ -1,3 +1,21 @@
+/*
+ *  Copyright (C) 2002-2021  The DOSBox Team
+ *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License along
+ *  with this program; if not, write to the Free Software Foundation, Inc.,
+ *  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+ */
+
 switch (inst.code.load) {
 /* General loading */
 	case L_POPwRM:
@@ -157,6 +175,7 @@ l_M_Ed:
 			inst_op2_d=LoadMw(inst.rm_eaa+4);
 			break;
 		case M_EA:
+			if (inst.rm>=0xc0) goto illegalopcode;
 			inst_op1_d=inst.rm_off;
 			break;
 		case M_POPw:
@@ -168,15 +187,19 @@ l_M_Ed:
 		case M_GRP:
 			inst.code=Groups[inst.code.op][inst.rm_index];
 			goto l_MODRMswitch;
-		case M_GRP_Ib:
-			inst_op2_d=Fetchb();
+		case M_SHIFT_Ib:
+			inst_op2_d=Fetchb() & 0x1f;
+			if (!inst_op2_d)
+				break;
 			inst.code=Groups[inst.code.op][inst.rm_index];
 			goto l_MODRMswitch;
-		case M_GRP_CL:
-			inst_op2_d=reg_cl;
+		case M_SHIFT_CL:
+			inst_op2_d=reg_cl & 0x1f;
+			if (!inst_op2_d)
+				break;
 			inst.code=Groups[inst.code.op][inst.rm_index];
 			goto l_MODRMswitch;
-		case M_GRP_1:
+		case M_SHIFT_1:
 			inst_op2_d=1;
 			inst.code=Groups[inst.code.op][inst.rm_index];
 			goto l_MODRMswitch;
@@ -482,6 +505,13 @@ l_M_Ed:
 	case D_ICEBP:
 		CPU_SW_Interrupt_NoIOPLCheck(1,GetIP());
 		continue;
+	case D_RDTSC: {
+		if (CPU_ArchitectureType<CPU_ARCHTYPE_PENTIUMSLOW) goto illegalopcode;
+		Bit64s tsc=(Bit64s)(PIC_FullIndex()*(double)(CPU_CycleAutoAdjust?70000:CPU_CycleMax));
+		reg_edx=(Bit32u)(tsc>>32);
+		reg_eax=(Bit32u)(tsc&0xffffffff);
+		break;
+		}
 	default:
 		LOG(LOG_CPU,LOG_ERROR)("LOAD:Unhandled code %d opcode %X",inst.code.load,inst.entry);
 		goto illegalopcode;

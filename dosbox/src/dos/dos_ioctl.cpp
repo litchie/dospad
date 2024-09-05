@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2002-2010  The DOSBox Team
+ *  Copyright (C) 2002-2021  The DOSBox Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -11,12 +11,11 @@
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *  GNU General Public License for more details.
  *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *  You should have received a copy of the GNU General Public License along
+ *  with this program; if not, write to the Free Software Foundation, Inc.,
+ *  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-/* $Id: dos_ioctl.cpp,v 1.35 2009-04-16 12:16:52 qbix79 Exp $ */
 
 #include <string.h>
 #include "dosbox.h"
@@ -26,6 +25,7 @@
 #include "dos_inc.h"
 
 bool DOS_IOCTL(void) {
+//	LOG(LOG_IOCTL,LOG_WARN)("%X %X %X %X",reg_ax,reg_bx,reg_cx,reg_dx);
 	Bitu handle=0;Bit8u drive=0;
 	/* calls 0-4,6,7,10,12,16 use a file handle */
 	if ((reg_al<4) || (reg_al==0x06) || (reg_al==0x07) || (reg_al==0x0a) || (reg_al==0x0c) || (reg_al==0x10)) {
@@ -41,7 +41,7 @@ bool DOS_IOCTL(void) {
 	} else if (reg_al<0x12) { 				/* those use a diskdrive except 0x0b */
 		if (reg_al!=0x0b) {
 			drive=reg_bl;if (!drive) drive = DOS_GetDefaultDrive();else drive--;
-			if( !(( drive < DOS_DRIVES ) && Drives[drive]) ) {
+			if( (drive >= 2) && !(( drive < DOS_DRIVES ) && Drives[drive]) ) {
 				DOS_SetError(DOSERR_INVALID_DRIVE);
 				return false;
 			}
@@ -134,7 +134,7 @@ bool DOS_IOCTL(void) {
 		}
 		return true;
 	case 0x09:		/* Check if block device remote */
-		if (Drives[drive]->isRemote()) {
+		if ((drive >= 2) && Drives[drive]->isRemote()) {
 			reg_dx=0x1000;	// device is remote
 			// undocumented bits always clear
 		} else {
@@ -152,28 +152,31 @@ bool DOS_IOCTL(void) {
 		return true;
 	case 0x0D:		/* Generic block device request */
 		{
-			if (Drives[drive]->isRemovable()) {
+			if (drive < 2 && !Drives[drive]) {
+				DOS_SetError(DOSERR_ACCESS_DENIED);
+				return false;
+			}
+			if (reg_ch != 0x08 || Drives[drive]->isRemovable()) {
 				DOS_SetError(DOSERR_FUNCTION_NUMBER_INVALID);
 				return false;
 			}
 			PhysPt ptr	= SegPhys(ds)+reg_dx;
 			switch (reg_cl) {
 			case 0x60:		/* Get Device parameters */
-				mem_writeb(ptr  ,0x03);					// special function
-				mem_writeb(ptr+1,(drive>=2)?0x05:0x14);	// fixed disc(5), 1.44 floppy(14)
-				mem_writew(ptr+2,drive>=2);				// nonremovable ?
+				//mem_writeb(ptr+0,0);					// special functions (call value)
+				mem_writeb(ptr+1,(drive>=2)?0x05:0x07);	// type: hard disk(5), 1.44 floppy(7)
+				mem_writew(ptr+2,(drive>=2)?0x01:0x00);	// attributes: bit 0 set for nonremovable
 				mem_writew(ptr+4,0x0000);				// num of cylinders
 				mem_writeb(ptr+6,0x00);					// media type (00=other type)
-				// drive parameter block following
-				mem_writeb(ptr+7,drive);				// drive
-				mem_writeb(ptr+8,0x00);					// unit number
-				mem_writed(ptr+0x1f,0xffffffff);		// next parameter block
+				// bios parameter block following
+				mem_writew(ptr+7,0x0200);				// bytes per sector (Win3 File Mgr. uses it)
 				break;
-			case 0x46:
-			case 0x66:	/* Volume label */
+			case 0x46:	/* Set volume serial number */
+				break;
+			case 0x66:	/* Get volume serial number */
 				{			
 					char const* bufin=Drives[drive]->GetLabel();
-					char buffer[11] ={' '};
+					char buffer[11];memset(buffer,' ',11);
 
 					char const* find_ext=strchr(bufin,'.');
 					if (find_ext) {
@@ -181,7 +184,7 @@ bool DOS_IOCTL(void) {
 						if (size>8) size=8;
 						memcpy(buffer,bufin,size);
 						find_ext++;
-						memcpy(buffer+size,find_ext,(strlen(find_ext)>3) ? 3 : strlen(find_ext)); 
+						memcpy(buffer+8,find_ext,(strlen(find_ext)>3) ? 3 : strlen(find_ext)); 
 					} else {
 						memcpy(buffer,bufin,(strlen(bufin) > 8) ? 8 : strlen(bufin));
 					}
@@ -189,10 +192,10 @@ bool DOS_IOCTL(void) {
 					char buf2[8]={ 'F','A','T','1','6',' ',' ',' '};
 					if(drive<2) buf2[4] = '2'; //FAT12 for floppies
 
-					mem_writew(ptr+0,0);			// 0
+					//mem_writew(ptr+0,0);			//Info level (call value)
 					mem_writed(ptr+2,0x1234);		//Serial number
 					MEM_BlockWrite(ptr+6,buffer,11);//volumename
-					if(reg_cl == 0x66) MEM_BlockWrite(ptr+0x11, buf2,8);//filesystem
+					MEM_BlockWrite(ptr+0x11,buf2,8);//filesystem
 				}
 				break;
 			default	:	
@@ -200,14 +203,18 @@ bool DOS_IOCTL(void) {
 				DOS_SetError(DOSERR_FUNCTION_NUMBER_INVALID);
 				return false;
 			}
+			reg_ax=0;
 			return true;
 		}
 	case 0x0E:			/* Get Logical Drive Map */
-		if (Drives[drive]->isRemovable()) {
+		if (drive < 2) {
+			if (Drives[drive]) reg_al=drive+1;
+			else reg_al=1;
+		} else if (Drives[drive]->isRemovable()) {
 			DOS_SetError(DOSERR_FUNCTION_NUMBER_INVALID);
 			return false;
-		}
-		reg_al = 0;		/* Only 1 logical drive assigned */
+		} else reg_al=0;	/* Only 1 logical drive assigned */
+		reg_ah=0x07;
 		return true;
 	default:
 		LOG(LOG_DOSMISC,LOG_ERROR)("DOS:IOCTL Call %2X unhandled",reg_al);

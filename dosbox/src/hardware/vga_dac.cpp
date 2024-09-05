@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2002-2010  The DOSBox Team
+ *  Copyright (C) 2002-2021  The DOSBox Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -11,15 +11,16 @@
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *  GNU General Public License for more details.
  *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *  You should have received a copy of the GNU General Public License along
+ *  with this program; if not, write to the Free Software Foundation, Inc.,
+ *  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
 #include "dosbox.h"
 #include "inout.h"
 #include "render.h"
 #include "vga.h"
+#include "mem.h"
 
 /*
 3C6h (R/W):  PEL Mask
@@ -54,8 +55,8 @@ static void VGA_DAC_SendColor( Bitu index, Bitu src ) {
 	const Bit8u red = vga.dac.rgb[src].red;
 	const Bit8u green = vga.dac.rgb[src].green;
 	const Bit8u blue = vga.dac.rgb[src].blue;
-	//Set entry in 16bit output lookup table
-	vga.dac.xlat16[index] = ((blue>>1)&0x1f) | (((green)&0x3f)<<5) | (((red>>1)&0x1f) << 11);
+	//Set entry in (little endian) 16bit output lookup table
+	var_write(&vga.dac.xlat16[index], ((blue>>1)&0x1f) | (((green)&0x3f)<<5) | (((red>>1)&0x1f) << 11));
 	
 	RENDER_SetPal( index, (red << 2) | ( red >> 4 ), (green << 2) | ( green >> 4 ), (blue << 2) | ( blue >> 4 ) );
 }
@@ -65,7 +66,7 @@ static void VGA_DAC_UpdateColor( Bitu index ) {
 	VGA_DAC_SendColor( index, maskIndex );
 }
 
-static void write_p3c6(Bitu port,Bitu val,Bitu iolen) {
+static void write_p3c6(Bitu /*port*/,Bitu val,Bitu /*iolen*/) {
 	if ( vga.dac.pel_mask != val ) {
 		LOG(LOG_VGAMISC,LOG_NORMAL)("VGA:DCA:Pel Mask set to %X", val);
 		vga.dac.pel_mask = val;
@@ -75,34 +76,35 @@ static void write_p3c6(Bitu port,Bitu val,Bitu iolen) {
 }
 
 
-static Bitu read_p3c6(Bitu port,Bitu iolen) {
+static Bitu read_p3c6(Bitu /*port*/,Bitu /*iolen*/) {
 	return vga.dac.pel_mask;
 }
 
 
-static void write_p3c7(Bitu port,Bitu val,Bitu iolen) {
+static void write_p3c7(Bitu /*port*/,Bitu val,Bitu /*iolen*/) {
 	vga.dac.read_index=val;
 	vga.dac.pel_index=0;
 	vga.dac.state=DAC_READ;
 	vga.dac.write_index= val + 1;
 }
 
-static Bitu read_p3c7(Bitu port,Bitu iolen) {
+static Bitu read_p3c7(Bitu /*port*/,Bitu /*iolen*/) {
 	if (vga.dac.state==DAC_READ) return 0x3;
 	else return 0x0;
 }
 
-static void write_p3c8(Bitu port,Bitu val,Bitu iolen) {
+static void write_p3c8(Bitu /*port*/,Bitu val,Bitu /*iolen*/) {
 	vga.dac.write_index=val;
 	vga.dac.pel_index=0;
 	vga.dac.state=DAC_WRITE;
+	vga.dac.read_index= val - 1;
 }
 
-static Bitu read_p3c8(Bitu port, Bitu iolen){
+static Bitu read_p3c8(Bitu /*port*/, Bitu /*iolen*/){
 	return vga.dac.write_index;
 }
 
-static void write_p3c9(Bitu port,Bitu val,Bitu iolen) {
+static void write_p3c9(Bitu /*port*/,Bitu val,Bitu /*iolen*/) {
 	val&=0x3f;
 	switch (vga.dac.pel_index) {
 	case 0:
@@ -146,7 +148,7 @@ static void write_p3c9(Bitu port,Bitu val,Bitu iolen) {
 	};
 }
 
-static Bitu read_p3c9(Bitu port,Bitu iolen) {
+static Bitu read_p3c9(Bitu /*port*/,Bitu /*iolen*/) {
 	Bit8u ret;
 	switch (vga.dac.pel_index) {
 	case 0:
@@ -180,6 +182,7 @@ void VGA_DAC_CombineColor(Bit8u attr,Bit8u pal) {
 	case M_VGA:
 		// used by copper demo; almost no video card seems to suport it
 		if(!IS_VGA_ARCH || (svgaCard!=SVGA_None)) break;
+		/* FALLTHROUGH */
 	default:
 		VGA_DAC_SendColor( attr, pal );
 	}
@@ -213,19 +216,5 @@ void VGA_SetupDAC(void) {
 		IO_RegisterReadHandler(0x3c8,read_p3c8,IO_MB);
 		IO_RegisterWriteHandler(0x3c9,write_p3c9,IO_MB);
 		IO_RegisterReadHandler(0x3c9,read_p3c9,IO_MB);
-	} else if (machine==MCH_EGA) {
-		for (Bitu i=0;i<64;i++) {
-			if ((i&4)>0) vga.dac.rgb[i].red=0x2a;
-			else vga.dac.rgb[i].red=0;
-			if ((i&32)>0) vga.dac.rgb[i].red+=0x15;
-
-			if ((i&2)>0) vga.dac.rgb[i].green=0x2a;
-			else vga.dac.rgb[i].green=0;
-			if ((i&16)>0) vga.dac.rgb[i].green+=0x15;
-
-			if ((i&1)>0) vga.dac.rgb[i].blue=0x2a;
-			else vga.dac.rgb[i].blue=0;
-			if ((i&8)>0) vga.dac.rgb[i].blue+=0x15;
-		}
 	}
 }

@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2002-2010  The DOSBox Team
+ *  Copyright (C) 2002-2021  The DOSBox Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -11,9 +11,9 @@
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *  GNU General Public License for more details.
  *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *  You should have received a copy of the GNU General Public License along
+ *  with this program; if not, write to the Free Software Foundation, Inc.,
+ *  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
 #if defined (SCALERLINEAR)
@@ -51,6 +51,12 @@ lastagain:
 #if (SCALERHEIGHT > 2) 
 		PTYPE * line2;
 #endif
+#if (SCALERHEIGHT > 3) 
+		PTYPE * line3;
+#endif
+#if (SCALERHEIGHT > 4) 
+		PTYPE * line4;
+#endif
 		/* Clear this block being dirty marker */
 		const Bitu changeType = changed[b];
 		changed[b] = 0;
@@ -66,6 +72,12 @@ lastagain:
 #if (SCALERHEIGHT > 2) 
 			line2 = (PTYPE *)(((Bit8u*)line0)+ render.scale.outPitch * 2);
 #endif
+#if (SCALERHEIGHT > 3) 
+			line3 = (PTYPE *)(((Bit8u*)line0)+ render.scale.outPitch * 3);
+#endif
+#if (SCALERHEIGHT > 4) 
+			line4 = (PTYPE *)(((Bit8u*)line0)+ render.scale.outPitch * 4);
+#endif
 			SCALERFUNC;
 			line0 += SCALERWIDTH * SCALER_BLOCKSIZE;
 			fc += SCALER_BLOCKSIZE;
@@ -77,6 +89,12 @@ lastagain:
 #if (SCALERHEIGHT > 2) 
 			line2 = (PTYPE *)(((Bit8u*)line0)+ render.scale.outPitch * 2);
 #endif
+#if (SCALERHEIGHT > 3) 
+			line3 = (PTYPE *)(((Bit8u*)line0)+ render.scale.outPitch * 3);
+#endif
+#if (SCALERHEIGHT > 4) 
+			line4 = (PTYPE *)(((Bit8u*)line0)+ render.scale.outPitch * 4);
+#endif
 			SCALERFUNC;
 		case SCALE_RIGHT:
 #if (SCALERHEIGHT > 1) 			
@@ -85,12 +103,24 @@ lastagain:
 #if (SCALERHEIGHT > 2) 
 			line2 = (PTYPE *)(((Bit8u*)line0)+ render.scale.outPitch * 2);
 #endif
+#if (SCALERHEIGHT > 3) 
+			line3 = (PTYPE *)(((Bit8u*)line0)+ render.scale.outPitch * 3);
+#endif
+#if (SCALERHEIGHT > 4) 
+			line4 = (PTYPE *)(((Bit8u*)line0)+ render.scale.outPitch * 4);
+#endif
 			line0 += SCALERWIDTH * (SCALER_BLOCKSIZE -1);
 #if (SCALERHEIGHT > 1) 
 			line1 += SCALERWIDTH * (SCALER_BLOCKSIZE -1);
 #endif
 #if (SCALERHEIGHT > 2) 
 			line2 += SCALERWIDTH * (SCALER_BLOCKSIZE -1);
+#endif
+#if (SCALERHEIGHT > 3) 
+			line3 += SCALERWIDTH * (SCALER_BLOCKSIZE -1);
+#endif
+#if (SCALERHEIGHT > 4) 
+			line4 += SCALERWIDTH * (SCALER_BLOCKSIZE -1);
 #endif
 			fc += SCALER_BLOCKSIZE -1;
 			SCALERFUNC;
@@ -105,12 +135,24 @@ lastagain:
 #if (SCALERHEIGHT > 2) 
 			line2 = WC[1];
 #endif
+#if (SCALERHEIGHT > 3) 
+			line3 = WC[2];
+#endif
+#if (SCALERHEIGHT > 4) 
+			line4 = WC[3];
+#endif
 #else
 #if (SCALERHEIGHT > 1) 
 			line1 = (PTYPE *)(((Bit8u*)line0)+ render.scale.outPitch);
 #endif
 #if (SCALERHEIGHT > 2) 
 			line2 = (PTYPE *)(((Bit8u*)line0)+ render.scale.outPitch * 2);
+#endif
+#if (SCALERHEIGHT > 3) 
+			line3 = (PTYPE *)(((Bit8u*)line0)+ render.scale.outPitch * 3);
+#endif
+#if (SCALERHEIGHT > 4) 
+			line4 = (PTYPE *)(((Bit8u*)line0)+ render.scale.outPitch * 4);
 #endif
 #endif //defined(SCALERLINEAR)
 			for (Bitu i = 0; i<SCALER_BLOCKSIZE;i++) {
@@ -122,6 +164,12 @@ lastagain:
 #if (SCALERHEIGHT > 2) 
 				line2 += SCALERWIDTH;
 #endif
+#if (SCALERHEIGHT > 3) 
+				line3 += SCALERWIDTH;
+#endif
+#if (SCALERHEIGHT > 4) 
+				line4 += SCALERWIDTH;
+#endif
 				fc++;
 			}
 #if defined(SCALERLINEAR)
@@ -130,6 +178,12 @@ lastagain:
 #endif
 #if (SCALERHEIGHT > 2) 
 			BituMove((Bit8u*)(&line0[-SCALER_BLOCKSIZE*SCALERWIDTH])+render.scale.outPitch*2,WC[1], SCALER_BLOCKSIZE *SCALERWIDTH*PSIZE);
+#endif
+#if (SCALERHEIGHT > 3) 
+			BituMove((Bit8u*)(&line0[-SCALER_BLOCKSIZE*SCALERWIDTH])+render.scale.outPitch*3,WC[2], SCALER_BLOCKSIZE *SCALERWIDTH*PSIZE);
+#endif
+#if (SCALERHEIGHT > 4) 
+			BituMove((Bit8u*)(&line0[-SCALER_BLOCKSIZE*SCALERWIDTH])+render.scale.outPitch*4,WC[3], SCALER_BLOCKSIZE *SCALERWIDTH*PSIZE);
 #endif
 #endif //defined(SCALERLINEAR)
 			break;

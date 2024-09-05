@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2002-2010  The DOSBox Team
+ *  Copyright (C) 2002-2021  The DOSBox Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -11,12 +11,11 @@
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *  GNU General Public License for more details.
  *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *  You should have received a copy of the GNU General Public License along
+ *  with this program; if not, write to the Free Software Foundation, Inc.,
+ *  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-/* $Id: shell.h,v 1.28 2009-07-03 19:36:57 qbix79 Exp $ */
 
 #ifndef DOSBOX_SHELL_H
 #define DOSBOX_SHELL_H
@@ -36,11 +35,12 @@
 #define CMD_MAXCMDS 20
 #define CMD_OLDSIZE 4096
 extern Bitu call_shellstop;
+class DOS_Shell;
+
 /* first_shell is used to add and delete stuff from the shell env 
  * by "external" programs. (config) */
-extern Program * first_shell;
+extern DOS_Shell * first_shell;
 
-class DOS_Shell;
 
 class BatchFile {
 public:
@@ -88,6 +88,8 @@ public:
 	void CMD_HELP(char * args);
 	void CMD_CLS(char * args);
 	void CMD_COPY(char * args);
+	void CMD_DATE(char * args);
+	void CMD_TIME(char * args);
 	void CMD_DIR(char * args);
 	void CMD_DELETE(char * args);
 	void CMD_ECHO(char * args);

@@ -208,15 +208,22 @@
 {
     char buf[8];
     NSAssert([NSThread isMainThread], @"Should work in main thread");
+    
+    // Skip the beginning and go directly to the juicy part
+    title = strstr(title, "CPU speed");
+    if (!title) {
+        return;
+    }
+    
     if (strstr(title, "max"))
     {
-        sscanf(title, "Cpu speed: max %d%% cycles, Frameskip %d", &maxPercent, &frameskip);
+        sscanf(title, "CPU speed: max %d%% cycles, Frameskip %d", &maxPercent, &frameskip);
         sprintf(buf, "%3d%%", maxPercent);
         cycles = 0;
     } 
     else
     {
-        sscanf(title, "Cpu speed: %d cycles, Frameskip %d", &cycles, &frameskip);
+        sscanf(title, "CPU speed: %d cycles, Frameskip %d", &cycles, &frameskip);
         sprintf(buf, "%4d", cycles);
         maxPercent = 0;
     }

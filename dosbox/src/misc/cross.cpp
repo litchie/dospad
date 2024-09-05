@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2002-2010  The DOSBox Team
+ *  Copyright (C) 2002-2021  The DOSBox Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -11,12 +11,11 @@
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *  GNU General Public License for more details.
  *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *  You should have received a copy of the GNU General Public License along
+ *  with this program; if not, write to the Free Software Foundation, Inc.,
+ *  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-/* $Id: cross.cpp,v 1.7 2009-05-26 17:43:39 qbix79 Exp $ */
 
 #include "dosbox.h"
 #include "cross.h"
@@ -102,7 +101,7 @@ void Cross::CreatePlatformConfigDir(std::string& in) {
         in = dospad_config_dir();
         // Don't create it.
 #elif defined(MACOSX)
-	in = "~/Library/Preferences/";
+	in = "~/Library/Preferences";
 	ResolveHomedir(in);
 	//Don't create it. Assume it exists
 #else
@@ -138,6 +137,19 @@ void Cross::CreateDir(std::string const& in) {
 #endif
 }
 
+bool Cross::IsPathAbsolute(std::string const& in) {
+	// Absolute paths
+#if defined (WIN32) || defined(OS2)
+	// drive letter
+	if (in.size() > 2 && in[1] == ':' ) return true;
+	// UNC path
+	else if (in.size() > 2 && in[0]=='\\' && in[1]=='\\') return true;
+#else
+	if (in.size() > 1 && in[0] == '/' ) return true;
+#endif
+	return false;
+}
+
 #if defined (WIN32)
 
 dir_information* open_directory(const char* dirname) {
@@ -159,6 +171,7 @@ dir_information* open_directory(const char* dirname) {
 }
 
 bool read_directory_first(dir_information* dirp, char* entry_name, bool& is_directory) {
+	if (!dirp) return false;
 	dirp->handle = FindFirstFile(dirp->base_path, &dirp->search_data);
 	if (INVALID_HANDLE_VALUE == dirp->handle) {
 		return false;
@@ -173,6 +186,7 @@ bool read_directory_first(dir_information* dirp, char* entry_name, bool& is_dire
 }
 
 bool read_directory_next(dir_information* dirp, char* entry_name, bool& is_directory) {
+	if (!dirp) return false;
 	int result = FindNextFile(dirp->handle, &dirp->search_data);
 	if (result==0) return false;
 
@@ -185,7 +199,7 @@ bool read_directory_next(dir_information* dirp, char* entry_name, bool& is_direc
 }
 
 void close_directory(dir_information* dirp) {
-	if (dirp->handle != INVALID_HANDLE_VALUE) {
+	if (dirp && dirp->handle != INVALID_HANDLE_VALUE) {
 		FindClose(dirp->handle);
 		dirp->handle = INVALID_HANDLE_VALUE;
 	}
@@ -201,37 +215,12 @@ dir_information* open_directory(const char* dirname) {
 }
 
 bool read_directory_first(dir_information* dirp, char* entry_name, bool& is_directory) {
-	struct dirent* dentry = readdir(dirp->dir);
-	if (dentry==NULL) {
-		return false;
-	}
-
-//	safe_strncpy(entry_name,dentry->d_name,(FILENAME_MAX<MAX_PATH)?FILENAME_MAX:MAX_PATH);	// [include stdio.h], maybe pathconf()
-	safe_strncpy(entry_name,dentry->d_name,CROSS_LEN);
-
-#ifdef DIRENT_HAS_D_TYPE
-	if(dentry->d_type == DT_DIR) {
-		is_directory = true;
-		return true;
-	} else if(dentry->d_type == DT_REG) {
-		is_directory = false;
-		return true;
-	}
-#endif
-
-	// probably use d_type here instead of a full stat()
-	static char buffer[2*CROSS_LEN] = { 0 };
-	buffer[0] = 0;
-	strcpy(buffer,dirp->base_path);
-	strcat(buffer,entry_name);
-	struct stat status;
-	if (stat(buffer,&status)==0) is_directory = (S_ISDIR(status.st_mode)>0);
-	else is_directory = false;
-
-	return true;
+	if (!dirp) return false;
+	return read_directory_next(dirp,entry_name,is_directory);
 }
 
 bool read_directory_next(dir_information* dirp, char* entry_name, bool& is_directory) {
+	if (!dirp) return false;
 	struct dirent* dentry = readdir(dirp->dir);
 	if (dentry==NULL) {
 		return false;
@@ -250,21 +239,24 @@ bool read_directory_next(dir_information* dirp, char* entry_name, bool& is_direc
 	}
 #endif
 
-	// probably use d_type here instead of a full stat()
-	static char buffer[2*CROSS_LEN] = { 0 };
+	//Maybe only for DT_UNKNOWN if DIRENT_HAD_D_TYPE..
+	static char buffer[2 * CROSS_LEN + 1] = { 0 };
+	static char split[2] = { CROSS_FILESPLIT , 0 };
 	buffer[0] = 0;
 	strcpy(buffer,dirp->base_path);
+	size_t buflen = strlen(buffer);
+	if (buflen && buffer[buflen - 1] != CROSS_FILESPLIT ) strcat(buffer, split);
 	strcat(buffer,entry_name);
 	struct stat status;
 
-	if (stat(buffer,&status)==0) is_directory = (S_ISDIR(status.st_mode)>0);
+	if (stat(buffer,&status) == 0) is_directory = (S_ISDIR(status.st_mode)>0);
 	else is_directory = false;
 
 	return true;
 }
 
 void close_directory(dir_information* dirp) {
-	closedir(dirp->dir);
+	if (dirp) closedir(dirp->dir);
 }
 
 #endif

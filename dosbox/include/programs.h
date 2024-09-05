@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2002-2010  The DOSBox Team
+ *  Copyright (C) 2002-2021  The DOSBox Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -11,12 +11,11 @@
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *  GNU General Public License for more details.
  *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *  You should have received a copy of the GNU General Public License along
+ *  with this program; if not, write to the Free Software Foundation, Inc.,
+ *  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-/* $Id: programs.h,v 1.19 2009-05-27 09:15:41 qbix79 Exp $ */
 
 #ifndef DOSBOX_PROGRAMS_H
 #define DOSBOX_PROGRAMS_H
@@ -45,13 +44,16 @@ public:
 	const char * GetFileName(){ return file_name.c_str();}
 
 	bool FindExist(char const * const name,bool remove=false);
-	bool FindHex(char const * const name,int & value,bool remove=false);
+	bool FindHex(char const * const name,unsigned int & value,bool remove=false);
 	bool FindInt(char const * const name,int & value,bool remove=false);
 	bool FindString(char const * const name,std::string & value,bool remove=false);
 	bool FindCommand(unsigned int which,std::string & value);
 	bool FindStringBegin(char const * const begin,std::string & value, bool remove=false);
 	bool FindStringRemain(char const * const name,std::string & value);
+	bool FindStringRemainBegin(char const * const name,std::string & value);
 	bool GetStringRemain(std::string & value);
+	int GetParameterFromList(const char* const params[], std::vector<std::string> & output);
+	void FillVector(std::vector<std::string> & vector);
 	unsigned int GetCount(void);
 	void Shift(unsigned int amount=1);
 	Bit16u Get_arglength();

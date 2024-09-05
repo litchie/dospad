@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2002-2010  The DOSBox Team
+ *  Copyright (C) 2002-2021  The DOSBox Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -11,12 +11,11 @@
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *  GNU General Public License for more details.
  *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *  You should have received a copy of the GNU General Public License along
+ *  with this program; if not, write to the Free Software Foundation, Inc.,
+ *  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-/* $Id: vga_misc.cpp,v 1.39 2009-01-25 12:00:49 c2woody Exp $ */
 
 #include "dosbox.h"
 #include "inout.h"
@@ -30,8 +29,8 @@ Bitu vga_read_p3d4(Bitu port,Bitu iolen);
 void vga_write_p3d5(Bitu port,Bitu val,Bitu iolen);
 Bitu vga_read_p3d5(Bitu port,Bitu iolen);
 
-Bitu vga_read_p3da(Bitu port,Bitu iolen) {
-	Bit8u retval=0;
+Bitu vga_read_p3da(Bitu /*port*/,Bitu /*iolen*/) {
+	Bit8u retval=4;	// bit 2 set, needed by Blues Brothers
 	double timeInFrame = PIC_FullIndex()-vga.draw.delay.framestart;
 
 	vga.internal.attrindex=false;
@@ -56,36 +55,28 @@ Bitu vga_read_p3da(Bitu port,Bitu iolen) {
 	return retval;
 }
 
-static void write_p3c2(Bitu port,Bitu val,Bitu iolen) {
+static void write_p3c2(Bitu /*port*/,Bitu val,Bitu /*iolen*/) {
 	vga.misc_output=val;
-	if (val & 0x1) {
-		IO_RegisterWriteHandler(0x3d4,vga_write_p3d4,IO_MB);
-		IO_RegisterReadHandler(0x3d4,vga_read_p3d4,IO_MB);
-		IO_RegisterReadHandler(0x3da,vga_read_p3da,IO_MB);
 
-		IO_RegisterWriteHandler(0x3d5,vga_write_p3d5,IO_MB);
-		IO_RegisterReadHandler(0x3d5,vga_read_p3d5,IO_MB);
+	Bitu base=(val & 0x1) ? 0x3d0 : 0x3b0;
+	Bitu free=(val & 0x1) ? 0x3b0 : 0x3d0;
+	Bitu first=2, last=2;
+	if (machine==MCH_EGA) {first=0; last=3;}
 
-		IO_FreeWriteHandler(0x3b4,IO_MB);
-		IO_FreeReadHandler(0x3b4,IO_MB);
-		IO_FreeWriteHandler(0x3b5,IO_MB);
-		IO_FreeReadHandler(0x3b5,IO_MB);
-		IO_FreeReadHandler(0x3ba,IO_MB);
-	} else {
-		IO_RegisterWriteHandler(0x3b4,vga_write_p3d4,IO_MB);
-		IO_RegisterReadHandler(0x3b4,vga_read_p3d4,IO_MB);
-		IO_RegisterReadHandler(0x3ba,vga_read_p3da,IO_MB);
-
-		IO_RegisterWriteHandler(0x3b5,vga_write_p3d5,IO_MB);
-		IO_RegisterReadHandler(0x3b5,vga_read_p3d5,IO_MB);
-
-
-		IO_FreeWriteHandler(0x3d4,IO_MB);
-		IO_FreeReadHandler(0x3d4,IO_MB);
-		IO_FreeWriteHandler(0x3d5,IO_MB);
-		IO_FreeReadHandler(0x3d5,IO_MB);
-		IO_FreeReadHandler(0x3da,IO_MB);
+	for (Bitu i=first; i<=last; i++) {
+		IO_RegisterWriteHandler(base+i*2,vga_write_p3d4,IO_MB);
+		IO_RegisterReadHandler(base+i*2,vga_read_p3d4,IO_MB);
+		IO_RegisterWriteHandler(base+i*2+1,vga_write_p3d5,IO_MB);
+		IO_RegisterReadHandler(base+i*2+1,vga_read_p3d5,IO_MB);
+		IO_FreeWriteHandler(free+i*2,IO_MB);
+		IO_FreeReadHandler(free+i*2,IO_MB);
+		IO_FreeWriteHandler(free+i*2+1,IO_MB);
+		IO_FreeReadHandler(free+i*2+1,IO_MB);
 	}
+
+	IO_RegisterReadHandler(base+0xa,vga_read_p3da,IO_MB);
+	IO_FreeReadHandler(free+0xa,IO_MB);
+
 	/*
 		0	If set Color Emulation. Base Address=3Dxh else Mono Emulation. Base Address=3Bxh.
 		2-3	Clock Select. 0: 25MHz, 1: 28MHz
@@ -100,20 +91,20 @@ static void write_p3c2(Bitu port,Bitu val,Bitu iolen) {
 }
 
 
-static Bitu read_p3cc(Bitu port,Bitu iolen) {
+static Bitu read_p3cc(Bitu /*port*/,Bitu /*iolen*/) {
 	return vga.misc_output;
 }
 
 // VGA feature control register
-static Bitu read_p3ca(Bitu port,Bitu iolen) {
+static Bitu read_p3ca(Bitu /*port*/,Bitu /*iolen*/) {
 	return 0;
 }
 
-static Bitu read_p3c8(Bitu port,Bitu iolen) {
+static Bitu read_p3c8(Bitu /*port*/,Bitu /*iolen*/) {
 	return 0x10;
 }
 
-static Bitu read_p3c2(Bitu port,Bitu iolen) {
+static Bitu read_p3c2(Bitu /*port*/,Bitu /*iolen*/) {
 	Bit8u retval=0;
 
 	if (machine==MCH_EGA) retval = 0x0F;

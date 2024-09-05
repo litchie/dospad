@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2002-2010  The DOSBox Team
+ *  Copyright (C) 2002-2021  The DOSBox Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -11,13 +11,13 @@
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *  GNU General Public License for more details.
  *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *  You should have received a copy of the GNU General Public License along
+ *  with this program; if not, write to the Free Software Foundation, Inc.,
+ *  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-#if !defined __LAZYFLAGS_H
-#define __LAZYFLAGS_H
+#ifndef DOSBOX_LAZYFLAGS_H
+#define DOSBOX_LAZYFLAGS_H
 
 //Flag Handling
 Bit32u get_CF(void);
@@ -31,7 +31,9 @@ Bitu FillFlags(void);
 void FillFlagsNoCFOF(void);
 void DestroyConditionFlags(void);
 
+#ifndef DOSBOX_REGS_H
 #include "regs.h"
+#endif
 
 struct LazyFlags {
     GenReg32 var1,var2,res;

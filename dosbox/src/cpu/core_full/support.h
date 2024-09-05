@@ -1,3 +1,21 @@
+/*
+ *  Copyright (C) 2002-2021  The DOSBox Team
+ *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License along
+ *  with this program; if not, write to the Free Software Foundation, Inc.,
+ *  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+ */
+
 enum {
 	L_N=0,
 	L_SKIP,
@@ -46,6 +64,7 @@ enum {
 	D_CPUID,
 	D_HLT,D_CLTS,
 	D_LOCK,D_ICEBP,
+	D_RDTSC,
 	L_ERROR
 };
 
@@ -148,7 +167,8 @@ enum {
 
 	M_SEG,M_EA,
 	M_GRP,
-	M_GRP_Ib,M_GRP_CL,M_GRP_1,
+	//Special shift groups
+	M_SHIFT_1, M_SHIFT_Ib,M_SHIFT_CL,
 
 	M_POPw,M_POPd
 };

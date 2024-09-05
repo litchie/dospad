@@ -506,6 +506,15 @@
 		E7FDFB6A255150DA00A6DE66 /* SoundEffect.m in Sources */ = {isa = PBXBuildFile; fileRef = E7FDFB69255150DA00A6DE66 /* SoundEffect.m */; };
 		E7FDFB96255A3F8300A6DE66 /* DPThumbView.m in Sources */ = {isa = PBXBuildFile; fileRef = E7FDFB95255A3F8000A6DE66 /* DPThumbView.m */; };
 		F21A87042C71763A00A5860F /* DPPackage.m in Sources */ = {isa = PBXBuildFile; fileRef = F21A87032C71763A00A5860F /* DPPackage.m */; };
+		F21A870F2C8839B300A5860F /* ymdeltat.h in Headers */ = {isa = PBXBuildFile; fileRef = F21A87092C8839B100A5860F /* ymdeltat.h */; };
+		F21A87102C8839B300A5860F /* fmopl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F21A870A2C8839B100A5860F /* fmopl.cpp */; };
+		F21A87112C8839B300A5860F /* ymf262.h in Headers */ = {isa = PBXBuildFile; fileRef = F21A870B2C8839B200A5860F /* ymf262.h */; };
+		F21A87122C8839B300A5860F /* fmopl.h in Headers */ = {isa = PBXBuildFile; fileRef = F21A870C2C8839B200A5860F /* fmopl.h */; };
+		F21A87132C8839B300A5860F /* ymdeltat.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F21A870D2C8839B200A5860F /* ymdeltat.cpp */; };
+		F21A87142C8839B300A5860F /* ymf262.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F21A870E2C8839B300A5860F /* ymf262.cpp */; };
+		F21A87172C883CAC00A5860F /* pci_bus.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F21A87152C883CAB00A5860F /* pci_bus.cpp */; };
+		F21A87182C883CAC00A5860F /* pci_devices.h in Headers */ = {isa = PBXBuildFile; fileRef = F21A87162C883CAB00A5860F /* pci_devices.h */; };
+		F21A871A2C88AB9000A5860F /* drive_overlay.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F21A87192C88AB9000A5860F /* drive_overlay.cpp */; };
 		F262CC1C25A52C6E005F21D2 /* DPMouseManager.m in Sources */ = {isa = PBXBuildFile; fileRef = F262CC1B25A52C6E005F21D2 /* DPMouseManager.m */; };
 		F262CC2625A52C85005F21D2 /* DPKeyboardManager.m in Sources */ = {isa = PBXBuildFile; fileRef = F262CC2525A52C85005F21D2 /* DPKeyboardManager.m */; };
 		F2A095812BC3B86300BD25E3 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = F2A095802BC3B86300BD25E3 /* PrivacyInfo.xcprivacy */; };
@@ -1312,6 +1321,15 @@
 		E7FDFB95255A3F8000A6DE66 /* DPThumbView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DPThumbView.m; sourceTree = "<group>"; };
 		F21A87032C71763A00A5860F /* DPPackage.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DPPackage.m; sourceTree = "<group>"; };
 		F21A87052C71766C00A5860F /* DPPackage.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DPPackage.h; sourceTree = "<group>"; };
+		F21A87092C8839B100A5860F /* ymdeltat.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ymdeltat.h; sourceTree = "<group>"; };
+		F21A870A2C8839B100A5860F /* fmopl.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = fmopl.cpp; sourceTree = "<group>"; };
+		F21A870B2C8839B200A5860F /* ymf262.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ymf262.h; sourceTree = "<group>"; };
+		F21A870C2C8839B200A5860F /* fmopl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = fmopl.h; sourceTree = "<group>"; };
+		F21A870D2C8839B200A5860F /* ymdeltat.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ymdeltat.cpp; sourceTree = "<group>"; };
+		F21A870E2C8839B300A5860F /* ymf262.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ymf262.cpp; sourceTree = "<group>"; };
+		F21A87152C883CAB00A5860F /* pci_bus.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = pci_bus.cpp; sourceTree = "<group>"; };
+		F21A87162C883CAB00A5860F /* pci_devices.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = pci_devices.h; sourceTree = "<group>"; };
+		F21A87192C88AB9000A5860F /* drive_overlay.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = drive_overlay.cpp; sourceTree = "<group>"; };
 		F262CC1A25A52C6E005F21D2 /* DPMouseManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DPMouseManager.h; sourceTree = "<group>"; };
 		F262CC1B25A52C6E005F21D2 /* DPMouseManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DPMouseManager.m; sourceTree = "<group>"; };
 		F262CC2425A52C85005F21D2 /* DPKeyboardManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DPKeyboardManager.h; sourceTree = "<group>"; };
@@ -1868,6 +1886,7 @@
 		E71E615611B550FD00EC5A05 /* dos */ = {
 			isa = PBXGroup;
 			children = (
+				F21A87192C88AB9000A5860F /* drive_overlay.cpp */,
 				E71E615711B550FD00EC5A05 /* cdrom.cpp */,
 				E71E615811B550FD00EC5A05 /* cdrom.h */,
 				E71E615911B550FD00EC5A05 /* cdrom_aspi_win32.cpp */,
@@ -1946,6 +1965,8 @@
 		E71E619411B550FD00EC5A05 /* hardware */ = {
 			isa = PBXGroup;
 			children = (
+				F21A87152C883CAB00A5860F /* pci_bus.cpp */,
+				F21A87162C883CAB00A5860F /* pci_devices.h */,
 				E7E30FE3251E34D10021D10D /* mame */,
 				E71E619511B550FD00EC5A05 /* adlib.cpp */,
 				E71E619611B550FD00EC5A05 /* adlib.h */,
@@ -2529,6 +2550,12 @@
 		E7E30FE3251E34D10021D10D /* mame */ = {
 			isa = PBXGroup;
 			children = (
+				F21A870A2C8839B100A5860F /* fmopl.cpp */,
+				F21A870C2C8839B200A5860F /* fmopl.h */,
+				F21A870D2C8839B200A5860F /* ymdeltat.cpp */,
+				F21A87092C8839B100A5860F /* ymdeltat.h */,
+				F21A870E2C8839B300A5860F /* ymf262.cpp */,
+				F21A870B2C8839B200A5860F /* ymf262.h */,
 				E7E30FE4251E34D10021D10D /* sn76496.h */,
 				E7E30FE6251E34D10021D10D /* emu.h */,
 				E7E30FE7251E34D10021D10D /* saa1099.cpp */,
@@ -2896,6 +2923,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				E71E61F811B550FD00EC5A05 /* config.h in Headers */,
+				F21A87182C883CAC00A5860F /* pci_devices.h in Headers */,
 				E71E61F911B550FD00EC5A05 /* bios.h in Headers */,
 				E71E61FA11B550FD00EC5A05 /* bios_disk.h in Headers */,
 				E71E61FB11B550FD00EC5A05 /* callback.h in Headers */,
@@ -2904,6 +2932,7 @@
 				E71E61FE11B550FD00EC5A05 /* cross.h in Headers */,
 				E71E61FF11B550FD00EC5A05 /* debug.h in Headers */,
 				E71E620011B550FD00EC5A05 /* dma.h in Headers */,
+				F21A870F2C8839B300A5860F /* ymdeltat.h in Headers */,
 				E71E620111B550FD00EC5A05 /* dos_inc.h in Headers */,
 				E71E620211B550FD00EC5A05 /* dos_system.h in Headers */,
 				E71E620311B550FD00EC5A05 /* dosbox.h in Headers */,
@@ -2980,10 +3009,12 @@
 				E71E627011B550FD00EC5A05 /* drives.h in Headers */,
 				E71E627211B550FD00EC5A05 /* scsidefs.h in Headers */,
 				E7E30FEB251E34D20021D10D /* sn76496.h in Headers */,
+				F21A87122C8839B300A5860F /* fmopl.h in Headers */,
 				E71E627311B550FD00EC5A05 /* wnaspi32.h in Headers */,
 				E71E627611B550FD00EC5A05 /* fpu_instructions.h in Headers */,
 				E71E627711B550FD00EC5A05 /* fpu_instructions_x86.h in Headers */,
 				E71E627911B550FD00EC5A05 /* dosbox_logo.h in Headers */,
+				F21A87112C8839B300A5860F /* ymf262.h in Headers */,
 				E71E627A11B550FD00EC5A05 /* dosbox_splash.h in Headers */,
 				E71E627D11B550FD00EC5A05 /* midi_alsa.h in Headers */,
 				E71E627E11B550FD00EC5A05 /* midi_coreaudio.h in Headers */,
@@ -3486,12 +3517,14 @@
 				E71E626611B550FD00EC5A05 /* dos_misc.cpp in Sources */,
 				E71E626711B550FD00EC5A05 /* dos_mscdex.cpp in Sources */,
 				E71E626811B550FD00EC5A05 /* dos_programs.cpp in Sources */,
+				F21A871A2C88AB9000A5860F /* drive_overlay.cpp in Sources */,
 				E71E626911B550FD00EC5A05 /* dos_tables.cpp in Sources */,
 				E71E626A11B550FD00EC5A05 /* drive_cache.cpp in Sources */,
 				E71E626B11B550FD00EC5A05 /* drive_fat.cpp in Sources */,
 				E71E626C11B550FD00EC5A05 /* drive_iso.cpp in Sources */,
 				E71E626D11B550FD00EC5A05 /* drive_local.cpp in Sources */,
 				E71E626E11B550FD00EC5A05 /* drive_virtual.cpp in Sources */,
+				F21A87172C883CAC00A5860F /* pci_bus.cpp in Sources */,
 				E71E626F11B550FD00EC5A05 /* drives.cpp in Sources */,
 				E71E627411B550FD00EC5A05 /* dosbox.cpp in Sources */,
 				E71E627511B550FD00EC5A05 /* fpu.cpp in Sources */,
@@ -3509,12 +3542,14 @@
 				E71E629511B550FD00EC5A05 /* dma.cpp in Sources */,
 				E71E629611B550FD00EC5A05 /* gameblaster.cpp in Sources */,
 				E71E629711B550FD00EC5A05 /* gus.cpp in Sources */,
+				F21A87102C8839B300A5860F /* fmopl.cpp in Sources */,
 				E71E629811B550FD00EC5A05 /* hardware.cpp in Sources */,
 				E71E629911B550FD00EC5A05 /* iohandler.cpp in Sources */,
 				E71E629A11B550FD00EC5A05 /* ipx.cpp in Sources */,
 				E71E629B11B550FD00EC5A05 /* ipxserver.cpp in Sources */,
 				E71E629C11B550FD00EC5A05 /* joystick.cpp in Sources */,
 				E71E629D11B550FD00EC5A05 /* keyboard.cpp in Sources */,
+				F21A87132C8839B300A5860F /* ymdeltat.cpp in Sources */,
 				E71E629F11B550FD00EC5A05 /* memory.cpp in Sources */,
 				E71E62A011B550FD00EC5A05 /* mixer.cpp in Sources */,
 				E71E62A111B550FD00EC5A05 /* mpu401.cpp in Sources */,
@@ -3566,6 +3601,7 @@
 				E71E62DC11B550FD00EC5A05 /* cross.cpp in Sources */,
 				E71E62DE11B550FD00EC5A05 /* messages.cpp in Sources */,
 				E71E62DF11B550FD00EC5A05 /* programs.cpp in Sources */,
+				F21A87142C8839B300A5860F /* ymf262.cpp in Sources */,
 				E71E62E011B550FD00EC5A05 /* setup.cpp in Sources */,
 				E71E62E111B550FD00EC5A05 /* support.cpp in Sources */,
 				E71E62E311B550FD00EC5A05 /* shell.cpp in Sources */,
@@ -4315,7 +4351,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 20240407.1;
+				CURRENT_PROJECT_VERSION = 20240828;
 				DEVELOPMENT_TEAM = 4C8YZND49H;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -4330,7 +4366,7 @@
 				INFOPLIST_KEY_CFBundleDisplayName = "iDOS 3";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
-				MARKETING_VERSION = 3.0;
+				MARKETING_VERSION = 3.1;
 				OTHER_LDFLAGS = (
 					"-framework",
 					Foundation,
@@ -4353,7 +4389,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 20240407.1;
+				CURRENT_PROJECT_VERSION = 20240828;
 				DEVELOPMENT_TEAM = 4C8YZND49H;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = dospad/DPPrefix.pch;
@@ -4366,7 +4402,7 @@
 				INFOPLIST_KEY_CFBundleDisplayName = "iDOS 3";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
-				MARKETING_VERSION = 3.0;
+				MARKETING_VERSION = 3.1;
 				OTHER_LDFLAGS = (
 					"-framework",
 					Foundation,
@@ -4467,7 +4503,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 20240407.1;
+				CURRENT_PROJECT_VERSION = 20240828;
 				DEVELOPMENT_TEAM = 4C8YZND49H;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = dospad/DPPrefix.pch;
@@ -4481,7 +4517,7 @@
 				INFOPLIST_KEY_CFBundleDisplayName = "iDOS 3";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
-				MARKETING_VERSION = 3.0;
+				MARKETING_VERSION = 3.1;
 				OTHER_LDFLAGS = (
 					"-framework",
 					Foundation,
@@ -4522,7 +4558,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 20240407.1;
+				CURRENT_PROJECT_VERSION = 20240828;
 				DEVELOPMENT_TEAM = 4C8YZND49H;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = dospad/DPPrefix.pch;
@@ -4535,7 +4571,7 @@
 				INFOPLIST_KEY_CFBundleDisplayName = "iDOS 3";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
-				MARKETING_VERSION = 3.0;
+				MARKETING_VERSION = 3.1;
 				OTHER_LDFLAGS = (
 					"-framework",
 					Foundation,

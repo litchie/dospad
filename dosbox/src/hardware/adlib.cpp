@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2002-2010  The DOSBox Team
+ *  Copyright (C) 2002-2021  The DOSBox Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -11,12 +11,11 @@
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *  GNU General Public License for more details.
  *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *  You should have received a copy of the GNU General Public License along
+ *  with this program; if not, write to the Free Software Foundation, Inc.,
+ *  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-/* $Id: adlib.cpp,v 1.42 2009-11-03 20:17:42 qbix79 Exp $ */
 
 #include <stdlib.h>
 #include <string.h>
@@ -28,6 +27,14 @@
 #include "mapper.h"
 #include "mem.h"
 #include "dbopl.h"
+#include "cpu.h"
+
+#include "mame/emu.h"
+#include "mame/fmopl.h"
+#include "mame/ymf262.h"
+
+#define OPL2_INTERNAL_FREQ    3600000   // The OPL2 operates at 3.6MHz
+#define OPL3_INTERNAL_FREQ    14400000  // The OPL3 operates at 14.4MHz
 
 namespace OPL2 {
 	#include "opl.cpp"
@@ -36,7 +43,7 @@ namespace OPL2 {
 		virtual void WriteReg( Bit32u reg, Bit8u val ) {
 			adlib_write(reg,val);
 		}
-		virtual Bit32u WriteAddr( Bit32u port, Bit8u val ) {
+		virtual Bit32u WriteAddr( Bit32u /*port*/, Bit8u val ) {
 			return val;
 		}
 
@@ -85,6 +92,80 @@ namespace OPL3 {
 		}
 	};
 }
+
+namespace MAMEOPL2 {
+
+struct Handler : public Adlib::Handler {
+	void* chip;
+
+	virtual void WriteReg(Bit32u reg, Bit8u val) {
+		ym3812_write(chip, 0, reg);
+		ym3812_write(chip, 1, val);
+	}
+	virtual Bit32u WriteAddr(Bit32u /*port*/, Bit8u val) {
+		return val;
+	}
+	virtual void Generate(MixerChannel* chan, Bitu samples) {
+		Bit16s buf[1024 * 2];
+		while (samples > 0) {
+			Bitu todo = samples > 1024 ? 1024 : samples;
+			samples -= todo;
+			ym3812_update_one(chip, buf, todo);
+			chan->AddSamples_m16(todo, buf);
+		}
+	}
+	virtual void Init(Bitu rate) {
+		chip = ym3812_init(0, OPL2_INTERNAL_FREQ, rate);
+	}
+	~Handler() {
+		ym3812_shutdown(chip);
+	}
+};
+
+}
+
+
+namespace MAMEOPL3 {
+
+struct Handler : public Adlib::Handler {
+	void* chip;
+
+	virtual void WriteReg(Bit32u reg, Bit8u val) {
+		ymf262_write(chip, 0, reg);
+		ymf262_write(chip, 1, val);
+	}
+	virtual Bit32u WriteAddr(Bit32u /*port*/, Bit8u val) {
+		return val;
+	}
+	virtual void Generate(MixerChannel* chan, Bitu samples) {
+		//We generate data for 4 channels, but only the first 2 are connected on a pc
+		Bit16s buf[4][1024];
+		Bit16s result[1024][2];
+		Bit16s* buffers[4] = { buf[0], buf[1], buf[2], buf[3] };
+
+		while (samples > 0) {
+			Bitu todo = samples > 1024 ? 1024 : samples;
+			samples -= todo;
+			ymf262_update_one(chip, buffers, todo);
+			//Interleave the samples before mixing
+			for (Bitu i = 0; i < todo; i++) {
+				result[i][0] = buf[0][i];
+				result[i][1] = buf[1][i];
+			}
+			chan->AddSamples_s16(todo, result[0]);
+		}
+	}
+	virtual void Init(Bitu rate) {
+		chip = ymf262_init(0, OPL3_INTERNAL_FREQ, rate);
+	}
+	~Handler() {
+		ymf262_shutdown(chip);
+	}
+};
+
+}
+
+
 
 #define RAW_SIZE 1024
 
@@ -227,15 +308,24 @@ class Capture {
 	void WriteCache( void  ) {
 		Bitu i, val;
 		/* Check the registers to add */
-		for (i=0;i<256;i++) {
-			//Skip the note on entries
-			if (i>=0xb0 && i<=0xb8) 
-				continue;
+		for (i = 0;i < 256;i++) {
 			val = (*cache)[ i ];
+			//Silence the note on entries
+			if (i >= 0xb0 && i <= 0xb8) {
+				val &= ~0x20;
+			}
+			if (i == 0xbd) {
+				val &= ~0x1f;
+			}
+
 			if (val) {
 				AddWrite( i, val );
 			}
 			val = (*cache)[ 0x100 + i ];
+
+			if (i >= 0xb0 && i <= 0xb8) {
+				val &= ~0x20;
+			}
 			if (val) {
 				AddWrite( 0x100 + i, val );
 			}
@@ -350,40 +440,41 @@ skipWrite:
 Chip
 */
 
+Chip::Chip() : timer0(80), timer1(320) {
+}
+
 bool Chip::Write( Bit32u reg, Bit8u val ) {
+	//if(reg == 0x02 || reg == 0x03 || reg == 0x04) LOG(LOG_MISC,LOG_ERROR)("write adlib timer %X %X",reg,val);
 	switch ( reg ) {
 	case 0x02:
-		timer[0].counter = val;
+		timer0.Update(PIC_FullIndex() );
+		timer0.SetCounter(val);
 		return true;
 	case 0x03:
-		timer[1].counter = val;
+		timer1.Update(PIC_FullIndex());
+		timer1.SetCounter(val);
 		return true;
 	case 0x04:
-		double time;
-		time = PIC_FullIndex();
+		//Reset overflow in both timers
 		if ( val & 0x80 ) {
-			timer[0].Reset( time );
-			timer[1].Reset( time );
+			timer0.Reset();
+			timer1.Reset();
 		} else {
-			timer[0].Update( time );
-			timer[1].Update( time );
-			if ( val & 0x1 ) {
-				timer[0].Start( time, 80 );
-			} else {
-				timer[0].Stop( );
+			const double time = PIC_FullIndex();
+			if (val & 0x1) {
+				timer0.Start(time);
 			}
-			timer[0].masked = (val & 0x40) > 0;
-			if ( timer[0].masked )
-				timer[0].overflow = false;
-			if ( val & 0x2 ) {
-				timer[1].Start( time, 320 );
-			} else {
-				timer[1].Stop( );
+			else {
+				timer0.Stop();
 			}
-			timer[1].masked = (val & 0x20) > 0;
-			if ( timer[1].masked )
-				timer[1].overflow = false;
-
+			if (val & 0x2) {
+				timer1.Start(time);
+			}
+			else {
+				timer1.Stop();
+			}
+			timer0.SetMask((val & 0x40) > 0);
+			timer1.SetMask((val & 0x20) > 0);
 		}
 		return true;
 	}
@@ -392,21 +483,18 @@ bool Chip::Write( Bit32u reg, Bit8u val ) {
 
 
 Bit8u Chip::Read( ) {
-	double time( PIC_FullIndex() );
-	timer[0].Update( time );
-	timer[1].Update( time );
+	const double time( PIC_FullIndex() );
 	Bit8u ret = 0;
 	//Overflow won't be set if a channel is masked
-	if ( timer[0].overflow ) {
+	if (timer0.Update(time)) {
 		ret |= 0x40;
 		ret |= 0x80;
 	}
-	if ( timer[1].overflow ) {
+	if (timer1.Update(time)) {
 		ret |= 0x20;
 		ret |= 0x80;
 	}
 	return ret;
-
 }
 
 void Module::CacheWrite( Bit32u reg, Bit8u val ) {
@@ -441,8 +529,38 @@ void Module::DualWrite( Bit8u index, Bit8u reg, Bit8u val ) {
 	CacheWrite( fullReg, val );
 }
 
+void Module::CtrlWrite( Bit8u val ) {
+	switch ( ctrl.index ) {
+	case 0x09: /* Left FM Volume */
+		ctrl.lvol = val;
+		goto setvol;
+	case 0x0a: /* Right FM Volume */
+		ctrl.rvol = val;
+setvol:
+		if ( ctrl.mixer ) {
+			//Dune cdrom uses 32 volume steps in an apparent mistake, should be 128
+			mixerChan->SetVolume( (float)(ctrl.lvol&0x1f)/31.0f, (float)(ctrl.rvol&0x1f)/31.0f );
+		}
+		break;
+	}
+}
 
-void Module::PortWrite( Bitu port, Bitu val, Bitu iolen ) {
+Bitu Module::CtrlRead( void ) {
+	switch ( ctrl.index ) {
+	case 0x00: /* Board Options */
+		return 0x70; //No options installed
+	case 0x09: /* Left FM Volume */
+		return ctrl.lvol;
+	case 0x0a: /* Right FM Volume */
+		return ctrl.rvol;
+	case 0x15: /* Audio Relocation */
+		return 0x388 >> 3; //Cryo installer detection
+	}
+	return 0xff;
+}
+
+
+void Module::PortWrite( Bitu port, Bitu val, Bitu /*iolen*/ ) {
 	//Keep track of last write time
 	lastUsed = PIC_Ticks;
 	//Maybe only enable with a keyon?
@@ -451,6 +569,14 @@ void Module::PortWrite( Bitu port, Bitu val, Bitu iolen ) {
 	}
 	if ( port&1 ) {
 		switch ( mode ) {
+		case MODE_OPL3GOLD:
+			if ( port == 0x38b ) {
+				if ( ctrl.active ) {
+					CtrlWrite( val );
+					break;
+				}
+			} //Fall-through if not handled by control chip
+			/* FALLTHROUGH */
 		case MODE_OPL2:
 		case MODE_OPL3:
 			if ( !chip[0].Write( reg.normal, val ) ) {
@@ -477,6 +603,20 @@ void Module::PortWrite( Bitu port, Bitu val, Bitu iolen ) {
 		case MODE_OPL2:
 			reg.normal = handler->WriteAddr( port, val ) & 0xff;
 			break;
+		case MODE_OPL3GOLD:
+			if ( port == 0x38a ) {
+				if ( val == 0xff ) {
+					ctrl.active = true;
+					break;
+				} else if ( val == 0xfe ) {
+					ctrl.active = false;
+					break;
+				} else if ( ctrl.active ) {
+					ctrl.index = val & 0xff;
+					break;
+				}
+			} //Fall-through if not handled by control chip
+			/* FALLTHROUGH */
 		case MODE_OPL3:
 			reg.normal = handler->WriteAddr( port, val ) & 0x1ff;
 			break;
@@ -495,7 +635,13 @@ void Module::PortWrite( Bitu port, Bitu val, Bitu iolen ) {
 }
 
 
-Bitu Module::PortRead( Bitu port, Bitu iolen ) {
+Bitu Module::PortRead( Bitu port, Bitu /*iolen*/ ) {
+	//roughly half a micro (as we already do 1 micro on each port read and some tests revealed it taking 1.5 micros to read an adlib port)
+	Bits delaycyc = (CPU_CycleMax/2048); 
+	if(GCC_UNLIKELY(delaycyc > CPU_Cycles)) delaycyc = CPU_Cycles;
+	CPU_Cycles -= delaycyc;
+	CPU_IODelayRemoved += delaycyc;
+
 	switch ( mode ) {
 	case MODE_OPL2:
 		//We allocated 4 ports, so just return -1 for the higher ones
@@ -505,6 +651,15 @@ Bitu Module::PortRead( Bitu port, Bitu iolen ) {
 		} else {
 			return 0xff;
 		}
+	case MODE_OPL3GOLD:
+		if ( ctrl.active ) {
+			if ( port == 0x38a ) {
+				return 0; //Control status, not busy
+			} else if ( port == 0x38b ) {
+				return CtrlRead();
+			}
+		} //Fall-through if not handled by control chip
+		/* FALLTHROUGH */
 	case MODE_OPL3:
 		//We allocated 4 ports, so just return -1 for the higher ones
 		if ( !(port & 3 ) ) {
@@ -526,8 +681,10 @@ Bitu Module::PortRead( Bitu port, Bitu iolen ) {
 
 void Module::Init( Mode m ) {
 	mode = m;
+	memset(cache, 0, sizeof(cache));
 	switch ( mode ) {
 	case MODE_OPL3:
+	case MODE_OPL3GOLD:
 	case MODE_OPL2:
 		break;
 	case MODE_DUALOPL2:
@@ -567,6 +724,7 @@ void OPL_Write(Bitu port,Bitu val,Bitu iolen) {
 /*
 	Save the current state of the operators as instruments in an reality adlib tracker file
 */
+#if 0
 static void SaveRad() {
 	char b[16 * 1024];
 	int w = 0;
@@ -598,14 +756,14 @@ static void SaveRad() {
 	}
 	b[w++] = 0;		//instrument 0, no more instruments following
 	b[w++] = 1;		//1 pattern following
-	//Zero out the remaing part of the file a bit to make rad happy
+	//Zero out the remaining part of the file a bit to make rad happy
 	for ( int i = 0; i < 64; i++ ) {
 		b[w++] = 0;
 	}
 	fwrite( b, 1, w, handle );
 	fclose( handle );
 };
-
+#endif
 
 static void OPL_SaveRawEvent(bool pressed) {
 	if (!pressed)
@@ -628,6 +786,10 @@ Module::Module( Section* configuration ) : Module_base(configuration) {
 	reg.dual[0] = 0;
 	reg.dual[1] = 0;
 	reg.normal = 0;
+	ctrl.active = false;
+	ctrl.index = 0;
+	ctrl.lvol = 0xff;
+	ctrl.rvol = 0xff;
 	handler = 0;
 	capture = 0;
 
@@ -638,19 +800,31 @@ Module::Module( Section* configuration ) : Module_base(configuration) {
 	if ( rate < 8000 )
 		rate = 8000;
 	std::string oplemu( section->Get_string( "oplemu" ) );
+	ctrl.mixer = section->Get_bool("sbmixer");
 
 	mixerChan = mixerObject.Install(OPL_CallBack,rate,"FM");
-	mixerChan->SetScale( 2.0 );
-	if (oplemu == "fast") {
-		handler = new DBOPL::Handler();
-	} else if (oplemu == "compat") {
+	//Used to be 2.0, which was measured to be too high. Exact value depends on card/clone.
+	mixerChan->SetScale( 1.5f );  
+
+	if (oplemu == "compat") {
 		if ( oplmode == OPL_opl2 ) {
 			handler = new OPL2::Handler();
 		} else {
 			handler = new OPL3::Handler();
 		}
-	} else {
-		handler = new DBOPL::Handler();
+	}
+	else if (oplemu == "mame") {
+		if (oplmode == OPL_opl2) {
+			handler = new MAMEOPL2::Handler();
+		}
+		else {
+			handler = new MAMEOPL3::Handler();
+		}
+	} 
+	//Fall back to dbop, will also catch auto
+	else if (oplemu == "fast" || 1) {
+		const bool opl3Mode = oplmode >= OPL_opl3;
+		handler = new DBOPL::Handler( opl3Mode );
 	}
 	handler->Init( rate );
 	bool single = false;
@@ -664,6 +838,9 @@ Module::Module( Section* configuration ) : Module_base(configuration) {
 		break;
 	case OPL_opl3:
 		Init( Adlib::MODE_OPL3 );
+		break;
+	case OPL_opl3gold:
+		Init( Adlib::MODE_OPL3GOLD );
 		break;
 	}
 	//0x388 range
@@ -701,7 +878,7 @@ void OPL_Init(Section* sec,OPL_Mode oplmode) {
 	module = new Adlib::Module( sec );
 }
 
-void OPL_ShutDown(Section* sec){
+void OPL_ShutDown(Section* /*sec*/){
 	delete module;
 	module = 0;
 

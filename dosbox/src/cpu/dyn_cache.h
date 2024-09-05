@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2002-2010  The DOSBox Team
+ *  Copyright (C) 2002-2021  The DOSBox Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -11,9 +11,9 @@
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *  GNU General Public License for more details.
  *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *  You should have received a copy of the GNU General Public License along
+ *  with this program; if not, write to the Free Software Foundation, Inc.,
+ *  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
 
@@ -36,7 +36,7 @@ public:
 		CodePageHandlerDynRec * handler;			// page containing this code
 	} page;
 	struct {
-		Bit8u * start;			// where in the cache are we
+		const Bit8u * start;			// where in the cache are we
 		Bitu size;
 		CacheBlockDynRec * next;
 		// writemap masking maskpointer/start/length
@@ -53,7 +53,7 @@ public:
 		CacheBlockDynRec * to;		// this block can transfer control to the to-block
 		CacheBlockDynRec * next;
 		CacheBlockDynRec * from;	// the from-block can transfer control to this block
-	} link[2];	// maximal two links (conditional jumps)
+	} link[2];	// maximum two links (conditional jumps)
 	CacheBlockDynRec * crossblock;
 };
 
@@ -64,7 +64,7 @@ static struct {
 		CacheBlockDynRec * free;		// pointer to the free list
 		CacheBlockDynRec * running;		// the last block that was entered for execution
 	} block;
-	Bit8u * pos;		// position in the cache block
+	const Bit8u * pos;		// position in the cache block
 	CodePageHandlerDynRec * free_pages;		// pointer to the free list
 	CodePageHandlerDynRec * used_pages;		// pointer to the list of used pages
 	CodePageHandlerDynRec * last_page;		// the last used page
@@ -96,7 +96,7 @@ public:
 		old_pagehandler=_old_pagehandler;
 
 		// adjust flags
-		flags=old_pagehandler->flags|PFLAG_HASCODE;
+		flags=old_pagehandler->flags|(cpu.code.big ? PFLAG_HASCODE32:PFLAG_HASCODE16);
 		flags&=~PFLAG_WRITEABLE;
 
 		active_blocks=0;
@@ -141,6 +141,10 @@ public:
 
 	// the following functions will clean all cache blocks that are invalid now due to the write
 	void writeb(PhysPt addr,Bitu val){
+		if (GCC_UNLIKELY(old_pagehandler->flags&PFLAG_HASROM)) return;
+		if (GCC_UNLIKELY((old_pagehandler->flags&PFLAG_READABLE)!=PFLAG_READABLE)) {
+			E_Exit("wb:non-readable code page found that is no ROM page");
+		}
 		addr&=4095;
 		if (host_readb(hostmem+addr)==(Bit8u)val) return;
 		host_writeb(hostmem+addr,val);
@@ -158,6 +162,10 @@ public:
 		InvalidateRange(addr,addr);
 	}
 	void writew(PhysPt addr,Bitu val){
+		if (GCC_UNLIKELY(old_pagehandler->flags&PFLAG_HASROM)) return;
+		if (GCC_UNLIKELY((old_pagehandler->flags&PFLAG_READABLE)!=PFLAG_READABLE)) {
+			E_Exit("ww:non-readable code page found that is no ROM page");
+		}
 		addr&=4095;
 		if (host_readw(hostmem+addr)==(Bit16u)val) return;
 		host_writew(hostmem+addr,val);
@@ -180,6 +188,10 @@ public:
 		InvalidateRange(addr,addr+1);
 	}
 	void writed(PhysPt addr,Bitu val){
+		if (GCC_UNLIKELY(old_pagehandler->flags&PFLAG_HASROM)) return;
+		if (GCC_UNLIKELY((old_pagehandler->flags&PFLAG_READABLE)!=PFLAG_READABLE)) {
+			E_Exit("wd:non-readable code page found that is no ROM page");
+		}
 		addr&=4095;
 		if (host_readd(hostmem+addr)==(Bit32u)val) return;
 		host_writed(hostmem+addr,val);
@@ -202,6 +214,10 @@ public:
 		InvalidateRange(addr,addr+3);
 	}
 	bool writeb_checked(PhysPt addr,Bitu val) {
+		if (GCC_UNLIKELY(old_pagehandler->flags&PFLAG_HASROM)) return false;
+		if (GCC_UNLIKELY((old_pagehandler->flags&PFLAG_READABLE)!=PFLAG_READABLE)) {
+			E_Exit("cb:non-readable code page found that is no ROM page");
+		}
 		addr&=4095;
 		if (host_readb(hostmem+addr)==(Bit8u)val) return false;
 		// see if there's code where we are writing to
@@ -226,6 +242,10 @@ public:
 		return false;
 	}
 	bool writew_checked(PhysPt addr,Bitu val) {
+		if (GCC_UNLIKELY(old_pagehandler->flags&PFLAG_HASROM)) return false;
+		if (GCC_UNLIKELY((old_pagehandler->flags&PFLAG_READABLE)!=PFLAG_READABLE)) {
+			E_Exit("cw:non-readable code page found that is no ROM page");
+		}
 		addr&=4095;
 		if (host_readw(hostmem+addr)==(Bit16u)val) return false;
 		// see if there's code where we are writing to
@@ -255,6 +275,10 @@ public:
 		return false;
 	}
 	bool writed_checked(PhysPt addr,Bitu val) {
+		if (GCC_UNLIKELY(old_pagehandler->flags&PFLAG_HASROM)) return false;
+		if (GCC_UNLIKELY((old_pagehandler->flags&PFLAG_READABLE)!=PFLAG_READABLE)) {
+			E_Exit("cd:non-readable code page found that is no ROM page");
+		}
 		addr&=4095;
 		if (host_readd(hostmem+addr)==(Bit32u)val) return false;
 		// see if there's code where we are writing to
@@ -350,14 +374,15 @@ public:
 	}
 	void ClearRelease(void) {
 		// clear out all cache blocks in this page
-		for (Bitu index=0;index<(1+DYN_PAGE_HASH);index++) {
-			CacheBlockDynRec * block=hash_map[index];
-			while (block) {
-				CacheBlockDynRec * nextblock=block->hash.next;
-				block->page.handler=0;			// no need, full clear
-				block->Clear();
-				block=nextblock;
-			}
+		Bitu count=active_blocks;
+		CacheBlockDynRec **map=hash_map;
+		for (CacheBlockDynRec * block=*map;count;count--) {
+			while (block==NULL)
+				block=*++map;
+			CacheBlockDynRec * nextblock=block->hash.next;
+			block->page.handler=0;			// no need, full clear
+			block->Clear();
+			block=nextblock;
 		}
 		Release();	// now can release this page
 	}
@@ -500,8 +525,8 @@ static void cache_closeblock(void) {
 	Bitu written=(Bitu)(cache.pos-block->cache.start);
 	if (written>block->cache.size) {
 		if (!block->cache.next) {
-			if (written>block->cache.size+CACHE_MAXSIZE) E_Exit("CacheBlock overrun 1 %d",written-block->cache.size);	
-		} else E_Exit("CacheBlock overrun 2 written %d size %d",written,block->cache.size);	
+			if (written>block->cache.size+CACHE_MAXSIZE) E_Exit("CacheBlock overrun 1 %" sBitfs(d),written-block->cache.size);
+		} else E_Exit("CacheBlock overrun 2 written %" sBitfs(d) " size %" sBitfs(d),written,block->cache.size);
 	} else {
 		Bitu new_size;
 		Bitu left=block->cache.size-written;
@@ -528,26 +553,43 @@ static void cache_closeblock(void) {
 
 
 // place an 8bit value into the cache
+static INLINE void cache_addb(Bit8u val,const Bit8u *pos) {
+	*(Bit8u*)pos = val;
+}
 static INLINE void cache_addb(Bit8u val) {
-	*cache.pos++=val;
+	const Bit8u *pos=cache.pos+1;
+	cache_addb(val,cache.pos);
+	cache.pos=pos;
 }
 
 // place a 16bit value into the cache
+static INLINE void cache_addw(Bit16u val,const Bit8u *pos) {
+	*(Bit16u*)pos=val;
+}
 static INLINE void cache_addw(Bit16u val) {
-	*(Bit16u*)cache.pos=val;
-	cache.pos+=2;
+	const Bit8u *pos=cache.pos+2;
+	cache_addw(val,cache.pos);
+	cache.pos=pos;
 }
 
 // place a 32bit value into the cache
+static INLINE void cache_addd(Bit32u val,const Bit8u *pos) {
+	*(Bit32u*)pos=val;
+}
 static INLINE void cache_addd(Bit32u val) {
-	*(Bit32u*)cache.pos=val;
-	cache.pos+=4;
+	const Bit8u *pos=cache.pos+4;
+	cache_addd(val,cache.pos);
+	cache.pos=pos;
 }
 
 // place a 64bit value into the cache
+static INLINE void cache_addq(Bit64u val,const Bit8u *pos) {
+	*(Bit64u*)pos=val;
+}
 static INLINE void cache_addq(Bit64u val) {
-	*(Bit64u*)cache.pos=val;
-	cache.pos+=8;
+	const Bit8u *pos=cache.pos+8;
+	cache_addq(val,cache.pos);
+	cache.pos=pos;
 }
 
 
@@ -591,16 +633,7 @@ static void cache_init(bool enable) {
 			if (!cache_code_start_ptr)
 				cache_code_start_ptr=(Bit8u*)malloc(CACHE_TOTAL+CACHE_MAXSIZE+PAGESIZE_TEMP-1+PAGESIZE_TEMP);
 #else
-#ifndef IPHONEOS
 			cache_code_start_ptr=(Bit8u*)malloc(CACHE_TOTAL+CACHE_MAXSIZE+PAGESIZE_TEMP-1+PAGESIZE_TEMP);
-#else
-            cache_code_start_ptr=(Bit8u*)mmap(0,CACHE_TOTAL+CACHE_MAXSIZE+PAGESIZE_TEMP-1+PAGESIZE_TEMP,
-                                      PROT_WRITE|PROT_READ|PROT_EXEC,
-                                      MAP_PRIVATE|MAP_ANON, 0, 0);
-            if (cache_code_start_ptr==(Bit8u*)-1) {
-                E_Exit("Allocating dynamic cache failed");
-            }
-#endif            
 #endif
 			if(!cache_code_start_ptr) E_Exit("Allocating dynamic cache failed");
 
@@ -609,11 +642,10 @@ static void cache_init(bool enable) {
 
 			cache_code_link_blocks=cache_code;
 			cache_code=cache_code+PAGESIZE_TEMP;
-#ifndef IPHONEOS
+
 #if (C_HAVE_MPROTECT)
 			if(mprotect(cache_code_link_blocks,CACHE_TOTAL+CACHE_MAXSIZE+PAGESIZE_TEMP,PROT_WRITE|PROT_READ|PROT_EXEC))
-				LOG_MSG("Setting excute permission on the code cache has failed");
-#endif
+				LOG_MSG("Setting execute permission on the code cache has failed");
 #endif
 			CacheBlockDynRec * block=cache_getblock();
 			cache.block.first=block;
@@ -632,10 +664,12 @@ static void cache_init(bool enable) {
 		// link code that returns with a special return code
 		dyn_return(BR_Link2,false);
 
+#if (C_DYNREC)
 		cache.pos=&cache_code_link_blocks[64];
-		core_dynrec.runcode=(BlockReturn (*)(Bit8u*))cache.pos;
+		core_dynrec.runcode=(BlockReturn (*)(const Bit8u*))cache.pos;
 //		link_blocks[1].cache.start=cache.pos;
 		dyn_run_code();
+#endif
 
 		cache.free_pages=0;
 		cache.last_page=0;

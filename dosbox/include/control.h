@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2002-2010  The DOSBox Team
+ *  Copyright (C) 2002-2021  The DOSBox Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -11,12 +11,11 @@
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *  GNU General Public License for more details.
  *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *  You should have received a copy of the GNU General Public License along
+ *  with this program; if not, write to the Free Software Foundation, Inc.,
+ *  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-/* $Id: control.h,v 1.2 2009-05-27 09:15:40 qbix79 Exp $ */
 
 #ifndef DOSBOX_CONTROL_H
 #define DOSBOX_CONTROL_H
@@ -63,7 +62,14 @@ private:
 	void (* _start_function)(void);
 	bool secure_mode; //Sandbox mode
 public:
-	Config(CommandLine * cmd):cmdline(cmd),secure_mode(false){}
+	bool initialised;
+	std::vector<std::string> startup_params;
+	std::vector<std::string> configfiles;
+	Config(CommandLine * cmd):cmdline(cmd),secure_mode(false) {
+		startup_params.push_back(cmdline->GetFileName());
+		cmdline->FillVector(startup_params);
+		initialised=false;
+	}
 	~Config();
 
 	Section_line * AddSection_line(char const * const _name,void (*_initfunction)(Section*));

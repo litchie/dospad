@@ -1,3 +1,21 @@
+/*
+ *  Copyright (C) 2002-2021  The DOSBox Team
+ *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License along
+ *  with this program; if not, write to the Free Software Foundation, Inc.,
+ *  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+ */
+
 static bool dyn_helper_divb(Bit8u val) {
 	if (!val) return CPU_PrepareException(0,0);
 	Bitu quo=reg_ax / val;
@@ -22,8 +40,8 @@ static bool dyn_helper_idivb(Bit8s val) {
 
 static bool dyn_helper_divw(Bit16u val) {
 	if (!val) return CPU_PrepareException(0,0);
-	Bitu num=(reg_dx<<16)|reg_ax;
-	Bitu quo=num/val;
+	Bit32u num=(((Bit32u)reg_dx)<<16)|reg_ax;
+	Bit32u quo=num/val;
 	Bit16u rem=(Bit16u)(num % val);
 	Bit16u quo16=(Bit16u)(quo&0xffff);
 	if (quo!=(Bit32u)quo16) return CPU_PrepareException(0,0);
@@ -34,8 +52,8 @@ static bool dyn_helper_divw(Bit16u val) {
 
 static bool dyn_helper_idivw(Bit16s val) {
 	if (!val) return CPU_PrepareException(0,0);
-	Bits num=(reg_dx<<16)|reg_ax;
-	Bits quo=num/val;
+	Bit32s num=(((Bit32u)reg_dx)<<16)|reg_ax;
+	Bit32s quo=num/val;
 	Bit16s rem=(Bit16s)(num % val);
 	Bit16s quo16s=(Bit16s)quo;
 	if (quo!=(Bit32s)quo16s) return CPU_PrepareException(0,0);

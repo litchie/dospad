@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2002-2010  The DOSBox Team
+ *  Copyright (C) 2002-2021  The DOSBox Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -11,16 +11,16 @@
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *  GNU General Public License for more details.
  *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *  You should have received a copy of the GNU General Public License along
+ *  with this program; if not, write to the Free Software Foundation, Inc.,
+ *  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-/* $Id: drives.cpp,v 1.15 2009-05-27 09:15:41 qbix79 Exp $ */
 
 #include "dosbox.h"
 #include "dos_system.h"
 #include "drives.h"
+#include "bios_disk.h"
 #include "mapper.h"
 #include "support.h"
 
@@ -133,7 +133,7 @@ void DriveManager::InitializeDrive(int drive) {
 		driveInfo.currentDisk = 0;
 		DOS_Drive* disk = driveInfo.disks[driveInfo.currentDisk];
 		Drives[currentDrive] = disk;
-		disk->Activate();
+		if (driveInfo.disks.size() > 1) disk->Activate();
 	}
 }
 
@@ -170,24 +170,33 @@ void DriveManager::CycleDisk(bool pressed) {
 }
 */
 
-void DriveManager::CycleAllDisks(void) {
-	for (int idrive=0; idrive<DOS_DRIVES; idrive++) {
-		int numDisks = (int)driveInfos[idrive].disks.size();
-		if (numDisks > 1) {
-			// cycle disk
-			int currentDisk = driveInfos[idrive].currentDisk;
-			DOS_Drive* oldDisk = driveInfos[idrive].disks[currentDisk];
-			currentDisk = (currentDisk + 1) % numDisks;		
-			DOS_Drive* newDisk = driveInfos[idrive].disks[currentDisk];
-			driveInfos[idrive].currentDisk = currentDisk;
-			
-			// copy working directory, acquire system resources and finally switch to next drive		
-			strcpy(newDisk->curdir, oldDisk->curdir);
-			newDisk->Activate();
-			Drives[idrive] = newDisk;
-			LOG_MSG("Drive %c: disk %d of %d now active", 'A'+idrive, currentDisk+1, numDisks);
+void DriveManager::CycleDisks(int drive, bool notify) {
+	int numDisks = (int)driveInfos[drive].disks.size();
+	if (numDisks > 1) {
+		// cycle disk
+		int currentDisk = driveInfos[drive].currentDisk;
+		DOS_Drive* oldDisk = driveInfos[drive].disks[currentDisk];
+		currentDisk = (currentDisk + 1) % numDisks;		
+		DOS_Drive* newDisk = driveInfos[drive].disks[currentDisk];
+		driveInfos[drive].currentDisk = currentDisk;
+		if (drive < MAX_DISK_IMAGES && imageDiskList[drive] != NULL) {
+			if (strncmp(newDisk->GetInfo(),"fatDrive",8) == 0)
+				imageDiskList[drive] = ((fatDrive *)newDisk)->loadedDisk;
+			else
+				imageDiskList[drive] = (imageDisk *)newDisk;
+			if ((drive == 2 || drive == 3) && imageDiskList[drive]->hardDrive) updateDPT();
 		}
+
+		// copy working directory, acquire system resources and finally switch to next drive		
+		strcpy(newDisk->curdir, oldDisk->curdir);
+		newDisk->Activate();
+		Drives[drive] = newDisk;
+		if (notify) LOG_MSG("Drive %c: disk %d of %d now active", 'A'+drive, currentDisk+1, numDisks);
 	}
+}
+
+void DriveManager::CycleAllDisks(void) {
+	for (int idrive=0; idrive<DOS_DRIVES; idrive++) CycleDisks(idrive, true);
 }
 
 int DriveManager::UnmountDrive(int drive) {

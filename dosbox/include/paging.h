@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2002-2010  The DOSBox Team
+ *  Copyright (C) 2002-2021  The DOSBox Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -11,12 +11,11 @@
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *  GNU General Public License for more details.
  *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *  You should have received a copy of the GNU General Public License along
+ *  with this program; if not, write to the Free Software Foundation, Inc.,
+ *  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-/* $Id: paging.h,v 1.33 2009-05-27 09:15:41 qbix79 Exp $ */
 
 #ifndef DOSBOX_PAGING_H
 #define DOSBOX_PAGING_H
@@ -49,9 +48,11 @@ class PageDirectory;
 #define PFLAG_READABLE		0x1
 #define PFLAG_WRITEABLE		0x2
 #define PFLAG_HASROM		0x4
-#define PFLAG_HASCODE		0x8				//Page contains dynamic code
+#define PFLAG_HASCODE32		0x8				//Page contains 32-bit dynamic code
 #define PFLAG_NOCODE		0x10			//No dynamic code can be generated here
 #define PFLAG_INIT			0x20			//No dynamic code can be generated here
+#define PFLAG_HASCODE16		0x40			//Page contains 16-bit dynamic code
+#define PFLAG_HASCODE		(PFLAG_HASCODE32|PFLAG_HASCODE16)
 
 #define LINK_START	((1024+64)/4)			//Start right after the HMA
 

@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2002-2010  The DOSBox Team
+ *  Copyright (C) 2002-2021  The DOSBox Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -11,9 +11,9 @@
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *  GNU General Public License for more details.
  *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *  You should have received a copy of the GNU General Public License along
+ *  with this program; if not, write to the Free Software Foundation, Inc.,
+ *  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
 	CASE_0F_W(0x00)												/* GRP 6 Exxx */
@@ -228,7 +228,8 @@
 	CASE_0F_B(0x31)												/* RDTSC */
 		{
 			if (CPU_ArchitectureType<CPU_ARCHTYPE_PENTIUMSLOW) goto illegal_opcode;
-			Bit64s tsc=(Bit64s)(PIC_FullIndex()*(double)CPU_CycleMax);
+			/* Use a fixed number when in auto cycles mode as else the reported value changes constantly */
+			Bit64s tsc=(Bit64s)(PIC_FullIndex()*(double) (CPU_CycleAutoAdjust?70000:CPU_CycleMax));
 			reg_edx=(Bit32u)(tsc>>32);
 			reg_eax=(Bit32u)(tsc&0xffffffff);
 		}
@@ -315,6 +316,7 @@
 				SETFLAGBIT(CF,(*earw & mask));
 			} else {
 				GetEAa;eaa+=(((Bit16s)*rmrw)>>4)*2;
+				if (!TEST_PREFIX_ADDR) FixEA16;
 				Bit16u old=LoadMw(eaa);
 				SETFLAGBIT(CF,(old & mask));
 			}
@@ -341,6 +343,7 @@
 				*earw|=mask;
 			} else {
 				GetEAa;eaa+=(((Bit16s)*rmrw)>>4)*2;
+				if (!TEST_PREFIX_ADDR) FixEA16;
 				Bit16u old=LoadMw(eaa);
 				SETFLAGBIT(CF,(old & mask));
 				SaveMw(eaa,old | mask);
@@ -432,6 +435,7 @@
 				*earw&= ~mask;
 			} else {
 				GetEAa;eaa+=(((Bit16s)*rmrw)>>4)*2;
+				if (!TEST_PREFIX_ADDR) FixEA16;
 				Bit16u old=LoadMw(eaa);
 				SETFLAGBIT(CF,(old & mask));
 				SaveMw(eaa,old & ~mask);
@@ -525,6 +529,7 @@
 				*earw^=mask;
 			} else {
 				GetEAa;eaa+=(((Bit16s)*rmrw)>>4)*2;
+				if (!TEST_PREFIX_ADDR) FixEA16;
 				Bit16u old=LoadMw(eaa);
 				SETFLAGBIT(CF,(old & mask));
 				SaveMw(eaa,old ^ mask);

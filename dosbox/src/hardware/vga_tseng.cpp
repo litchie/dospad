@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2002-2010  The DOSBox Team
+ *  Copyright (C) 2002-2021  The DOSBox Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -11,12 +11,11 @@
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *  GNU General Public License for more details.
  *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *  You should have received a copy of the GNU General Public License along
+ *  with this program; if not, write to the Free Software Foundation, Inc.,
+ *  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-/* $Id: vga_tseng.cpp,v 1.5 2009-05-27 09:15:41 qbix79 Exp $ */
 
 
 #include "dosbox.h"
@@ -25,6 +24,7 @@
 #include "inout.h"
 #include "mem.h"
 #include <cstdlib>
+
 // Tseng ET4K data
 typedef struct {
 	Bit8u extensionsEnabled;
@@ -63,7 +63,7 @@ static SVGA_ET4K_DATA et4k = { 1,0,0,0,0,0,0,0,0, 0,0, 0,0,
 		return et4k.store_##port##_##index;
 
 // Tseng ET4K implementation
-void write_p3d5_et4k(Bitu reg,Bitu val,Bitu iolen) {
+void write_p3d5_et4k(Bitu reg,Bitu val,Bitu /*iolen*/) {
 	if(!et4k.extensionsEnabled && reg!=0x33)
 		return;
 
@@ -104,7 +104,7 @@ void write_p3d5_et4k(Bitu reg,Bitu val,Bitu iolen) {
 	// TODO: Bit 6 may have effect on emulation
 	STORE_ET4K(3d4, 34);
 
-	case 0x35: 
+	case 0x35:
 	/*
 	3d4h index 35h (R/W): Overflow High
 	bit    0  Vertical Blank Start Bit 10 (3d4h index 15h).
@@ -172,12 +172,12 @@ void write_p3d5_et4k(Bitu reg,Bitu val,Bitu iolen) {
 		} else vga.s3.ex_hor_overflow=(val&0x15);
 		break;
 	default:
-		LOG(LOG_VGAMISC,LOG_NORMAL)("VGA:CRTC:ET4K:Write to illegal index %2X", reg);
+		LOG(LOG_VGAMISC,LOG_NORMAL)("VGA:CRTC:ET4K:Write to illegal index %2" sBitfs(X), reg);
 		break;
 	}
 }
 
-Bitu read_p3d5_et4k(Bitu reg,Bitu iolen) {
+Bitu read_p3d5_et4k(Bitu reg,Bitu /*iolen*/) {
 	if (!et4k.extensionsEnabled && reg!=0x33)
 		return 0x0;
 	switch(reg) {
@@ -190,13 +190,13 @@ Bitu read_p3d5_et4k(Bitu reg,Bitu iolen) {
 	RESTORE_ET4K(3d4, 37);
 	RESTORE_ET4K(3d4, 3f);
 	default:
-		LOG(LOG_VGAMISC,LOG_NORMAL)("VGA:CRTC:ET4K:Read from illegal index %2X", reg);
+		LOG(LOG_VGAMISC,LOG_NORMAL)("VGA:CRTC:ET4K:Read from illegal index %2" sBitfs(X), reg);
 		break;
 	}
 	return 0x0;
 }
 
-void write_p3c5_et4k(Bitu reg,Bitu val,Bitu iolen) {
+void write_p3c5_et4k(Bitu reg,Bitu val,Bitu /*iolen*/) {
 	switch(reg) {
 	/*
 	3C4h index  6  (R/W): TS State Control
@@ -213,17 +213,17 @@ void write_p3c5_et4k(Bitu reg,Bitu val,Bitu iolen) {
 	// Unlikely to be used by games (things like ROM enable/disable and emulation of VGA vs EGA)
 	STORE_ET4K(3c4, 07);
 	default:
-		LOG(LOG_VGAMISC,LOG_NORMAL)("VGA:SEQ:ET4K:Write to illegal index %2X", reg);
+		LOG(LOG_VGAMISC,LOG_NORMAL)("VGA:SEQ:ET4K:Write to illegal index %2" sBitfs(X), reg);
 		break;
 	}
 }
 
-Bitu read_p3c5_et4k(Bitu reg,Bitu iolen) {
+Bitu read_p3c5_et4k(Bitu reg,Bitu /*iolen*/) {
 	switch(reg) {
 	RESTORE_ET4K(3c4, 06);
 	RESTORE_ET4K(3c4, 07);
 	default:
-		LOG(LOG_VGAMISC,LOG_NORMAL)("VGA:SEQ:ET4K:Read from illegal index %2X", reg);
+		LOG(LOG_VGAMISC,LOG_NORMAL)("VGA:SEQ:ET4K:Read from illegal index %2" sBitfs(X), reg);
 		break;
 	}
 	return 0x0;
@@ -234,17 +234,17 @@ Bitu read_p3c5_et4k(Bitu reg,Bitu iolen) {
 bit 0-3  64k Write bank number (0..15)
     4-7  64k Read bank number (0..15)
 */
-void write_p3cd_et4k(Bitu port,Bitu val,Bitu iolen) {
+void write_p3cd_et4k(Bitu /*port*/,Bitu val,Bitu /*iolen*/) {
    vga.svga.bank_write = val & 0x0f;
    vga.svga.bank_read = (val>>4) & 0x0f;
    VGA_SetupHandlers();
 }
 
-Bitu read_p3cd_et4k(Bitu port,Bitu iolen) {
+Bitu read_p3cd_et4k(Bitu /*port*/,Bitu /*iolen*/) {
    return (vga.svga.bank_read<<4)|vga.svga.bank_write;
 }
 
-void write_p3c0_et4k(Bitu reg,Bitu val,Bitu iolen) {
+void write_p3c0_et4k(Bitu reg,Bitu val,Bitu /*iolen*/) {
 	switch(reg) {
 	// 3c0 index 16h: ATC Miscellaneous
 	// VGADOC provides a lot of information, Ferarro documents only two bits
@@ -276,17 +276,17 @@ void write_p3c0_et4k(Bitu reg,Bitu val,Bitu iolen) {
 	// TODO: Figure out if this has any practical use
 	STORE_ET4K(3c0, 17);
 	default:
-		LOG(LOG_VGAMISC,LOG_NORMAL)("VGA:ATTR:ET4K:Write to illegal index %2X", reg);
+		LOG(LOG_VGAMISC,LOG_NORMAL)("VGA:ATTR:ET4K:Write to illegal index %2" sBitfs(X), reg);
 		break;
 	}
 }
 
-Bitu read_p3c1_et4k(Bitu reg,Bitu iolen) {
+Bitu read_p3c1_et4k(Bitu reg,Bitu /*iolen*/) {
 	switch(reg) {
 	RESTORE_ET4K(3c0, 16);
 	RESTORE_ET4K(3c0, 17);
 	default:
-		LOG(LOG_VGAMISC,LOG_NORMAL)("VGA:ATTR:ET4K:Read from illegal index %2X", reg);
+		LOG(LOG_VGAMISC,LOG_NORMAL)("VGA:ATTR:ET4K:Read from illegal index %2" sBitfs(X), reg);
 		break;
 	}
 	return 0x0;
@@ -322,7 +322,7 @@ void FinishSetMode_ET4K(Bitu crtc_base, VGA_ModeExtraData* modeData) {
 	// Reinterpret hor_overflow. Curiously, three bits out of four are
 	// in the same places. Input has hdispend (not supported), output
 	// has CRTC offset (also not supported)
-	Bit8u et4k_hor_overflow = 
+	Bit8u et4k_hor_overflow =
 		(modeData->hor_overflow & 0x01) |
 		(modeData->hor_overflow & 0x04) |
 		(modeData->hor_overflow & 0x10);
@@ -353,11 +353,11 @@ void FinishSetMode_ET4K(Bitu crtc_base, VGA_ModeExtraData* modeData) {
 
 	// Select SVGA clock to get close to 60Hz (not particularly clean implementation)
 	if (modeData->modeNo > 0x13) {
-		Bitu target = modeData->vtotal*8*modeData->htotal*60;
+		Bits target = static_cast<Bits>(modeData->vtotal * 8 * modeData->htotal * 60);
 		Bitu best = 1;
-		Bits dist = 100000000;
-		for (Bitu i=0; i<16; i++) {
-			Bits cdiff=abs((Bits)(target-et4k.clockFreq[i]));
+		int dist = 100000000;
+		for (Bitu i = 0; i < 16; i++) {
+			int cdiff = abs( static_cast<int>(target - static_cast<Bits>(et4k.clockFreq[i])) );
 			if (cdiff < dist) {
 				best = i;
 				dist = cdiff;
@@ -450,16 +450,6 @@ void SVGA_Setup_TsengET4K(void) {
 		vga.vmemsize = 512*1024;
 	else
 		vga.vmemsize = 1024*1024;
-
-	// Tseng ROM signature
-	PhysPt rom_base=PhysMake(0xc000,0);
-	phys_writeb(rom_base+0x0075,' ');
-	phys_writeb(rom_base+0x0076,'T');
-	phys_writeb(rom_base+0x0077,'s');
-	phys_writeb(rom_base+0x0078,'e');
-	phys_writeb(rom_base+0x0079,'n');
-	phys_writeb(rom_base+0x007a,'g');
-	phys_writeb(rom_base+0x007b,' ');
 }
 
 
@@ -500,7 +490,7 @@ static SVGA_ET3K_DATA et3k = { 0,0,0,0,0,0,0,0,0,0, 0,0, 0,0, {0,0,0,0,0,0,0,0},
 		return et3k.store_##port##_##index;
 
 
-void write_p3d5_et3k(Bitu reg,Bitu val,Bitu iolen) {
+void write_p3d5_et3k(Bitu reg,Bitu val,Bitu /*iolen*/) {
 	switch(reg) {
 	// 3d4 index 1bh-21h: Hardware zoom control registers
 	// I am not sure if there was a piece of software that used these.
@@ -573,12 +563,12 @@ void write_p3d5_et3k(Bitu reg,Bitu val,Bitu iolen) {
 		break;
 
 	default:
-		LOG(LOG_VGAMISC,LOG_NORMAL)("VGA:CRTC:ET3K:Write to illegal index %2X", reg);
+		LOG(LOG_VGAMISC,LOG_NORMAL)("VGA:CRTC:ET3K:Write to illegal index %2" sBitfs(X), reg);
 		break;
 	}
 }
 
-Bitu read_p3d5_et3k(Bitu reg,Bitu iolen) {
+Bitu read_p3d5_et3k(Bitu reg,Bitu /*iolen*/) {
 	switch(reg) {
 	RESTORE_ET3K(3d4, 1b);
 	RESTORE_ET3K(3d4, 1c);
@@ -591,30 +581,30 @@ Bitu read_p3d5_et3k(Bitu reg,Bitu iolen) {
 	RESTORE_ET3K(3d4, 24);
 	RESTORE_ET3K(3d4, 25);
 	default:
-		LOG(LOG_VGAMISC,LOG_NORMAL)("VGA:CRTC:ET3K:Read from illegal index %2X", reg);
+		LOG(LOG_VGAMISC,LOG_NORMAL)("VGA:CRTC:ET3K:Read from illegal index %2" sBitfs(X), reg);
 		break;
 	}
 	return 0x0;
 }
 
-void write_p3c5_et3k(Bitu reg,Bitu val,Bitu iolen) {
+void write_p3c5_et3k(Bitu reg,Bitu val,Bitu /*iolen*/) {
 	switch(reg) {
 	// Both registers deal mostly with hardware zoom which is not implemented. Other bits
 	// seem to be useless for emulation with the exception of index 7 bit 4 (font select)
 	STORE_ET3K(3c4, 06);
 	STORE_ET3K(3c4, 07);
 	default:
-		LOG(LOG_VGAMISC,LOG_NORMAL)("VGA:SEQ:ET3K:Write to illegal index %2X", reg);
+		LOG(LOG_VGAMISC,LOG_NORMAL)("VGA:SEQ:ET3K:Write to illegal index %2" sBitfs(X), reg);
 		break;
 	}
 }
 
-Bitu read_p3c5_et3k(Bitu reg,Bitu iolen) {
+Bitu read_p3c5_et3k(Bitu reg,Bitu /*iolen*/) {
 	switch(reg) {
 	RESTORE_ET3K(3c4, 06);
 	RESTORE_ET3K(3c4, 07);
 	default:
-		LOG(LOG_VGAMISC,LOG_NORMAL)("VGA:SEQ:ET3K:Read from illegal index %2X", reg);
+		LOG(LOG_VGAMISC,LOG_NORMAL)("VGA:SEQ:ET3K:Read from illegal index %2" sBitfs(X), reg);
 		break;
 	}
 	return 0x0;
@@ -630,34 +620,34 @@ bit 0-2  64k Write bank number
            2  1M linear memory
 NOTES: 1M linear memory is not supported
 */
-void write_p3cd_et3k(Bitu port,Bitu val,Bitu iolen) {
+void write_p3cd_et3k(Bitu /*port*/,Bitu val,Bitu /*iolen*/) {
 	vga.svga.bank_write = val & 0x07;
 	vga.svga.bank_read = (val>>3) & 0x07;
 	vga.svga.bank_size = (val&0x40)?64*1024:128*1024;
 	VGA_SetupHandlers();
 }
 
-Bitu read_p3cd_et3k(Bitu port,Bitu iolen) {
+Bitu read_p3cd_et3k(Bitu /*port*/,Bitu /*iolen*/) {
 	return (vga.svga.bank_read<<3)|vga.svga.bank_write|((vga.svga.bank_size==128*1024)?0:0x40);
 }
 
-void write_p3c0_et3k(Bitu reg,Bitu val,Bitu iolen) {
+void write_p3c0_et3k(Bitu reg,Bitu val,Bitu /*iolen*/) {
 // See ET4K notes.
 	switch(reg) {
 	STORE_ET3K(3c0, 16);
 	STORE_ET3K(3c0, 17);
 	default:
-		LOG(LOG_VGAMISC,LOG_NORMAL)("VGA:ATTR:ET3K:Write to illegal index %2X", reg);
+		LOG(LOG_VGAMISC,LOG_NORMAL)("VGA:ATTR:ET3K:Write to illegal index %2" sBitfs(X), reg);
 		break;
 	}
 }
 
-Bitu read_p3c1_et3k(Bitu reg,Bitu iolen) {
+Bitu read_p3c1_et3k(Bitu reg,Bitu /*iolen*/) {
 	switch(reg) {
 	RESTORE_ET3K(3c0, 16);
 	RESTORE_ET3K(3c0, 17);
 	default:
-		LOG(LOG_VGAMISC,LOG_NORMAL)("VGA:ATTR:ET3K:Read from illegal index %2X", reg);
+		LOG(LOG_VGAMISC,LOG_NORMAL)("VGA:ATTR:ET3K:Read from illegal index %2" sBitfs(X), reg);
 		break;
 	}
 	return 0x0;
@@ -702,8 +692,10 @@ void FinishSetMode_ET3K(Bitu crtc_base, VGA_ModeExtraData* modeData) {
 	IO_Write(crtc_base,0x25);IO_Write(crtc_base+1,et4k_ver_overflow);
 
 	// Clear remaining ext CRTC registers
-	for (Bitu i=0x16; i<=0x21; i++)
-		IO_Write(crtc_base,i);IO_Write(crtc_base+1,0);
+	for (Bitu i=0x1b; i<=0x21; i++) {
+		IO_Write(crtc_base,i);
+		IO_Write(crtc_base+1,0);
+	}
 	IO_Write(crtc_base,0x23);IO_Write(crtc_base+1,0);
 	IO_Write(crtc_base,0x24);IO_Write(crtc_base+1,0);
 	// Clear ext SEQ
@@ -715,11 +707,11 @@ void FinishSetMode_ET3K(Bitu crtc_base, VGA_ModeExtraData* modeData) {
 
 	// Select SVGA clock to get close to 60Hz (not particularly clean implementation)
 	if (modeData->modeNo > 0x13) {
-		Bitu target = modeData->vtotal*8*modeData->htotal*60;
+		Bits target = static_cast<Bits>(modeData->vtotal * 8 * modeData->htotal * 60);
 		Bitu best = 1;
-		Bits dist = 100000000;
-		for (Bitu i=0; i<8; i++) {
-			Bits cdiff = abs((Bits)(target-et3k.clockFreq[i]));
+		int dist = 100000000;
+		for (Bitu i = 0; i < 8; i++) {
+			int cdiff = abs( static_cast<Bit32s>(target - static_cast<Bits>(et3k.clockFreq[i])) );
 			if (cdiff < dist) {
 				best = i;
 				dist = cdiff;
@@ -793,14 +785,4 @@ void SVGA_Setup_TsengET3K(void) {
 	IO_RegisterWriteHandler(0x3cd,write_p3cd_et3k,IO_MB);
 
 	vga.vmemsize = 512*1024; // Cannot figure how this was supposed to work on the real card
-
-	// Tseng ROM signature
-	PhysPt rom_base=PhysMake(0xc000,0);
-	phys_writeb(rom_base+0x0075,' ');
-	phys_writeb(rom_base+0x0076,'T');
-	phys_writeb(rom_base+0x0077,'s');
-	phys_writeb(rom_base+0x0078,'e');
-	phys_writeb(rom_base+0x0079,'n');
-	phys_writeb(rom_base+0x007a,'g');
-	phys_writeb(rom_base+0x007b,' ');
 }

@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2002-2010  The DOSBox Team
+ *  Copyright (C) 2002-2021  The DOSBox Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -11,12 +11,11 @@
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *  GNU General Public License for more details.
  *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *  You should have received a copy of the GNU General Public License along
+ *  with this program; if not, write to the Free Software Foundation, Inc.,
+ *  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-/* $Id: softmodem.h,v 1.12 2009-10-04 20:57:40 h-a-l-9000 Exp $ */
 
 #ifndef DOSBOX_SERIALMODEM_H
 #define DOSBOX_SERIALMODEM_H
@@ -92,7 +91,7 @@ public:
 			static Bits lcount=0;
 			if (lcount<1000) {
 				lcount++;
-				LOG_MSG("MODEM: FIFO Overflow! (adds len %u)",_len);
+				LOG_MSG("MODEM: FIFO Overflow! (adds len %" sBitfs(u) ")",_len);
 			}
 			return;
 		}
@@ -126,7 +125,7 @@ public:
 			static Bits lcount=0;
 			if (lcount<1000) {
 				lcount++;
-				LOG_MSG("MODEM: FIFO UNDERFLOW! (gets len %d)",_len);
+				LOG_MSG("MODEM: FIFO UNDERFLOW! (gets len %" sBitfs(d) ")",_len);
 			}
 			return;
 		}
@@ -148,6 +147,7 @@ private:
 #define MREG_CR_CHAR 3
 #define MREG_LF_CHAR 4
 #define MREG_BACKSPACE_CHAR 5
+#define MREG_GUARD_TIME 12
 
 
 class CSerialModem : public CSerial {

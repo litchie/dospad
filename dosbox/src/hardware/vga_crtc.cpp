@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2002-2010  The DOSBox Team
+ *  Copyright (C) 2002-2021  The DOSBox Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -11,12 +11,11 @@
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *  GNU General Public License for more details.
  *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *  You should have received a copy of the GNU General Public License along
+ *  with this program; if not, write to the Free Software Foundation, Inc.,
+ *  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-/* $Id: vga_crtc.cpp,v 1.34 2009-03-18 18:08:16 c2woody Exp $ */
 
 #include <stdlib.h>
 #include "dosbox.h"
@@ -36,16 +35,16 @@ void VGA_UnmapMMIO(void);
 void vga_write_p3d5(Bitu port,Bitu val,Bitu iolen);
 Bitu DEBUG_EnableDebugger(void);
 
-void vga_write_p3d4(Bitu port,Bitu val,Bitu iolen) {
-	crtc(index)=val;
+void vga_write_p3d4(Bitu /*port*/,Bitu val,Bitu /*iolen*/) {
+	crtc(index) = val;
 }
 
-Bitu vga_read_p3d4(Bitu port,Bitu iolen) {
+Bitu vga_read_p3d4(Bitu /*port*/,Bitu /*iolen*/) {
 	return crtc(index);
 }
 
-void vga_write_p3d5(Bitu port,Bitu val,Bitu iolen) {
-//	if (crtc(index)>0x18) LOG_MSG("VGA CRCT write %X to reg %X",val,crtc(index));
+void vga_write_p3d5(Bitu /*port*/,Bitu val,Bitu iolen) {
+//	if (crtc(index) > 0x18) LOG_MSG("VGA CRCT write %" sBitfs(X) " to reg %X",val,crtc(index));
 	switch(crtc(index)) {
 	case 0x00:	/* Horizontal Total Register */
 		if (crtc(read_only)) break;
@@ -91,12 +90,12 @@ void vga_write_p3d5(Bitu port,Bitu val,Bitu iolen) {
 			5-6	Number of character clocks to delay start of display after Horizontal
 				Retrace.
 			7	bit 5 of the End Horizontal Blanking count (See 3d4h index 3 bit 0-4)
-		*/	
+		*/
 		break;
 	case 0x06: /* Vertical Total Register */
 		if (crtc(read_only)) break;
 		if (val != crtc(vertical_total)) {
-			crtc(vertical_total)=val;	
+			crtc(vertical_total)=val;
 			VGA_StartResize();
 		}
 		/*	0-7	Lower 8 bits of the Vertical Total. Bit 8 is found in 3d4h index 7
@@ -215,7 +214,7 @@ void vga_write_p3d5(Bitu port,Bitu val,Bitu iolen) {
 		break;
 	case 0x10:	/* Vertical Retrace Start Register */
 		crtc(vertical_retrace_start)=val;
-		/*	
+		/*
 			0-7	Lower 8 bits of Vertical Retrace Start. Vertical Retrace starts when
 			the line counter reaches this value. Bit 8 is found in 3d4h index 7
 			bit 2. Bit 9 is found in 3d4h index 7 bit 7.
@@ -223,7 +222,7 @@ void vga_write_p3d5(Bitu port,Bitu val,Bitu iolen) {
 		break;
 	case 0x11:	/* Vertical Retrace End Register */
 		crtc(vertical_retrace_end)=val;
-		
+
 		if (IS_EGAVGA_ARCH && !(val & 0x10)) {
 			vga.draw.vret_triggered=false;
 			if (GCC_UNLIKELY(machine==MCH_EGA)) PIC_DeActivateIRQ(9);
@@ -243,7 +242,7 @@ void vga_write_p3d5(Bitu port,Bitu val,Bitu iolen) {
 		break;
 	case 0x12:	/* Vertical Display End Register */
 		if (val!=crtc(vertical_display_end)) {
-			if (abs((Bits)val-(Bits)crtc(vertical_display_end))<3) {
+			if (abs(static_cast<int>((Bits)val-(Bits)crtc(vertical_display_end)))<3) {
 				// delay small vde changes a bit to avoid screen resizing
 				// if they are reverted in a short timeframe
 				PIC_RemoveEvents(VGA_SetupDrawing);
@@ -295,17 +294,21 @@ void vga_write_p3d5(Bitu port,Bitu val,Bitu iolen) {
 			crtc(start_vertical_blanking)=val;
 			VGA_StartResize();
 		}
-		/* 
+		/*
 			0-7	Lower 8 bits of Vertical Blank Start. Vertical blanking starts when
 				the line counter reaches this value. Bit 8 is found in 3d4h index 7
 				bit 3.
 		*/
 		break;
 	case 0x16:	/*  End Vertical Blank Register */
-		crtc(end_vertical_blanking)=val;
-		 /*
+		if (val!=crtc(end_vertical_blanking)) {
+			crtc(end_vertical_blanking)=val;
+			VGA_StartResize();
+		}
+		/*
 			0-6	Vertical blanking stops when the lower 7 bits of the line counter
 				equals this field. Some SVGA chips uses all 8 bits!
+				IBM actually says bits 0-7.
 		*/
 		break;
 	case 0x17:	/* Mode Control Register */
@@ -364,7 +367,7 @@ void vga_write_p3d5(Bitu port,Bitu val,Bitu iolen) {
 	}
 }
 
-Bitu vga_read_p3d5(Bitu port,Bitu iolen) {
+Bitu vga_read_p3d5(Bitu /*port*/,Bitu iolen) {
 //	LOG_MSG("VGA CRCT read from reg %X",crtc(index));
 	switch(crtc(index)) {
 	case 0x00:	/* Horizontal Total Register */
@@ -380,7 +383,7 @@ Bitu vga_read_p3d5(Bitu port,Bitu iolen) {
 	case 0x05:	/* End Horizontal Retrace Register */
 		return crtc(end_horizontal_retrace);
 	case 0x06: /* Vertical Total Register */
-		return crtc(vertical_total);	
+		return crtc(vertical_total);
 	case 0x07:	/* Overflow Register */
 		return crtc(overflow);
 	case 0x08:	/* Preset Row Scan Register */
@@ -426,7 +429,6 @@ Bitu vga_read_p3d5(Bitu port,Bitu iolen) {
 		}
 	}
 }
-
 
 
 

@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2002-2010  The DOSBox Team
+ *  Copyright (C) 2002-2021  The DOSBox Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -11,12 +11,11 @@
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *  GNU General Public License for more details.
  *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *  You should have received a copy of the GNU General Public License along
+ *  with this program; if not, write to the Free Software Foundation, Inc.,
+ *  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-/* $Id: risc_armv4le-common.h,v 1.3 2009-05-16 21:52:47 c2woody Exp $ */
 
 
 /* ARMv4 (little endian) backend by M-HT (common data/functions) */
@@ -32,9 +31,6 @@
 #define DRC_FLAGS_INVALIDATION
 // try to replace _simple functions by code
 #define DRC_FLAGS_INVALIDATION_DCODE
-
-// type with the same size as a pointer
-#define DRC_PTR_SIZE_IM Bit32u
 
 // calling convention modifier
 #define DRC_CALL_CONV	/* nothing */
@@ -97,6 +93,7 @@ static void cache_block_closing(Bit8u* block_start,Bitu block_size) {
 
 #else
 static void cache_block_closing(Bit8u* block_start,Bitu block_size) {
+static void cache_block_closing(const Bit8u* block_start,Bitu block_size) {
 #if (__ARM_EABI__)
 	//flush cache - eabi
 	register unsigned long _beg __asm ("a1") = (unsigned long)(block_start);				// block start

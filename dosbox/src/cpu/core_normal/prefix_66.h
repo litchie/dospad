@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2002-2010  The DOSBox Team
+ *  Copyright (C) 2002-2021  The DOSBox Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -11,9 +11,9 @@
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *  GNU General Public License for more details.
  *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *  You should have received a copy of the GNU General Public License along
+ *  with this program; if not, write to the Free Software Foundation, Inc.,
+ *  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
 	CASE_D(0x01)												/* ADD Ed,Gd */
@@ -158,10 +158,11 @@
 		break;
 	CASE_D(0x62)												/* BOUND Ed */
 		{
-			Bit32s bound_min, bound_max;
-			GetRMrd;GetEAa;
-			bound_min=LoadMd(eaa);
-			bound_max=LoadMd(eaa+4);
+			GetRMrd;
+			if (rm >= 0xc0) goto illegal_opcode;
+			GetEAa;
+			Bit32s bound_min=LoadMds(eaa);
+			Bit32s bound_max=LoadMds(eaa+4);
 			if ( (((Bit32s)*rmrd) < bound_min) || (((Bit32s)*rmrd) > bound_max) ) {
 				EXCEPTION(5);
 			}
@@ -339,8 +340,9 @@
 			}	
 	CASE_D(0x8d)												/* LEA Gd */
 		{
-			//Little hack to always use segprefixed version
 			GetRMrd;
+			if (rm >= 0xc0) goto illegal_opcode;
+			//Little hack to always use segprefixed version
 			BaseDS=BaseSS=0;
 			if (TEST_PREFIX_ADDR) {
 				*rmrd=(Bit32u)(*EATable[256+rm])();
@@ -390,7 +392,7 @@
 			CPU_CALL(true,newcs,newip,GETIP);
 #if CPU_TRAP_CHECK
 			if (GETFLAG(TF)) {	
-				cpudecoder=CPU_Core_Normal_Trap_Run;
+				cpudecoder=CPU_TRAP_DECODER;
 				return CBRET_NONE;
 			}
 #endif
@@ -403,7 +405,7 @@
 		if (CPU_POPF(true)) RUNEXCEPTION();
 #if CPU_TRAP_CHECK
 		if (GETFLAG(TF)) {	
-			cpudecoder=CPU_Core_Normal_Trap_Run;
+			cpudecoder=CPU_TRAP_DECODER;
 			goto decode_end;
 		}
 #endif
@@ -515,7 +517,7 @@
 			CPU_IRET(true,GETIP);
 #if CPU_TRAP_CHECK
 			if (GETFLAG(TF)) {	
-				cpudecoder=CPU_Core_Normal_Trap_Run;
+				cpudecoder=CPU_TRAP_DECODER;
 				return CBRET_NONE;
 			}
 #endif
@@ -589,7 +591,7 @@
 			CPU_JMP(true,newcs,newip,GETIP);
 #if CPU_TRAP_CHECK
 			if (GETFLAG(TF)) {	
-				cpudecoder=CPU_Core_Normal_Trap_Run;
+				cpudecoder=CPU_TRAP_DECODER;
 				return CBRET_NONE;
 			}
 #endif
@@ -603,9 +605,11 @@
 			continue;
 		}
 	CASE_D(0xed)												/* IN EAX,DX */
+		if (CPU_IO_Exception(reg_dx,4)) RUNEXCEPTION();
 		reg_eax=IO_ReadD(reg_dx);
 		break;
 	CASE_D(0xef)												/* OUT DX,EAX */
+		if (CPU_IO_Exception(reg_dx,4)) RUNEXCEPTION();
 		IO_WriteD(reg_dx,reg_eax);
 		break;
 	CASE_D(0xf7)												/* GRP3 Ed(,Id) */
@@ -677,7 +681,7 @@
 					CPU_CALL(true,newcs,newip,GETIP);
 #if CPU_TRAP_CHECK
 					if (GETFLAG(TF)) {	
-						cpudecoder=CPU_Core_Normal_Trap_Run;
+						cpudecoder=CPU_TRAP_DECODER;
 						return CBRET_NONE;
 					}
 #endif
@@ -697,7 +701,7 @@
 					CPU_JMP(true,newcs,newip,GETIP);
 #if CPU_TRAP_CHECK
 					if (GETFLAG(TF)) {	
-						cpudecoder=CPU_Core_Normal_Trap_Run;
+						cpudecoder=CPU_TRAP_DECODER;
 						return CBRET_NONE;
 					}
 #endif
