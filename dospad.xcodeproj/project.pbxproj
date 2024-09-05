@@ -340,7 +340,7 @@
 		E729BF53129BF18F002B05B2 /* mouseon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E729BF4D129BF18F002B05B2 /* mouseon@2x.png */; };
 		E729BF54129BF18F002B05B2 /* mouseon~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = E729BF4E129BF18F002B05B2 /* mouseon~ipad.png */; };
 		E72BE69712911096009DC46A /* DPEmulatorViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E72BE69512911096009DC46A /* DPEmulatorViewController.m */; };
-		E72BE6E412911B5C009DC46A /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = E72BE6C412911B5C009DC46A /* AppDelegate.m */; };
+		E72BE6E412911B5C009DC46A /* DPAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = E72BE6C412911B5C009DC46A /* DPAppDelegate.m */; };
 		E72BE6E512911B5C009DC46A /* DOSPadEmulator.m in Sources */ = {isa = PBXBuildFile; fileRef = E72BE6C612911B5C009DC46A /* DOSPadEmulator.m */; };
 		E72BE6E712911B5C009DC46A /* KeyboardView.m in Sources */ = {isa = PBXBuildFile; fileRef = E72BE6CA12911B5C009DC46A /* KeyboardView.m */; };
 		E72BE6E812911B5C009DC46A /* KeyView.m in Sources */ = {isa = PBXBuildFile; fileRef = E72BE6CC12911B5C009DC46A /* KeyView.m */; };
@@ -366,7 +366,6 @@
 		E72FA29A25622C5C009731A4 /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E72FA29925622C5C009731A4 /* CloudKit.framework */; };
 		E73A566B2534979900E3B3FB /* MfiGamepadConfiguration.m in Sources */ = {isa = PBXBuildFile; fileRef = E73A566A2534979900E3B3FB /* MfiGamepadConfiguration.m */; };
 		E73A566E2534A49000E3B3FB /* MfiGamepadManager.m in Sources */ = {isa = PBXBuildFile; fileRef = E73A566D2534A49000E3B3FB /* MfiGamepadManager.m */; };
-		E74BB2B715C93DBC005EC552 /* DosPadUIApplication.m in Sources */ = {isa = PBXBuildFile; fileRef = E74BB2B515C93DBC005EC552 /* DosPadUIApplication.m */; };
 		E75276E712A0A77E00278BA1 /* modekeyoff.png in Resources */ = {isa = PBXBuildFile; fileRef = E75276E112A0A77E00278BA1 /* modekeyoff.png */; };
 		E75276E812A0A77E00278BA1 /* modekeyoff@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E75276E212A0A77E00278BA1 /* modekeyoff@2x.png */; };
 		E75276E912A0A77E00278BA1 /* modekeyoff~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = E75276E312A0A77E00278BA1 /* modekeyoff~ipad.png */; };
@@ -1064,8 +1063,8 @@
 		E729BF4E129BF18F002B05B2 /* mouseon~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "mouseon~ipad.png"; sourceTree = "<group>"; };
 		E72BE69412911096009DC46A /* DPEmulatorViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DPEmulatorViewController.h; sourceTree = "<group>"; };
 		E72BE69512911096009DC46A /* DPEmulatorViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DPEmulatorViewController.m; sourceTree = "<group>"; };
-		E72BE6C312911B5C009DC46A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
-		E72BE6C412911B5C009DC46A /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		E72BE6C312911B5C009DC46A /* DPAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DPAppDelegate.h; sourceTree = "<group>"; };
+		E72BE6C412911B5C009DC46A /* DPAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DPAppDelegate.m; sourceTree = "<group>"; };
 		E72BE6C512911B5C009DC46A /* DOSPadEmulator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DOSPadEmulator.h; sourceTree = "<group>"; };
 		E72BE6C612911B5C009DC46A /* DOSPadEmulator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DOSPadEmulator.m; sourceTree = "<group>"; };
 		E72BE6C912911B5C009DC46A /* KeyboardView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KeyboardView.h; sourceTree = "<group>"; };
@@ -1099,8 +1098,6 @@
 		E73B77D7127ED67300184D3B /* configs */ = {isa = PBXFileReference; lastKnownFileType = folder; path = configs; sourceTree = "<group>"; };
 		E745CE3D11F5991F00F00F7F /* HoldIndicator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HoldIndicator.h; sourceTree = "<group>"; };
 		E745CE3E11F5991F00F00F7F /* HoldIndicator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HoldIndicator.m; sourceTree = "<group>"; };
-		E74BB2B415C93DBC005EC552 /* DosPadUIApplication.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DosPadUIApplication.h; sourceTree = "<group>"; };
-		E74BB2B515C93DBC005EC552 /* DosPadUIApplication.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DosPadUIApplication.m; sourceTree = "<group>"; };
 		E75276E112A0A77E00278BA1 /* modekeyoff.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = modekeyoff.png; sourceTree = "<group>"; };
 		E75276E212A0A77E00278BA1 /* modekeyoff@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "modekeyoff@2x.png"; sourceTree = "<group>"; };
 		E75276E312A0A77E00278BA1 /* modekeyoff~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "modekeyoff~ipad.png"; sourceTree = "<group>"; };
@@ -2502,14 +2499,12 @@
 		E7D98C6C1CCB228200A17CFC /* Main */ = {
 			isa = PBXGroup;
 			children = (
-				E72BE6C312911B5C009DC46A /* AppDelegate.h */,
-				E72BE6C412911B5C009DC46A /* AppDelegate.m */,
+				E72BE6C312911B5C009DC46A /* DPAppDelegate.h */,
+				E72BE6C412911B5C009DC46A /* DPAppDelegate.m */,
 				E79970041241F09400502015 /* cmd_history.h */,
 				E792A4BA11E36C9C00894C71 /* Common.h */,
 				E72BE6C512911B5C009DC46A /* DOSPadEmulator.h */,
 				E72BE6C612911B5C009DC46A /* DOSPadEmulator.m */,
-				E74BB2B415C93DBC005EC552 /* DosPadUIApplication.h */,
-				E74BB2B515C93DBC005EC552 /* DosPadUIApplication.m */,
 				E72BE69412911096009DC46A /* DPEmulatorViewController.h */,
 				E72BE69512911096009DC46A /* DPEmulatorViewController.m */,
 				E7FDFB40254E6EEE00A6DE66 /* DPKeyBinding.h */,
@@ -3689,7 +3684,7 @@
 				E73A566E2534A49000E3B3FB /* MfiGamepadManager.m in Sources */,
 				E71706DC25472C20000AF482 /* DPThemeScene.m in Sources */,
 				F21A87042C71763A00A5860F /* DPPackage.m in Sources */,
-				E72BE6E412911B5C009DC46A /* AppDelegate.m in Sources */,
+				E72BE6E412911B5C009DC46A /* DPAppDelegate.m in Sources */,
 				E72BE6E512911B5C009DC46A /* DOSPadEmulator.m in Sources */,
 				F262CC2625A52C85005F21D2 /* DPKeyboardManager.m in Sources */,
 				E72BE6E712911B5C009DC46A /* KeyboardView.m in Sources */,
@@ -3698,7 +3693,6 @@
 				E76C49381299490200901B69 /* FloatPanel.m in Sources */,
 				E70836B92539EEB200B9321F /* KeyboardSpy.m in Sources */,
 				E71706D2254643AD000AF482 /* DPTheme.m in Sources */,
-				E74BB2B715C93DBC005EC552 /* DosPadUIApplication.m in Sources */,
 				2A4546FA17D2812100D18563 /* PianoKeyboard.m in Sources */,
 				E7FDFB23254E6AF200A6DE66 /* DPGamepadButtonEditor.m in Sources */,
 				E79610322566580000556B9D /* DPSettings.m in Sources */,

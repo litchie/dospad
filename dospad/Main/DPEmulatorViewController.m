@@ -18,7 +18,7 @@
 
 #import "DPEmulatorViewController.h"
 #import "Common.h"
-#import "AppDelegate.h"
+#import "DPAppDelegate.h"
 #import "ColorTheme.h"
 #import "DPTheme.h"
 #import "DPGamepad.h"
@@ -882,7 +882,7 @@ static struct {
 
 - (NSString*)currentCycles
 {
-    AppDelegate *d = (AppDelegate*)[[UIApplication sharedApplication] delegate];
+    DPAppDelegate *d = (DPAppDelegate*)[[UIApplication sharedApplication] delegate];
     
     if (d.maxPercent != 0)
     {
@@ -896,7 +896,7 @@ static struct {
 
 - (int)currentFrameskip
 {
-    AppDelegate *d = (AppDelegate*)[[UIApplication sharedApplication] delegate];
+    DPAppDelegate *d = (DPAppDelegate*)[[UIApplication sharedApplication] delegate];
     return d.frameskip;
 }
 

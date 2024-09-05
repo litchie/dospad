@@ -20,7 +20,7 @@
 #import "SDL_uikitappdelegate.h"
 #import "DOSPadEmulator.h"
 
-@interface AppDelegate : SDLUIKitDelegate 
+@interface DPAppDelegate : SDLUIKitDelegate 
 {
     SDL_uikitopenglview *screenView;
     int cycles;

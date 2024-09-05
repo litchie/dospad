@@ -16,7 +16,7 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#import "AppDelegate.h"
+#import "DPAppDelegate.h"
 #import "DPEmulatorViewController.h"
 #import "Common.h"
 #import <AVFoundation/AVFoundation.h>
@@ -26,14 +26,14 @@
 
 #define kLastURL @"LastPackageURL"
 
-@interface AppDelegate ()
+@interface DPAppDelegate ()
 {
 	DPEmulatorViewController *_emulatorController;
 }
 @end
 
 
-@implementation AppDelegate
+@implementation DPAppDelegate
 @synthesize frameskip;
 @synthesize cycles;
 @synthesize maxPercent;
