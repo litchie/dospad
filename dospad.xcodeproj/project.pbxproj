@@ -118,7 +118,6 @@
 		E71E620C11B550FD00EC5A05 /* mapper.h in Headers */ = {isa = PBXBuildFile; fileRef = E71E610811B550FD00EC5A05 /* mapper.h */; };
 		E71E620D11B550FD00EC5A05 /* mem.h in Headers */ = {isa = PBXBuildFile; fileRef = E71E610911B550FD00EC5A05 /* mem.h */; };
 		E71E620E11B550FD00EC5A05 /* mixer.h in Headers */ = {isa = PBXBuildFile; fileRef = E71E610A11B550FD00EC5A05 /* mixer.h */; };
-		E71E620F11B550FD00EC5A05 /* modules.h in Headers */ = {isa = PBXBuildFile; fileRef = E71E610B11B550FD00EC5A05 /* modules.h */; };
 		E71E621011B550FD00EC5A05 /* mouse.h in Headers */ = {isa = PBXBuildFile; fileRef = E71E610C11B550FD00EC5A05 /* mouse.h */; };
 		E71E621111B550FD00EC5A05 /* paging.h in Headers */ = {isa = PBXBuildFile; fileRef = E71E610D11B550FD00EC5A05 /* paging.h */; };
 		E71E621211B550FD00EC5A05 /* pic.h in Headers */ = {isa = PBXBuildFile; fileRef = E71E610E11B550FD00EC5A05 /* pic.h */; };
@@ -836,7 +835,6 @@
 		E71E610811B550FD00EC5A05 /* mapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mapper.h; sourceTree = "<group>"; };
 		E71E610911B550FD00EC5A05 /* mem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mem.h; sourceTree = "<group>"; };
 		E71E610A11B550FD00EC5A05 /* mixer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mixer.h; sourceTree = "<group>"; };
-		E71E610B11B550FD00EC5A05 /* modules.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = modules.h; sourceTree = "<group>"; };
 		E71E610C11B550FD00EC5A05 /* mouse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mouse.h; sourceTree = "<group>"; };
 		E71E610D11B550FD00EC5A05 /* paging.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = paging.h; sourceTree = "<group>"; };
 		E71E610E11B550FD00EC5A05 /* pic.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = pic.h; sourceTree = "<group>"; };
@@ -1028,10 +1026,6 @@
 		E71E61DE11B550FD00EC5A05 /* xms.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = xms.h; sourceTree = "<group>"; };
 		E71E61E111B550FD00EC5A05 /* gui_tk.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gui_tk.cpp; sourceTree = "<group>"; };
 		E71E61E211B550FD00EC5A05 /* gui_tk.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gui_tk.h; sourceTree = "<group>"; };
-		E71E61E311B550FD00EC5A05 /* Makefile.am */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Makefile.am; sourceTree = "<group>"; };
-		E71E61E411B550FD00EC5A05 /* Makefile.in */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Makefile.in; sourceTree = "<group>"; };
-		E71E61E711B550FD00EC5A05 /* Makefile.am */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Makefile.am; sourceTree = "<group>"; };
-		E71E61E811B550FD00EC5A05 /* Makefile.in */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Makefile.in; sourceTree = "<group>"; };
 		E71E61E911B550FD00EC5A05 /* zmbv.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = zmbv.cpp; sourceTree = "<group>"; };
 		E71E61EA11B550FD00EC5A05 /* zmbv.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = zmbv.h; sourceTree = "<group>"; };
 		E71E61EC11B550FD00EC5A05 /* cross.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = cross.cpp; sourceTree = "<group>"; };
@@ -1755,7 +1749,6 @@
 				E71E610811B550FD00EC5A05 /* mapper.h */,
 				E71E610911B550FD00EC5A05 /* mem.h */,
 				E71E610A11B550FD00EC5A05 /* mixer.h */,
-				E71E610B11B550FD00EC5A05 /* modules.h */,
 				E71E610C11B550FD00EC5A05 /* mouse.h */,
 				E71E610D11B550FD00EC5A05 /* paging.h */,
 				E71E610E11B550FD00EC5A05 /* pic.h */,
@@ -2068,8 +2061,6 @@
 			children = (
 				E71E61E111B550FD00EC5A05 /* gui_tk.cpp */,
 				E71E61E211B550FD00EC5A05 /* gui_tk.h */,
-				E71E61E311B550FD00EC5A05 /* Makefile.am */,
-				E71E61E411B550FD00EC5A05 /* Makefile.in */,
 			);
 			path = gui_tk;
 			sourceTree = "<group>";
@@ -2077,8 +2068,6 @@
 		E71E61E611B550FD00EC5A05 /* zmbv */ = {
 			isa = PBXGroup;
 			children = (
-				E71E61E711B550FD00EC5A05 /* Makefile.am */,
-				E71E61E811B550FD00EC5A05 /* Makefile.in */,
 				E71E61E911B550FD00EC5A05 /* zmbv.cpp */,
 				E71E61EA11B550FD00EC5A05 /* zmbv.h */,
 			);
@@ -2943,7 +2932,6 @@
 				E71E620C11B550FD00EC5A05 /* mapper.h in Headers */,
 				E71E620D11B550FD00EC5A05 /* mem.h in Headers */,
 				E71E620E11B550FD00EC5A05 /* mixer.h in Headers */,
-				E71E620F11B550FD00EC5A05 /* modules.h in Headers */,
 				E71E621011B550FD00EC5A05 /* mouse.h in Headers */,
 				E71E621111B550FD00EC5A05 /* paging.h in Headers */,
 				E71E621211B550FD00EC5A05 /* pic.h in Headers */,
@@ -4345,7 +4333,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 20240828;
+				CURRENT_PROJECT_VERSION = 20240905;
 				DEVELOPMENT_TEAM = 4C8YZND49H;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -4383,7 +4371,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 20240828;
+				CURRENT_PROJECT_VERSION = 20240905;
 				DEVELOPMENT_TEAM = 4C8YZND49H;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = dospad/DPPrefix.pch;
@@ -4497,7 +4485,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 20240828;
+				CURRENT_PROJECT_VERSION = 20240905;
 				DEVELOPMENT_TEAM = 4C8YZND49H;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = dospad/DPPrefix.pch;
@@ -4552,7 +4540,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 20240828;
+				CURRENT_PROJECT_VERSION = 20240905;
 				DEVELOPMENT_TEAM = 4C8YZND49H;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = dospad/DPPrefix.pch;
