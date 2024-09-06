@@ -81,7 +81,7 @@ public:
 		// The default output device
 		desc.componentType = kAudioUnitType_Output;
 #ifdef IPHONEOS		
-		desc.componentSubType = kAudioUnitSubType_GenericOutput;
+		desc.componentSubType = kAudioUnitSubType_RemoteIO;
 #else
 		desc.componentSubType = kAudioUnitSubType_DefaultOutput;
 #endif
