@@ -447,7 +447,7 @@ static struct {
 		}
 		else
 		{
-			if (size.width >= 768) {
+			if (size.width >= 768 || ISIPAD()) {
 				return [_currentTheme findSceneByName:@"ipad-portrait"];
 			} else {
 				// iPhone 4S
