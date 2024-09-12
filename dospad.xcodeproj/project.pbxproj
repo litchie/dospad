@@ -515,7 +515,25 @@
 		F21A871A2C88AB9000A5860F /* drive_overlay.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F21A87192C88AB9000A5860F /* drive_overlay.cpp */; };
 		F262CC1C25A52C6E005F21D2 /* DPMouseManager.m in Sources */ = {isa = PBXBuildFile; fileRef = F262CC1B25A52C6E005F21D2 /* DPMouseManager.m */; };
 		F262CC2625A52C85005F21D2 /* DPKeyboardManager.m in Sources */ = {isa = PBXBuildFile; fileRef = F262CC2525A52C85005F21D2 /* DPKeyboardManager.m */; };
+		F282157C2C913D5B0001DACE /* libSDL_sound.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F2E5774C2C907D0B00EB5699 /* libSDL_sound.a */; };
+		F28215802C913EB00001DACE /* audio_convert.c in Sources */ = {isa = PBXBuildFile; fileRef = F282157D2C913EAF0001DACE /* audio_convert.c */; };
 		F2A095812BC3B86300BD25E3 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = F2A095802BC3B86300BD25E3 /* PrivacyInfo.xcprivacy */; };
+		F2E5773D2C8EC28C00EB5699 /* libmpg123.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F2E5773A2C8EC28B00EB5699 /* libmpg123.a */; };
+		F2E5773E2C8EC28C00EB5699 /* libogg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F2E5773B2C8EC28C00EB5699 /* libogg.a */; };
+		F2E5773F2C8EC28C00EB5699 /* libFLAC.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F2E5773C2C8EC28C00EB5699 /* libFLAC.a */; };
+		F2E577412C8EC2BF00EB5699 /* libvorbis.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F2E577402C8EC2BF00EB5699 /* libvorbis.a */; };
+		F2E577442C8EC30400EB5699 /* libvorbisfile.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F2E577422C8EC30400EB5699 /* libvorbisfile.a */; };
+		F2E577452C8EC30400EB5699 /* libvorbisenc.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F2E577432C8EC30400EB5699 /* libvorbisenc.a */; };
+		F2E577512C907D1100EB5699 /* SDL_sound.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = F2E5774E2C907D1100EB5699 /* SDL_sound.h */; };
+		F2E5775A2C907EC500EB5699 /* SDL_sound.c in Sources */ = {isa = PBXBuildFile; fileRef = F2E577572C907EC400EB5699 /* SDL_sound.c */; };
+		F2E577A42C907F0700EB5699 /* au.c in Sources */ = {isa = PBXBuildFile; fileRef = F2E5775C2C907F0500EB5699 /* au.c */; };
+		F2E577A62C907F0700EB5699 /* raw.c in Sources */ = {isa = PBXBuildFile; fileRef = F2E5775E2C907F0500EB5699 /* raw.c */; };
+		F2E577B52C907F0700EB5699 /* ogg.c in Sources */ = {isa = PBXBuildFile; fileRef = F2E5778B2C907F0600EB5699 /* ogg.c */; };
+		F2E577B72C907F0700EB5699 /* aiff.c in Sources */ = {isa = PBXBuildFile; fileRef = F2E5778D2C907F0600EB5699 /* aiff.c */; };
+		F2E577B82C907F0700EB5699 /* mpg123.c in Sources */ = {isa = PBXBuildFile; fileRef = F2E5778E2C907F0600EB5699 /* mpg123.c */; };
+		F2E577BB2C907F0700EB5699 /* wav.c in Sources */ = {isa = PBXBuildFile; fileRef = F2E577912C907F0600EB5699 /* wav.c */; };
+		F2E577BC2C907F0700EB5699 /* flac.c in Sources */ = {isa = PBXBuildFile; fileRef = F2E577922C907F0600EB5699 /* flac.c */; };
+		F2E577BD2C907F0700EB5699 /* voc.c in Sources */ = {isa = PBXBuildFile; fileRef = F2E577A32C907F0600EB5699 /* voc.c */; };
 		FD3F495C0DEA5B2100C5B771 /* begin_code.h in Headers */ = {isa = PBXBuildFile; fileRef = FD99B8CC0DD52EB400FB1D6B /* begin_code.h */; settings = {ATTRIBUTES = (); }; };
 		FD3F495D0DEA5B2100C5B771 /* close_code.h in Headers */ = {isa = PBXBuildFile; fileRef = FD99B8CD0DD52EB400FB1D6B /* close_code.h */; settings = {ATTRIBUTES = (); }; };
 		FD3F495F0DEA5B2100C5B771 /* SDL_audio.h in Headers */ = {isa = PBXBuildFile; fileRef = FD99B8CF0DD52EB400FB1D6B /* SDL_audio.h */; settings = {ATTRIBUTES = (); }; };
@@ -729,6 +747,16 @@
 				E796109E256A6B5700556B9D /* iDOSThumbnail.appex in Embed App Extensions */,
 			);
 			name = "Embed App Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F2E5774A2C907D0A00EB5699 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "include/$(PRODUCT_NAME)";
+			dstSubfolderSpec = 16;
+			files = (
+				F2E577512C907D1100EB5699 /* SDL_sound.h in CopyFiles */,
+			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXCopyFilesBuildPhase section */
@@ -1325,7 +1353,28 @@
 		F262CC1B25A52C6E005F21D2 /* DPMouseManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DPMouseManager.m; sourceTree = "<group>"; };
 		F262CC2425A52C85005F21D2 /* DPKeyboardManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DPKeyboardManager.h; sourceTree = "<group>"; };
 		F262CC2525A52C85005F21D2 /* DPKeyboardManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DPKeyboardManager.m; sourceTree = "<group>"; };
+		F282157D2C913EAF0001DACE /* audio_convert.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = audio_convert.c; sourceTree = "<group>"; };
 		F2A095802BC3B86300BD25E3 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		F2E577382C8EC22F00EB5699 /* libSDL_sound.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libSDL_sound.a; path = deps/lib/libSDL_sound.a; sourceTree = "<group>"; };
+		F2E5773A2C8EC28B00EB5699 /* libmpg123.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libmpg123.a; path = deps/lib/libmpg123.a; sourceTree = "<group>"; };
+		F2E5773B2C8EC28C00EB5699 /* libogg.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libogg.a; path = deps/lib/libogg.a; sourceTree = "<group>"; };
+		F2E5773C2C8EC28C00EB5699 /* libFLAC.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libFLAC.a; path = deps/lib/libFLAC.a; sourceTree = "<group>"; };
+		F2E577402C8EC2BF00EB5699 /* libvorbis.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvorbis.a; path = deps/lib/libvorbis.a; sourceTree = "<group>"; };
+		F2E577422C8EC30400EB5699 /* libvorbisfile.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvorbisfile.a; path = deps/lib/libvorbisfile.a; sourceTree = "<group>"; };
+		F2E577432C8EC30400EB5699 /* libvorbisenc.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvorbisenc.a; path = deps/lib/libvorbisenc.a; sourceTree = "<group>"; };
+		F2E5774C2C907D0B00EB5699 /* libSDL_sound.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libSDL_sound.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		F2E5774E2C907D1100EB5699 /* SDL_sound.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SDL_sound.h; sourceTree = "<group>"; };
+		F2E577572C907EC400EB5699 /* SDL_sound.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = SDL_sound.c; sourceTree = "<group>"; };
+		F2E577582C907EC400EB5699 /* SDL_sound_internal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDL_sound_internal.h; sourceTree = "<group>"; };
+		F2E577592C907EC400EB5699 /* config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = config.h; sourceTree = "<group>"; };
+		F2E5775C2C907F0500EB5699 /* au.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = au.c; sourceTree = "<group>"; };
+		F2E5775E2C907F0500EB5699 /* raw.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = raw.c; sourceTree = "<group>"; };
+		F2E5778B2C907F0600EB5699 /* ogg.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ogg.c; sourceTree = "<group>"; };
+		F2E5778D2C907F0600EB5699 /* aiff.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = aiff.c; sourceTree = "<group>"; };
+		F2E5778E2C907F0600EB5699 /* mpg123.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = mpg123.c; sourceTree = "<group>"; };
+		F2E577912C907F0600EB5699 /* wav.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = wav.c; sourceTree = "<group>"; };
+		F2E577922C907F0600EB5699 /* flac.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = flac.c; sourceTree = "<group>"; };
+		F2E577A32C907F0600EB5699 /* voc.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = voc.c; sourceTree = "<group>"; };
 		FD3F4A700DEA620800C5B771 /* SDL_getenv.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = SDL_getenv.c; sourceTree = "<group>"; };
 		FD3F4A710DEA620800C5B771 /* SDL_iconv.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = SDL_iconv.c; sourceTree = "<group>"; };
 		FD3F4A720DEA620800C5B771 /* SDL_malloc.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = SDL_malloc.c; sourceTree = "<group>"; };
@@ -1505,6 +1554,13 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F282157C2C913D5B0001DACE /* libSDL_sound.a in Frameworks */,
+				F2E577442C8EC30400EB5699 /* libvorbisfile.a in Frameworks */,
+				F2E577452C8EC30400EB5699 /* libvorbisenc.a in Frameworks */,
+				F2E577412C8EC2BF00EB5699 /* libvorbis.a in Frameworks */,
+				F2E5773D2C8EC28C00EB5699 /* libmpg123.a in Frameworks */,
+				F2E5773E2C8EC28C00EB5699 /* libogg.a in Frameworks */,
+				F2E5773F2C8EC28C00EB5699 /* libFLAC.a in Frameworks */,
 				E79610272564DCA000556B9D /* libmt32emu.a in Frameworks */,
 				E7B7F8701DE1D70200590701 /* libc++.tbd in Frameworks */,
 				E7A01EF41CC9A5480036A4CF /* CoreAudio.framework in Frameworks */,
@@ -1522,6 +1578,13 @@
 				E7BE1311128BF31A0046990B /* libc.dylib in Frameworks */,
 				E7BE1312128BF31A0046990B /* libSDL_net.a in Frameworks */,
 				E70C044112A4B43F00AC178F /* AVFoundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F2E577492C907D0A00EB5699 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1581,6 +1644,7 @@
 				E7BE1316128BF31A0046990B /* iDOS.app */,
 				E7B2BBCE252155EF00490083 /* iDOSThumbnail.appex */,
 				E7960F462564CE4D00556B9D /* libmt32emu.a */,
+				F2E5774C2C907D0B00EB5699 /* libSDL_sound.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1591,6 +1655,7 @@
 				E7D98C491CC9F7F000A17CFC /* Sources */,
 				E79E44F411EC2D5200DEAA7B /* Resources */,
 				E7960F472564CE4D00556B9D /* mt32emu */,
+				F2E5774D2C907D1100EB5699 /* SDL_sound */,
 				29B97323FDCFA39411CA2CEA /* Frameworks */,
 				19C28FACFE9D520D11CA2CBB /* Products */,
 			);
@@ -1600,6 +1665,13 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				F2E577432C8EC30400EB5699 /* libvorbisenc.a */,
+				F2E577422C8EC30400EB5699 /* libvorbisfile.a */,
+				F2E577402C8EC2BF00EB5699 /* libvorbis.a */,
+				F2E5773C2C8EC28C00EB5699 /* libFLAC.a */,
+				F2E5773A2C8EC28B00EB5699 /* libmpg123.a */,
+				F2E5773B2C8EC28C00EB5699 /* libogg.a */,
+				F2E577382C8EC22F00EB5699 /* libSDL_sound.a */,
 				E72FA29925622C5C009731A4 /* CloudKit.framework */,
 				E7B2BBDE252190CA00490083 /* MobileCoreServices.framework */,
 				E7B7F86F1DE1D70200590701 /* libc++.tbd */,
@@ -2571,6 +2643,34 @@
 			path = Package;
 			sourceTree = "<group>";
 		};
+		F2E5774D2C907D1100EB5699 /* SDL_sound */ = {
+			isa = PBXGroup;
+			children = (
+				F282157D2C913EAF0001DACE /* audio_convert.c */,
+				F2E577592C907EC400EB5699 /* config.h */,
+				F2E5775B2C907F0500EB5699 /* decoders */,
+				F2E577582C907EC400EB5699 /* SDL_sound_internal.h */,
+				F2E577572C907EC400EB5699 /* SDL_sound.c */,
+				F2E5774E2C907D1100EB5699 /* SDL_sound.h */,
+			);
+			path = SDL_sound;
+			sourceTree = "<group>";
+		};
+		F2E5775B2C907F0500EB5699 /* decoders */ = {
+			isa = PBXGroup;
+			children = (
+				F2E5778D2C907F0600EB5699 /* aiff.c */,
+				F2E5775C2C907F0500EB5699 /* au.c */,
+				F2E577922C907F0600EB5699 /* flac.c */,
+				F2E5778E2C907F0600EB5699 /* mpg123.c */,
+				F2E5778B2C907F0600EB5699 /* ogg.c */,
+				F2E5775E2C907F0500EB5699 /* raw.c */,
+				F2E577A32C907F0600EB5699 /* voc.c */,
+				F2E577912C907F0600EB5699 /* wav.c */,
+			);
+			path = decoders;
+			sourceTree = "<group>";
+		};
 		FD3F4A6F0DEA620800C5B771 /* stdlib */ = {
 			isa = PBXGroup;
 			children = (
@@ -3220,6 +3320,23 @@
 			productReference = E7BE1316128BF31A0046990B /* iDOS.app */;
 			productType = "com.apple.product-type.application";
 		};
+		F2E5774B2C907D0A00EB5699 /* SDL_sound */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F2E577522C907D1100EB5699 /* Build configuration list for PBXNativeTarget "SDL_sound" */;
+			buildPhases = (
+				F2E577482C907D0A00EB5699 /* Sources */,
+				F2E577492C907D0A00EB5699 /* Frameworks */,
+				F2E5774A2C907D0A00EB5699 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = SDL_sound;
+			productName = SDL_sound;
+			productReference = F2E5774C2C907D0B00EB5699 /* libSDL_sound.a */;
+			productType = "com.apple.product-type.library.static";
+		};
 		FD6526620DE8FCCB002AD96B /* SDLStaticLib */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = FD6526990DE8FD14002AD96B /* Build configuration list for PBXNativeTarget "SDLStaticLib" */;
@@ -3267,6 +3384,10 @@
 							};
 						};
 					};
+					F2E5774B2C907D0A00EB5699 = {
+						CreatedOnToolsVersion = 15.2;
+						ProvisioningStyle = Automatic;
+					};
 				};
 			};
 			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "dospad" */;
@@ -3290,6 +3411,7 @@
 				E71E60EA11B5506800EC5A05 /* dosbox */,
 				E7B2BBCD252155EE00490083 /* iDOSThumbnail */,
 				E7960F452564CE4D00556B9D /* mt32emu */,
+				F2E5774B2C907D0A00EB5699 /* SDL_sound */,
 			);
 		};
 /* End PBXProject section */
@@ -3687,6 +3809,23 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		F2E577482C907D0A00EB5699 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F2E577B82C907F0700EB5699 /* mpg123.c in Sources */,
+				F28215802C913EB00001DACE /* audio_convert.c in Sources */,
+				F2E577BD2C907F0700EB5699 /* voc.c in Sources */,
+				F2E577A62C907F0700EB5699 /* raw.c in Sources */,
+				F2E577BC2C907F0700EB5699 /* flac.c in Sources */,
+				F2E5775A2C907EC500EB5699 /* SDL_sound.c in Sources */,
+				F2E577A42C907F0700EB5699 /* au.c in Sources */,
+				F2E577BB2C907F0700EB5699 /* wav.c in Sources */,
+				F2E577B52C907F0700EB5699 /* ogg.c in Sources */,
+				F2E577B72C907F0700EB5699 /* aiff.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		FD6526600DE8FCCB002AD96B /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -3907,6 +4046,8 @@
 					./include,
 					./mt32emu/include,
 					./dosbox/include,
+					./deps/include,
+					./deps/include/SDL,
 				);
 				PRODUCT_NAME = dosbox;
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "d5f5deba-f8f7-44f6-afdc-d9450c99bb4d";
@@ -3926,6 +4067,8 @@
 					./include,
 					./mt32emu/include,
 					./dosbox/include,
+					./deps/include,
+					./deps/include/SDL,
 				);
 				PRODUCT_NAME = dosbox;
 				SKIP_INSTALL = YES;
@@ -4167,7 +4310,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 20240407.1;
+				CURRENT_PROJECT_VERSION = 20240907;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = 4C8YZND49H;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -4188,7 +4331,7 @@
 				INFOPLIST_FILE = iDOSThumbnail/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
-				MARKETING_VERSION = 3.0;
+				MARKETING_VERSION = 3.1;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.litchie.idos3.thumbnail;
@@ -4234,7 +4377,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 20240407.1;
+				CURRENT_PROJECT_VERSION = 20240907;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = 4C8YZND49H;
 				ENABLE_NS_ASSERTIONS = NO;
@@ -4250,7 +4393,7 @@
 				INFOPLIST_FILE = iDOSThumbnail/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
-				MARKETING_VERSION = 3.0;
+				MARKETING_VERSION = 3.1;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.litchie.idos3.thumbnail;
@@ -4297,7 +4440,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 20240407.1;
+				CURRENT_PROJECT_VERSION = 20240907;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = 4C8YZND49H;
 				ENABLE_NS_ASSERTIONS = NO;
@@ -4313,7 +4456,7 @@
 				INFOPLIST_FILE = iDOSThumbnail/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
-				MARKETING_VERSION = 3.0;
+				MARKETING_VERSION = 3.1;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.litchie.idos3.thumbnail;
@@ -4333,7 +4476,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 20240905;
+				CURRENT_PROJECT_VERSION = 20240907;
 				DEVELOPMENT_TEAM = 4C8YZND49H;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -4348,6 +4491,10 @@
 				INFOPLIST_KEY_CFBundleDisplayName = "iDOS 3";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/deps/lib",
+				);
 				MARKETING_VERSION = 3.1;
 				OTHER_LDFLAGS = (
 					"-framework",
@@ -4371,7 +4518,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 20240905;
+				CURRENT_PROJECT_VERSION = 20240907;
 				DEVELOPMENT_TEAM = 4C8YZND49H;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = dospad/DPPrefix.pch;
@@ -4384,6 +4531,10 @@
 				INFOPLIST_KEY_CFBundleDisplayName = "iDOS 3";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/deps/lib",
+				);
 				MARKETING_VERSION = 3.1;
 				OTHER_LDFLAGS = (
 					"-framework",
@@ -4470,6 +4621,8 @@
 					./include,
 					./mt32emu/include,
 					./dosbox/include,
+					./deps/include,
+					./deps/include/SDL,
 				);
 				PRODUCT_NAME = dosbox;
 				SKIP_INSTALL = YES;
@@ -4485,7 +4638,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 20240905;
+				CURRENT_PROJECT_VERSION = 20240907;
 				DEVELOPMENT_TEAM = 4C8YZND49H;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = dospad/DPPrefix.pch;
@@ -4499,6 +4652,10 @@
 				INFOPLIST_KEY_CFBundleDisplayName = "iDOS 3";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/deps/lib",
+				);
 				MARKETING_VERSION = 3.1;
 				OTHER_LDFLAGS = (
 					"-framework",
@@ -4540,7 +4697,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 20240905;
+				CURRENT_PROJECT_VERSION = 20240907;
 				DEVELOPMENT_TEAM = 4C8YZND49H;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = dospad/DPPrefix.pch;
@@ -4553,6 +4710,10 @@
 				INFOPLIST_KEY_CFBundleDisplayName = "iDOS 3";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/deps/lib",
+				);
 				MARKETING_VERSION = 3.1;
 				OTHER_LDFLAGS = (
 					"-framework",
@@ -4623,6 +4784,8 @@
 					./include,
 					./mt32emu/include,
 					./dosbox/include,
+					./deps/include,
+					./deps/include/SDL,
 				);
 				PRODUCT_NAME = dosbox;
 				SKIP_INSTALL = YES;
@@ -4665,7 +4828,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 20240407.1;
+				CURRENT_PROJECT_VERSION = 20240907;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = 4C8YZND49H;
 				ENABLE_NS_ASSERTIONS = NO;
@@ -4681,7 +4844,7 @@
 				INFOPLIST_FILE = iDOSThumbnail/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
-				MARKETING_VERSION = 3.0;
+				MARKETING_VERSION = 3.1;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.litchie.idos3.thumbnail;
@@ -4745,6 +4908,250 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Adhoc;
+		};
+		F2E577532C907D1100EB5699 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_PREPROCESSOR_DEFINITIONS = HAVE_CONFIG_H;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.2;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SYSTEM_HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/SDL_sound $(PROJECT_DIR)/deps/include";
+				TARGETED_DEVICE_FAMILY = "1,2";
+				USER_HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/include";
+			};
+			name = Debug;
+		};
+		F2E577542C907D1100EB5699 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_PREPROCESSOR_DEFINITIONS = HAVE_CONFIG_H;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.2;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SYSTEM_HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/SDL_sound $(PROJECT_DIR)/deps/include";
+				TARGETED_DEVICE_FAMILY = "1,2";
+				USER_HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/include";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		F2E577552C907D1100EB5699 /* AppStore */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_PREPROCESSOR_DEFINITIONS = HAVE_CONFIG_H;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.2;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SYSTEM_HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/SDL_sound $(PROJECT_DIR)/deps/include";
+				TARGETED_DEVICE_FAMILY = "1,2";
+				USER_HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/include";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = AppStore;
+		};
+		F2E577562C907D1100EB5699 /* Adhoc */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_PREPROCESSOR_DEFINITIONS = HAVE_CONFIG_H;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.2;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SYSTEM_HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/SDL_sound $(PROJECT_DIR)/deps/include";
+				TARGETED_DEVICE_FAMILY = "1,2";
+				USER_HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/include";
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Adhoc;
@@ -4860,6 +5267,17 @@
 				E7BE1315128BF31A0046990B /* Release */,
 				E7D98C641CC9FA6E00A17CFC /* AppStore */,
 				F20BD44F26DDA5D000AEB448 /* Adhoc */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		F2E577522C907D1100EB5699 /* Build configuration list for PBXNativeTarget "SDL_sound" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F2E577532C907D1100EB5699 /* Debug */,
+				F2E577542C907D1100EB5699 /* Release */,
+				F2E577552C907D1100EB5699 /* AppStore */,
+				F2E577562C907D1100EB5699 /* Adhoc */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

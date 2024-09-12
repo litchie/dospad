@@ -27,6 +27,9 @@
 #include <sstream>
 #include <vector>
 #include <sys/stat.h>
+#ifdef IPHONEOS
+#include <cassert>
+#endif
 #include "cdrom.h"
 #include "drives.h"
 #include "support.h"
@@ -77,6 +80,9 @@ CDROM_Interface_Image::AudioFile::AudioFile(const char *filename, bool &error)
 	sample = Sound_NewSampleFromFile(filename, &desired, RAW_SECTOR_SIZE);
 	lastCount = RAW_SECTOR_SIZE;
 	lastSeek = 0;
+#ifdef IPHONEOS
+	remainingBytes = 0;
+#endif
 	error = (sample == NULL);
 }
 
@@ -85,6 +91,83 @@ CDROM_Interface_Image::AudioFile::~AudioFile()
 	Sound_FreeSample(sample);
 }
 
+#ifdef IPHONEOS
+/*
+ * The original implementation seems to work only with ogg, and has problems with flac/mp3.
+ * - flac decoder may resize the buffer because a frame can generate more bytes than required
+ *   and those extra bytes are discarded so that the playback is skipping;
+ * - mp3 decoder may not fill the requested buffer, therefore playback has glitches;
+ * To fix these problems, we need to be able to keep extra bytes in sample buffer,
+ * and also be able to ask more from the decoder.
+ */
+bool CDROM_Interface_Image::AudioFile::read(Bit8u *buffer, int seek, int count)
+{
+    // If this is a continual request, then we don't need to seek
+    bool shouldSeek = (lastSeek != (seek - count));
+
+    if (lastCount != count) {
+        int success = Sound_SetBufferSize(sample, count);
+        if (!success) return false;
+        shouldSeek = true; // force to discard sample buffer
+        lastCount = count; // avoid setting buffer size all the time
+    }
+
+    if (shouldSeek) {
+        remainingBytes = 0; // discard sample buffer
+        // Note: 176400 = 44100HZ * 4 bytes per sample
+        // so 176.4 is the byte count for 1ms
+        int success = Sound_Seek(sample, (int)((double)(seek) / 176.4f));
+        if (!success) return false;
+    }
+
+    // Remember the read position for next call
+    lastSeek = seek;
+
+    // If the sample buffer has remaining bytes, try to shift them
+    // into the output buffer
+    int nread = 0;
+    if (remainingBytes > 0) {
+        nread = remainingBytes > count ? count : remainingBytes;
+        memcpy(buffer, sample->buffer, nread);
+        buffer += nread; // advance the output buffer pointer
+        remainingBytes -= nread;
+        memmove(sample->buffer, (Bit8u*)sample->buffer+nread, remainingBytes);
+    }
+
+    // If we got the requested bytes, then no need for decoding
+    if (nread == count) {
+        return true;
+    }
+
+More:
+    assert(remainingBytes == 0 && nread < count);
+    // Note the decoder may return any number of bytes
+    remainingBytes = Sound_Decode(sample);
+    if ((nread + remainingBytes) < count) {
+        // We didn't get enough bytes, lets add them to output
+        // and try again, unless the decoder is exhausted,
+        // in which case we fill the rest of output buffer with 0
+        if (remainingBytes > 0) {
+            memcpy(buffer, sample->buffer, remainingBytes);
+            buffer += remainingBytes;
+            nread += remainingBytes;
+            remainingBytes = 0;
+            goto More;
+        } else {
+            memset(buffer, 0, count - nread);
+        }
+    } else {
+        // We got bytes enough to fill the rest of output buffer
+        int n = count - nread;
+        assert(remainingBytes >= n);
+        memcpy(buffer, sample->buffer, n);
+        remainingBytes -= n;
+        memmove(sample->buffer, (Bit8u*)sample->buffer + n, remainingBytes);
+    }
+
+    return !(sample->flags & SOUND_SAMPLEFLAG_ERROR);
+}
+#else
 bool CDROM_Interface_Image::AudioFile::read(Bit8u *buffer, int seek, int count)
 {
 	if (lastCount != count) {
@@ -103,16 +186,17 @@ bool CDROM_Interface_Image::AudioFile::read(Bit8u *buffer, int seek, int count)
 	} else {
 		memcpy(buffer, sample->buffer, count);
 	}
-	
+
 	return !(sample->flags & SOUND_SAMPLEFLAG_ERROR);
 }
+#endif
 
 int CDROM_Interface_Image::AudioFile::getLength()
 {
 	int time = 1;
 	int shift = 0;
 	if (!(sample->flags & SOUND_SAMPLEFLAG_CANSEEK)) return -1;
-	
+
 	while (true) {
 		int success = Sound_Seek(sample, (unsigned int)(shift + time));
 		if (!success) {

@@ -231,6 +231,9 @@ private:
 		Sound_Sample *sample;
 		int lastCount;
 		int lastSeek;
+#ifdef IPHONEOS
+		int remainingBytes;
+#endif
 	};
 	#endif
 	
