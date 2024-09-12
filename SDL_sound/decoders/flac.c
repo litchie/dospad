@@ -168,6 +168,7 @@ typedef struct
     Uint32 frame_size;
     Uint8 is_flac;
     Uint32 stream_length;
+    double total_time;
 } flac_t;
 
 
@@ -295,6 +296,7 @@ static void metadata_callback(
         f->is_flac = 1;
         f->sample->actual.channels = metadata->data.stream_info.channels;
         f->sample->actual.rate = metadata->data.stream_info.sample_rate;
+        f->total_time = ((double)metadata->data.stream_info.total_samples / metadata->data.stream_info.sample_rate);
 
         if (metadata->data.stream_info.bits_per_sample > 8)
             f->sample->actual.format = AUDIO_S16SYS;
@@ -560,6 +562,11 @@ static int FLAC_seek(Sound_Sample *sample, Uint32 ms)
 {
     Sound_SampleInternal *internal = (Sound_SampleInternal *) sample->opaque;
     flac_t *f = (flac_t *) internal->decoder_private;
+
+    /* IMPORTANT: Seeking beyond the end of file should return false */
+    if ((double)ms > f->total_time * 1000) {
+      return 0;
+    }
 
     d_seek_absolute(f->decoder, (ms * sample->actual.rate) / 1000);
     return(1);

@@ -264,6 +264,12 @@ static int MPG123_seek(Sound_Sample *sample, Uint32 ms)
     mpg123_handle *mp = ((mpg123_handle *) internal->decoder_private);
     const float frames_per_ms = ((float) sample->actual.rate) / 1000.0f;
     const off_t frame_offset = (off_t) (frames_per_ms * ((float) ms));
+
+    /* IMPORTANT: If the offset is beyond the available frames, then return false */
+    if (frame_offset >= mpg123_length(mp)) {
+        return 0;
+    }
+
     const int rc = (int) mpg123_seek(mp, frame_offset , SEEK_SET);
     BAIL_IF_MACRO(rc < 0, set_error(mp, rc), 0);
     return(1);
