@@ -4009,7 +4009,7 @@
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = NO;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 				VALID_ARCHS = "arm64 arm64e armv7 armv7s x86_64";
@@ -4026,7 +4026,7 @@
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = NO;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				SDKROOT = iphoneos;
 				VALID_ARCHS = "arm64 arm64e armv7 armv7s x86_64";
 			};
@@ -4310,7 +4310,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 20240907;
+				CURRENT_PROJECT_VERSION = 20240908;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = 4C8YZND49H;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -4329,7 +4329,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				INFOPLIST_FILE = iDOSThumbnail/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
 				MARKETING_VERSION = 3.1;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
@@ -4377,7 +4377,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 20240907;
+				CURRENT_PROJECT_VERSION = 20240908;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = 4C8YZND49H;
 				ENABLE_NS_ASSERTIONS = NO;
@@ -4391,7 +4391,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				INFOPLIST_FILE = iDOSThumbnail/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
 				MARKETING_VERSION = 3.1;
 				MTL_ENABLE_DEBUG_INFO = NO;
@@ -4440,7 +4440,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 20240907;
+				CURRENT_PROJECT_VERSION = 20240908;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = 4C8YZND49H;
 				ENABLE_NS_ASSERTIONS = NO;
@@ -4454,7 +4454,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				INFOPLIST_FILE = iDOSThumbnail/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
 				MARKETING_VERSION = 3.1;
 				MTL_ENABLE_DEBUG_INFO = NO;
@@ -4476,7 +4476,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 20240907;
+				CURRENT_PROJECT_VERSION = 20241001;
 				DEVELOPMENT_TEAM = 4C8YZND49H;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -4490,12 +4490,12 @@
 				INFOPLIST_FILE = "Resources/iDOS-Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "iDOS 3";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/deps/lib",
 				);
-				MARKETING_VERSION = 3.1;
+				MARKETING_VERSION = 3.2;
 				OTHER_LDFLAGS = (
 					"-framework",
 					Foundation,
@@ -4518,7 +4518,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 20240907;
+				CURRENT_PROJECT_VERSION = 20241001;
 				DEVELOPMENT_TEAM = 4C8YZND49H;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = dospad/DPPrefix.pch;
@@ -4530,12 +4530,12 @@
 				INFOPLIST_FILE = "Resources/iDOS-Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "iDOS 3";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/deps/lib",
 				);
-				MARKETING_VERSION = 3.1;
+				MARKETING_VERSION = 3.2;
 				OTHER_LDFLAGS = (
 					"-framework",
 					Foundation,
@@ -4562,7 +4562,7 @@
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = NO;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				SDKROOT = iphoneos;
 				VALID_ARCHS = "arm64 arm64e armv7 armv7s x86_64";
 			};
@@ -4577,7 +4577,10 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEPLOYMENT_LOCATION = NO;
 				ENABLE_BITCODE = NO;
-				GCC_PREPROCESSOR_DEFINITIONS = IPHONEOS;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					IPHONEOS,
+					GLES_SILENCE_DEPRECATION,
+				);
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				PRODUCT_NAME = SDLiPhoneOS;
 				SKIP_INSTALL = YES;
@@ -4638,7 +4641,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 20240907;
+				CURRENT_PROJECT_VERSION = 20241001;
 				DEVELOPMENT_TEAM = 4C8YZND49H;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = dospad/DPPrefix.pch;
@@ -4651,12 +4654,12 @@
 				INFOPLIST_FILE = "Resources/iDOS-Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "iDOS 3";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/deps/lib",
 				);
-				MARKETING_VERSION = 3.1;
+				MARKETING_VERSION = 3.2;
 				OTHER_LDFLAGS = (
 					"-framework",
 					Foundation,
@@ -4683,7 +4686,7 @@
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = NO;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				SDKROOT = iphoneos;
 				VALID_ARCHS = "arm64 arm64e armv7 armv7s x86_64";
 			};
@@ -4697,7 +4700,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 20240907;
+				CURRENT_PROJECT_VERSION = 20241001;
 				DEVELOPMENT_TEAM = 4C8YZND49H;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = dospad/DPPrefix.pch;
@@ -4709,12 +4712,12 @@
 				INFOPLIST_FILE = "Resources/iDOS-Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "iDOS 3";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/deps/lib",
 				);
-				MARKETING_VERSION = 3.1;
+				MARKETING_VERSION = 3.2;
 				OTHER_LDFLAGS = (
 					"-framework",
 					Foundation,
@@ -4740,7 +4743,10 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEPLOYMENT_LOCATION = NO;
 				ENABLE_BITCODE = NO;
-				GCC_PREPROCESSOR_DEFINITIONS = IPHONEOS;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					IPHONEOS,
+					GLES_SILENCE_DEPRECATION,
+				);
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				PRODUCT_NAME = SDLiPhoneOS;
 				SKIP_INSTALL = YES;
@@ -4828,7 +4834,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 20240907;
+				CURRENT_PROJECT_VERSION = 20240908;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = 4C8YZND49H;
 				ENABLE_NS_ASSERTIONS = NO;
@@ -4842,7 +4848,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				INFOPLIST_FILE = iDOSThumbnail/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
 				MARKETING_VERSION = 3.1;
 				MTL_ENABLE_DEBUG_INFO = NO;
@@ -5165,7 +5171,10 @@
 				DEPLOYMENT_LOCATION = NO;
 				ENABLE_BITCODE = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_PREPROCESSOR_DEFINITIONS = IPHONEOS;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					IPHONEOS,
+					GLES_SILENCE_DEPRECATION,
+				);
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				HEADER_SEARCH_PATHS = ./include;
 				PRODUCT_NAME = SDLiPhoneOS;
@@ -5183,7 +5192,10 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEPLOYMENT_LOCATION = NO;
 				ENABLE_BITCODE = NO;
-				GCC_PREPROCESSOR_DEFINITIONS = IPHONEOS;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					IPHONEOS,
+					GLES_SILENCE_DEPRECATION,
+				);
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				PRODUCT_NAME = SDLiPhoneOS;
 				SKIP_INSTALL = YES;

@@ -26,6 +26,7 @@ static DPKeyboardManager *_manager;
 @interface DPKeyboardManager ()
 {
     BOOL _commandPrefix;
+    BOOL _commandCombo;
 }
 
 @end
@@ -47,6 +48,8 @@ static DPKeyboardManager *_manager;
 - (void)willResignActive
 {
     _commandPrefix = NO;
+    _commandCombo = NO;
+    [self.delegate keyboardManagerDidReleaseHostKey:self];
 }
 
 - (id)init
@@ -196,12 +199,9 @@ API_AVAILABLE(ios(14.0)){
         [d setObject:@(SDL_SCANCODE_LCTRL) forKey:@(GCKeyCodeLeftControl)];
         [d setObject:@(SDL_SCANCODE_LSHIFT) forKey:@(GCKeyCodeLeftShift)];
         [d setObject:@(SDL_SCANCODE_LALT) forKey:@(GCKeyCodeLeftAlt)];
-//        [d setObject:@(SDL_SCANCODE_) forKey:@(GCKeyCodeLeftGUI)];
         [d setObject:@(SDL_SCANCODE_RCTRL) forKey:@(GCKeyCodeRightControl)];
         [d setObject:@(SDL_SCANCODE_RSHIFT) forKey:@(GCKeyCodeRightShift)];
         [d setObject:@(SDL_SCANCODE_RALT) forKey:@(GCKeyCodeRightAlt)];
-//        [d setObject:@(SDL_SCANCODE_) forKey:@(GCKeyCodeRightGUI)];
-
     }
     NSObject *x = [d objectForKey:@(keyCode)];
     return [(NSNumber*)x intValue];
@@ -373,15 +373,20 @@ API_AVAILABLE(ios(14.0)){
         GCControllerButtonInput * _Nonnull key,
         GCKeyCode keyCode, BOOL pressed
     ) {
-        //NSLog(@"KEYBOARD %@ pressed=%d", [self getKeyName:keyCode], pressed);
+       //NSLog(@"KEYBOARD %@ pressed=%d", [self getKeyName:keyCode], pressed);
         if (keyCode == GCKeyCodeLeftGUI||keyCode==GCKeyCodeRightGUI) {
             // Command key
+            if (!pressed && !_commandCombo) {
+                [self.delegate keyboardManagerDidReleaseHostKey:self];
+            }
             _commandPrefix = pressed;
+            _commandCombo = NO;
             return;
         }
         if (self.delegate) {
             if (_commandPrefix)
             {
+                _commandCombo = YES;
                 [self.delegate keyboardManager:self scancode:[self translateCommandPrefixCode:keyCode] pressed:pressed];
             }
             else

@@ -46,6 +46,7 @@
 -(void)onHold:(CGPoint)pt;
 -(void)cancelHold:(CGPoint)pt;
 -(void)onHoldMoved:(CGPoint)pt;
+-(void)indirectPointerDidClick:(CGPoint)pt;
 
 @end
 

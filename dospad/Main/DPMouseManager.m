@@ -23,18 +23,18 @@ static DPMouseManager *_manager;
 
 @interface DPMouseManager ()
 {
-    
+    BOOL _enabled;
 }
 
 @end
 
 @implementation DPMouseManager
+@synthesize enabled = _enabled;
 
 + (DPMouseManager*)defaultManager
 {
     if (!_manager) {
         _manager = [[DPMouseManager alloc] init];
-        
     }
     return _manager;
 }
@@ -63,19 +63,19 @@ static DPMouseManager *_manager;
 API_AVAILABLE(ios(14.0)){
          mouse.mouseInput.mouseMovedHandler = ^(GCMouseInput * _Nonnull mouse, float deltaX, float deltaY) {
             //NSLog(@"mouse move: %f %f\n", deltaX, deltaY);
-            if (self.delegate) {
+            if (self.delegate && _enabled) {
                 [self.delegate mouseManager:self moveX:deltaX andY:deltaY];
             }
          };
          mouse.mouseInput.leftButton.pressedChangedHandler = ^(GCControllerButtonInput * _Nonnull button, float value, BOOL pressed) {
             //NSLog(@"mouse left button=%d\n", pressed);
-            if (self.delegate) {
+            if (self.delegate && _enabled) {
                 [self .delegate mouseManager:self button:0 pressed:pressed];
             }
          };
          mouse.mouseInput.rightButton.pressedChangedHandler = ^(GCControllerButtonInput * _Nonnull button, float value, BOOL pressed) {
             //NSLog(@"mouse right button=%d\n", pressed);
-            if (self.delegate) {
+            if (self.delegate && _enabled) {
                 [self .delegate mouseManager:self button:1 pressed:pressed];
             }
          };
@@ -86,8 +86,6 @@ API_AVAILABLE(ios(14.0)){
      if (@available(iOS 14.0, *)) {
          GCMouse *mouse = note.object;
          [self addMouseHandler:mouse];
-
-         
      } else {
          // Fallback on earlier versions
      }
@@ -99,11 +97,12 @@ API_AVAILABLE(ios(14.0)){
     NSLog(@"mouse disconnected");
      if (@available(iOS 14.0, *)) {
          GCMouse *mouse = note.object;
+         mouse.mouseInput.mouseMovedHandler = nil;
+         mouse.mouseInput.leftButton.pressedChangedHandler = nil;
+         mouse.mouseInput.rightButton.pressedChangedHandler = nil;
      } else {
          // Fallback on earlier versions
      }
- 
 }
-
 
 @end

@@ -67,7 +67,8 @@ static struct {
     DPMouseManagerDelegate,
     DPKeyboardManagerDelegate,
 	MfiGamepadManagerDelegate,
-	MfiGamepadMapperDelegate
+	MfiGamepadMapperDelegate,
+    UIPointerInteractionDelegate
 >
 {
 	MfiGamepadConfiguration *_mfiConfig;
@@ -86,6 +87,7 @@ static struct {
 	
     FloatPanel *fullscreenPanel;
     
+    BOOL _prefersPointerLocked;
     BOOL shouldShrinkScreen;
     CGRect _screenRect; // portraint only?
     
@@ -723,6 +725,7 @@ static struct {
     
     self.screenView.delegate=self;
     self.screenView.mouseHoldDelegate=self;
+    [self initPointerInteraction];
 
     holdIndicator = [[HoldIndicator alloc] initWithFrame:CGRectMake(0,0,100,100)];
     holdIndicator.alpha = 0;
@@ -966,6 +969,17 @@ static struct {
 }
 
 // MARK: Mouse Hold
+
+- (void)indirectPointerDidClick:(CGPoint)pt
+{
+    if (![DPMouseManager defaultManager].enabled) {
+       NSLog(@"Mouse trapped");
+       [DPMouseManager defaultManager].enabled = YES;
+       _prefersPointerLocked = YES;
+       [self setNeedsUpdateOfPrefersPointerLocked];
+    }
+}
+
 -(void)onHold:(CGPoint)pt
 {
 	if ([DPSettings shared].showMouseHold)
@@ -1150,6 +1164,16 @@ static struct {
     SDL_SendKeyboardKey( 0, pressed?SDL_PRESSED:SDL_RELEASED, scancode);
 }
 
+- (void)keyboardManagerDidReleaseHostKey:(DPKeyboardManager *)manager
+{
+    if ([DPMouseManager defaultManager].enabled) {
+        NSLog(@"Mouse untrapped");
+        [DPMouseManager defaultManager].enabled = NO;
+        _prefersPointerLocked = NO;
+        [self setNeedsUpdateOfPrefersPointerLocked];
+    }
+}
+
 // MARK: GCMouse Manager
 
 - (void)mouseManager:(DPMouseManager *)manager button:(int)index pressed:(BOOL)pressed
@@ -1295,6 +1319,32 @@ static struct {
 }
 
 #pragma mark -
+
+-(void)initPointerInteraction {
+    [self.screenView addInteraction:[[UIPointerInteraction alloc] initWithDelegate:self]];
+}
+
+- (UIPointerRegion *)pointerInteraction:(UIPointerInteraction *)interaction regionForRequest:(UIPointerRegionRequest *)request
+    defaultRegion:(UIPointerRegion *)defaultRegion
+{
+    if ([DPMouseManager defaultManager].enabled && interaction.view == self.screenView) {
+        CGRect r = self.screenView.bounds;
+        r = CGRectInset(r, -40, -40);
+        return [UIPointerRegion regionWithRect:r identifier:@"screenview"];
+    }
+    return nil;
+}
+
+- (UIPointerStyle *)pointerInteraction:(UIPointerInteraction *)interaction styleForRegion:(UIPointerRegion *)region
+{
+    if ([DPMouseManager defaultManager].enabled && interaction.view == self.screenView) {
+        return [UIPointerStyle hiddenPointerStyle];
+    } else {
+        return [UIPointerStyle systemPointerStyle];
+    }
+}
+
+#pragma mark -
 // MARK: Misc configurations
 
 - (BOOL)prefersHomeIndicatorAutoHidden
@@ -1327,7 +1377,7 @@ static struct {
 
 - (BOOL)prefersPointerLocked
 {
-    return YES;
+    return _prefersPointerLocked;
 }
 
 @end

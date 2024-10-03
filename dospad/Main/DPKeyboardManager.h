@@ -27,13 +27,18 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)keyboardManager:(DPKeyboardManager*)manager scancode:(int)scancode  pressed:(BOOL)pressed;
 
+/**
+ * Invoked when COMMAND key is released without pressing any other key when it's down.
+ * This is used to release the captured mouse.
+ */
+- (void)keyboardManagerDidReleaseHostKey:(DPKeyboardManager*)manager;
 @end
-
 
 @interface DPKeyboardManager : NSObject
 @property (nonatomic, strong) id<DPKeyboardManagerDelegate> delegate;
 +(DPKeyboardManager*)defaultManager;
 - (void)willResignActive;
+
 @end
 
 NS_ASSUME_NONNULL_END

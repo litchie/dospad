@@ -33,7 +33,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface DPMouseManager : NSObject
 @property (nonatomic, strong) id<DPMouseManagerDelegate> delegate;
-
+@property (nonatomic) BOOL enabled;
 + (DPMouseManager*)defaultManager;
 
 @end
