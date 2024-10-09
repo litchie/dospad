@@ -449,7 +449,6 @@
 		E7B2BBEA2525728600490083 /* screenshot_bg.png in Resources */ = {isa = PBXBuildFile; fileRef = E7B2BBE92525728100490083 /* screenshot_bg.png */; };
 		E7B2BBEB2525728600490083 /* screenshot_bg.png in Resources */ = {isa = PBXBuildFile; fileRef = E7B2BBE92525728100490083 /* screenshot_bg.png */; };
 		E7B7F8701DE1D70200590701 /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = E7B7F86F1DE1D70200590701 /* libc++.tbd */; };
-		E7BE12A5128BF31A0046990B /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = E79C2E5611E131DB002FE898 /* MainWindow.xib */; };
 		E7BE12B7128BF31A0046990B /* configs in Resources */ = {isa = PBXBuildFile; fileRef = E73B77D7127ED67300184D3B /* configs */; };
 		E7BE12D0128BF31A0046990B /* centre.png in Resources */ = {isa = PBXBuildFile; fileRef = E7735013128ACE3C0009CBEA /* centre.png */; };
 		E7BE12D1128BF31A0046990B /* east.png in Resources */ = {isa = PBXBuildFile; fileRef = E7735014128ACE3C0009CBEA /* east.png */; };
@@ -513,6 +512,7 @@
 		F21A87172C883CAC00A5860F /* pci_bus.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F21A87152C883CAB00A5860F /* pci_bus.cpp */; };
 		F21A87182C883CAC00A5860F /* pci_devices.h in Headers */ = {isa = PBXBuildFile; fileRef = F21A87162C883CAB00A5860F /* pci_devices.h */; };
 		F21A871A2C88AB9000A5860F /* drive_overlay.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F21A87192C88AB9000A5860F /* drive_overlay.cpp */; };
+		F26258C12CB3B6390040584F /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F26258C02CB3B6390040584F /* Main.storyboard */; };
 		F262CC1C25A52C6E005F21D2 /* DPMouseManager.m in Sources */ = {isa = PBXBuildFile; fileRef = F262CC1B25A52C6E005F21D2 /* DPMouseManager.m */; };
 		F262CC2625A52C85005F21D2 /* DPKeyboardManager.m in Sources */ = {isa = PBXBuildFile; fileRef = F262CC2525A52C85005F21D2 /* DPKeyboardManager.m */; };
 		F282157C2C913D5B0001DACE /* libSDL_sound.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F2E5774C2C907D0B00EB5699 /* libSDL_sound.a */; };
@@ -534,6 +534,7 @@
 		F2E577BB2C907F0700EB5699 /* wav.c in Sources */ = {isa = PBXBuildFile; fileRef = F2E577912C907F0600EB5699 /* wav.c */; };
 		F2E577BC2C907F0700EB5699 /* flac.c in Sources */ = {isa = PBXBuildFile; fileRef = F2E577922C907F0600EB5699 /* flac.c */; };
 		F2E577BD2C907F0700EB5699 /* voc.c in Sources */ = {isa = PBXBuildFile; fileRef = F2E577A32C907F0600EB5699 /* voc.c */; };
+		F2E78A742CAF9E2400F95D53 /* DPWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = F2E78A732CAF9E2400F95D53 /* DPWindow.m */; };
 		FD3F495C0DEA5B2100C5B771 /* begin_code.h in Headers */ = {isa = PBXBuildFile; fileRef = FD99B8CC0DD52EB400FB1D6B /* begin_code.h */; settings = {ATTRIBUTES = (); }; };
 		FD3F495D0DEA5B2100C5B771 /* close_code.h in Headers */ = {isa = PBXBuildFile; fileRef = FD99B8CD0DD52EB400FB1D6B /* close_code.h */; settings = {ATTRIBUTES = (); }; };
 		FD3F495F0DEA5B2100C5B771 /* SDL_audio.h in Headers */ = {isa = PBXBuildFile; fileRef = FD99B8CF0DD52EB400FB1D6B /* SDL_audio.h */; settings = {ATTRIBUTES = (); }; };
@@ -1271,7 +1272,6 @@
 		E79970041241F09400502015 /* cmd_history.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cmd_history.h; sourceTree = "<group>"; };
 		E799706212422D6800502015 /* FloatingView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FloatingView.h; sourceTree = "<group>"; };
 		E799706312422D6800502015 /* FloatingView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FloatingView.m; sourceTree = "<group>"; };
-		E79C2E5611E131DB002FE898 /* MainWindow.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MainWindow.xib; sourceTree = "<group>"; };
 		E79E4A0011EC6BF400DEAA7B /* libc.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libc.dylib; path = usr/lib/libc.dylib; sourceTree = SDKROOT; };
 		E7A01EDC1CC927370036A4CF /* ColorTheme.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ColorTheme.h; sourceTree = "<group>"; };
 		E7A01EDD1CC927370036A4CF /* ColorTheme.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ColorTheme.m; sourceTree = "<group>"; };
@@ -1349,6 +1349,7 @@
 		F21A87152C883CAB00A5860F /* pci_bus.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = pci_bus.cpp; sourceTree = "<group>"; };
 		F21A87162C883CAB00A5860F /* pci_devices.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = pci_devices.h; sourceTree = "<group>"; };
 		F21A87192C88AB9000A5860F /* drive_overlay.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = drive_overlay.cpp; sourceTree = "<group>"; };
+		F26258C02CB3B6390040584F /* Main.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
 		F262CC1A25A52C6E005F21D2 /* DPMouseManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DPMouseManager.h; sourceTree = "<group>"; };
 		F262CC1B25A52C6E005F21D2 /* DPMouseManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DPMouseManager.m; sourceTree = "<group>"; };
 		F262CC2425A52C85005F21D2 /* DPKeyboardManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DPKeyboardManager.h; sourceTree = "<group>"; };
@@ -1375,6 +1376,8 @@
 		F2E577912C907F0600EB5699 /* wav.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = wav.c; sourceTree = "<group>"; };
 		F2E577922C907F0600EB5699 /* flac.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = flac.c; sourceTree = "<group>"; };
 		F2E577A32C907F0600EB5699 /* voc.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = voc.c; sourceTree = "<group>"; };
+		F2E78A722CAF9E2400F95D53 /* DPWindow.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DPWindow.h; sourceTree = "<group>"; };
+		F2E78A732CAF9E2400F95D53 /* DPWindow.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DPWindow.m; sourceTree = "<group>"; };
 		FD3F4A700DEA620800C5B771 /* SDL_getenv.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = SDL_getenv.c; sourceTree = "<group>"; };
 		FD3F4A710DEA620800C5B771 /* SDL_iconv.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = SDL_iconv.c; sourceTree = "<group>"; };
 		FD3F4A720DEA620800C5B771 /* SDL_malloc.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = SDL_malloc.c; sourceTree = "<group>"; };
@@ -2466,7 +2469,6 @@
 			isa = PBXGroup;
 			children = (
 				E77E08522548007C00B5B11D /* default.idostheme */,
-				E79C2E5611E131DB002FE898 /* MainWindow.xib */,
 				E7B2BBE92525728100490083 /* screenshot_bg.png */,
 				E7A482451FF733DF00AE7DB6 /* LaunchScreen.storyboard */,
 				E7A482411FF731C100AE7DB6 /* Assets.xcassets */,
@@ -2478,6 +2480,7 @@
 				E7734DDD128A720B0009CBEA /* gamepad */,
 				E72BE6F412911DD1009DC46A /* misc-res */,
 				F2A095802BC3B86300BD25E3 /* PrivacyInfo.xcprivacy */,
+				F26258C02CB3B6390040584F /* Main.storyboard */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -2579,6 +2582,8 @@
 				F262CC1B25A52C6E005F21D2 /* DPMouseManager.m */,
 				F262CC2425A52C85005F21D2 /* DPKeyboardManager.h */,
 				F262CC2525A52C85005F21D2 /* DPKeyboardManager.m */,
+				F2E78A722CAF9E2400F95D53 /* DPWindow.h */,
+				F2E78A732CAF9E2400F95D53 /* DPWindow.m */,
 			);
 			path = Main;
 			sourceTree = "<group>";
@@ -3430,7 +3435,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E7BE12A5128BF31A0046990B /* MainWindow.xib in Resources */,
 				E7BE12B7128BF31A0046990B /* configs in Resources */,
 				E7A01EFB1CC9C1C50036A4CF /* button.png in Resources */,
 				F2A095812BC3B86300BD25E3 /* PrivacyInfo.xcprivacy in Resources */,
@@ -3483,6 +3487,7 @@
 				E7107157129A8E5A00B21291 /* landbarblank@2x.png in Resources */,
 				E7107158129A8E5A00B21291 /* landbarblank~iPad.png in Resources */,
 				E7107159129A8E5A00B21291 /* modegamepad.png in Resources */,
+				F26258C12CB3B6390040584F /* Main.storyboard in Resources */,
 				E710715A129A8E5A00B21291 /* modegamepadpressed.png in Resources */,
 				E710715B129A8E5A00B21291 /* modejoy.png in Resources */,
 				E710715C129A8E5A00B21291 /* modejoypressed.png in Resources */,
@@ -3778,6 +3783,7 @@
 				E7BE12F3128BF31A0046990B /* keys.m in Sources */,
 				F262CC1C25A52C6E005F21D2 /* DPMouseManager.m in Sources */,
 				E7BE12F6128BF31A0046990B /* HoldIndicator.m in Sources */,
+				F2E78A742CAF9E2400F95D53 /* DPWindow.m in Sources */,
 				E73A566B2534979900E3B3FB /* MfiGamepadConfiguration.m in Sources */,
 				E7BE12F7128BF31A0046990B /* FrameskipIndicator.m in Sources */,
 				E7B2BBE8252432DC00490083 /* UIViewController+Alert.m in Sources */,
@@ -4310,7 +4316,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 20240908;
+				CURRENT_PROJECT_VERSION = 20240911;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = 4C8YZND49H;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -4377,7 +4383,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 20240908;
+				CURRENT_PROJECT_VERSION = 20240911;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = 4C8YZND49H;
 				ENABLE_NS_ASSERTIONS = NO;
@@ -4440,7 +4446,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 20240908;
+				CURRENT_PROJECT_VERSION = 20240911;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = 4C8YZND49H;
 				ENABLE_NS_ASSERTIONS = NO;
@@ -4476,7 +4482,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 20241001;
+				CURRENT_PROJECT_VERSION = 20241003;
 				DEVELOPMENT_TEAM = 4C8YZND49H;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -4518,7 +4524,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 20241001;
+				CURRENT_PROJECT_VERSION = 20241003;
 				DEVELOPMENT_TEAM = 4C8YZND49H;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = dospad/DPPrefix.pch;
@@ -4641,7 +4647,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 20241001;
+				CURRENT_PROJECT_VERSION = 20241003;
 				DEVELOPMENT_TEAM = 4C8YZND49H;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = dospad/DPPrefix.pch;
@@ -4700,7 +4706,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 20241001;
+				CURRENT_PROJECT_VERSION = 20241003;
 				DEVELOPMENT_TEAM = 4C8YZND49H;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = dospad/DPPrefix.pch;
@@ -4834,7 +4840,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 20240908;
+				CURRENT_PROJECT_VERSION = 20240911;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = 4C8YZND49H;
 				ENABLE_NS_ASSERTIONS = NO;

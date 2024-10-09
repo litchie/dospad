@@ -28,8 +28,8 @@
 
 @interface DPAppDelegate ()
 {
-	DPEmulatorViewController *_emulatorController;
 }
+@property (nonatomic, readonly) DPEmulatorViewController *emulatorController;
 @end
 
 
@@ -37,6 +37,17 @@
 @synthesize frameskip;
 @synthesize cycles;
 @synthesize maxPercent;
+
+- (DPEmulatorViewController*)emulatorController {
+    return (DPEmulatorViewController*)self.window.rootViewController;
+}
+
+- (UIWindow*)window {
+    if (_window == nil) {
+        _window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+    }
+    return _window;
+}
 
 - (void)rememberURL:(NSURL*)url
 {
@@ -78,7 +89,7 @@
 		{
 			// TODO Should automatically terminate the current
             // emulator thread. Not easy though
-			[_emulatorController alert:@"Sorry, iDOS is busy"
+			[self.emulatorController alert:@"Sorry, iDOS is busy"
 				message:@"Can not launch game package while emulator is running. Please terminate the app first."];
 			return NO;
 		}
@@ -98,13 +109,13 @@
 - (void)applicationWillResignActive:(UIApplication *)application
 {
     dospad_pause();
-    [_emulatorController willResignActive];
+    [self.emulatorController willResignActive];
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application
 {
     dospad_resume();
-    [_emulatorController didBecomeActive];
+    [self.emulatorController didBecomeActive];
 }
 
 - (void)applicationDidEnterBackground:(UIApplication *)application
@@ -190,12 +201,11 @@
 		setActive: YES
 		error: &activationErr];
 
-    screenView = [[SDL_uikitopenglview alloc] initWithFrame:CGRectMake(0,0,640,400)];
-    _emulatorController = [[DPEmulatorViewController alloc] init];
-    _emulatorController.screenView = screenView;
-	uiwindow.rootViewController = _emulatorController;
-    [uiwindow makeKeyAndVisible];
+	screenView = [[SDL_uikitopenglview alloc] initWithFrame:CGRectMake(0,0,640,400)];
+	self.emulatorController.screenView = screenView;
+    
 	[super applicationDidFinishLaunching:application];
+
 #ifdef THREADED
 	// FIXME at present it is a must to delay emulation thread
     [self performSelector:@selector(startDOS) withObject:nil afterDelay:1];
@@ -228,8 +238,8 @@
         maxPercent = 0;
     }
     
-    [_emulatorController updateCpuCycles:@(buf)];
-	[_emulatorController updateFrameskip:@(frameskip)];
+    [self.emulatorController updateCpuCycles:@(buf)];
+	[self.emulatorController updateFrameskip:@(frameskip)];
 }
 
 @end

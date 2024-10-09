@@ -61,8 +61,8 @@ int main(int argc, char **argv) {
 
 @implementation SDLUIKitDelegate
 
-@synthesize sdl_window;
-@synthesize uiwindow;
+@synthesize sdl_window = _sdlWindow;
+@synthesize window = _window;
 
 /* convenience method */
 +(SDLUIKitDelegate *)sharedAppDelegate {
@@ -78,8 +78,6 @@ int main(int argc, char **argv) {
 
 - (id)init {
 	self = [super init];
-	window = NULL;
-	uiwindow = nil;
 	return self;
 }
 

@@ -88,7 +88,7 @@ int UIKit_CreateWindow(_THIS, SDL_Window *window)
     __block volatile int ret = 1;
     
     dispatch_async(dispatch_get_main_queue(), ^{
-        UIWindow *uiwindow = (UIWindow*)[SDLUIKitDelegate sharedAppDelegate].uiwindow;
+        UIWindow *uiwindow = (UIWindow*)[SDLUIKitDelegate sharedAppDelegate].window;
 
         if (SetupWindowData(_this, window, uiwindow, SDL_TRUE) < 0) {
             assert(0);
@@ -116,7 +116,6 @@ void UIKit_DestroyWindow(_THIS, SDL_Window * window) {
 
         /* this will also destroy the window */
         [SDLUIKitDelegate sharedAppDelegate].sdl_window = NULL;
-        [SDLUIKitDelegate sharedAppDelegate].uiwindow = nil;
         done = 1;
     });
     while (!done) usleep(100);
