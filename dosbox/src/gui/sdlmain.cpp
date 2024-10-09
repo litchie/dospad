@@ -1999,12 +1999,23 @@ void Mouse_AutoLock(bool enable) {
 }
 
 static void HandleMouseMotion(SDL_MouseMotionEvent * motion) {
-	if (sdl.mouse.locked || !sdl.mouse.autoenable)
-		Mouse_CursorMoved((float)motion->xrel*sdl.mouse.xsensitivity/100.0f,
-						  (float)motion->yrel*sdl.mouse.ysensitivity/100.0f,
-						  (float)(motion->x-sdl.clip.x)/(sdl.clip.w-1)*sdl.mouse.xsensitivity/100.0f,
-						  (float)(motion->y-sdl.clip.y)/(sdl.clip.h-1)*sdl.mouse.ysensitivity/100.0f,
-						  sdl.mouse.locked);
+    if (sdl.mouse.locked || !sdl.mouse.autoenable)
+    {
+#ifdef IPHONEOS
+        if (!motion->relative_mode) {
+            // iDOS direct touch will try to send absolute coordinates within screen.
+            // we should normalize them and let mouse driver compute the right values.
+            Mouse_CursorSet((float)(motion->x-sdl.clip.x)/(sdl.clip.w-1),
+                            (float)(motion->y-sdl.clip.y)/(sdl.clip.h-1));
+            return;
+        }
+#endif
+        Mouse_CursorMoved((float)motion->xrel*sdl.mouse.xsensitivity/100.0f,
+                          (float)motion->yrel*sdl.mouse.ysensitivity/100.0f,
+                          (float)(motion->x-sdl.clip.x)/(sdl.clip.w-1)*sdl.mouse.xsensitivity/100.0f,
+                          (float)(motion->y-sdl.clip.y)/(sdl.clip.h-1)*sdl.mouse.ysensitivity/100.0f,
+                          sdl.mouse.locked);
+    }
 }
 
 static void HandleMouseButton(SDL_MouseButtonEvent * button) {
