@@ -43,19 +43,18 @@ static DPMouseManager *_manager;
 {
     self = [super init];
     
-    if (@available(iOS 14.0, *)) {
-        [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(didConnect:)
-                                                     name:GCMouseDidConnectNotification
-                                                   object:nil];
-        [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(didDisconnect:)
-                                                 name:GCMouseDidDisconnectNotification
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(didConnect:)
+                                                 name:GCMouseDidConnectNotification
                                                object:nil];
-        if ([GCMouse current]) {
-            [self addMouseHandler:[GCMouse current]];
-        }
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                         selector:@selector(didDisconnect:)
+                                             name:GCMouseDidDisconnectNotification
+                                           object:nil];
+    if ([GCMouse current]) {
+        [self addMouseHandler:[GCMouse current]];
     }
+    self.enabled = YES;
     return self;
 }
 

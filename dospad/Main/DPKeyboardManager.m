@@ -49,7 +49,6 @@ static DPKeyboardManager *_manager;
 {
     _commandPrefix = NO;
     _commandCombo = NO;
-    [self.delegate keyboardManagerDidReleaseHostKey:self];
 }
 
 - (id)init

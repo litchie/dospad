@@ -20,14 +20,12 @@
 #import "DOSPadEmulator.h"
 #import "KeyboardView.h"
 #import "KeyView.h"
-#import "HoldIndicator.h"
 #import "FrameskipIndicator.h"
 #import "FloatPanel.h"
 #import "HoldIndicator.h"
-#import "SDL_uikitopenglview.h"
 #import "PianoKeyboard.h"
-#import "KeyboardSpy.h"
 #import "DPSettings.h"
+#import "DPScreenView.h"
 
 typedef enum {
 	DriveMount_Default,
@@ -39,8 +37,7 @@ typedef enum {
 
 @interface DPEmulatorViewController : UIViewController
 
-@property (nonatomic, strong) SDL_uikitopenglview *screenView;
-@property (nonatomic, strong) KeyboardSpy *kbdspy;
+@property (nonatomic, strong) DPScreenView *screenView;
 
 - (NSString*)currentCycles;
 - (int)currentFrameskip;
@@ -48,5 +45,4 @@ typedef enum {
 -(void)updateFrameskip:(NSNumber*)skip;
 -(void)updateCpuCycles:(NSString*)title;
 -(void)willResignActive;
--(void)didBecomeActive;
 @end

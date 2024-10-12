@@ -15,7 +15,7 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
-
+#import <UIKit/UIKit.h>
 #import "DPEmulatorViewController.h"
 #import "Common.h"
 #import "DPAppDelegate.h"
@@ -67,8 +67,7 @@ static struct {
     DPMouseManagerDelegate,
     DPKeyboardManagerDelegate,
 	MfiGamepadManagerDelegate,
-	MfiGamepadMapperDelegate,
-    UIPointerInteractionDelegate
+	MfiGamepadMapperDelegate
 >
 {
 	MfiGamepadConfiguration *_mfiConfig;
@@ -101,6 +100,7 @@ static struct {
 @end
 
 @implementation DPEmulatorViewController
+@synthesize screenView;
 
 - (void)dealloc
 {
@@ -720,12 +720,11 @@ static struct {
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
-    [[DOSPadEmulator sharedInstance] setDelegate:self];
-    
+    self.screenView = [[DPScreenView alloc] initWithDefaultSize];
     self.screenView.delegate=self;
     self.screenView.mouseHoldDelegate=self;
-    [self initPointerInteraction];
+    [self.view addSubview:self.screenView];
+    [[DOSPadEmulator sharedInstance] setDelegate:self];
 
     holdIndicator = [[HoldIndicator alloc] initWithFrame:CGRectMake(0,0,100,100)];
     holdIndicator.alpha = 0;
@@ -735,19 +734,6 @@ static struct {
     NSURL *url = [[NSBundle mainBundle].resourceURL URLByAppendingPathComponent:@"default.idostheme"];
     _currentTheme = [[DPTheme alloc] initWithURL:url];
     self.view.backgroundColor = _currentTheme.backgroundColor;
-
-#ifdef APPSTORE
-    // For non appstore builds, we should use private API to support
-    // external keyboard.
-    // For iOS 14+, we use GCKeyboard
-    // Otherwise use KeyboardSpy which is a hack.
-    if (@available(iOS 14.0, *)) {
-
-    } else {
-        self.kbdspy = [[KeyboardSpy alloc] initWithFrame:CGRectMake(0,0,60,40)];
-        [self.view addSubview:self.kbdspy];
-    }
-#endif
 
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didSettingsChanged:) name:DPFSettingsChangedNotification object:nil];
 }
@@ -903,18 +889,14 @@ static struct {
     return d.frameskip;
 }
 
-
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
     self.screenView.alpha = 1; // Try to fix reboot problem on iPad 3.2.x
     dospad_resume();
-    
-    if (self.kbdspy)
-    {
-    	[self.kbdspy becomeFirstResponder];
-		[self.view bringSubviewToFront:self.kbdspy];
-	}
+ 
+    [self setNeedsUpdateOfPrefersPointerLocked];
+    [self setNeedsUpdateOfScreenEdgesDeferringSystemGestures];
 }
 
 - (void)viewWillDisappear:(BOOL)animated
@@ -931,16 +913,6 @@ static struct {
 {
     [[DPKeyboardManager defaultManager] willResignActive];
 }
-
--(void)didBecomeActive
-{
-    if (self.kbdspy)
-    {
-    	[self.kbdspy becomeFirstResponder];
-		[self.view bringSubviewToFront:self.kbdspy];
-	}
-}
-
 
 - (void)onMouseLeftDown
 {
@@ -972,12 +944,7 @@ static struct {
 
 - (void)indirectPointerDidClick:(CGPoint)pt
 {
-    if (![DPMouseManager defaultManager].enabled) {
-       NSLog(@"Mouse trapped");
-       [DPMouseManager defaultManager].enabled = YES;
-       _prefersPointerLocked = YES;
-       [self setNeedsUpdateOfPrefersPointerLocked];
-    }
+  // Do nothing for now
 }
 
 -(void)onHold:(CGPoint)pt
@@ -1166,12 +1133,7 @@ static struct {
 
 - (void)keyboardManagerDidReleaseHostKey:(DPKeyboardManager *)manager
 {
-    if ([DPMouseManager defaultManager].enabled) {
-        NSLog(@"Mouse untrapped");
-        [DPMouseManager defaultManager].enabled = NO;
-        _prefersPointerLocked = NO;
-        [self setNeedsUpdateOfPrefersPointerLocked];
-    }
+    NSLog(@"host key released");
 }
 
 // MARK: GCMouse Manager
@@ -1319,32 +1281,6 @@ static struct {
 }
 
 #pragma mark -
-
--(void)initPointerInteraction {
-    [self.screenView addInteraction:[[UIPointerInteraction alloc] initWithDelegate:self]];
-}
-
-- (UIPointerRegion *)pointerInteraction:(UIPointerInteraction *)interaction regionForRequest:(UIPointerRegionRequest *)request
-    defaultRegion:(UIPointerRegion *)defaultRegion
-{
-    if ([DPMouseManager defaultManager].enabled && interaction.view == self.screenView) {
-        CGRect r = self.screenView.bounds;
-        r = CGRectInset(r, -40, -40);
-        return [UIPointerRegion regionWithRect:r identifier:@"screenview"];
-    }
-    return nil;
-}
-
-- (UIPointerStyle *)pointerInteraction:(UIPointerInteraction *)interaction styleForRegion:(UIPointerRegion *)region
-{
-    if ([DPMouseManager defaultManager].enabled && interaction.view == self.screenView) {
-        return [UIPointerStyle hiddenPointerStyle];
-    } else {
-        return [UIPointerStyle systemPointerStyle];
-    }
-}
-
-#pragma mark -
 // MARK: Misc configurations
 
 - (BOOL)prefersHomeIndicatorAutoHidden
@@ -1364,10 +1300,7 @@ static struct {
 
 - (CGRect)safeRootRect
 {
-	if (@available(iOS 11.0, *))
-		return UIEdgeInsetsInsetRect(self.view.bounds, self.view.safeAreaInsets);
-	else
-		return self.view.bounds;
+    return UIEdgeInsetsInsetRect(self.view.bounds, self.view.safeAreaInsets);
 }
 
 - (BOOL)prefersStatusBarHidden
@@ -1377,7 +1310,11 @@ static struct {
 
 - (BOOL)prefersPointerLocked
 {
-    return _prefersPointerLocked;
+    return YES;
+}
+
+- (UIRectEdge)preferredScreenEdgesDeferringSystemGestures {
+    return UIRectEdgeAll; // Defer system gestures on all edges
 }
 
 @end

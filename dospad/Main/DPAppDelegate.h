@@ -22,7 +22,6 @@
 
 @interface DPAppDelegate : SDLUIKitDelegate 
 {
-    SDL_uikitopenglview *screenView;
     int cycles;
     int frameskip;
     int maxPercent;

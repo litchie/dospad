@@ -39,6 +39,7 @@
 @synthesize maxPercent;
 
 - (DPEmulatorViewController*)emulatorController {
+    assert([self.window.rootViewController isKindOfClass:DPEmulatorViewController.class]);
     return (DPEmulatorViewController*)self.window.rootViewController;
 }
 
@@ -102,7 +103,7 @@
 
 -(SDL_uikitopenglview*)screen
 {
-    return screenView;
+    return self.emulatorController.screenView;
 }
 
 
@@ -115,7 +116,6 @@
 - (void)applicationDidBecomeActive:(UIApplication *)application
 {
     dospad_resume();
-    [self.emulatorController didBecomeActive];
 }
 
 - (void)applicationDidEnterBackground:(UIApplication *)application
@@ -201,9 +201,6 @@
 		setActive: YES
 		error: &activationErr];
 
-	screenView = [[SDL_uikitopenglview alloc] initWithFrame:CGRectMake(0,0,640,400)];
-	self.emulatorController.screenView = screenView;
-    
 	[super applicationDidFinishLaunching:application];
 
 #ifdef THREADED

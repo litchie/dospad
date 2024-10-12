@@ -513,6 +513,7 @@
 		F21A87182C883CAC00A5860F /* pci_devices.h in Headers */ = {isa = PBXBuildFile; fileRef = F21A87162C883CAB00A5860F /* pci_devices.h */; };
 		F21A871A2C88AB9000A5860F /* drive_overlay.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F21A87192C88AB9000A5860F /* drive_overlay.cpp */; };
 		F26258C12CB3B6390040584F /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F26258C02CB3B6390040584F /* Main.storyboard */; };
+		F26259082CBA3C7D0040584F /* DPScreenView.m in Sources */ = {isa = PBXBuildFile; fileRef = F26259072CBA3C7D0040584F /* DPScreenView.m */; };
 		F262CC1C25A52C6E005F21D2 /* DPMouseManager.m in Sources */ = {isa = PBXBuildFile; fileRef = F262CC1B25A52C6E005F21D2 /* DPMouseManager.m */; };
 		F262CC2625A52C85005F21D2 /* DPKeyboardManager.m in Sources */ = {isa = PBXBuildFile; fileRef = F262CC2525A52C85005F21D2 /* DPKeyboardManager.m */; };
 		F282157C2C913D5B0001DACE /* libSDL_sound.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F2E5774C2C907D0B00EB5699 /* libSDL_sound.a */; };
@@ -534,7 +535,6 @@
 		F2E577BB2C907F0700EB5699 /* wav.c in Sources */ = {isa = PBXBuildFile; fileRef = F2E577912C907F0600EB5699 /* wav.c */; };
 		F2E577BC2C907F0700EB5699 /* flac.c in Sources */ = {isa = PBXBuildFile; fileRef = F2E577922C907F0600EB5699 /* flac.c */; };
 		F2E577BD2C907F0700EB5699 /* voc.c in Sources */ = {isa = PBXBuildFile; fileRef = F2E577A32C907F0600EB5699 /* voc.c */; };
-		F2E78A742CAF9E2400F95D53 /* DPWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = F2E78A732CAF9E2400F95D53 /* DPWindow.m */; };
 		FD3F495C0DEA5B2100C5B771 /* begin_code.h in Headers */ = {isa = PBXBuildFile; fileRef = FD99B8CC0DD52EB400FB1D6B /* begin_code.h */; settings = {ATTRIBUTES = (); }; };
 		FD3F495D0DEA5B2100C5B771 /* close_code.h in Headers */ = {isa = PBXBuildFile; fileRef = FD99B8CD0DD52EB400FB1D6B /* close_code.h */; settings = {ATTRIBUTES = (); }; };
 		FD3F495F0DEA5B2100C5B771 /* SDL_audio.h in Headers */ = {isa = PBXBuildFile; fileRef = FD99B8CF0DD52EB400FB1D6B /* SDL_audio.h */; settings = {ATTRIBUTES = (); }; };
@@ -1350,6 +1350,8 @@
 		F21A87162C883CAB00A5860F /* pci_devices.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = pci_devices.h; sourceTree = "<group>"; };
 		F21A87192C88AB9000A5860F /* drive_overlay.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = drive_overlay.cpp; sourceTree = "<group>"; };
 		F26258C02CB3B6390040584F /* Main.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
+		F26259062CBA3C7D0040584F /* DPScreenView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DPScreenView.h; sourceTree = "<group>"; };
+		F26259072CBA3C7D0040584F /* DPScreenView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DPScreenView.m; sourceTree = "<group>"; };
 		F262CC1A25A52C6E005F21D2 /* DPMouseManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DPMouseManager.h; sourceTree = "<group>"; };
 		F262CC1B25A52C6E005F21D2 /* DPMouseManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DPMouseManager.m; sourceTree = "<group>"; };
 		F262CC2425A52C85005F21D2 /* DPKeyboardManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DPKeyboardManager.h; sourceTree = "<group>"; };
@@ -1376,8 +1378,6 @@
 		F2E577912C907F0600EB5699 /* wav.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = wav.c; sourceTree = "<group>"; };
 		F2E577922C907F0600EB5699 /* flac.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = flac.c; sourceTree = "<group>"; };
 		F2E577A32C907F0600EB5699 /* voc.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = voc.c; sourceTree = "<group>"; };
-		F2E78A722CAF9E2400F95D53 /* DPWindow.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DPWindow.h; sourceTree = "<group>"; };
-		F2E78A732CAF9E2400F95D53 /* DPWindow.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DPWindow.m; sourceTree = "<group>"; };
 		FD3F4A700DEA620800C5B771 /* SDL_getenv.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = SDL_getenv.c; sourceTree = "<group>"; };
 		FD3F4A710DEA620800C5B771 /* SDL_iconv.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = SDL_iconv.c; sourceTree = "<group>"; };
 		FD3F4A720DEA620800C5B771 /* SDL_malloc.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = SDL_malloc.c; sourceTree = "<group>"; };
@@ -2582,8 +2582,8 @@
 				F262CC1B25A52C6E005F21D2 /* DPMouseManager.m */,
 				F262CC2425A52C85005F21D2 /* DPKeyboardManager.h */,
 				F262CC2525A52C85005F21D2 /* DPKeyboardManager.m */,
-				F2E78A722CAF9E2400F95D53 /* DPWindow.h */,
-				F2E78A732CAF9E2400F95D53 /* DPWindow.m */,
+				F26259062CBA3C7D0040584F /* DPScreenView.h */,
+				F26259072CBA3C7D0040584F /* DPScreenView.m */,
 			);
 			path = Main;
 			sourceTree = "<group>";
@@ -3783,7 +3783,6 @@
 				E7BE12F3128BF31A0046990B /* keys.m in Sources */,
 				F262CC1C25A52C6E005F21D2 /* DPMouseManager.m in Sources */,
 				E7BE12F6128BF31A0046990B /* HoldIndicator.m in Sources */,
-				F2E78A742CAF9E2400F95D53 /* DPWindow.m in Sources */,
 				E73A566B2534979900E3B3FB /* MfiGamepadConfiguration.m in Sources */,
 				E7BE12F7128BF31A0046990B /* FrameskipIndicator.m in Sources */,
 				E7B2BBE8252432DC00490083 /* UIViewController+Alert.m in Sources */,
@@ -3793,6 +3792,7 @@
 				E7FDFB5A254EBD5800A6DE66 /* DPGamepadConfiguration.m in Sources */,
 				E7BE12FC128BF31A0046990B /* FloatingView.m in Sources */,
 				E77E08702549265F00B5B11D /* DPThemeSceneView.m in Sources */,
+				F26259082CBA3C7D0040584F /* DPScreenView.m in Sources */,
 				E7FDFB6A255150DA00A6DE66 /* SoundEffect.m in Sources */,
 				E72BE69712911096009DC46A /* DPEmulatorViewController.m in Sources */,
 				E7A01EE71CC9277E0036A4CF /* ColorTheme.m in Sources */,
