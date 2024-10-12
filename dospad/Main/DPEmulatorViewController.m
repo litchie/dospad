@@ -973,27 +973,29 @@ static struct {
 
 -(void)showOption:(id)sender
 {
-	[self alert:@"Action" message:@"Please choose an option"
-		actions:@[
-	 		[UIAlertAction actionWithTitle:@"Screenshot"
-	 			style:UIAlertActionStyleDefault
-	 			handler:^(UIAlertAction * _Nonnull action) {
-	 				[[DOSPadEmulator sharedInstance] takeScreenshot];
-                }],
-	 		[UIAlertAction actionWithTitle:@"Settings"
-	 			style:UIAlertActionStyleDefault
-	 			handler:^(UIAlertAction * _Nonnull action) {
-					if (@available(iOS 10.0, *)) {
-						[[UIApplication sharedApplication]
-						 openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString]
-						 options:@{} completionHandler:nil];
-					} else {
-						[[UIApplication sharedApplication]
-						 openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString]];
-					}
-                }]
-		]
-		source:sender];
+    [self alert:@"Action" message:@"Please choose an option"
+        actions:@[
+        [UIAlertAction actionWithTitle:@"Screenshot"
+                                 style:UIAlertActionStyleDefault
+                               handler:^(UIAlertAction * _Nonnull action) {
+            [[DOSPadEmulator sharedInstance] takeScreenshot];
+        }],
+        [UIAlertAction actionWithTitle:@"Help"
+                                 style:UIAlertActionStyleDefault
+                               handler:^(UIAlertAction * _Nonnull action) {
+            [[UIApplication sharedApplication]
+             openURL:[NSURL URLWithString:@"https://idos.litchie.com/docs"]
+             options:@{} completionHandler:nil];
+        }],
+        [UIAlertAction actionWithTitle:@"Settings"
+                                 style:UIAlertActionStyleDefault
+                               handler:^(UIAlertAction * _Nonnull action) {
+            [[UIApplication sharedApplication]
+             openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString]
+             options:@{} completionHandler:nil];
+        }]
+    ]
+         source:sender];
 }
 
 - (void)createPianoKeyboard
