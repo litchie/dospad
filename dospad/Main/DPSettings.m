@@ -28,6 +28,7 @@
 #define kAutoOpenLast          @"auto_open_last"
 #define kPixelatedScaling      @"screen_pixelated"
 #define kMouseAbsEnable        @"mouse_abs_enable"
+#define kDosAudioBackground    @"dos_audio_background"
 
 static DPSettings *s_settings;
 
@@ -99,6 +100,7 @@ static DPSettings *s_settings;
 	_autoOpenLastPackage = [defs boolForKey:kAutoOpenLast];
 	_pixelatedScaling = [defs boolForKey:kPixelatedScaling];
     _mouseAbsEnable = [defs boolForKey:kMouseAbsEnable];
+    _allowDosAudioInBackground = [defs boolForKey:kDosAudioBackground];
 }
 
 @end

@@ -36,6 +36,7 @@ NS_ASSUME_NONNULL_BEGIN
 // If true, treat tap on screen as mouse clicks.
 @property (readonly) BOOL keyPressSound;
 @property (readonly) BOOL gamepadSound;
+@property (readonly) BOOL allowDosAudioInBackground;
 @property (readonly) BOOL tapAsClick;
 @property (readonly) BOOL doubleTapAsRightClick;
 @property (readonly) float mouseSpeed;
@@ -47,7 +48,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (readonly) BOOL mouseAbsEnable;
 
 + (DPSettings*)shared;
-
+- (void)loadDefaults;
 
 @end
 

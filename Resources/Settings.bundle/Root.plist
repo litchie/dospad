@@ -54,6 +54,16 @@
 			<key>Type</key>
 			<string>PSToggleSwitchSpecifier</string>
 			<key>Title</key>
+			<string>Allow dos audio playback in background</string>
+			<key>Key</key>
+			<string>dos_audio_background</string>
+			<key>DefaultValue</key>
+			<false/>
+		</dict>
+		<dict>
+			<key>Type</key>
+			<string>PSToggleSwitchSpecifier</string>
+			<key>Title</key>
 			<string>Smart Keyboard Mappings (iPad)</string>
 			<key>Key</key>
 			<string>smart_keyboard_mappings</string>

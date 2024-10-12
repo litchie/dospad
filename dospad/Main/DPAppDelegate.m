@@ -109,12 +109,17 @@
 
 - (void)applicationWillResignActive:(UIApplication *)application
 {
-    dospad_pause();
+    // not pause here could make background audio playback work
+    if (![DPSettings shared].allowDosAudioInBackground) {
+        dospad_pause();
+    }
     [self.emulatorController willResignActive];
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application
 {
+    // User may have changed something in Settings app
+    [[DPSettings shared] loadDefaults];
     dospad_resume();
 }
 
