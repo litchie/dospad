@@ -347,7 +347,11 @@ API_AVAILABLE(ios(14.0)){
     static NSMutableDictionary *d = nil;
     if (!d) {
         d = [NSMutableDictionary dictionary];
+
+        // TODO This does not work
         [d setObject:@(SDL_SCANCODE_ESCAPE) forKey:@(GCKeyCodeGraveAccentAndTilde)];
+
+        [d setObject:@(SDL_SCANCODE_ESCAPE) forKey:@(GCKeyCodeComma)];
         [d setObject:@(SDL_SCANCODE_F1) forKey:@(GCKeyCodeOne)];
         [d setObject:@(SDL_SCANCODE_F2) forKey:@(GCKeyCodeTwo)];
         [d setObject:@(SDL_SCANCODE_F3) forKey:@(GCKeyCodeThree)];
