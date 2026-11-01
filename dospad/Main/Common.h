@@ -75,6 +75,7 @@
 
 void dospad_pause();
 void dospad_resume();
+int SDL_iPhoneAudioRestart(void);
 extern int SDL_SendKeyboardKey(int index, Uint8 state, SDL_scancode scancode);
 extern int dospad_should_launch_game;
 extern int dospad_command_line_ready;

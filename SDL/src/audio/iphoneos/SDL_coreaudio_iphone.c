@@ -30,6 +30,23 @@
 
 #define DEBUG_COREAUDIO 0
 
+/* The running output unit, so the app can restart it after an audio
+   session interruption (iOS stops RemoteIO and never restarts it).
+   Set on the audio thread, read on the main thread; this relies on the
+   unit never being disposed (CloseComponent is commented out below). */
+static AudioUnit current_output_unit = NULL;
+
+/* Returns the OSStatus of AudioOutputUnitStart, or 0 with no unit open.
+   Starting a running unit is a no-op. */
+int
+SDL_iPhoneAudioRestart(void)
+{
+    if (current_output_unit == NULL) {
+        return 0;
+    }
+    return (int) AudioOutputUnitStart(current_output_unit);
+}
+
 static void
 COREAUDIO_Deinitialize(void)
 {
@@ -125,6 +142,9 @@ COREAUDIO_CloseDevice(_THIS)
                  kAudioUnitScope_Input);
 
             /* stop processing the audio unit */
+            if (current_output_unit == this->hidden->audioUnit) {
+                current_output_unit = NULL;
+            }
             result = AudioOutputUnitStop(this->hidden->audioUnit);
 
             /* Remove the input callback */
@@ -241,6 +261,9 @@ prepare_audiounit(_THIS, const char *devname, int iscapture,
     /* Finally, start processing of the audio unit */
     result = AudioOutputUnitStart(this->hidden->audioUnit);
     CHECK_RESULT("AudioOutputUnitStart");
+    if (!iscapture) {
+        current_output_unit = this->hidden->audioUnit;
+    }
     /* We're running! */
     return 1;
 }
