@@ -120,7 +120,35 @@
 {
     // User may have changed something in Settings app
     [[DPSettings shared] loadDefaults];
+    [self restartAudio];
     dospad_resume();
+}
+
+// iOS deactivates the audio session and stops the output unit on an
+// interruption (another app's audio, suspension); nothing restarted them,
+// so sound stayed off after switching away and back.
+- (void)restartAudio
+{
+    NSError *err = nil;
+    if (![[AVAudioSession sharedInstance] setActive:YES error:&err]) {
+        NSLog(@"restartAudio: setActive failed: %@", err);
+    }
+    int status = SDL_iPhoneAudioRestart();
+    if (status != 0) {
+        NSLog(@"restartAudio: AudioOutputUnitStart failed: %d", status);
+    }
+}
+
+- (void)audioSessionInterrupted:(NSNotification *)note
+{
+    NSUInteger type = [note.userInfo[AVAudioSessionInterruptionTypeKey] unsignedIntegerValue];
+    // Resume even without AVAudioSessionInterruptionOptionShouldResume:
+    // an emulator with the Playback category should get its sound back.
+    if (type == AVAudioSessionInterruptionTypeEnded) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self restartAudio];
+        });
+    }
 }
 
 - (void)applicationDidEnterBackground:(UIApplication *)application
@@ -205,6 +233,10 @@
 	[[AVAudioSession sharedInstance]
 		setActive: YES
 		error: &activationErr];
+	[[NSNotificationCenter defaultCenter] addObserver:self
+		selector:@selector(audioSessionInterrupted:)
+		name:AVAudioSessionInterruptionNotification
+		object:[AVAudioSession sharedInstance]];
 
 	[super applicationDidFinishLaunching:application];
 
